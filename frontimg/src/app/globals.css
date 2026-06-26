@@ -1,0 +1,252 @@
+@import "tailwindcss";
+
+/*
+  Enable the `dark:` variant as a class toggle on <html class="dark"> (manual,
+  not OS-driven). A no-flash inline script in layout.tsx adds the class before
+  first paint when the visitor previously chose dark.
+*/
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+  ────────────────────────────────────────────────────────────────────────────
+  oMyImage — Global design tokens (single source of truth)
+  ────────────────────────────────────────────────────────────────────────────
+  Ported from the oMyPDF "Premium Utility System" and re-themed:
+    • Brand accent (the single `secondary` token that drives every accent in the
+      UI) switched from Premium Red → "Honey Gold" amber (#F5A623). It is warm,
+      premium and soothing on the eyes. Button/pill text on the accent uses a
+      near-black (`on-secondary`) for crisp, accessible contrast.
+    • Neutral surfaces warmed very slightly (a hint of cream) so they sit
+      comfortably with the gold rather than clashing with a cool blue-grey.
+  Every component references these semantic tokens (bg-secondary,
+  text-on-surface, border-surface-variant, …) so the whole brand re-skins from
+  here. Fonts (Inter, JetBrains Mono) are injected as CSS variables via
+  next/font in layout.tsx.
+*/
+@theme {
+  /* Primary — strong heading/text color and the occasional dark fill. */
+  --color-primary: #1f1d18; /* warm near-black */
+  --color-on-primary: #ffffff;
+  --color-primary-container: #2a2720;
+  --color-on-primary-container: #b8b2a4;
+  --color-primary-fixed: #f3ead4;
+  --color-primary-fixed-dim: #e3d6b8;
+  --color-on-primary-fixed: #2a2720;
+  --color-on-primary-fixed-variant: #5a5446;
+  --color-inverse-primary: #e3d6b8;
+
+  /* Secondary = the brand accent. Honey Gold amber. */
+  --color-secondary: #f5a623; /* Honey Gold */
+  --color-on-secondary: #2b1d00; /* near-black text on gold */
+  --color-secondary-container: #e0900c; /* deeper amber — hover + gradient anchor */
+  --color-on-secondary-container: #2b1d00;
+  --color-secondary-fixed: #ffe5b8;
+  --color-secondary-fixed-dim: #ffd185;
+  --color-on-secondary-fixed: #2b1d00;
+  --color-on-secondary-fixed-variant: #7a5600;
+
+  --color-tertiary: #1f1d18;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #2a2720;
+  --color-on-tertiary-container: #b8b2a4;
+  --color-tertiary-fixed: #f3ead4;
+  --color-tertiary-fixed-dim: #e3d6b8;
+  --color-on-tertiary-fixed: #2a2720;
+  --color-on-tertiary-fixed-variant: #5a5446;
+
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  /* Neutrals / surfaces — warm off-white ("cream") to pair with gold. */
+  --color-background: #fbfaf7;
+  --color-on-background: #1c1a17;
+  --color-surface: #fbfaf7;
+  --color-surface-dim: #dcd8d0;
+  --color-surface-bright: #fbfaf7;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f5f3ee;
+  --color-surface-container: #efece5;
+  --color-surface-container-high: #e9e6df;
+  --color-surface-container-highest: #e3e0d9;
+  --color-surface-variant: #e3e0d9;
+  --color-on-surface: #1c1a17;
+  --color-on-surface-variant: #4a4640;
+  --color-inverse-surface: #312e29;
+  --color-inverse-on-surface: #f4f1ec;
+  --color-outline: #7a766d;
+  --color-outline-variant: #cbc7bd;
+  --color-surface-tint: #8a6d2e;
+
+  /* Named spacing tokens (4px base grid) */
+  --spacing-base: 4px;
+  --spacing-stack-sm: 8px;
+  --spacing-stack-md: 16px;
+  --spacing-stack-lg: 32px;
+  --spacing-gutter: 24px;
+  --spacing-margin-mobile: 16px;
+
+  /* Font families (mapped to next/font CSS variables) */
+  --font-display-lg: var(--font-inter);
+  --font-headline-md: var(--font-inter);
+  --font-body-lg: var(--font-inter);
+  --font-body-md: var(--font-inter);
+  --font-label-sm: var(--font-jetbrains-mono);
+
+  /* Type scale */
+  --text-display-lg: 48px;
+  --text-display-lg--line-height: 56px;
+  --text-display-lg--letter-spacing: -0.02em;
+  --text-display-lg--font-weight: 700;
+
+  --text-display-lg-mobile: 32px;
+  --text-display-lg-mobile--line-height: 40px;
+  --text-display-lg-mobile--letter-spacing: -0.02em;
+  --text-display-lg-mobile--font-weight: 700;
+
+  --text-headline-md: 24px;
+  --text-headline-md--line-height: 32px;
+  --text-headline-md--letter-spacing: -0.01em;
+  --text-headline-md--font-weight: 600;
+
+  --text-title-lg: 22px;
+  --text-title-lg--line-height: 28px;
+  --text-title-lg--font-weight: 700;
+
+  --text-body-lg: 18px;
+  --text-body-lg--line-height: 28px;
+  --text-body-lg--font-weight: 400;
+
+  --text-body-md: 16px;
+  --text-body-md--line-height: 24px;
+  --text-body-md--font-weight: 400;
+
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 20px;
+  --text-body-sm--font-weight: 400;
+
+  --text-label-md: 16px;
+  --text-label-md--line-height: 22px;
+  --text-label-md--font-weight: 500;
+
+  --text-label-sm: 12px;
+  --text-label-sm--line-height: 16px;
+  --text-label-sm--letter-spacing: 0.05em;
+  --text-label-sm--font-weight: 500;
+}
+
+/*
+  Dark theme — overrides the semantic color tokens under <html class="dark">.
+  Brand gold (secondary) is intentionally inherited unchanged: it reads well on
+  dark surfaces and keeps the brand consistent. Surfaces use a warm-tinted dark
+  to match the cream light theme.
+*/
+.dark {
+  --color-primary: #ece6da;
+  --color-on-primary: #1c1a14;
+  --color-primary-container: #d6cdba;
+  --color-on-primary-container: #36322a;
+  --color-inverse-primary: #5a5446;
+
+  --color-error: #ffb4ab;
+  --color-on-error: #690005;
+  --color-error-container: #93000a;
+  --color-on-error-container: #ffdad6;
+
+  --color-background: #16140f;
+  --color-on-background: #e8e3d8;
+  --color-surface: #16140f;
+  --color-surface-dim: #16140f;
+  --color-surface-bright: #3b372e;
+  --color-surface-container-lowest: #100e0a;
+  --color-surface-container-low: #1e1b15;
+  --color-surface-container: #221f18;
+  --color-surface-container-high: #2d2920;
+  --color-surface-container-highest: #38332a;
+  --color-surface-variant: #322e25;
+  --color-on-surface: #e8e3d8;
+  --color-on-surface-variant: #cdc6b6;
+  --color-inverse-surface: #e8e3d8;
+  --color-inverse-on-surface: #312e29;
+  --color-outline: #978f7e;
+  --color-outline-variant: #4b463b;
+  --color-surface-tint: #f5a623;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-on-background);
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Material Symbols base */
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+.material-symbols-outlined.fill {
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+/* Bold outline (no fill, heavier stroke) — the premium no-tile card icon style. */
+.material-symbols-outlined.bold {
+  font-variation-settings: "FILL" 0, "wght" 600, "GRAD" 0, "opsz" 48;
+}
+
+/* Elevation & interaction helpers */
+.ambient-shadow {
+  box-shadow: 0px 4px 20px rgba(40, 30, 10, 0.05);
+}
+.dark .ambient-shadow {
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.45);
+}
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 8px 24px rgba(40, 30, 10, 0.1);
+  border-color: #ece6da;
+}
+.dark .hover-lift:hover {
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.55);
+  border-color: var(--color-outline-variant);
+}
+.tool-card:hover .tool-icon {
+  color: var(--color-secondary);
+  transform: scale(1.05);
+}
+.tool-icon {
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+/*
+  Minimal "tool active" mode — when a tool has a file loaded it renders a hidden
+  <… data-tool-active> marker. Pure CSS (no body-class mutation, which React can
+  reset) then hides the marketing/SEO chrome so the page collapses to:
+  header → tool title → tool → related tools → footer.
+*/
+body:has([data-tool-active]) [data-tool-subtitle],
+body:has([data-tool-active]) [data-seo-content] {
+  display: none;
+}
+/* Breathing room above the footer once the SEO block is collapsed. */
+body:has([data-tool-active]) main {
+  padding-bottom: 3rem;
+}
+
+/* Drag-and-drop active state (faint Honey Gold tint) */
+.drag-active {
+  background-color: rgba(245, 166, 35, 0.06);
+  border-color: var(--color-secondary);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Top loading bar animation */
+@keyframes topbar-slide {
+  0%   { left: -45%; width: 45%; }
+  100% { left: 110%; width: 45%; }
+}

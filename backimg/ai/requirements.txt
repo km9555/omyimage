@@ -1,0 +1,5 @@
+# Background removal — MIT (rembg) + Apache-2.0 (U²-Net model)
+rembg[cli]>=2.0.50
+
+# Real-ESRGAN (upscale/enhance) is a prebuilt native binary, not a pip package.
+# See ai/README.md for the realesrgan-ncnn-vulkan download (BSD-3 / MIT).
