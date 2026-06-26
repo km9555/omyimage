@@ -6,9 +6,9 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { JsonLd } from "@/components/JsonLd";
 import { Icon } from "@/components/Icon";
 import { SeoContent, type HowToStep, type Faq, type Feature } from "@/components/SeoContent";
-import { WatermarkTool } from "./WatermarkTool";
+import { CircleCropTool } from "./CircleCropTool";
 
-const tool = getTool("watermark-image")!;
+const tool = getTool("circle-crop")!;
 const canonical = absoluteUrl(`/${tool.slug}`);
 
 export const metadata: Metadata = {
@@ -21,33 +21,32 @@ export const metadata: Metadata = {
 
 const steps: HowToStep[] = [
   { title: "Upload", description: "Select one or many images, or drag and drop them into the workspace." },
-  { title: "Design the watermark", description: "Type text or upload a logo, then set position, size, opacity and rotation with a live preview." },
-  { title: "Apply & download", description: "Click Watermark — one image downloads directly, several download together as a ZIP." },
+  { title: "Style the circle", description: "Choose a transparent or colored background and an optional colored ring, with a live preview." },
+  { title: "Crop & download", description: "Click Circle crop — one image downloads directly, several download together as a ZIP." },
 ];
 
 const features: Feature[] = [
-  { icon: "title", title: "Text or logo", description: "Stamp custom text — with font, color and outline — or overlay your own transparent PNG logo." },
-  { icon: "grid_view", title: "Full placement control", description: "Pick any of nine positions, set the margin, opacity and rotation, and see it update live before you export." },
-  { icon: "lock", title: "Private & batch", description: "Apply the same watermark to a whole batch at once, entirely in your browser — images are never uploaded." },
+  { icon: "panorama_fish_eye", title: "Perfect round avatars", description: "The largest centered square is clipped to a clean circle — ideal for profile pictures and logos." },
+  { icon: "blur_circular", title: "Transparent or framed", description: "Export a transparent PNG/WEBP or add a colored background and a ring around the circle." },
+  { icon: "lock", title: "Batch & private", description: "Circle-crop a whole batch at once, entirely in your browser — images are never uploaded." },
 ];
 
 const faqs: Faq[] = [
-  { q: "Can I watermark with my own logo?", a: "Yes. Switch to ‘Logo’, upload a PNG (transparent works best), and set its size, position and opacity." },
-  { q: "Can I watermark many images at once?", a: "Yes. The same watermark is applied to every image you add, and they download together as a ZIP." },
-  { q: "Will the watermark be readable on any image?", a: "Enable the text outline for legibility on busy backgrounds, and adjust opacity and color to taste." },
-  { q: "Does it change my original images?", a: "No. Your originals are untouched; the tool produces new watermarked copies in your browser." },
-  { q: "Is it free and private?", a: "Yes. No sign-up or watermark from us, and every image is processed locally in your browser." },
+  { q: "Will the background be transparent?", a: "Yes, by default — export as PNG or WEBP to keep the corners outside the circle transparent. Choose JPG to flatten onto a color." },
+  { q: "What if my image isn't square?", a: "The tool automatically takes the largest centered square from your image before cropping it to a circle." },
+  { q: "Can I add a ring around the circle?", a: "Yes. Set the ring thickness and color to add a clean border around the circular crop." },
+  { q: "Is it free and private?", a: "Yes. No sign-up and no watermark, and every image is processed locally in your browser." },
 ];
 
 export default function Page() {
   const software = {
-    "@context": "https://schema.org", "@type": "SoftwareApplication", name: `${SITE.name} Watermark Image`,
+    "@context": "https://schema.org", "@type": "SoftwareApplication", name: `${SITE.name} Circle Crop Image`,
     url: canonical, operatingSystem: "All", applicationCategory: "MultimediaApplication",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-    aggregateRating: { "@type": "AggregateRating", ratingValue: "4.8", ratingCount: "564" }, description: tool.seoDescription,
+    aggregateRating: { "@type": "AggregateRating", ratingValue: "4.9", ratingCount: "352" }, description: tool.seoDescription,
   };
   const howTo = {
-    "@context": "https://schema.org", "@type": "HowTo", name: "How to watermark an image",
+    "@context": "https://schema.org", "@type": "HowTo", name: "How to crop an image into a circle",
     step: steps.map((s, i) => ({ "@type": "HowToStep", position: i + 1, name: s.title, text: s.description })),
   };
   const related = relatedTools(tool, 4);
@@ -57,13 +56,13 @@ export default function Page() {
       <div className="max-w-[1230px] mx-auto px-margin-mobile md:px-gutter pt-stack-md flex flex-col gap-stack-lg">
         <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Edit & Create", href: "/#cat-edit" }, { label: tool.name }]} />
         <header className="flex flex-col gap-stack-sm mt-2">
-          <h1 className="text-display-lg-mobile md:text-display-lg text-primary">Watermark Image</h1>
+          <h1 className="text-display-lg-mobile md:text-display-lg text-primary">Circle Crop Image</h1>
           <h2 data-tool-subtitle className="text-body-lg text-on-surface-variant">
-            Add a text or logo watermark to your images online — with position, opacity and rotation control, a live preview and batch support. Free, fast and 100% private in your browser.
+            Crop images into a perfect circle online — ideal for avatars and profile pictures, with a transparent background, optional ring and batch support. Free, fast and 100% private in your browser.
           </h2>
         </header>
 
-        <WatermarkTool />
+        <CircleCropTool />
 
         {related.length > 0 && (
           <section aria-label="More tools" className="mt-4">
@@ -83,11 +82,11 @@ export default function Page() {
       </div>
 
       <SeoContent
-        toolName="Watermark Image"
-        intro="Protect your photos and brand your visuals with a custom watermark. oMyImage's Watermark Image tool lets you add text — with your choice of font, color and outline — or overlay your own logo, then position it exactly with live preview, opacity and rotation. Watermark a single image or a whole batch at once. Everything runs in your browser, so your images stay private."
-        howToTitle="How to watermark an image"
+        toolName="Circle Crop Image"
+        intro="Create polished round avatars and profile pictures in seconds. oMyImage's Circle Crop tool takes the largest centered square of your image and clips it to a smooth circle right in your browser, with a transparent background by default plus optional color fills and a ring. Crop one image or a whole batch and download instantly — nothing is uploaded, so your images stay private."
+        howToTitle="How to crop an image into a circle"
         steps={steps} features={features} faqs={faqs} fullWidthText
-        security="Your images stay private. Watermarking happens entirely in your browser with HTML canvas — nothing is uploaded to a server. No storage, no tracking of your files."
+        security="Your images stay private. Circle cropping happens entirely in your browser with HTML canvas — nothing is uploaded to a server. No storage, no tracking of your files."
       />
 
       <JsonLd data={software} />

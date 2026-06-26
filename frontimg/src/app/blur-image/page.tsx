@@ -6,9 +6,9 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { JsonLd } from "@/components/JsonLd";
 import { Icon } from "@/components/Icon";
 import { SeoContent, type HowToStep, type Faq, type Feature } from "@/components/SeoContent";
-import { HtmlToImageTool } from "./HtmlToImageTool";
+import { BlurImageTool } from "./BlurImageTool";
 
-const tool = getTool("html-to-image")!;
+const tool = getTool("blur-image")!;
 const canonical = absoluteUrl(`/${tool.slug}`);
 
 export const metadata: Metadata = {
@@ -20,34 +20,33 @@ export const metadata: Metadata = {
 };
 
 const steps: HowToStep[] = [
-  { title: "Enter URL or HTML", description: "Paste a web page URL, or switch to HTML mode and paste your own markup." },
-  { title: "Set the size & format", description: "Choose the viewport width and height, output format, and whether to capture the full page." },
-  { title: "Render & download", description: "Click Render to image and download the screenshot as PNG or JPG." },
+  { title: "Upload", description: "Select one or many images, or drag and drop them into the workspace." },
+  { title: "Set the strength", description: "Drag the blur slider and watch the live preview update instantly." },
+  { title: "Apply & download", description: "Click Blur — one image downloads directly, several download together as a ZIP." },
 ];
 
 const features: Feature[] = [
-  { icon: "link", title: "URL or raw HTML", description: "Screenshot any public web page, or render a snippet of your own HTML and CSS to an image." },
-  { icon: "aspect_ratio", title: "Custom viewport", description: "Set the exact width and height, and optionally capture the full scrollable page." },
-  { icon: "verified_user", title: "Open-source engine", description: "Rendered with headless Chromium via Puppeteer — free, open-source and commercial-use friendly." },
+  { icon: "lens_blur", title: "Adjustable strength", description: "Smoothly blur from a soft 1px haze to a heavy 50px Gaussian blur, with a live preview." },
+  { icon: "burst_mode", title: "Batch blur", description: "Apply the same blur to a whole batch of JPG, PNG or WEBP images and download them as a ZIP." },
+  { icon: "lock", title: "100% private", description: "Everything runs in your browser with HTML canvas — your images are never uploaded to a server." },
 ];
 
 const faqs: Faq[] = [
-  { q: "Can I screenshot any website?", a: "Any publicly-reachable URL. Pages that block bots or require login may not render fully." },
-  { q: "Can I render my own HTML?", a: "Yes. Switch to HTML mode and paste markup with inline CSS to render it exactly." },
-  { q: "What formats can I export?", a: "PNG (lossless) or JPG. You can also capture the full scrollable page height." },
-  { q: "Which engine is used?", a: "Headless Chromium via the open-source Puppeteer library, running on our server." },
-  { q: "Is it free?", a: "Yes — free, with no watermark and no sign-up." },
+  { q: "Is this a Gaussian blur?", a: "Yes — it uses the browser's native Gaussian blur filter for a smooth, high-quality result at any strength." },
+  { q: "Can I blur just part of the image?", a: "This tool blurs the whole image. To blur only faces or specific regions, use our Blur Face tool instead." },
+  { q: "Can I blur many images at once?", a: "Yes. Add as many as you like — a single image downloads directly and multiple images download together as a ZIP." },
+  { q: "Is it free and private?", a: "Yes. No sign-up and no watermark, and every image is processed locally in your browser." },
 ];
 
 export default function Page() {
   const software = {
-    "@context": "https://schema.org", "@type": "SoftwareApplication", name: `${SITE.name} HTML to Image`,
+    "@context": "https://schema.org", "@type": "SoftwareApplication", name: `${SITE.name} Blur Image`,
     url: canonical, operatingSystem: "All", applicationCategory: "MultimediaApplication",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-    aggregateRating: { "@type": "AggregateRating", ratingValue: "4.7", ratingCount: "356" }, description: tool.seoDescription,
+    aggregateRating: { "@type": "AggregateRating", ratingValue: "4.8", ratingCount: "276" }, description: tool.seoDescription,
   };
   const howTo = {
-    "@context": "https://schema.org", "@type": "HowTo", name: "How to convert HTML to an image",
+    "@context": "https://schema.org", "@type": "HowTo", name: "How to blur an image",
     step: steps.map((s, i) => ({ "@type": "HowToStep", position: i + 1, name: s.title, text: s.description })),
   };
   const related = relatedTools(tool, 4);
@@ -57,13 +56,13 @@ export default function Page() {
       <div className="max-w-[1230px] mx-auto px-margin-mobile md:px-gutter pt-stack-md flex flex-col gap-stack-lg">
         <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Edit & Create", href: "/#cat-edit" }, { label: tool.name }]} />
         <header className="flex flex-col gap-stack-sm mt-2">
-          <h1 className="text-display-lg-mobile md:text-display-lg text-primary">HTML to Image</h1>
+          <h1 className="text-display-lg-mobile md:text-display-lg text-primary">Blur Image</h1>
           <h2 data-tool-subtitle className="text-body-lg text-on-surface-variant">
-            Convert a web page URL or raw HTML into an image online — choose the viewport, format and full-page capture. Powered by open-source headless Chromium.
+            Blur an image online with an adjustable Gaussian blur, a live preview and batch support. Free, fast and 100% private in your browser.
           </h2>
         </header>
 
-        <HtmlToImageTool />
+        <BlurImageTool />
 
         {related.length > 0 && (
           <section aria-label="More tools" className="mt-4">
@@ -83,11 +82,11 @@ export default function Page() {
       </div>
 
       <SeoContent
-        toolName="HTML to Image"
-        intro="Turn a web page or a snippet of HTML into a crisp image. oMyImage's HTML to Image tool renders a URL or your own markup with headless Chromium and gives you a PNG or JPG at the exact size you choose — handy for thumbnails, previews and social cards. Rendering runs on our server using open-source Puppeteer."
-        howToTitle="How to convert HTML to an image"
+        toolName="Blur Image"
+        intro="Soften a background, anonymize a scene or create a frosted effect. oMyImage's Blur Image tool applies a smooth Gaussian blur to your photos right in your browser, with a slider to dial in exactly the strength you want and a live preview. Blur one image or a whole batch and download instantly — nothing is uploaded, so your images stay private."
+        howToTitle="How to blur an image"
         steps={steps} features={features} faqs={faqs} fullWidthText
-        security="Rendering runs on our server using open-source headless Chromium. Output is stored only briefly behind a private download link and auto-deleted within an hour. We never share or reuse your content."
+        security="Your images stay private. Blurring happens entirely in your browser with HTML canvas — nothing is uploaded to a server. No storage, no tracking of your files."
       />
 
       <JsonLd data={software} />

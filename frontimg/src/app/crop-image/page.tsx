@@ -85,7 +85,7 @@ export default function CropImagePage() {
     })),
   };
 
-  const related = relatedTools(tool, 3);
+  const related = relatedTools(tool, 4);
 
   return (
     <>
@@ -109,9 +109,9 @@ export default function CropImagePage() {
         <CropTool />
 
         {related.length > 0 && (
-          <section aria-label="Related tools" className="mt-4">
-            <h2 className="text-headline-md font-semibold text-primary mb-stack-md">Related tools</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-stack-md">
+          <section aria-label="More tools" className="mt-4">
+            <h2 className="text-headline-md font-semibold text-primary mb-stack-md">More tools</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-stack-md">
               {related.map((r) => (
                 <Link
                   key={r.id}
