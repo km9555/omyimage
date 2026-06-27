@@ -214,6 +214,22 @@ export const TOOLS: Tool[] = [
 
   // ── Edit & Create ─────────────────────────────────────────────────────
   {
+    id: "image-editor",
+    name: "All-in-One Image Editor",
+    slug: "image-editor",
+    categoryId: "edit",
+    shortDescription: "Crop, adjust, filter, draw, watermark — all in one editor.",
+    icon: "dashboard_customize",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    priority: 10,
+    seoTitle: "All-in-One Image Editor Online - Free | oMyImage",
+    seoDescription:
+      "Edit images online for free in one place — crop, resize, rotate, adjust, filter, blur, add borders, round, watermark and draw, with undo/redo. No sign-up, 100% private in your browser.",
+    primaryKeyword: "image editor online free",
+  },
+  {
     id: "watermark-image",
     name: "Watermark Image",
     slug: "watermark-image",
@@ -598,6 +614,7 @@ const TOOL_COLORS: Record<string, string> = {
   "heic-to-jpg": "#F2994A",
   "image-to-pdf": "#E5533D",
 
+  "image-editor": "#6D28D9",
   "watermark-image": "#8B5CF6",
   "photo-editor": "#D4537E",
   "meme-generator": "#E5820D",
