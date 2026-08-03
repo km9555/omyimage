@@ -7,6 +7,7 @@ import { TopLoadingBar } from "@/components/TopLoadingBar";
 import { Dropzone } from "@/components/image/Dropzone";
 import { processOnServer } from "@/lib/process-router";
 import { downloadBlob, formatBytes } from "@/lib/image/raster";
+import { useHandoff } from "@/lib/tool-handoff";
 
 const CHECKER: React.CSSProperties = {
   backgroundColor: "#fff",
@@ -18,7 +19,7 @@ const CHECKER: React.CSSProperties = {
 
 /**
  * Generic single-image tool that offloads work to a backimg server route
- * (used by the AI tools: remove background, upscale, enhance). Shows the input,
+ * (used by the AI tools: remove background, upscale). Shows the input,
  * the processed result (on a checkerboard for transparent output), and a clear
  * message if the server feature isn't enabled (501).
  */
@@ -65,6 +66,8 @@ export function ServerImageTool({
     setResult((prev) => { if (prev) URL.revokeObjectURL(prev.url); return null; });
     setFile(f);
   }, []);
+
+  useHandoff(onFiles);
 
   const set = (k: string, v: unknown) => setOpts((o) => ({ ...o, [k]: v }));
 

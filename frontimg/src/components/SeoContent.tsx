@@ -55,7 +55,7 @@ export function SeoContent({
   return (
     <div
       data-seo-content
-      className="max-w-[1230px] mx-auto px-margin-mobile md:px-gutter py-stack-lg flex flex-col gap-stack-lg"
+      className="max-w-content mx-auto px-margin-mobile md:px-gutter py-stack-lg flex flex-col gap-stack-lg"
     >
       {/* Intro */}
       <section>

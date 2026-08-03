@@ -6,6 +6,7 @@ import { Icon } from "@/components/Icon";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
 import { Dropzone } from "@/components/image/Dropzone";
 import { decodeBitmap, downloadBlob, canvasToBlob, baseName } from "@/lib/image/raster";
+import { useHandoff } from "@/lib/tool-handoff";
 
 const ACCENT = "#A855F7";
 const ACCEPT = "image/jpeg,image/png,image/webp,image/gif,image/bmp";
@@ -97,6 +98,8 @@ export function ColorExtractorTool() {
       setIsWorking(false);
     }
   }, [count]);
+
+  useHandoff(loadFile);
 
   const reset = () => { if (url) URL.revokeObjectURL(url); setFile(null); setUrl(null); setPalette([]); pixelsRef.current = null; };
 

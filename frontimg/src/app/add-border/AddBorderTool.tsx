@@ -9,6 +9,7 @@ import { BackgroundPicker } from "@/components/BackgroundPicker";
 import {
   decodeBitmap, canvasToBlob, downloadBlob, zipAndDownload, formatBytes, baseName, mimeExt, type ExportMime,
 } from "@/lib/image/raster";
+import { useHandoff } from "@/lib/tool-handoff";
 
 const ACCENT = "#F97316";
 const ACCEPT = "image/jpeg,image/png,image/webp";
@@ -96,6 +97,8 @@ export function AddBorderTool() {
     setDone(false);
     setItems((prev) => [...prev, ...imgs.map((file) => ({ id: uid(), file, url: URL.createObjectURL(file) }))]);
   }, []);
+
+  useHandoff(addFiles);
 
   const removeItem = (id: string) => setItems((prev) => { const it = prev.find((p) => p.id === id); if (it) URL.revokeObjectURL(it.url); return prev.filter((p) => p.id !== id); });
   const reset = () => { items.forEach((i) => URL.revokeObjectURL(i.url)); setItems([]); setDone(false); };

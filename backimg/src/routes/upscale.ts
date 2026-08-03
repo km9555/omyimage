@@ -1,6 +1,6 @@
 import { Router, type Request, type Response, type NextFunction } from "express";
 import { memUpload, validateImageUploads } from "../middleware/uploads.js";
-import { upscale, enhance, NotInstalledError } from "../lib/image/ai.js";
+import { upscale, NotInstalledError } from "../lib/image/ai.js";
 import { sendResultFile } from "../lib/send-result.js";
 import { parseOptions, asNumber, baseName } from "../lib/parse.js";
 
@@ -28,16 +28,8 @@ router.post("/upscale", upload.single("file"), validateImageUploads(), async (re
   }
 });
 
-/** POST /api/enhance — file → enhanced PNG (Real-ESRGAN). */
-router.post("/enhance", upload.single("file"), validateImageUploads(), async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const file = req.file;
-    if (!file) { res.status(400).json({ error: "Upload an image." }); return; }
-    const out = await enhance(file.buffer);
-    await sendResultFile(res, out, `${baseName(file.originalname)}_enhanced.png`, "image/png");
-  } catch (err) {
-    handle501(res, err, next);
-  }
-});
+// NOTE: POST /api/enhance was removed along with the Image Enhancer tool. It was
+// literally /api/upscale with the scale hard-coded to 2 — same binary, same
+// model — and Upscale already exposes 2× as an option.
 
 export default router;

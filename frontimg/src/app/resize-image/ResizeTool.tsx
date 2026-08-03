@@ -10,6 +10,7 @@ import { shouldUseServer, toServerFormat, processOnServer } from "@/lib/process-
 import {
   rasterize, imageSize, downloadBlob, zipAndDownload, formatBytes, baseName, mimeExt, type ExportMime,
 } from "@/lib/image/raster";
+import { useHandoff } from "@/lib/tool-handoff";
 
 const ACCENT = "#0EA5E9";
 const ACCEPT = "image/jpeg,image/png,image/webp,image/gif,image/bmp";
@@ -68,6 +69,8 @@ export function ResizeTool() {
       } catch { /* ignore */ }
     });
   }, []);
+
+  useHandoff(addFiles);
 
   const removeItem = (id: string) => setItems((prev) => { const it = prev.find((p) => p.id === id); if (it) URL.revokeObjectURL(it.url); return prev.filter((p) => p.id !== id); });
   const reset = () => { items.forEach((i) => URL.revokeObjectURL(i.url)); setItems([]); setWidthStr(""); setHeightStr(""); setDone(false); };

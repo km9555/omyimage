@@ -20,9 +20,15 @@
       comfortably with the gold rather than clashing with a cool blue-grey.
   Every component references these semantic tokens (bg-secondary,
   text-on-surface, border-surface-variant, …) so the whole brand re-skins from
-  here. Fonts (Inter, JetBrains Mono) are injected as CSS variables via
-  next/font in layout.tsx.
+  here.
+
+  NOTE: `--font-inter` / `--font-jetbrains-mono` are defined by next/font in
+  layout.tsx, which puts them on <html> via a generated class. Do NOT redeclare
+  them in a `:root` block here — `:root` and `.__variable_xxx` have identical
+  specificity, so source order would decide the winner and the real webfont
+  could silently lose to a fallback string.
 */
+
 @theme {
   /* Primary — strong heading/text color and the occasional dark fill. */
   --color-primary: #1f1d18; /* warm near-black */
@@ -59,6 +65,11 @@
   --color-error-container: #ffdad6;
   --color-on-error-container: #93000a;
 
+  /* Chip tokens — a calm counter/status pill, distinct from the gold CTA. */
+  --color-chip-amber-bg: #fef6e7;
+  --color-chip-amber-ink: #a15c07;
+  --color-chip-amber-border: #f3d79b;
+
   /* Neutrals / surfaces — warm off-white ("cream") to pair with gold. */
   --color-background: #fbfaf7;
   --color-on-background: #1c1a17;
@@ -86,6 +97,10 @@
   --spacing-stack-lg: 32px;
   --spacing-gutter: 24px;
   --spacing-margin-mobile: 16px;
+
+  /* Page content width — one knob for `max-w-content`, matching oMyPDF.
+     The navbar is deliberately full-width and does not use this. */
+  --container-content: 1107px;
 
   /* Font families (mapped to next/font CSS variables) */
   --font-display-lg: var(--font-inter);
@@ -153,6 +168,10 @@
   --color-on-error: #690005;
   --color-error-container: #93000a;
   --color-on-error-container: #ffdad6;
+
+  --color-chip-amber-bg: rgba(245, 158, 11, 0.16);
+  --color-chip-amber-ink: #fcd34d;
+  --color-chip-amber-border: rgba(252, 211, 77, 0.35);
 
   --color-background: #16140f;
   --color-on-background: #e8e3d8;

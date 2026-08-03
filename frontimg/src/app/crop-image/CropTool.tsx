@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Icon } from "@/components/Icon";
 import { HelpTip } from "@/components/HelpTip";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
+import { useHandoff } from "@/lib/tool-handoff";
 
 const ACCENT = "#14B8A6";
 const MIN = 10; // minimum crop size in natural px
@@ -181,6 +182,8 @@ export function CropTool() {
     };
     img.src = url;
   }, []);
+
+  useHandoff(loadFile);
 
   const reset = () => {
     if (imgUrl) URL.revokeObjectURL(imgUrl);

@@ -6,6 +6,7 @@ import { Icon } from "@/components/Icon";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
 import { Dropzone } from "@/components/image/Dropzone";
 import { decodeBitmap, canvasToBlob, downloadBlob, baseName, mimeExt, type ExportMime } from "@/lib/image/raster";
+import { useHandoff } from "@/lib/tool-handoff";
 
 const ACCENT = "#56688A";
 const ACCEPT = "image/jpeg,image/png,image/webp";
@@ -88,6 +89,8 @@ export function BlurTool() {
     if (!f) { toast.error("Please select an image file."); return; }
     setRegions([]); setDraft(null); setFile(f);
   }, []);
+
+  useHandoff(onFiles);
 
   const toNat = (clientX: number, clientY: number) => {
     const c = canvasRef.current!; const rect = c.getBoundingClientRect();

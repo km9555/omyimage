@@ -15,6 +15,7 @@ import {
 } from "@/lib/image/raster";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
 import { shouldUseServer, toServerFormat, processOnServer } from "@/lib/process-router";
+import { useHandoff } from "@/lib/tool-handoff";
 
 const ACCENT = "#9B51E0";
 
@@ -60,6 +61,8 @@ export function RotateTool() {
     setDone(false);
     setItems((prev) => [...prev, ...imgs.map((file) => ({ id: uid(), file, url: URL.createObjectURL(file) }))]);
   }, []);
+
+  useHandoff(addFiles);
 
   const removeItem = (id: string) =>
     setItems((prev) => {

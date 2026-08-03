@@ -7,8 +7,8 @@ returns HTTP 501 (everything else keeps working).
 | Feature | Tool | License | Endpoint |
 |---|---|---|---|
 | Remove background | [rembg](https://github.com/danielgatis/rembg) + U²-Net | MIT / Apache-2.0 | `POST /api/remove-background` |
-| Upscale 2×/4× | [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN) (`realesrgan-ncnn-vulkan`) | BSD-3 / MIT | `POST /api/upscale` |
-| Enhance | Real-ESRGAN | BSD-3 / MIT | `POST /api/enhance` |
+| Upscale 2×/3×/4× | [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN) (`realesrgan-ncnn-vulkan`) | BSD-3 / MIT | `POST /api/upscale` |
+| HEIC → JPG/PNG | [ImageMagick](https://imagemagick.org) + libheif | Apache-like / LGPL-3.0 | `POST /api/heic` |
 | HTML → image | [Puppeteer](https://github.com/puppeteer/puppeteer) + Chromium | Apache-2.0 / BSD | `POST /api/html-to-image` |
 
 ## Install
@@ -21,11 +21,11 @@ rembg --help                    # the API calls: rembg i <in> <out>
 ```
 Override the binary path with `REMBG_BIN` in `.env`.
 
-### Upscale / enhance (Real-ESRGAN)
+### Upscale (Real-ESRGAN)
 
 Download the prebuilt `realesrgan-ncnn-vulkan` release (Windows/Linux/macOS) and
 put it on your PATH (or set `REALESRGAN_BIN`). It ships the `realesrgan-x4plus`
-model, used by `/api/upscale` and `/api/enhance`.
+model, used by `/api/upscale`.
 
 ```bash
 # example (Linux)
@@ -34,6 +34,35 @@ unzip realesrgan-ncnn-vulkan-*.zip -d realesrgan && chmod +x realesrgan/realesrg
 export REALESRGAN_BIN=$PWD/realesrgan/realesrgan-ncnn-vulkan
 ```
 Env: `REALESRGAN_BIN`, `REALESRGAN_MODEL` (default `realesrgan-x4plus`).
+
+### HEIC to JPG/PNG (ImageMagick + libheif)
+
+Not an AI feature, but it lives here because it follows the same
+shell-out-to-a-binary pattern and returns 501 when the binary is missing.
+
+**This one is server-side for licensing reasons, not performance.** Every
+JavaScript HEIC decoder (`heic2any`, `heic-decode`, `heic-convert`) bundles
+libheif, which is **LGPL-3.0**; shipping that to a browser is distribution and
+triggers the LGPL's source/relink obligations. Running it here instead means the
+library is only ever executed, never distributed. See `../../LICENSE-AUDIT.md`
+finding F1. **Do not move HEIC decoding into the frontend.**
+
+Note `sharp` cannot substitute: its prebuilt libvips links libheif with **aom
+only** (AVIF), with no libde265/x265, so it has the HEIF container but no HEVC
+decoder.
+
+```bash
+# Debian/Ubuntu — the distro build includes libheif
+sudo apt install imagemagick libheif1
+
+# macOS
+brew install imagemagick libheif
+
+# Verify HEIC support is actually compiled in:
+magick -list format | grep -i heic     # expect: HEIC  HEIC  rw+
+```
+Env: `MAGICK_BIN` (defaults to `magick`, falling back to `convert` for
+ImageMagick 6).
 
 ### HTML to image (Puppeteer)
 

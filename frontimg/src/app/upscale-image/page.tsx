@@ -33,6 +33,7 @@ const features: Feature[] = [
 
 const faqs: Faq[] = [
   { q: "How much can I enlarge an image?", a: "Up to 4×. A 500×500 image becomes 2000×2000, with AI-reconstructed detail rather than a soft blur." },
+  { q: "Can I use this to enhance a photo rather than enlarge it?", a: "Yes — that's the same operation. Pick 2× for a light pass that sharpens edges, cleans up noise and restores detail in soft or compressed photos. Note the result is still twice the original dimensions; downscale it afterwards if you need the original size." },
   { q: "Which engine is used?", a: "Real-ESRGAN, an open-source super-resolution model that's fine for commercial use." },
   { q: "Why does it take a few seconds?", a: "Upscaling is compute-heavy and runs on our server. Larger images and higher scales take longer." },
   { q: "Will it fix a very blurry photo?", a: "It improves sharpness and detail noticeably, but it can't invent information that isn't there in extreme cases." },
@@ -54,12 +55,12 @@ export default function Page() {
 
   return (
     <>
-      <div className="max-w-[1230px] mx-auto px-margin-mobile md:px-gutter pt-stack-md flex flex-col gap-stack-lg">
+      <div className="max-w-content mx-auto px-margin-mobile md:px-gutter pt-stack-md flex flex-col gap-stack-lg">
         <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Image AI", href: "/#cat-ai" }, { label: tool.name }]} />
         <header className="flex flex-col gap-stack-sm mt-2">
           <h1 className="text-display-lg-mobile md:text-display-lg text-primary">Upscale Image</h1>
           <h2 data-tool-subtitle className="text-body-lg text-on-surface-variant">
-            Enlarge images up to 4× with AI that adds real detail instead of blurring. Powered by open-source Real-ESRGAN.
+            Enlarge and enhance images up to 4× with AI that adds real detail instead of blurring — it sharpens soft, noisy or compressed photos as it goes. Powered by open-source Real-ESRGAN.
           </h2>
         </header>
 

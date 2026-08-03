@@ -35,7 +35,7 @@ export default function HomePage() {
 
       {/* How it works */}
       <section className="bg-surface-container-low border-t border-surface-variant px-margin-mobile md:px-gutter py-20">
-        <div className="max-w-[1230px] mx-auto text-center">
+        <div className="max-w-content mx-auto text-center">
           <h2 className="text-headline-md md:text-display-lg-mobile font-bold text-primary mb-12">
             How it works
           </h2>

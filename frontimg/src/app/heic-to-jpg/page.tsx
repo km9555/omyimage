@@ -28,14 +28,14 @@ const steps: HowToStep[] = [
 const features: Feature[] = [
   { icon: "photo_camera", title: "Built for iPhone photos", description: "Turn Apple's HEIC/HEIF photos into JPG or PNG that open everywhere — Windows, Android and the web." },
   { icon: "burst_mode", title: "Batch conversion", description: "Convert a whole camera roll at once and download everything as a single ZIP." },
-  { icon: "lock", title: "100% private", description: "Conversion runs in your browser using WebAssembly — your photos are never uploaded." },
+  { icon: "lock", title: "Private by default", description: "Conversion runs on our server with open-source ImageMagick; results are auto-deleted within an hour and never shared or reused." },
 ];
 
 const faqs: Faq[] = [
   { q: "What is HEIC?", a: "HEIC (HEIF) is the high-efficiency photo format iPhones use by default. It saves space but isn't supported everywhere, so converting to JPG makes sharing easier." },
   { q: "Can I convert many HEIC files at once?", a: "Yes. Add as many as you like — multiple files download together as a ZIP." },
   { q: "Is quality preserved?", a: "Yes. Choose PNG for lossless output, or JPG with a quality slider to balance size and fidelity." },
-  { q: "Are my photos uploaded?", a: "No. Conversion happens entirely in your browser with WebAssembly; your photos never leave your device." },
+  { q: "Are my photos uploaded?", a: "Yes — HEIC is the one tool here that needs a server. Decoding HEIC requires a library we can't ship to your browser for licensing reasons, so the file is converted on our server and auto-deleted within an hour. Nothing is shared or reused." },
   { q: "Is it free?", a: "Completely free, with no watermark and no sign-up." },
 ];
 
@@ -54,12 +54,12 @@ export default function Page() {
 
   return (
     <>
-      <div className="max-w-[1230px] mx-auto px-margin-mobile md:px-gutter pt-stack-md flex flex-col gap-stack-lg">
+      <div className="max-w-content mx-auto px-margin-mobile md:px-gutter pt-stack-md flex flex-col gap-stack-lg">
         <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Convert", href: "/#cat-convert" }, { label: tool.name }]} />
         <header className="flex flex-col gap-stack-sm mt-2">
           <h1 className="text-display-lg-mobile md:text-display-lg text-primary">HEIC to JPG</h1>
           <h2 data-tool-subtitle className="text-body-lg text-on-surface-variant">
-            Convert iPhone HEIC and HEIF photos to JPG or PNG online — in batches, with quality control. Free, fast and 100% private in your browser.
+            Convert iPhone HEIC and HEIF photos to JPG or PNG online — in batches, with quality control. Free and fast, powered by open-source ImageMagick.
           </h2>
         </header>
 
@@ -84,10 +84,10 @@ export default function Page() {
 
       <SeoContent
         toolName="HEIC to JPG"
-        intro="iPhones save photos as HEIC to keep file sizes small, but many apps and devices can't open them. oMyImage's HEIC to JPG tool converts your .heic and .heif photos to universally-supported JPG (or lossless PNG) right in your browser — one at a time or a whole batch. Nothing is uploaded, so your photos stay completely private."
+        intro="iPhones save photos as HEIC to keep file sizes small, but many apps and devices can't open them. oMyImage's HEIC to JPG tool converts your .heic and .heif photos to universally-supported JPG (or lossless PNG) — one at a time or a whole batch. This is the one tool here that runs on our server rather than in your browser: decoding HEIC needs a library we can't ship to browsers under its licence, so your file is converted server-side and deleted straight afterwards."
         howToTitle="How to convert HEIC to JPG"
         steps={steps} features={features} faqs={faqs} fullWidthText
-        security="Your photos stay private. HEIC conversion runs entirely in your browser with WebAssembly — nothing is uploaded to a server. No storage, no tracking of your files."
+        security="HEIC conversion runs on our server using open-source ImageMagick. Results are stored only briefly behind a private download link and auto-deleted within an hour. We never share or reuse your photos."
       />
 
       <JsonLd data={software} />

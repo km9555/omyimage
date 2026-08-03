@@ -23,7 +23,7 @@ export const heavyLimiter = rateLimit({
 });
 
 /** Paths that do heavy work and should also be throttled/concurrency-capped. */
-const HEAVY = ["/convert", "/compress", "/resize", "/rotate", "/html-to-image", "/remove-background", "/upscale", "/enhance"];
+const HEAVY = ["/convert", "/compress", "/resize", "/rotate", "/html-to-image", "/remove-background", "/upscale", "/heic"];
 
 /** Apply a middleware only to the heavy tool routes. */
 export function onlyHeavy(mw: (req: Request, res: Response, next: NextFunction) => void) {

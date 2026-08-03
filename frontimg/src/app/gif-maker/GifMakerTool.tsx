@@ -7,6 +7,7 @@ import { TopLoadingBar } from "@/components/TopLoadingBar";
 import { Dropzone } from "@/components/image/Dropzone";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
 import { decodeBitmap, downloadBlob, formatBytes } from "@/lib/image/raster";
+import { useHandoff } from "@/lib/tool-handoff";
 
 const ACCENT = "#EC4899";
 const ACCEPT = "image/jpeg,image/png,image/webp,image/gif,image/bmp";
@@ -83,6 +84,8 @@ export function GifMakerTool() {
     if (imgs.length === 0) { toast.error("Please select image files."); return; }
     setItems((prev) => [...prev, ...imgs.map((file) => ({ id: uid(), file, url: URL.createObjectURL(file) }))]);
   }, []);
+
+  useHandoff(addFiles);
 
   const removeItem = (id: string) => setItems((prev) => { const it = prev.find((p) => p.id === id); if (it) URL.revokeObjectURL(it.url); return prev.filter((p) => p.id !== id); });
   const reset = () => { items.forEach((i) => URL.revokeObjectURL(i.url)); setItems([]); };

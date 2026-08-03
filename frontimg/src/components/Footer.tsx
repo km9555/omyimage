@@ -19,18 +19,21 @@ const convert = [
 
 const create = [
   { label: "Watermark Image", href: "/watermark-image" },
-  { label: "Photo Editor", href: "/photo-editor" },
+  { label: "Image Editor", href: "/image-editor" },
   { label: "Meme Generator", href: "/meme-generator" },
   { label: "Remove Background", href: "/remove-background" },
   { label: "Upscale Image", href: "/upscale-image" },
 ];
 
-const legal = [
-  { label: "Guides", href: "/how-to-use" },
+const legal: { label: string; href: string; external?: boolean }[] = [
   { label: "Contact", href: "/contact" },
   { label: "Privacy Policy", href: "/privacy" },
   { label: "Terms of Service", href: "/terms" },
   { label: "Refund Policy", href: "/refunds" },
+  // A static file in public/, not a route — must be a plain <a>, since next/link
+  // would try to client-side navigate to it. Regenerated on every build by
+  // scripts/generate-licenses.mjs.
+  { label: "Open-Source Licenses", href: "/THIRD-PARTY-NOTICES.txt", external: true },
 ];
 
 function FooterCol({ title, links }: { title: string; links: { label: string; href: string }[] }) {
@@ -57,7 +60,7 @@ function FooterCol({ title, links }: { title: string; links: { label: string; hr
 export function Footer() {
   return (
     <footer className="bg-surface-container-low border-t border-outline-variant/60">
-      <div className="max-w-[1230px] mx-auto px-margin-mobile md:px-gutter">
+      <div className="max-w-content mx-auto px-margin-mobile md:px-gutter">
         {/* Main grid */}
         <div className="py-12 grid grid-cols-2 md:grid-cols-[2fr_1fr_1fr_1fr] gap-x-8 gap-y-10">
           {/* Brand */}
@@ -72,20 +75,12 @@ export function Footer() {
             <p className="text-body-sm text-on-surface-variant max-w-[220px] leading-relaxed">
               Free online image tools — fast, private, and no sign-up required.
             </p>
-            <div className="flex flex-col gap-1.5">
-              <Link
-                href="/pricing"
-                className="text-label-sm font-label-sm font-semibold text-secondary hover:underline w-fit"
-              >
-                View Pricing →
-              </Link>
-              <Link
-                href="/how-to-use"
-                className="text-label-sm font-label-sm font-semibold text-secondary hover:underline w-fit"
-              >
-                How to Use (Guides) →
-              </Link>
-            </div>
+            <Link
+              href="/pricing"
+              className="text-label-sm font-label-sm font-semibold text-secondary hover:underline w-fit"
+            >
+              View Pricing →
+            </Link>
           </div>
 
           <FooterCol title="Optimize" links={optimize} />
@@ -99,15 +94,19 @@ export function Footer() {
             © {new Date().getFullYear()} {SITE.brand}. All rights reserved.
           </p>
           <nav className="flex flex-wrap justify-center gap-x-5 gap-y-2">
-            {legal.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                className="text-label-sm font-label-sm text-on-surface-variant hover:text-secondary transition-colors"
-              >
-                {l.label}
-              </Link>
-            ))}
+            {legal.map((l) => {
+              const cls =
+                "text-label-sm font-label-sm text-on-surface-variant hover:text-secondary transition-colors";
+              return l.external ? (
+                <a key={l.href} href={l.href} className={cls}>
+                  {l.label}
+                </a>
+              ) : (
+                <Link key={l.href} href={l.href} className={cls}>
+                  {l.label}
+                </Link>
+              );
+            })}
           </nav>
         </div>
       </div>

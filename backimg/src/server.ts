@@ -8,6 +8,7 @@ import rotateRouter from "./routes/rotate.js";
 import htmlToImageRouter from "./routes/html-to-image.js";
 import removeBackgroundRouter from "./routes/remove-background.js";
 import upscaleRouter from "./routes/upscale.js";
+import heicRouter from "./routes/heic.js";
 import aiStubsRouter from "./routes/ai-stubs.js";
 import filesRouter from "./routes/files.js";
 import { sweep } from "./lib/file-store.js";
@@ -51,6 +52,7 @@ app.use("/api", rotateRouter);
 app.use("/api", htmlToImageRouter);
 app.use("/api", removeBackgroundRouter);
 app.use("/api", upscaleRouter);
+app.use("/api", heicRouter);
 app.use("/api", aiStubsRouter);
 app.use("/api", filesRouter);
 

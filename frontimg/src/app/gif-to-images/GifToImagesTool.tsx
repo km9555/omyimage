@@ -7,6 +7,7 @@ import { TopLoadingBar } from "@/components/TopLoadingBar";
 import { Dropzone } from "@/components/image/Dropzone";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
 import { canvasToBlob, downloadBlob, zipAndDownload, baseName, mimeExt, type ExportMime } from "@/lib/image/raster";
+import { useHandoff } from "@/lib/tool-handoff";
 
 const ACCENT = "#DB2777";
 const ACCEPT = "image/gif,.gif";
@@ -91,6 +92,8 @@ export function GifToImagesTool() {
       setIsWorking(false);
     }
   }, []);
+
+  useHandoff(loadFile);
 
   const reset = () => { thumbs.forEach((t) => URL.revokeObjectURL(t)); setThumbs([]); framesRef.current = []; setFile(null); setCount(0); setDims(null); };
 

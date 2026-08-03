@@ -120,7 +120,9 @@ export const TOOLS: Tool[] = [
     name: "Convert to JPG",
     slug: "convert-to-jpg",
     categoryId: "convert",
-    shortDescription: "PNG, WEBP, GIF, HEIC, TIFF & RAW → JPG.",
+    // Keep these in step with the `accept` in convert-to-jpg/page.tsx — the
+    // copy previously advertised HEIC, TIFF and RAW, none of which it accepts.
+    shortDescription: "PNG, WEBP, GIF & BMP → JPG.",
     icon: "image",
     processing: "hybrid",
     library: "Sharp",
@@ -128,7 +130,7 @@ export const TOOLS: Tool[] = [
     priority: 5,
     seoTitle: "Convert Image to JPG Online - Free | oMyImage",
     seoDescription:
-      "Convert PNG, WEBP, GIF, HEIC, TIFF, PSD and RAW to JPG online for free. High-quality conversion, batch supported. No installation or sign-up required.",
+      "Convert PNG, WEBP, GIF and BMP images to JPG online for free. High-quality conversion, batch supported. No installation or sign-up required.",
     primaryKeyword: "convert to jpg",
   },
   {
@@ -179,20 +181,25 @@ export const TOOLS: Tool[] = [
       "Convert WEBP to PNG online for free. Keep transparency, batch convert, fast in-browser processing. No sign-up required.",
     primaryKeyword: "convert webp to png",
   },
+  // Server-side on purpose, not for performance: every JS HEIC decoder bundles
+  // libheif (LGPL-3.0), and shipping that to a browser is distribution, which
+  // triggers the LGPL's source/relink obligations. Decoding on the server means
+  // the library is only ever run, never distributed. See ../../LICENSE-AUDIT.md
+  // (F1). Do NOT move this back into the browser.
   {
     id: "heic-to-jpg",
     name: "HEIC to JPG",
     slug: "heic-to-jpg",
     categoryId: "convert",
-    shortDescription: "Convert iPhone HEIC photos to JPG.",
+    shortDescription: "Convert iPhone HEIC photos to JPG or PNG.",
     icon: "photo_camera",
     processing: "server",
-    library: "Sharp / ImageMagick",
+    library: "ImageMagick (libheif)",
     status: "live",
     priority: 9,
     seoTitle: "HEIC to JPG Converter Online - Free | oMyImage",
     seoDescription:
-      "Convert HEIC (iPhone photos) to JPG online for free. Preserve quality, batch convert. No installation or sign-up required.",
+      "Convert HEIC (iPhone photos) to JPG or PNG online for free. Preserve quality, batch convert. No installation or sign-up required.",
     primaryKeyword: "convert heic to jpg",
   },
   {
@@ -245,22 +252,10 @@ export const TOOLS: Tool[] = [
       "Add a watermark to images online for free. Text or logo watermark with position, opacity and rotation control, batch supported. No sign-up required.",
     primaryKeyword: "watermark image free",
   },
-  {
-    id: "photo-editor",
-    name: "Photo Editor",
-    slug: "photo-editor",
-    categoryId: "edit",
-    shortDescription: "Filters, text, stickers, brightness & contrast.",
-    icon: "tune",
-    processing: "client",
-    library: "Fabric.js",
-    status: "live",
-    priority: 12,
-    seoTitle: "Free Online Photo Editor | oMyImage",
-    seoDescription:
-      "Edit photos online for free. Add text, stickers, shapes and frames, adjust brightness, contrast and saturation, apply filters. Right in your browser.",
-    primaryKeyword: "photo editor online free",
-  },
+  // NOTE: "photo-editor" was retired — the All-in-One Image Editor above is a
+  // strict superset of it (same filter presets and adjust sliders, plus wider
+  // grayscale/blur ranges, a fine rotation angle, crop/border/round/draw and a
+  // JPG background picker). Its search aliases were folded into "image-editor".
   {
     id: "meme-generator",
     name: "Meme Generator",
@@ -317,16 +312,16 @@ export const TOOLS: Tool[] = [
     name: "Upscale Image",
     slug: "upscale-image",
     categoryId: "ai",
-    shortDescription: "AI upscaling 2x, 4x, 8x with detail recovery.",
+    shortDescription: "AI upscale & enhance — 2×, 3×, 4× with detail recovery.",
     icon: "hd",
     processing: "ai",
     library: "Real-ESRGAN",
     status: "live",
     priority: 16,
     premium: true,
-    seoTitle: "Upscale Image Online - Free | oMyImage",
+    seoTitle: "Upscale & Enhance Image Online - Free | oMyImage",
     seoDescription:
-      "Upscale images online with AI. 2x, 4x and 8x enlargement with detail recovery, face enhancement and noise reduction. No sign-up required.",
+      "Upscale and enhance images online with AI. 2×, 3× and 4× enlargement that reconstructs edges and texture instead of blurring, sharpening soft or low-quality photos. No sign-up required.",
     primaryKeyword: "upscale image online free",
   },
   {
@@ -345,23 +340,11 @@ export const TOOLS: Tool[] = [
       "Blur or pixelate faces, license plates and private details in photos online for free. Draw the areas, pick the strength, export. 100% in-browser, no sign-up.",
     primaryKeyword: "blur face online",
   },
-  {
-    id: "image-enhancer",
-    name: "Image Enhancer",
-    slug: "image-enhancer",
-    categoryId: "ai",
-    shortDescription: "AI enhance: sharpen, denoise & restore.",
-    icon: "auto_awesome",
-    processing: "ai",
-    library: "Real-ESRGAN",
-    status: "live",
-    priority: 18,
-    premium: true,
-    seoTitle: "AI Image Enhancer Online - Free | oMyImage",
-    seoDescription:
-      "Enhance images online with AI. Sharpen, reduce noise, restore detail and improve low-quality photos automatically. No sign-up required.",
-    primaryKeyword: "ai image enhancer online",
-  },
+  // NOTE: "image-enhancer" was retired — it was the same tool as "upscale-image".
+  // The backend's enhance() is literally upscale() with the scale hard-coded to
+  // 2 (same realesrgan-ncnn-vulkan binary, same realesrgan-x4plus model), and
+  // Upscale already exposes 2× as a user option. Its search aliases were folded
+  // into "upscale-image". See backimg/src/lib/image/ai.ts.
 
   // ── Batch 2: new client-side tools ────────────────────────────────────────
   {
@@ -616,14 +599,12 @@ const TOOL_COLORS: Record<string, string> = {
 
   "image-editor": "#6D28D9",
   "watermark-image": "#8B5CF6",
-  "photo-editor": "#D4537E",
   "meme-generator": "#E5820D",
   "html-to-image": "#E44D26",
 
   "remove-background": "#7F77DD",
   "upscale-image": "#2F80ED",
   "blur-face": "#56688A",
-  "image-enhancer": "#9B51E0",
 
   "grayscale-image": "#64748B",
   "blur-image": "#0891B2",

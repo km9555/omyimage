@@ -5,8 +5,9 @@ engines for image engines.
 
 > **Status: Phase 1 live.** A runnable Express + Sharp API is in place with working
 > routes for `convert`, `compress`, `resize`, `rotate`, a `files` re-download
-> endpoint, an optional `html-to-image` route (Puppeteer), and 501 stubs for the
-> AI tools (`remove-background`, `upscale`, `enhance`, `blur-face-auto`).
+> endpoint, a `heic` route (ImageMagick), an optional `html-to-image` route
+> (Puppeteer), and 501 stubs for the AI tools (`remove-background`, `upscale`,
+> `blur-face-auto`).
 > `tsc --noEmit` passes. BullMQ/Redis/Postgres/AI workers are Phase 2–3.
 
 ## Run
@@ -36,7 +37,7 @@ shareable `X-File-Id` (re-download via `GET /api/files/:id` within 1 hour).
 - PostgreSQL (users, profiles, plans, usage, jobs, payments, api_keys, webhooks)
 - **Sharp** (primary engine: resize, convert, crop, watermark, compress)
 - **ImageMagick** (GIF, effects, composites), **libvips** (via Sharp), **FFmpeg** (animated WEBP/GIF)
-- AI: `rembg` / `@imgly/background-removal-node` (bg removal), Real-ESRGAN (upscale/enhance)
+- AI: `rembg` / `@imgly/background-removal-node` (bg removal), Real-ESRGAN (upscale)
 - PM2 + Nginx in production
 
 ## Layout

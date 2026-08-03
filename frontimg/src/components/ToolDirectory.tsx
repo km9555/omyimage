@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Icon } from "@/components/Icon";
+import { HomeLauncher } from "@/components/HomeLauncher";
 import { ToolCard } from "@/components/ToolCard";
 import { QuickAccessCard } from "@/components/QuickAccessCard";
 import { TOOLS } from "@/lib/tools";
@@ -18,7 +19,6 @@ const PILL_ICONS: Record<string, string> = {
 };
 
 export function ToolDirectory() {
-  const [query, setQuery] = useState("");
   const [activePill, setActivePill] = useState("all");
   const { favorites, favoriteSlugs, toggle } = useFavoriteTools();
 
@@ -36,61 +36,22 @@ export function ToolDirectory() {
     return () => window.removeEventListener("hashchange", apply);
   }, []);
 
-  const normalized = query.trim().toLowerCase();
   const pill = PILLS.find((p) => p.id === activePill) ?? PILLS[0];
 
-  const tools = useMemo(() => {
-    return TOOLS.filter(pill.match)
-      .filter(
-        (t) =>
-          normalized === "" ||
-          t.name.toLowerCase().includes(normalized) ||
-          t.shortDescription.toLowerCase().includes(normalized) ||
-          t.primaryKeyword.toLowerCase().includes(normalized)
-      )
-      .sort((a, b) => a.priority - b.priority);
-  }, [pill, normalized]);
+  // Search lives in the header (HeaderSearch); this grid only filters by pill.
+  const tools = useMemo(
+    () => TOOLS.filter(pill.match).sort((a, b) => a.priority - b.priority),
+    [pill],
+  );
 
   return (
     <>
-      {/* Hero */}
-      <section className="relative overflow-hidden bg-surface-container-low text-center px-margin-mobile md:px-gutter py-10 md:py-14">
-        <div
-          className="absolute inset-0 opacity-[0.08] pointer-events-none"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 50% 40%, var(--color-secondary) 0%, transparent 55%)",
-          }}
-        />
-        <div className="relative z-10 max-w-3xl mx-auto">
-          <h1 className="text-display-lg-mobile md:text-display-lg font-black tracking-tight text-primary mb-8">
-            Effortless Power for Image Workflows.
-          </h1>
-
-          {/* Search */}
-          <div className="flex items-center gap-2 bg-surface-container-lowest border border-outline-variant rounded-full max-w-xl mx-auto pl-5 pr-2 py-2 focus-within:border-secondary/70 focus-within:shadow-[0_0_0_4px_color-mix(in_srgb,var(--color-secondary)_18%,transparent)] transition-all duration-200">
-            <Icon name="search" className="text-secondary/80 text-[20px] shrink-0" />
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder={`Search ${TOOLS.length}+ tools — try "compress" or "resize"…`}
-              aria-label="Search tools"
-              className="flex-1 bg-transparent outline-none text-body-md text-primary placeholder:text-on-surface-variant/60 min-w-0"
-            />
-            <button
-              type="button"
-              className="shrink-0 bg-secondary hover:bg-secondary-container text-on-secondary text-label-sm font-label-sm font-semibold uppercase tracking-wide px-5 py-2 rounded-full transition-colors"
-            >
-              Search
-            </button>
-          </div>
-        </div>
-      </section>
+      {/* Hero — upload-first launcher */}
+      <HomeLauncher />
 
       {/* Favorites row */}
       {favorites.length > 0 && (
-        <div id="tools" className="max-w-[1230px] mx-auto px-margin-mobile md:px-gutter pt-10">
+        <div id="tools" className="max-w-content mx-auto px-margin-mobile md:px-gutter pt-10">
           <p className="text-center text-label-md font-semibold text-on-surface mb-4">
             Favorites
           </p>
@@ -107,10 +68,18 @@ export function ToolDirectory() {
         </div>
       )}
 
-      {/* Category pills — contained strip with curved edges */}
-      <div id={favorites.length === 0 ? "tools" : undefined} className="max-w-[1230px] mx-auto px-margin-mobile md:px-gutter mt-10">
-        <div className="bg-surface-container-lowest border border-surface-variant rounded-2xl py-3 px-4">
-        <div className="flex items-center justify-center gap-1.5 overflow-x-auto [&::-webkit-scrollbar]:hidden" style={{ scrollbarWidth: "none" }}>
+      {/* Category pills */}
+      <div
+        id={favorites.length === 0 ? "tools" : undefined}
+        className="max-w-content mx-auto px-margin-mobile md:px-gutter mt-10"
+      >
+        {/* Never `justify-center` here: once the pills overflow, a centered
+            flex container clips the leading pill off the left edge where no
+            amount of scrolling can reach it. */}
+        <div
+          className="flex min-w-0 items-center gap-1.5 overflow-x-auto [&::-webkit-scrollbar]:hidden"
+          style={{ scrollbarWidth: "none" }}
+        >
           {PILLS.map((p) => {
             const active = p.id === activePill;
             return (
@@ -118,10 +87,10 @@ export function ToolDirectory() {
                 key={p.id}
                 type="button"
                 onClick={() => setActivePill(p.id)}
-                className={`flex shrink-0 cursor-pointer items-center gap-1.5 px-4 py-1 rounded-full text-[13.5px] font-medium transition-all ${
+                className={`flex shrink-0 cursor-pointer items-center gap-1.5 px-3.5 py-2 rounded-lg text-[13.5px] font-medium transition-all ${
                   active
                     ? "bg-secondary text-on-secondary shadow-md shadow-secondary/25"
-                    : "border border-surface-variant text-on-surface-variant hover:border-secondary/40 hover:text-primary hover:bg-surface-container"
+                    : "bg-surface-container-lowest border border-surface-variant text-on-surface-variant hover:border-secondary/40 hover:text-primary"
                 }`}
               >
                 {PILL_ICONS[p.id] && (
@@ -132,13 +101,12 @@ export function ToolDirectory() {
             );
           })}
         </div>
-        </div>
       </div>
 
       {/* Tools grid */}
-      <section className="max-w-[1230px] mx-auto px-margin-mobile md:px-gutter py-10">
+      <section className="max-w-content mx-auto px-margin-mobile md:px-gutter py-10">
         {tools.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
             {tools.map((tool) => (
               <div key={tool.id} className="group/card relative">
                 <ToolCard tool={tool} />
@@ -176,7 +144,7 @@ export function ToolDirectory() {
           </div>
         ) : (
           <p className="text-center text-body-lg text-on-surface-variant py-16">
-            No tools match &ldquo;{query}&rdquo;.
+            No tools in {pill.label} yet.
           </p>
         )}
       </section>

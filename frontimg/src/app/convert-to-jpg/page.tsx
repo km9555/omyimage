@@ -53,7 +53,7 @@ export default function Page() {
 
   return (
     <>
-      <div className="max-w-[1230px] mx-auto px-margin-mobile md:px-gutter pt-stack-md flex flex-col gap-stack-lg">
+      <div className="max-w-content mx-auto px-margin-mobile md:px-gutter pt-stack-md flex flex-col gap-stack-lg">
         <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Convert", href: "/#cat-convert" }, { label: tool.name }]} />
         <header className="flex flex-col gap-stack-sm mt-2">
           <h1 className="text-display-lg-mobile md:text-display-lg text-primary">Convert to JPG</h1>

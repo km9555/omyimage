@@ -7,22 +7,24 @@ import { Footer } from "@/components/Footer";
 import { ThemedToaster } from "@/components/ThemedToaster";
 import { ThemeProvider } from "@/lib/theme/ThemeProvider";
 
-// Runs before first paint to apply a previously-chosen dark theme with no flash.
-// Default is light: dark only applies when the visitor explicitly opted in.
-const NO_FLASH_THEME = `(function(){try{if(localStorage.getItem('theme')==='dark'){document.documentElement.classList.add('dark');document.documentElement.style.colorScheme='dark';}}catch(e){}})();`;
-
+// Self-hosted at build time (works with `output: "export"`), so no third-party
+// request and no flash of fallback text. These define the `--font-*` custom
+// properties that globals.css `@theme` maps the type tokens onto.
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
 });
-
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
   subsets: ["latin"],
   weight: ["500"],
   display: "swap",
 });
+
+// Runs before first paint to apply a previously-chosen dark theme with no flash.
+// Default is light: dark only applies when the visitor explicitly opted in.
+const NO_FLASH_THEME = `(function(){try{if(localStorage.getItem('theme')==='dark'){document.documentElement.classList.add('dark');document.documentElement.style.colorScheme='dark';}}catch(e){}})();`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),

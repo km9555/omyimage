@@ -7,6 +7,7 @@ import { TopLoadingBar } from "@/components/TopLoadingBar";
 import { Dropzone } from "@/components/image/Dropzone";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
 import { decodeBitmap, canvasToBlob, downloadBlob, baseName, mimeExt, type ExportMime } from "@/lib/image/raster";
+import { useHandoff } from "@/lib/tool-handoff";
 
 const ACCENT = "#6D28D9";
 const ACCEPT = "image/jpeg,image/png,image/webp,image/gif,image/bmp";
@@ -315,6 +316,8 @@ export function AllInOneEditor() {
       setIsWorking(false);
     }
   }, []);
+
+  useHandoff(loadFile);
 
   const fullReset = () => {
     srcRef.current?.close(); workRef.current?.close();

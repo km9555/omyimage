@@ -7,6 +7,7 @@ import { TopLoadingBar } from "@/components/TopLoadingBar";
 import { Dropzone } from "@/components/image/Dropzone";
 import { BackgroundPicker } from "@/components/BackgroundPicker";
 import { decodeBitmap, canvasToBlob, downloadBlob, baseName, mimeExt, type ExportMime } from "@/lib/image/raster";
+import { useHandoff } from "@/lib/tool-handoff";
 
 const ACCENT = "#E5820D";
 const ACCEPT = "image/jpeg,image/png,image/webp,image/gif";
@@ -114,6 +115,8 @@ export function MemeTool() {
     if (!f) { toast.error("Please select an image file."); return; }
     setFile(f);
   }, []);
+
+  useHandoff(onFiles);
 
   const exportMeme = async () => {
     if (!file || !bmpRef.current) return;

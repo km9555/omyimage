@@ -6,6 +6,7 @@ import { Icon } from "@/components/Icon";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
 import { Dropzone } from "@/components/image/Dropzone";
 import { formatBytes } from "@/lib/image/raster";
+import { useHandoff } from "@/lib/tool-handoff";
 
 const ACCENT = "#3B82F6";
 const ACCEPT = "image/jpeg,image/png,image/webp,image/tiff,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.tif,.tiff,.heic,.heif";
@@ -108,6 +109,8 @@ export function MetadataTool() {
       setIsWorking(false);
     }
   }, []);
+
+  useHandoff(loadFile);
 
   const reset = () => { if (url) URL.revokeObjectURL(url); setFile(null); setUrl(null); setMeta(null); setGps(null); setParsed(false); setShowRaw(false); };
 

@@ -6,6 +6,7 @@ import { Icon } from "@/components/Icon";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
 import { Dropzone } from "@/components/image/Dropzone";
 import { decodeBitmap } from "@/lib/image/raster";
+import { useHandoff } from "@/lib/tool-handoff";
 
 const ACCENT = "#10B981";
 const ACCEPT = "image/jpeg,image/png,image/webp,image/gif,image/bmp";
@@ -58,6 +59,8 @@ export function ColorPickerTool() {
       setIsWorking(false);
     }
   }, []);
+
+  useHandoff(loadFile);
 
   // Draw the stored bitmap onto the (loaded-view) canvas once it's mounted.
   useEffect(() => {

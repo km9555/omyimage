@@ -17,6 +17,7 @@ import {
   mimeExt,
   type ExportMime,
 } from "@/lib/image/raster";
+import { useHandoff } from "@/lib/tool-handoff";
 
 const ACCENT = "#27AE60";
 const ACCEPT = "image/jpeg,image/png,image/webp";
@@ -65,6 +66,8 @@ export function CompressTool() {
       } catch { /* ignore unreadable */ }
     });
   }, []);
+
+  useHandoff(addFiles);
 
   const removeItem = (id: string) =>
     setItems((prev) => { const it = prev.find((p) => p.id === id); if (it) URL.revokeObjectURL(it.url); return prev.filter((p) => p.id !== id); });

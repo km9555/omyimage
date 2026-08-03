@@ -15,6 +15,7 @@ import {
 } from "@/lib/image/raster";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
 import { shouldUseServer, toServerFormat, processOnServer } from "@/lib/process-router";
+import { useHandoff } from "@/lib/tool-handoff";
 
 export interface ConvertConfig {
   accent: string;
@@ -66,6 +67,8 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
       ...imgs.map((file) => ({ id: uid(), file, url: URL.createObjectURL(file) })),
     ]);
   }, []);
+
+  useHandoff(addFiles);
 
   const removeItem = (id: string) =>
     setItems((prev) => {

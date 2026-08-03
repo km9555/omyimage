@@ -6,6 +6,16 @@ import { Icon } from "@/components/Icon";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
 import { Dropzone } from "@/components/image/Dropzone";
 import { downloadBlob, zipAndDownload, formatBytes, baseName } from "@/lib/image/raster";
+import { processOnServer } from "@/lib/process-router";
+import { useHandoff } from "@/lib/tool-handoff";
+
+/**
+ * HEIC conversion runs on the server, unlike every other converter here.
+ * That's a licensing constraint, not a performance one: all JS HEIC decoders
+ * bundle libheif (LGPL-3.0), and shipping it to the browser would be
+ * distribution. See LICENSE-AUDIT.md (F1). Don't "optimise" this back into the
+ * browser with heic2any/heic-decode/heic-convert — they're all the same libheif.
+ */
 
 const ACCENT = "#F2994A";
 const ACCEPT = ".heic,.heif,image/heic,image/heif";
@@ -35,6 +45,8 @@ export function HeicTool() {
     setItems((prev) => [...prev, ...heics.map((file) => ({ id: uid(), file }))]);
   }, []);
 
+  useHandoff(addFiles);
+
   const removeItem = (id: string) => setItems((prev) => prev.filter((p) => p.id !== id));
   const reset = () => { setItems([]); setDone(false); };
 
@@ -42,13 +54,14 @@ export function HeicTool() {
     if (items.length === 0) return;
     setIsWorking(true);
     try {
-      const heic2any = (await import("heic2any")).default;
       const ext = target === "image/jpeg" ? "jpg" : "png";
       const out: Item[] = [];
       for (const it of items) {
-        const res = await heic2any({ blob: it.file, toType: target, quality });
-        const blob = Array.isArray(res) ? res[0] : res;
-        out.push({ ...it, result: { blob, size: blob.size, name: `${baseName(it.file.name)}.${ext}` } });
+        const r = await processOnServer("/api/heic", it.file, {
+          format: target === "image/png" ? "png" : "jpeg",
+          quality: Math.round(quality * 100),
+        });
+        out.push({ ...it, result: { blob: r.blob, size: r.blob.size, name: r.filename || `${baseName(it.file.name)}.${ext}` } });
       }
       setItems(out);
       setDone(true);
@@ -57,7 +70,9 @@ export function HeicTool() {
       toast.success(`Converted ${out.length} HEIC image${out.length === 1 ? "" : "s"}.`);
     } catch (err) {
       console.error(err);
-      toast.error("Conversion failed. Please make sure these are valid HEIC files.");
+      // processOnServer surfaces the server's own message, including the 501
+      // "not enabled on this server" when ImageMagick is missing.
+      toast.error(err instanceof Error ? err.message : "Conversion failed.");
     } finally {
       setIsWorking(false);
     }
@@ -128,7 +143,7 @@ export function HeicTool() {
 
         <div className="rounded-xl border border-outline-variant/40 bg-surface-bright p-4 flex items-start gap-2.5">
           <Icon name="lightbulb" className="text-[18px] mt-0.5" style={{ color: ACCENT }} />
-          <p className="text-label-sm font-label-sm text-on-surface-variant"><strong className="text-on-surface">Tip:</strong> HEIC is Apple's photo format. JPG works everywhere. All conversion is done in your browser.</p>
+          <p className="text-label-sm font-label-sm text-on-surface-variant"><strong className="text-on-surface">Tip:</strong> HEIC is Apple&apos;s photo format. JPG works everywhere. Conversion runs on our server; results are auto-deleted within an hour.</p>
         </div>
       </div>
     </section>
