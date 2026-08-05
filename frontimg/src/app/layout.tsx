@@ -35,6 +35,21 @@ export const metadata: Metadata = {
   description: SITE.description,
   applicationName: SITE.name,
   robots: { index: true, follow: true },
+  // Search-engine / domain site-verification meta tags.
+  // To add a new provider in future, drop its code in here:
+  //   • google/yandex/yahoo have dedicated keys below
+  //   • anything else (Bing, Meta, Pinterest…) goes in `other` keyed by its
+  //     <meta name="…"> value — e.g. Bing uses "msvalidate.01".
+  verification: {
+    google: "N9pbKXktdiaIOJa3fCoZuqAOeWh8YSB0EZ8ohp1QIXA",
+    // yandex: "",
+    // yahoo: "",
+    other: {
+      "msvalidate.01": "84376653A44FBB71E74AC0801E8D0CAD", // Bing Webmaster Tools
+      // "facebook-domain-verification": "", // Meta / Facebook
+      // "p:domain_verify": "",              // Pinterest
+    },
+  },
   openGraph: {
     type: "website",
     siteName: SITE.name,

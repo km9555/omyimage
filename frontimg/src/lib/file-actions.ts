@@ -67,7 +67,6 @@ const TOOL_INPUTS: Record<string, ToolInput> = {
   "meme-generator": { kinds: COMMON_GIF, single: true },
 
   // ── Inspect ─────────────────────────────────────────────────────────────
-  "color-extractor": { kinds: COMMON_GIF_BMP, single: true },
   "image-color-picker": { kinds: COMMON_GIF_BMP, single: true },
   "image-metadata": { kinds: [...COMMON, "tiff", "heic"], single: true },
 

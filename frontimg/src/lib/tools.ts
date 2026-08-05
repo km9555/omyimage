@@ -429,36 +429,25 @@ export const TOOLS: Tool[] = [
   },
   {
     id: "image-color-picker",
-    name: "Image Color Picker",
+    name: "Image Color Picker & Palette",
     slug: "image-color-picker",
     categoryId: "edit",
-    shortDescription: "Pick any color from an image as HEX/RGB.",
+    shortDescription: "Pick any color or extract a full palette from an image.",
     icon: "colorize",
     processing: "client",
     library: "Canvas",
     status: "live",
     priority: 24,
-    seoTitle: "Image Color Picker Online - Free HEX & RGB Eyedropper | oMyImage",
+    seoTitle: "Image Color Picker & Color Extractor Online | oMyImage",
     seoDescription:
-      "Pick a color from any image online for free. Click anywhere to get the HEX, RGB and HSL value with a magnifier and copy button. Fast and private in your browser.",
+      "Pick any color from an image or extract its full color palette online for free. Get HEX, RGB and HSL, copy or download the palette. Private, in your browser.",
     primaryKeyword: "image color picker online",
   },
-  {
-    id: "color-extractor",
-    name: "Color Extractor",
-    slug: "color-extractor",
-    categoryId: "edit",
-    shortDescription: "Extract a dominant color palette from an image.",
-    icon: "palette",
-    processing: "client",
-    library: "Canvas",
-    status: "live",
-    priority: 25,
-    seoTitle: "Color Extractor Online - Free Image Palette Generator | oMyImage",
-    seoDescription:
-      "Extract a color palette from any image online for free. Get the dominant colors as HEX/RGB, copy or download the palette. Fast and private in your browser.",
-    primaryKeyword: "extract colors from image",
-  },
+  // NOTE: "color-extractor" was retired — the Image Color Picker above now does
+  // both on a single upload: click-to-sample any pixel with a magnifier loupe,
+  // AND automatic dominant-palette extraction (2–16 colors with per-color image
+  // share, copy-all and PNG swatch sheet). Its search aliases were folded into
+  // "image-color-picker". See src/lib/image/palette.ts for the extraction engine.
   {
     id: "image-to-base64",
     name: "Image to Base64",
@@ -612,7 +601,6 @@ const TOOL_COLORS: Record<string, string> = {
   "circle-crop": "#06B6D4",
   "merge-images": "#F59E0B",
   "image-color-picker": "#10B981",
-  "color-extractor": "#A855F7",
   "image-to-base64": "#6366F1",
   "base64-to-image": "#7C3AED",
   "image-metadata": "#3B82F6",

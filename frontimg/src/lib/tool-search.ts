@@ -135,13 +135,15 @@ export const TOOL_ALIASES: Record<string, string[]> = {
   ],
 
   // ── Inspect ─────────────────────────────────────────────────────────────
+  // Also answers everything the retired "color-extractor" used to — palette
+  // extraction was merged into this tool, so those queries must still land
+  // somewhere.
   "image-color-picker": [
     "pick color", "eyedropper", "hex from image", "get color from image",
     "rgb from image", "color from photo", "colour picker",
-  ],
-  "color-extractor": [
-    "color palette", "dominant colors", "extract palette", "image palette",
-    "colour palette", "theme colors from image", "swatches",
+    "color palette", "colour palette", "dominant colors", "extract palette",
+    "image palette", "theme colors from image", "swatches", "color extractor",
+    "extract colors from image", "palette generator", "color scheme from image",
   ],
   "image-metadata": [
     "exif viewer", "view exif", "camera info", "photo details", "gps from photo",
