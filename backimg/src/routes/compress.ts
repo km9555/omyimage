@@ -2,7 +2,7 @@ import { Router, type Request, type Response, type NextFunction } from "express"
 import { memUpload, validateImageUploads } from "../middleware/uploads.js";
 import { compress, type TargetFormat } from "../lib/image/sharp-ops.js";
 import { sendResultFile } from "../lib/send-result.js";
-import { parseOptions, asNumber, asString, baseName } from "../lib/parse.js";
+import { parseOptions, asNumber, asString, asBool, baseName } from "../lib/parse.js";
 
 const upload = memUpload({ maxFiles: 1 });
 const router = Router();
@@ -10,7 +10,8 @@ const router = Router();
 /**
  * POST /api/compress  (multipart/form-data)
  *   file    — the source image
- *   options — JSON { format, quality?, maxDimension?, background? }
+ *   options — JSON { format, quality?, maxDimension?, background?,
+ *                    pngPalette?, pngColors?, pngDither? }
  */
 router.post("/compress", upload.single("file"), validateImageUploads(), async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -20,10 +21,15 @@ router.post("/compress", upload.single("file"), validateImageUploads(), async (r
     const format = (asString(o.format, "webp") as TargetFormat);
     const out = await compress(file.buffer, {
       format,
-      quality: asNumber(o.quality, 0.7),
+      quality: asNumber(o.quality, 0.7), // matches the frontend slider default
       maxDimension: asNumber(o.maxDimension),
       background: asString(o.background) ?? null,
+      pngPalette: format === "png" && asBool(o.pngPalette),
+      pngColors: asNumber(o.pngColors),
+      pngDither: asNumber(o.pngDither),
+      keepOriginalIfLarger: true,
     });
+    res.setHeader("X-Result-Source", out.keptOriginal ? "original" : "encoded");
     await sendResultFile(res, out.buffer, `${baseName(file.originalname)}_compressed.${out.ext}`, out.contentType);
   } catch (err) {
     next(err);

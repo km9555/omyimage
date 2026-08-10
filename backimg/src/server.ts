@@ -27,7 +27,7 @@ const allowedOrigins = FRONTEND_ORIGIN.split(",").map((s) => s.trim());
 app.use(
   cors({
     origin: allowedOrigins,
-    exposedHeaders: ["X-File-Id", "X-File-Expires", "Content-Disposition"],
+    exposedHeaders: ["X-File-Id", "X-File-Expires", "Content-Disposition", "X-Result-Source"],
   })
 );
 

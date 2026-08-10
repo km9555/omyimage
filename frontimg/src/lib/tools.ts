@@ -54,7 +54,7 @@ export const TOOLS: Tool[] = [
     name: "Compress Image",
     slug: "compress-image",
     categoryId: "optimize",
-    shortDescription: "Shrink JPG, PNG, WEBP & GIF without losing quality.",
+    shortDescription: "Shrink JPG, PNG & WEBP with quality you control.",
     icon: "compress",
     processing: "hybrid",
     library: "Sharp",
@@ -62,7 +62,7 @@ export const TOOLS: Tool[] = [
     priority: 1,
     seoTitle: "Compress Image Online - Free | oMyImage",
     seoDescription:
-      "Compress JPG, PNG, WEBP and GIF images online for free. Smart lossless and lossy compression with before/after preview. No sign-up required. Fast and secure.",
+      "Compress JPG, PNG and WEBP images online for free. Smart lossless and lossy compression with before/after sizes. No sign-up required. Fast and secure.",
     primaryKeyword: "compress image online free",
   },
   {

@@ -1,6 +1,6 @@
 import { Router, type Request, type Response, type NextFunction } from "express";
 import { memUpload, validateImageUploads } from "../middleware/uploads.js";
-import { convert, type TargetFormat } from "../lib/image/sharp-ops.js";
+import { convert, DEFAULT_QUALITY, type TargetFormat } from "../lib/image/sharp-ops.js";
 import { sendResultFile } from "../lib/send-result.js";
 import { parseOptions, asNumber, asString, baseName } from "../lib/parse.js";
 
@@ -20,7 +20,7 @@ router.post("/convert", upload.single("file"), validateImageUploads(), async (re
     const format = (asString(o.format, "jpeg") as TargetFormat);
     const out = await convert(file.buffer, {
       format,
-      quality: asNumber(o.quality, 0.85),
+      quality: asNumber(o.quality, DEFAULT_QUALITY),
       background: asString(o.background) ?? null,
     });
     await sendResultFile(res, out.buffer, `${baseName(file.originalname)}.${out.ext}`, out.contentType);

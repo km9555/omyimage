@@ -39,7 +39,13 @@ export function decodeBitmap(file: File, autoOrient = true): Promise<ImageBitmap
   return createImageBitmap(file, { imageOrientation: autoOrient ? "from-image" : "none" });
 }
 
-/** Export a canvas to a Blob (quality applies to JPG/WEBP only). */
+/**
+ * Export a canvas to a Blob (quality applies to JPG/WEBP only).
+ *
+ * PNG here is always the browser's *lossless* deflate encode. That is the floor
+ * every other PNG strategy has to beat — see `lib/image/png-compress.ts`, which
+ * produces a quantized indexed PNG and falls back to this when it can't win.
+ */
 export async function canvasToBlob(
   canvas: HTMLCanvasElement,
   mime: ExportMime,
@@ -51,6 +57,13 @@ export async function canvasToBlob(
   );
   if (!blob) throw new Error("Could not export the image.");
   return blob;
+}
+
+/** The smallest of several candidate encodings. Ties resolve to the earliest. */
+export function smallest<T extends { blob: Blob }>(first: T, ...rest: T[]): T {
+  let best = first;
+  for (const c of rest) if (c.blob.size < best.blob.size) best = c;
+  return best;
 }
 
 export interface RasterOptions {
@@ -67,6 +80,12 @@ export interface RasterOptions {
   flipV?: boolean;
   /** Respect the file's EXIF orientation when decoding. */
   autoOrient?: boolean;
+  /**
+   * Request a CPU-backed canvas. Set this when you will call `getImageData` on
+   * the result, so the read is a memcpy rather than a GPU readback stall.
+   * Left off by default — the GPU-backed canvas is faster for encode-only work.
+   */
+  readback?: boolean;
 }
 
 export interface RasterResult {
@@ -75,8 +94,15 @@ export interface RasterResult {
   height: number;
 }
 
-/** Decode → (resize) → (rotate/flip) → flatten → encode a single image file. */
-export async function rasterize(file: File, opts: RasterOptions): Promise<RasterResult> {
+/**
+ * Decode → (resize) → (rotate/flip) → flatten. Everything `rasterize` does
+ * except the final encode, so callers that need the *pixels* (rather than a
+ * Blob) can take the canvas — see `png-compress.ts`.
+ */
+export async function rasterizeToCanvas(
+  file: File,
+  opts: RasterOptions
+): Promise<HTMLCanvasElement> {
   const bmp = await decodeBitmap(file, opts.autoOrient ?? false);
 
   // Content size after optional resize (before rotation).
@@ -93,7 +119,7 @@ export async function rasterize(file: File, opts: RasterOptions): Promise<Raster
   const canvas = document.createElement("canvas");
   canvas.width = cw;
   canvas.height = ch;
-  const ctx = canvas.getContext("2d");
+  const ctx = canvas.getContext("2d", opts.readback ? { willReadFrequently: true } : undefined);
   if (!ctx) {
     bmp.close();
     throw new Error("Canvas is not supported in this browser.");
@@ -113,8 +139,14 @@ export async function rasterize(file: File, opts: RasterOptions): Promise<Raster
   ctx.drawImage(bmp, -w / 2, -h / 2, w, h);
   bmp.close();
 
+  return canvas;
+}
+
+/** Decode → (resize) → (rotate/flip) → flatten → encode a single image file. */
+export async function rasterize(file: File, opts: RasterOptions): Promise<RasterResult> {
+  const canvas = await rasterizeToCanvas(file, opts);
   const blob = await canvasToBlob(canvas, opts.mime, opts.quality);
-  return { blob, width: cw, height: ch };
+  return { blob, width: canvas.width, height: canvas.height };
 }
 
 /** Read an image's natural dimensions without altering it. */

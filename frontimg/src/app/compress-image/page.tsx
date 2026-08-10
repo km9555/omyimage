@@ -28,15 +28,17 @@ const steps: HowToStep[] = [
 const features: Feature[] = [
   { icon: "burst_mode", title: "Batch compression", description: "Compress dozens of images at once and download them all as a single ZIP, each showing how much was saved." },
   { icon: "tune", title: "Quality & format control", description: "Convert to WEBP for the smallest files, or keep your format and dial in the exact quality you want." },
-  { icon: "lock", title: "100% private", description: "Compression runs entirely in your browser with HTML canvas — your images are never uploaded." },
+  { icon: "lock", title: "100% private", description: "Compression runs in your browser — images under 15 MB are never uploaded anywhere." },
 ];
 
 const faqs: Faq[] = [
-  { q: "How much smaller will my images get?", a: "It depends on the image and settings. Converting photos to WEBP at 70–80% quality often cuts size by 50–80% with little visible change." },
-  { q: "Which format gives the smallest files?", a: "WEBP usually produces the smallest files at a given quality, followed by JPG. PNG is lossless and best for graphics with sharp edges or transparency." },
-  { q: "Will compression reduce quality?", a: "JPG and WEBP are lossy, so very low quality shows artifacts. The default 70% is a strong balance; raise it for critical images." },
+  { q: "How much smaller will my images get?", a: "It depends on the image and settings. Converting photos to WEBP at 70–80% quality often cuts size by 50–80% with little visible change, and PNG graphics typically drop by 60–80% at the default quality." },
+  { q: "How does PNG compression work?", a: "PNG can't throw away detail the way JPG does, so it shrinks a different way: by reducing how many distinct colors the image uses. At the default 70% we quantize to 128 colors with dithering, which is usually invisible on illustrations, logos and screenshots. Set the quality to 95% or above to keep the PNG perfectly lossless." },
+  { q: "Which format gives the smallest files?", a: "WEBP usually produces the smallest files at a given quality, followed by JPG. PNG stays the best choice for sharp-edged graphics, flat colors and transparency." },
+  { q: "Will compression reduce quality?", a: "JPG and WEBP are lossy, so very low quality shows artifacts; PNG loses colors rather than detail. The default 70% is a strong balance; raise it for critical images." },
+  { q: "Why did one of my images not get smaller?", a: "Because it was already optimised. If nothing we produce beats the file you gave us, we hand your original back untouched and label it — a compressor that returns a bigger file has failed at its job." },
   { q: "Can I compress many images at once?", a: "Yes. Add as many as you like — multiple files download together as a ZIP, each labelled with the percentage saved." },
-  { q: "Is it free and private?", a: "Completely. No sign-up or watermark, and every image is compressed locally in your browser." },
+  { q: "Is it free and private?", a: "Completely. No sign-up or watermark, and every image under 15 MB is compressed locally in your browser." },
 ];
 
 export default function Page() {
@@ -84,10 +86,10 @@ export default function Page() {
 
       <SeoContent
         toolName="Compress Image"
-        intro="Big image files slow down websites, fill up storage and clog email attachments. oMyImage's Compress Image tool shrinks JPG, PNG and WEBP files right in your browser — convert to WEBP for the smallest size, control the quality, and optionally downscale very large photos. Compress one image or a whole batch, and see exactly how much you saved. Nothing is uploaded."
+        intro="Big image files slow down websites, fill up storage and clog email attachments. oMyImage's Compress Image tool shrinks JPG, PNG and WEBP files right in your browser — convert to WEBP for the smallest size, control the quality, and optionally downscale very large photos. PNGs are compressed properly, by reducing colors with dithering rather than just re-saving them. Compress one image or a whole batch, and see exactly how much you saved."
         howToTitle="How to compress an image"
         steps={steps} features={features} faqs={faqs} fullWidthText
-        security="Your images stay private. Compression happens entirely in your browser with HTML canvas — nothing is uploaded to a server. No storage, no tracking of your files."
+        security="Your images stay private. Images under 15 MB are compressed entirely in your browser and never leave your device; larger files are processed on our server and deleted straight after. No storage, no tracking of your files."
       />
 
       <JsonLd data={software} />

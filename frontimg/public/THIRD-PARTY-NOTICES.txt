@@ -1,7 +1,7 @@
 oMyImage — Third-Party Software Notices and Information
 ================================================================
 
-Generated: 2026-08-06
+Generated: 2026-08-10
 Packages:  36 npm production dependencies
            + 8 additional components (fonts and external binaries)
 
