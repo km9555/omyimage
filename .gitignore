@@ -22,10 +22,8 @@ yarn-error.log*
 **/.env
 **/.env*.local
 
-# backend runtime dirs
-backimg/uploads/
-backimg/outputs/
-backimg/temp/
+# (backimg/ runtime dirs used to be ignored here. The backend moved into the oMyPDF
+# repo on 2026-08-11 and backimg/ was deleted — see README.md and hosting.md §2.)
 
 # typescript
 *.tsbuildinfo

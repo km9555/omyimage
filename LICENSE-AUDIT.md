@@ -1,7 +1,11 @@
 # oMyImage — Open-Source Licence Audit
 
 **Date:** 2026-08-03
-**Scope:** `frontimg` (Next.js static export, shipped to browsers) and `backimg` (Express API, server-side only)
+**Scope:** `frontimg` (Next.js static export, shipped to browsers) and the server-side
+image API. That API used to live here as `backimg`; since 2026-08-11 it is part of the
+shared oMyPDF backend (`omypdf-project/backend/`, routes under `src/routes/image/`).
+The distribution analysis is unchanged by the move — server-side is server-side — but
+the paths below point at the merged location.
 **Standing rule:** only free / open-source libraries that are safe for **commercial** use.
 
 > This reflects the dependency tree installed at the time of writing. Re-run the
@@ -31,7 +35,7 @@ dependency; the other by adding third-party notices. Both are recorded below.
 | App | Packages | Licence breakdown |
 |-----|---------:|-------------------|
 | `frontimg` | 68 | 51 MIT · 5 Apache-2.0 · 4 ISC · 2 MPL-2.0 · 1 BSD-3-Clause · 1 0BSD · 1 (MIT AND Zlib) · 1 CC-BY-4.0 · 1 (MIT OR GPL-3.0) · 1 (Apache-2.0 AND LGPL-3.0) |
-| `backimg` | 134 | 115 MIT · 8 Apache-2.0 · 7 ISC · 2 BSD-3-Clause · 1 BSD-2-Clause · 1 (Apache-2.0 AND LGPL-3.0) |
+| server-side image API (was `backimg`) | 134 | 115 MIT · 8 Apache-2.0 · 7 ISC · 2 BSD-3-Clause · 1 BSD-2-Clause · 1 (Apache-2.0 AND LGPL-3.0) |
 
 ### Direct production dependencies
 
@@ -56,7 +60,8 @@ dependency; the other by adding third-party notices. Both are recorded below.
 > bundles the same emscripten build. The permissive wrapper licence is cosmetic —
 > the engine is libheif in all four. Swapping packages achieves nothing.
 
-**`backimg`** — server-side only; never distributed to users.
+**Server-side image API** (was `backimg`, now `omypdf-project/backend/`) — server-side
+only; never distributed to users.
 
 | Package | Version | Licence | Commercial |
 |---|---|---|---|
@@ -81,7 +86,7 @@ dependency; the other by adding third-party notices. Both are recorded below.
 | realesrgan-ncnn-vulkan | MIT | No | Yes |
 
 The AI tools are invoked as **separate processes** (`spawn`) in
-`backimg/src/lib/image/ai.ts`, not linked into our binary, so no licence
+`backend/src/lib/image/ai.ts` in the oMyPDF repo, not linked into our binary, so no licence
 propagates to our code regardless of what they are under.
 
 ---
@@ -120,7 +125,7 @@ AVIF support and deliberately **no HEIC** — its maintainers made exactly this
 call.
 
 **Resolution: decoding moved to the server.** `heic2any` was removed from
-`frontimg` and the tool now POSTs to `backimg`'s `POST /api/heic`, which shells
+`frontimg` and the tool now POSTs to `POST /api/image/heic` on the shared backend, which shells
 out to ImageMagick (built with libheif).
 
 Why this resolves it: LGPL obligations attach to **distribution**. Running a
@@ -171,7 +176,7 @@ server-side and AI binaries, and our **MIT election** for jszip's dual licence.
 is Apache-2.0; the platform binary bundles libvips' LGPL dependency chain. Two
 distinct situations:
 
-- **In `backimg`** sharp runs **server-side only**. Users receive processed
+- **On the server** sharp runs **server-side only**. Users receive processed
   images, never the binary. Under LGPL, obligations attach to *distribution* —
   running software to provide a network service is not distribution, so the terms
   do not trigger. (Note this reasoning is specific to LGPL/GPL-2/GPL-3; **AGPL**

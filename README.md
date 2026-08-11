@@ -1,29 +1,28 @@
 # oMyImage
 
-Free online **image tools** — compress, resize, crop, convert, rotate, watermark, and AI-powered background removal / upscaling. Sibling project to **oMyPDF**, sharing the same proven architecture: a static Next.js frontend on Cloudflare Pages plus a queue-backed Node/Sharp backend for heavy jobs.
+Free online **image tools** — compress, resize, crop, convert, rotate, watermark, and AI-powered background removal / upscaling. Sibling project to **oMyPDF**: a static Next.js frontend on Cloudflare Pages, with heavy jobs handled by the shared oMyPDF backend.
 
 ## Structure
 
 ```text
 omyimage-project/
-├── frontimg/     # Frontend — Next.js 16 (static export) + Tailwind v4
-│   └── src/
-│       ├── app/          # routes (home page live; tool pages added one at a time)
-│       ├── components/   # Navbar, Footer, ToolDirectory, ToolCard, …
-│       └── lib/          # tools registry, theme, prefs, site config
-└── backimg/      # Backend — Node 20 + Express + BullMQ + Sharp/ImageMagick/FFmpeg
+└── frontimg/     # Frontend — Next.js 16 (static export) + Tailwind v4
     └── src/
-        ├── routes/       # one route module per tool
-        ├── workers/      # BullMQ job processors
-        ├── queues/       # pro / plus / free priority queues
-        ├── services/     # Sharp/ImageMagick/FFmpeg wrappers
-        ├── middleware/    # auth, plan limits, uploads
-        ├── db/           # PostgreSQL migrations
-        └── utils/
+        ├── app/          # one route per tool
+        ├── components/   # Navbar, Footer, ToolDirectory, ToolCard, …
+        └── lib/          # tools registry, theme, prefs, site config
 ```
 
-> The folder names `frontimg` / `backimg` follow `img-develop.md`. They map 1:1
-> to oMyPDF's `frontend` / `backend` so logic stays easy to keep in sync.
+> **This repo is frontend-only.** The backend used to live here as `backimg/`; on
+> 2026-08-11 it was merged into the oMyPDF backend, which now serves both products
+> from one process. `backimg/` was deleted — its code is in `omypdf-project/backend/`
+> (`src/routes/image/`, `src/lib/image/`), and the last standalone version is
+> retrievable at the `backimg-final` git tag.
+>
+> The image API is reached at **`https://api.omyimage.com/api/image/*`** — its own
+> hostname, but the same VPS and the same Node process as `api.omypdf.com`. See
+> `omypdf-project/hosting.md` §5 for deployment, and `hosting.md` here for the
+> frontend.
 
 ## Brand
 
@@ -44,11 +43,33 @@ npm run build    # static export → frontimg/out/
 
 ## Processing router
 
-- **≤ 15 MB** → in-browser (Canvas / Pica / Cropper.js) — instant, private.
-- **> 15 MB** or AI tools → `backimg` (Sharp / ImageMagick / FFmpeg) via BullMQ.
+- **≤ 15 MB** → in-browser (raw Canvas) — instant, private, nothing uploaded.
+- **> 15 MB**, or a server-only tool → `POST https://api.omyimage.com/api/image/…`
+  (Sharp), via `frontimg/src/lib/process-router.ts`.
+
+Four tools are server-only regardless of size: **HEIC to JPG** (ImageMagick +
+libheif — server-side for *licensing* reasons, see `LICENSE-AUDIT.md` F1),
+**HTML to Image** (Puppeteer), **Remove Background** (rembg) and **Upscale**
+(Real-ESRGAN).
+
+## Configuration
+
+`frontimg` reads exactly two env vars, both at **build** time:
+
+| Var | Value |
+|---|---|
+| `NEXT_PUBLIC_BACKEND_URL` | `https://api.omyimage.com` |
+| `NEXT_PUBLIC_SITE_URL` | `https://omyimage.com` |
+
+These must be set in **Cloudflare Pages → Settings → Variables and secrets**, and
+they only take effect on the next build. If `NEXT_PUBLIC_BACKEND_URL` is missing,
+`src/lib/site.ts` falls back to `http://localhost:5000` — which works locally and
+silently breaks every server tool in production. That is not hypothetical; it is
+exactly what happened before 2026-08-11.
 
 ## Status
 
-Phase 0 (current): project scaffold + **home page**. Tool pages are built one at
-a time and flipped from `planned` → `live` in `frontimg/src/lib/tools.ts` as they
-ship. See `../image-files/img-develop.md` for the full plan & roadmap.
+All 30 tools in `frontimg/src/lib/tools.ts` are live. Server-backed tools started
+working on 2026-08-11, when the backend merge landed and the Pages env vars were
+set for the first time. See `../image-files/img-develop.md` for the original plan
+and roadmap.
