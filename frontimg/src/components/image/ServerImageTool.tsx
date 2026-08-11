@@ -18,7 +18,7 @@ const CHECKER: React.CSSProperties = {
 };
 
 /**
- * Generic single-image tool that offloads work to a backimg server route
+ * Generic single-image tool that offloads work to a shared oMyPDF backend route (/api/image/*)
  * (used by the AI tools: remove background, upscale). Shows the input,
  * the processed result (on a checkerboard for transparent output), and a clear
  * message if the server feature isn't enabled (501).
@@ -100,7 +100,7 @@ export function ServerImageTool({
         <div className="mt-4 rounded-xl border border-outline-variant/40 bg-surface-bright p-4 flex items-start gap-2.5 max-w-xl mx-auto">
           <Icon name="cloud" className="text-[18px] mt-0.5" style={{ color: accent }} />
           <p className="text-label-sm font-label-sm text-on-surface-variant">
-            This is a server-powered tool. Start the <code className="font-label-sm">backimg</code> backend to use it; large images may take a few seconds.
+            This is a server-powered tool, so large images may take a few seconds.
           </p>
         </div>
       </section>

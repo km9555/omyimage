@@ -57,7 +57,7 @@ const MANUAL_COMPONENTS = [
     license: "Apache-2.0 (sharp) AND LGPL-3.0-or-later (libvips and linked libraries)",
     repository: "https://github.com/lovell/sharp",
     note:
-      "Server-side only (backimg). Run to provide a network service, never distributed, " +
+      "Server-side only (oMyPDF backend). Run to provide a network service, never distributed, " +
       "so the LGPL's distribution conditions do not attach.",
   },
   {
@@ -65,14 +65,14 @@ const MANUAL_COMPONENTS = [
     license: "ImageMagick License (Apache-2.0-like) AND LGPL-3.0-or-later (libheif)",
     repository: "https://github.com/ImageMagick/ImageMagick",
     note:
-      "Server-side only (backimg), invoked as a separate process for HEIC decoding. " +
+      "Server-side only (oMyPDF backend), invoked as a separate process for HEIC decoding. " +
       "Deliberately not shipped to browsers — see LICENSE-AUDIT.md finding F1.",
   },
   {
     name: "Puppeteer",
     license: "Apache-2.0",
     repository: "https://github.com/puppeteer/puppeteer",
-    note: "Server-side only (backimg), used for HTML-to-image rendering.",
+    note: "Server-side only (oMyPDF backend), used for HTML-to-image rendering.",
   },
   {
     name: "rembg + U^2-Net model",

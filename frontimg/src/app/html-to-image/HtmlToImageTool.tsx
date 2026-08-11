@@ -32,7 +32,7 @@ export function HtmlToImageTool() {
         ...(mode === "url" ? { url: url.trim() } : { html }),
         format, width, height, fullPage,
       };
-      const r = await postJsonForImage("/api/html-to-image", body);
+      const r = await postJsonForImage("/api/image/html-to-image", body);
       const u = URL.createObjectURL(r.blob);
       setResult((prev) => { if (prev) URL.revokeObjectURL(prev.url); return { url: u, blob: r.blob, name: r.filename }; });
       toast.success("Rendered — your image is ready.");
@@ -114,7 +114,7 @@ export function HtmlToImageTool() {
 
         <div className="rounded-xl border border-outline-variant/40 bg-surface-bright p-4 flex items-start gap-2.5">
           <Icon name="lightbulb" className="text-[18px] mt-0.5" style={{ color: ACCENT }} />
-          <p className="text-label-sm font-label-sm text-on-surface-variant"><strong className="text-on-surface">Server tool:</strong> rendering uses headless Chromium (open-source Puppeteer) on the <code className="font-label-sm">backimg</code> backend.</p>
+          <p className="text-label-sm font-label-sm text-on-surface-variant"><strong className="text-on-surface">Server tool:</strong> rendering uses headless Chromium (open-source Puppeteer) on our servers.</p>
         </div>
       </div>
     </section>

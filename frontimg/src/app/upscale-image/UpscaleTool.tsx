@@ -10,7 +10,7 @@ export function UpscaleTool() {
       accent="#2F80ED"
       icon="hd"
       accept="image/jpeg,image/png,image/webp"
-      endpoint="/api/upscale"
+      endpoint="/api/image/upscale"
       dropHint="or drop a JPG, PNG or WEBP here"
       actionLabel="Upscale"
       processingLabel="Upscaling…"

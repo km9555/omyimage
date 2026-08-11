@@ -94,8 +94,8 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
         const name = `${baseName(it.file.name)}.${ext}`;
         let blob: Blob;
         if (shouldUseServer(it.file.size)) {
-          // > 15 MB → offload to the backimg server (Sharp).
-          const r = await processOnServer("/api/convert", it.file, {
+          // > 15 MB → offload to the shared oMyPDF backend (Sharp, /api/image/*).
+          const r = await processOnServer("/api/image/convert", it.file, {
             format: toServerFormat(targetMime),
             quality: quality_,
             background: flatten ? resolveBg(bg) ?? undefined : undefined,

@@ -91,8 +91,8 @@ export function RotateTool() {
         const mime = outMimeFor(it.file, format);
         let blob: Blob;
         if (shouldUseServer(it.file.size)) {
-          // > 15 MB → offload to the backimg server (Sharp).
-          const r = await processOnServer("/api/rotate", it.file, {
+          // > 15 MB → offload to the shared oMyPDF backend (Sharp, /api/image/*).
+          const r = await processOnServer("/api/image/rotate", it.file, {
             angle, flipH, flipV, format: toServerFormat(mime), quality,
             background: background ?? undefined,
           });

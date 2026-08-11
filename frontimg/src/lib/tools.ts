@@ -344,7 +344,7 @@ export const TOOLS: Tool[] = [
   // The backend's enhance() is literally upscale() with the scale hard-coded to
   // 2 (same realesrgan-ncnn-vulkan binary, same realesrgan-x4plus model), and
   // Upscale already exposes 2× as a user option. Its search aliases were folded
-  // into "upscale-image". See backimg/src/lib/image/ai.ts.
+  // into "upscale-image". See the oMyPDF backend, src/lib/image/ai.ts.
 
   // ── Batch 2: new client-side tools ────────────────────────────────────────
   {

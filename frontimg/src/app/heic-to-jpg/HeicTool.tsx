@@ -57,7 +57,7 @@ export function HeicTool() {
       const ext = target === "image/jpeg" ? "jpg" : "png";
       const out: Item[] = [];
       for (const it of items) {
-        const r = await processOnServer("/api/heic", it.file, {
+        const r = await processOnServer("/api/image/heic", it.file, {
           format: target === "image/png" ? "png" : "jpeg",
           quality: Math.round(quality * 100),
         });

@@ -2,7 +2,7 @@
  * Processing router — implements the oMyImage size rule from img-develop.md:
  *
  *   ≤ 15 MB  → process in the browser (instant, private)
- *   > 15 MB  → offload to the backimg server (Sharp) for heavy lifting
+ *   > 15 MB  → offload to the shared oMyPDF backend (Sharp, /api/image/*) for heavy lifting
  *
  * Tools that are purely interactive (crop, watermark, meme, photo editor, blur)
  * always run in the browser regardless of size.

@@ -112,8 +112,8 @@ export function ResizeTool() {
         const mime = outMimeFor(it.file, format);
         let blob: Blob; let width = t.width; let height = t.height;
         if (shouldUseServer(it.file.size)) {
-          // > 15 MB → offload to the backimg server (Sharp). Dimensions already computed per file → exact fit.
-          const r = await processOnServer("/api/resize", it.file, {
+          // > 15 MB → offload to the shared oMyPDF backend (Sharp, /api/image/*). Dimensions already computed per file → exact fit.
+          const r = await processOnServer("/api/image/resize", it.file, {
             width: t.width, height: t.height, fit: "fill",
             format: toServerFormat(mime), quality,
             background: mime === "image/jpeg" ? resolveBg(bg) ?? undefined : undefined,
