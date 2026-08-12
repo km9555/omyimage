@@ -118,7 +118,11 @@ export function HomeLauncher() {
             <span className="h-2 w-2 rounded-full bg-secondary" />
             Free tools — most run right in your browser
           </span>
-          <h1 className="mt-5 text-[28px] leading-[36px] md:text-display-lg md:leading-[60px] font-black tracking-tight text-primary">
+          {/* No hard px size/leading here any more — `text-display-lg` is a
+              clamp() that interpolates from 30px to 48px across the viewport,
+              so the headline stays in proportion with the upload card beside
+              it instead of staying 48px inside a 456px column at 1024. */}
+          <h1 className="mt-5 text-display-lg font-black tracking-tight text-primary">
             Effortless Power for Image Workflows.
           </h1>
           <p className="mt-4 text-body-lg text-on-surface-variant max-w-md mx-auto lg:mx-0">

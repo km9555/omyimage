@@ -21,7 +21,7 @@ import {
 import { compressPngCanvas, pngColorsForQuality } from "@/lib/image/png-compress";
 import { useHandoff } from "@/lib/tool-handoff";
 
-const ACCENT = "#27AE60";
+const ACCENT = "#4F9D69";
 const ACCEPT = "image/jpeg,image/png,image/webp";
 
 type Format = "original" | ExportMime;

@@ -70,7 +70,7 @@ export default function Page() {
         {related.length > 0 && (
           <section aria-label="More tools" className="mt-4">
             <h2 className="text-headline-md font-semibold text-primary mb-stack-md">More tools</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-stack-md">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-stack-md">
               {related.map((r) => (
                 <Link key={r.id} href={`/${r.slug}`} className="flex items-center gap-3 rounded-lg border border-outline-variant/40 bg-surface-container-lowest p-4 hover-lift">
                   <span className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: toolColorTint(r) }}>

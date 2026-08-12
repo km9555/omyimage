@@ -9,7 +9,7 @@ import { BackgroundPicker, resolveBg, type BgValue } from "@/components/Backgrou
 import { decodeBitmap, downloadBlob, formatBytes } from "@/lib/image/raster";
 import { useHandoff } from "@/lib/tool-handoff";
 
-const ACCENT = "#EC4899";
+const ACCENT = "#C56A9A";
 const ACCEPT = "image/jpeg,image/png,image/webp,image/gif,image/bmp";
 
 type Item = { id: string; file: File; url: string };

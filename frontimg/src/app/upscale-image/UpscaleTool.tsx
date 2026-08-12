@@ -7,7 +7,7 @@ const SCALES = [2, 3, 4];
 export function UpscaleTool() {
   return (
     <ServerImageTool
-      accent="#2F80ED"
+      accent="#4C86CC"
       icon="hd"
       accept="image/jpeg,image/png,image/webp"
       endpoint="/api/image/upscale"

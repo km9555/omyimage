@@ -8,7 +8,7 @@ import { Dropzone } from "@/components/image/Dropzone";
 import { downloadBlob, formatBytes, baseName } from "@/lib/image/raster";
 import { useHandoff } from "@/lib/tool-handoff";
 
-const ACCENT = "#6366F1";
+const ACCENT = "#6E71C4";
 const ACCEPT = "image/jpeg,image/png,image/webp,image/gif,image/bmp,image/svg+xml,image/avif";
 
 type Tab = "datauri" | "raw" | "css" | "html";

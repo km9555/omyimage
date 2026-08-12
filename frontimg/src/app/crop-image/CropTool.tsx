@@ -7,7 +7,7 @@ import { HelpTip } from "@/components/HelpTip";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
 import { useHandoff } from "@/lib/tool-handoff";
 
-const ACCENT = "#14B8A6";
+const ACCENT = "#3E9A90";
 const MIN = 10; // minimum crop size in natural px
 
 type Crop = { x: number; y: number; w: number; h: number };

@@ -5,7 +5,7 @@ import { ServerImageTool } from "@/components/image/ServerImageTool";
 export function RemoveBgTool() {
   return (
     <ServerImageTool
-      accent="#7F77DD"
+      accent="#7B79C9"
       icon="background_replace"
       accept="image/jpeg,image/png,image/webp"
       endpoint="/api/image/remove-background"

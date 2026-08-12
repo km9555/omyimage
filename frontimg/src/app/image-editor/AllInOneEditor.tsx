@@ -9,7 +9,7 @@ import { BackgroundPicker, resolveBg, type BgValue } from "@/components/Backgrou
 import { decodeBitmap, canvasToBlob, downloadBlob, baseName, mimeExt, type ExportMime } from "@/lib/image/raster";
 import { useHandoff } from "@/lib/tool-handoff";
 
-const ACCENT = "#6D28D9";
+const ACCENT = "#7B5CC4";
 const ACCEPT = "image/jpeg,image/png,image/webp,image/gif,image/bmp";
 const HISTORY_CAP = 20;
 

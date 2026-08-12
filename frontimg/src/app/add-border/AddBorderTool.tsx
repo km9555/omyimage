@@ -11,7 +11,7 @@ import {
 } from "@/lib/image/raster";
 import { useHandoff } from "@/lib/tool-handoff";
 
-const ACCENT = "#F97316";
+const ACCENT = "#D08048";
 const ACCEPT = "image/jpeg,image/png,image/webp";
 
 type Format = "original" | ExportMime;

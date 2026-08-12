@@ -16,9 +16,9 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full bg-background/90 backdrop-blur-md border-b border-outline-variant">
       {/* Full-width bar (edge-to-edge); page content below stays constrained
           to `max-w-content`, same as oMyPDF. */}
-      <div className="flex items-center gap-4 w-full px-margin-mobile md:px-gutter lg:px-8 h-16">
+      <div className="flex items-center gap-3 xl:gap-4 w-full px-margin-mobile md:px-gutter lg:px-8 h-16">
         {/* Brand + quick links */}
-        <div className="flex items-center gap-gutter shrink-0">
+        <div className="flex items-center gap-4 lg:gap-gutter shrink-0">
           <Link href="/" className="flex items-center gap-2">
             <Logo className="h-8 w-8" />
             <span className="text-headline-md font-black tracking-tight">
@@ -27,12 +27,21 @@ export function Navbar() {
             </span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-1">
+          {/*
+            Quick links start at `lg`, not `md`. The bar is a single flex row of
+            brand + links + search + actions; between 768px and ~1100px the
+            three links (~400px at the xl size) leave the search nothing, and
+            because the search sits in a `flex-1 min-w-0` slot it is the part
+            that gives way — measured 71px at 1024 and fully collapsed to 0px
+            at 900 before this. Holding the links back to `lg` and running them
+            a size down until `xl` keeps the search usable at every width.
+          */}
+          <nav className="hidden lg:flex items-center gap-1">
             {quickLinks.map((link) => (
               <Link
                 key={link.label}
                 href={link.href}
-                className="text-body-md px-3 py-1.5 rounded-md text-on-surface-variant hover:bg-secondary/10 hover:text-on-secondary-fixed-variant dark:hover:text-secondary focus-visible:outline-none focus-visible:bg-secondary/10 focus-visible:text-on-secondary-fixed-variant dark:focus-visible:text-secondary transition-colors"
+                className="text-body-sm xl:text-body-md px-2.5 xl:px-3 py-1.5 rounded-md whitespace-nowrap text-on-surface-variant hover:bg-secondary/10 hover:text-on-secondary-fixed-variant dark:hover:text-secondary focus-visible:outline-none focus-visible:bg-secondary/10 focus-visible:text-on-secondary-fixed-variant dark:focus-visible:text-secondary transition-colors"
               >
                 {link.label}
               </Link>
@@ -41,9 +50,11 @@ export function Navbar() {
         </div>
 
         {/* Search — fills the middle but right-aligned so it sits next to the
-            actions. Below `md` it moves to its own row (see below). */}
-        <div className="hidden md:flex flex-1 min-w-0 justify-end px-2">
-          <HeaderSearch className="w-full max-w-[375px]" />
+            actions. The floor stops it collapsing when the row gets tight;
+            the cap stops it sprawling on a wide desktop. Below `md` it moves
+            to its own row (see below). */}
+        <div className="hidden md:flex flex-1 min-w-[180px] justify-end px-1 xl:px-2">
+          <HeaderSearch className="w-full max-w-[300px] xl:max-w-[380px]" />
         </div>
 
         {/* Actions */}

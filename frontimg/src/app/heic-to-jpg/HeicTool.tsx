@@ -17,7 +17,7 @@ import { useHandoff } from "@/lib/tool-handoff";
  * browser with heic2any/heic-decode/heic-convert — they're all the same libheif.
  */
 
-const ACCENT = "#F2994A";
+const ACCENT = "#D4855A";
 const ACCEPT = ".heic,.heif,image/heic,image/heif";
 
 type Target = "image/jpeg" | "image/png";

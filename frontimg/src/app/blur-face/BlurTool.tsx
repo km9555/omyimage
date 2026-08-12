@@ -8,7 +8,7 @@ import { Dropzone } from "@/components/image/Dropzone";
 import { decodeBitmap, canvasToBlob, downloadBlob, baseName, mimeExt, type ExportMime } from "@/lib/image/raster";
 import { useHandoff } from "@/lib/tool-handoff";
 
-const ACCENT = "#56688A";
+const ACCENT = "#5D7091";
 const ACCEPT = "image/jpeg,image/png,image/webp";
 
 type Rect = { x: number; y: number; w: number; h: number };

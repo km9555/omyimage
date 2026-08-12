@@ -65,7 +65,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#F5A623", // oMyImage Honey Gold brand mark
+  themeColor: "#C2542C", // oMyImage Terracotta Clay brand mark
 };
 
 export default function RootLayout({

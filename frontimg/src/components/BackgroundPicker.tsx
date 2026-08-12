@@ -18,7 +18,7 @@ const COLORS: { name: string; value: string }[] = [
   { name: "Black", value: "#000000" },
   { name: "Gray", value: "#9ca3af" },
   { name: "Charcoal", value: "#374151" },
-  { name: "Gold", value: "#f5a623" },
+  { name: "Clay", value: "#c2542c" },
   { name: "Red", value: "#ef4444" },
   { name: "Green", value: "#22c55e" },
   { name: "Blue", value: "#3b82f6" },
@@ -39,7 +39,7 @@ function contrastOn(hex: string): string {
   const r = parseInt(c.slice(0, 2), 16);
   const g = parseInt(c.slice(2, 4), 16);
   const b = parseInt(c.slice(4, 6), 16);
-  return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.6 ? "#1c1a17" : "#ffffff";
+  return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.6 ? "#241f19" : "#ffffff";
 }
 
 const swatchCls = (active: boolean) =>

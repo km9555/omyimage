@@ -19,7 +19,7 @@ import {
 } from "@/lib/image/palette";
 import { useHandoff } from "@/lib/tool-handoff";
 
-const ACCENT = "#10B981";
+const ACCENT = "#3F9E7C";
 const ACCEPT = "image/jpeg,image/png,image/webp,image/gif,image/bmp";
 
 function hslStr([r, g, b]: RGB): string {

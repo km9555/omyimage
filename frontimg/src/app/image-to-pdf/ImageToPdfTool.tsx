@@ -8,7 +8,7 @@ import { Dropzone } from "@/components/image/Dropzone";
 import { rasterize, downloadBlob, formatBytes } from "@/lib/image/raster";
 import { useHandoff } from "@/lib/tool-handoff";
 
-const ACCENT = "#E5533D";
+const ACCENT = "#C55F4E";
 const ACCEPT = "image/jpeg,image/png,image/webp,image/gif,image/bmp";
 
 type Item = { id: string; file: File; url: string };

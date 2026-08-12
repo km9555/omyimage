@@ -1,4 +1,4 @@
-/** oMyImage brand mark — same shape as oMyPDF, recolored to Honey Gold. */
+/** oMyImage brand mark — same shape as oMyPDF, recolored to Terracotta Clay. */
 export function Logo({ className = "h-8 w-8" }: { className?: string }) {
   return (
     <svg
@@ -16,9 +16,9 @@ export function Logo({ className = "h-8 w-8" }: { className?: string }) {
       />
       <path
         d="M21.5 7.6 30 15.6h-6.4a1.6 1.6 0 0 1-1.6-1.6V7.6Z"
-        fill="#FCE3B0"
+        fill="#FBDCC8"
       />
-      <circle cx="20" cy="22.4" r="5.2" stroke="#E0900C" strokeWidth="2.7" />
+      <circle cx="20" cy="22.4" r="5.2" stroke="#A9461F" strokeWidth="2.7" />
       <defs>
         <linearGradient
           id="omyimage-g1"
@@ -28,8 +28,8 @@ export function Logo({ className = "h-8 w-8" }: { className?: string }) {
           y2="38"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#F8B733" />
-          <stop offset="1" stopColor="#E0900C" />
+          <stop stopColor="#E8834F" />
+          <stop offset="1" stopColor="#C2542C" />
         </linearGradient>
       </defs>
     </svg>

@@ -17,7 +17,7 @@ import { BackgroundPicker, resolveBg, type BgValue } from "@/components/Backgrou
 import { shouldUseServer, toServerFormat, processOnServer } from "@/lib/process-router";
 import { useHandoff } from "@/lib/tool-handoff";
 
-const ACCENT = "#9B51E0";
+const ACCENT = "#8A6FC4";
 
 type Item = { id: string; file: File; url: string; result?: { blob: Blob; size: number; name: string } };
 type Format = "original" | ExportMime;

@@ -12,7 +12,7 @@ import {
 } from "@/lib/image/raster";
 import { useHandoff } from "@/lib/tool-handoff";
 
-const ACCENT = "#0EA5E9";
+const ACCENT = "#4B8FC7";
 const ACCEPT = "image/jpeg,image/png,image/webp,image/gif,image/bmp";
 
 type Mode = "pixels" | "percent";

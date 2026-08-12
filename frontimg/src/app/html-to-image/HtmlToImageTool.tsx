@@ -7,7 +7,7 @@ import { TopLoadingBar } from "@/components/TopLoadingBar";
 import { postJsonForImage } from "@/lib/process-router";
 import { downloadBlob, formatBytes } from "@/lib/image/raster";
 
-const ACCENT = "#E44D26";
+const ACCENT = "#C96A48";
 type Mode = "url" | "html";
 
 export function HtmlToImageTool() {

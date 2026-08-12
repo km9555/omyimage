@@ -573,52 +573,63 @@ export function relatedTools(tool: Tool, n = 3): Tool[] {
 }
 
 // ── Brand colors ───────────────────────────────────────────────────────────
+/*
+  Per-tool icon colors. These are deliberately MUTED (roughly 40–55%
+  saturation) rather than the stock Tailwind-bright hues they started as:
+  twenty-four neon icons on a page fight both each other and the Terracotta
+  Clay accent, and the grid stops reading as one system. Every value here is
+  mid-tone on purpose so it clears ~4.5:1 on the white card in light mode and
+  still ~3.5:1+ on the near-black card in dark mode.
+
+  Each tool page also declares a local `const ACCENT` for its dropzone; keep
+  the two in sync when changing a color.
+*/
 const TOOL_COLORS: Record<string, string> = {
-  "compress-image": "#27AE60",
-  "resize-image": "#0EA5E9",
-  "crop-image": "#14B8A6",
-  "rotate-image": "#9B51E0",
+  "compress-image": "#4F9D69",
+  "resize-image": "#4B8FC7",
+  "crop-image": "#3E9A90",
+  "rotate-image": "#8A6FC4",
 
-  "convert-to-jpg": "#E2A700",
-  "png-to-jpg": "#2D9CDB",
-  "jpg-to-png": "#2D9CDB",
-  "webp-to-png": "#0EA5A4",
-  "heic-to-jpg": "#F2994A",
-  "image-to-pdf": "#E5533D",
+  "convert-to-jpg": "#C08A3A",
+  "png-to-jpg": "#4B8FC7",
+  "jpg-to-png": "#4B8FC7",
+  "webp-to-png": "#3E9A96",
+  "heic-to-jpg": "#D4855A",
+  "image-to-pdf": "#C55F4E",
 
-  "image-editor": "#6D28D9",
-  "watermark-image": "#8B5CF6",
-  "meme-generator": "#E5820D",
-  "html-to-image": "#E44D26",
+  "image-editor": "#7B5CC4",
+  "watermark-image": "#8A6FC4",
+  "meme-generator": "#C98B3E",
+  "html-to-image": "#C96A48",
 
-  "remove-background": "#7F77DD",
-  "upscale-image": "#2F80ED",
-  "blur-face": "#56688A",
+  "remove-background": "#7B79C9",
+  "upscale-image": "#4C86CC",
+  "blur-face": "#5D7091",
 
-  "grayscale-image": "#64748B",
-  "blur-image": "#0891B2",
-  "add-border": "#F97316",
-  "circle-crop": "#06B6D4",
-  "merge-images": "#F59E0B",
-  "image-color-picker": "#10B981",
-  "image-to-base64": "#6366F1",
-  "base64-to-image": "#7C3AED",
-  "image-metadata": "#3B82F6",
-  "remove-exif": "#EF4444",
-  "gif-maker": "#EC4899",
-  "gif-to-images": "#DB2777",
+  "grayscale-image": "#6E7A8A",
+  "blur-image": "#3E8CA6",
+  "add-border": "#D08048",
+  "circle-crop": "#3E96AE",
+  "merge-images": "#C99B47",
+  "image-color-picker": "#3F9E7C",
+  "image-to-base64": "#6E71C4",
+  "base64-to-image": "#8064C6",
+  "image-metadata": "#5388C9",
+  "remove-exif": "#C55A52",
+  "gif-maker": "#C56A9A",
+  "gif-to-images": "#B85C8C",
 };
 
 const CATEGORY_COLORS: Record<string, string> = {
-  optimize: "#27AE60",
-  convert: "#2D9CDB",
-  edit: "#8B5CF6",
-  ai: "#7F77DD",
+  optimize: "#4F9D69",
+  convert: "#4B8FC7",
+  edit: "#8A6FC4",
+  ai: "#7B79C9",
 };
 
 /** Brand/category color for a tool's icon. */
 export function toolColor(tool: Tool): string {
-  return TOOL_COLORS[tool.id] ?? CATEGORY_COLORS[tool.categoryId] ?? "#4a4640";
+  return TOOL_COLORS[tool.id] ?? CATEGORY_COLORS[tool.categoryId] ?? "#5B5347";
 }
 
 /** Same color as a low-opacity badge background (8-digit hex, ~10% alpha). */

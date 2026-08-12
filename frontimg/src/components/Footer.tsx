@@ -61,10 +61,13 @@ export function Footer() {
   return (
     <footer className="bg-surface-container-low border-t border-outline-variant/60">
       <div className="max-w-content mx-auto px-margin-mobile md:px-gutter">
-        {/* Main grid */}
-        <div className="py-12 grid grid-cols-2 md:grid-cols-[2fr_1fr_1fr_1fr] gap-x-8 gap-y-10">
+        {/* Main grid. The 4-across layout needs `lg`, not `md`: at 768 it gave
+            the three link columns ~148px each, enough to wrap "Remove
+            Background" onto three lines. Between `sm` and `lg` the brand takes
+            a full row of its own and the link columns sit 3-up beneath it. */}
+        <div className="py-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-[2fr_1fr_1fr_1fr] gap-x-8 gap-y-10">
           {/* Brand */}
-          <div className="col-span-2 md:col-span-1 flex flex-col gap-4">
+          <div className="col-span-2 sm:col-span-3 lg:col-span-1 flex flex-col gap-4">
             <Link href="/" className="flex items-center gap-2 w-fit">
               <Logo className="h-9 w-9" />
               <span className="text-headline-md font-black tracking-tight">

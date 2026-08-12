@@ -106,7 +106,11 @@ export function ToolDirectory() {
       {/* Tools grid */}
       <section className="max-w-content mx-auto px-margin-mobile md:px-gutter py-10">
         {tools.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
+          /* 2 → 3 → 4 columns. The old ramp jumped straight from 2 to 4 at
+             `lg`, which meant 408px-wide cards at 900px and 225px ones at
+             1024. The 3-up step covers that gap; 4-up resumes at `xl`, so
+             every laptop from 1280 CSS px upward sees the same 4×250 grid. */
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5">
             {tools.map((tool) => (
               <div key={tool.id} className="group/card relative">
                 <ToolCard tool={tool} />

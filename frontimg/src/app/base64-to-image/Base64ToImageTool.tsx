@@ -6,7 +6,7 @@ import { Icon } from "@/components/Icon";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
 import { downloadBlob, canvasToBlob, mimeExt, type ExportMime } from "@/lib/image/raster";
 
-const ACCENT = "#7C3AED";
+const ACCENT = "#8064C6";
 
 /** Guess the image mime from the first bytes of a raw Base64 string. */
 function detectMime(raw: string): string {

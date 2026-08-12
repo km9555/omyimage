@@ -13,11 +13,18 @@
   ────────────────────────────────────────────────────────────────────────────
   Ported from the oMyPDF "Premium Utility System" and re-themed:
     • Brand accent (the single `secondary` token that drives every accent in the
-      UI) switched from Premium Red → "Honey Gold" amber (#F5A623). It is warm,
-      premium and soothing on the eyes. Button/pill text on the accent uses a
-      near-black (`on-secondary`) for crisp, accessible contrast.
-    • Neutral surfaces warmed very slightly (a hint of cream) so they sit
-      comfortably with the gold rather than clashing with a cool blue-grey.
+      UI) is "Terracotta Clay" (#C2542C) — a warm, muted clay orange.
+    • It replaced an earlier Honey Gold (#F5A623). Gold looked cheerful as a
+      button *fill*, but `text-secondary` is used as link/label ink in ~60
+      places and gold-on-cream measured 1.9:1 — effectively unreadable. Clay is
+      dark enough to serve BOTH roles: white label on a clay fill is 4.6:1, and
+      clay ink on the cream page is 4.4:1. That dual duty is why the accent is
+      deep rather than pastel; the softness lives in the surfaces and in the
+      pale apricot tints (`secondary-fixed`, `chip-*`) layered on top.
+    • Consequence: `on-secondary` is WHITE in light mode. Dark mode flips it
+      back to near-black, because `secondary` brightens there (see `.dark`).
+    • Neutral surfaces are a warm cream, tuned to sit under the clay without
+      the cool blue-grey cast of a stock neutral ramp.
   Every component references these semantic tokens (bg-secondary,
   text-on-surface, border-surface-variant, …) so the whole brand re-skins from
   here.
@@ -31,64 +38,68 @@
 
 @theme {
   /* Primary — strong heading/text color and the occasional dark fill. */
-  --color-primary: #1f1d18; /* warm near-black */
+  --color-primary: #241f19; /* warm near-black */
   --color-on-primary: #ffffff;
-  --color-primary-container: #2a2720;
-  --color-on-primary-container: #b8b2a4;
-  --color-primary-fixed: #f3ead4;
-  --color-primary-fixed-dim: #e3d6b8;
-  --color-on-primary-fixed: #2a2720;
-  --color-on-primary-fixed-variant: #5a5446;
-  --color-inverse-primary: #e3d6b8;
+  --color-primary-container: #302a22;
+  --color-on-primary-container: #bdb4a5;
+  --color-primary-fixed: #f5ede2;
+  --color-primary-fixed-dim: #e5d9c9;
+  --color-on-primary-fixed: #302a22;
+  --color-on-primary-fixed-variant: #5e5648;
+  --color-inverse-primary: #e5d9c9;
 
-  /* Secondary = the brand accent. Honey Gold amber. */
-  --color-secondary: #f5a623; /* Honey Gold */
-  --color-on-secondary: #2b1d00; /* near-black text on gold */
-  --color-secondary-container: #e0900c; /* deeper amber — hover + gradient anchor */
-  --color-on-secondary-container: #2b1d00;
-  --color-secondary-fixed: #ffe5b8;
-  --color-secondary-fixed-dim: #ffd185;
-  --color-on-secondary-fixed: #2b1d00;
-  --color-on-secondary-fixed-variant: #7a5600;
+  /* Secondary = the brand accent. Terracotta Clay.
+     Doubles as fill (white label) and as ink on cream — see the note above. */
+  --color-secondary: #c2542c; /* Terracotta Clay */
+  --color-on-secondary: #ffffff; /* white label on clay — 4.6:1 */
+  --color-secondary-container: #a9461f; /* deeper clay — hover + gradient anchor */
+  --color-on-secondary-container: #ffffff;
+  /* Pale apricot wash — the soft half of the palette. Used for tint fills that
+     sit behind `on-secondary-fixed-variant` ink, never behind white. */
+  --color-secondary-fixed: #fce7d2;
+  --color-secondary-fixed-dim: #f7cfac;
+  --color-on-secondary-fixed: #3d1b0a;
+  --color-on-secondary-fixed-variant: #93401f;
 
-  --color-tertiary: #1f1d18;
+  --color-tertiary: #241f19;
   --color-on-tertiary: #ffffff;
-  --color-tertiary-container: #2a2720;
-  --color-on-tertiary-container: #b8b2a4;
-  --color-tertiary-fixed: #f3ead4;
-  --color-tertiary-fixed-dim: #e3d6b8;
-  --color-on-tertiary-fixed: #2a2720;
-  --color-on-tertiary-fixed-variant: #5a5446;
+  --color-tertiary-container: #302a22;
+  --color-on-tertiary-container: #bdb4a5;
+  --color-tertiary-fixed: #f5ede2;
+  --color-tertiary-fixed-dim: #e5d9c9;
+  --color-on-tertiary-fixed: #302a22;
+  --color-on-tertiary-fixed-variant: #5e5648;
 
-  --color-error: #ba1a1a;
+  --color-error: #b3261e;
   --color-on-error: #ffffff;
-  --color-error-container: #ffdad6;
-  --color-on-error-container: #93000a;
+  --color-error-container: #fbdcd8;
+  --color-on-error-container: #8c1810;
 
-  /* Chip tokens — a calm counter/status pill, distinct from the gold CTA. */
-  --color-chip-amber-bg: #fef6e7;
-  --color-chip-amber-ink: #a15c07;
-  --color-chip-amber-border: #f3d79b;
+  /* Chip tokens — a calm counter/status pill. Deliberately the pale apricot
+     tint, not the clay itself, so it reads as status and not as a CTA. */
+  --color-chip-amber-bg: #fcede0;
+  --color-chip-amber-ink: #9a4520;
+  --color-chip-amber-border: #f3d5bc;
 
-  /* Neutrals / surfaces — warm off-white ("cream") to pair with gold. */
-  --color-background: #fbfaf7;
-  --color-on-background: #1c1a17;
-  --color-surface: #fbfaf7;
-  --color-surface-dim: #dcd8d0;
-  --color-surface-bright: #fbfaf7;
+  /* Neutrals / surfaces — warm cream to pair with the clay accent. */
+  --color-background: #fdfbf8;
+  --color-on-background: #241f19;
+  --color-surface: #fdfbf8;
+  --color-surface-dim: #e2dace;
+  --color-surface-bright: #ffffff;
   --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #f5f3ee;
-  --color-surface-container: #efece5;
-  --color-surface-container-high: #e9e6df;
-  --color-surface-container-highest: #e3e0d9;
-  --color-surface-variant: #e3e0d9;
-  --color-on-surface: #1c1a17;
-  --color-on-surface-variant: #4a4640;
-  --color-inverse-surface: #312e29;
-  --color-inverse-on-surface: #f4f1ec;
-  --color-outline: #7a766d;
-  --color-outline-variant: #cbc7bd;
-  --color-surface-tint: #8a6d2e;
+  --color-surface-container-low: #f8f4ed;
+  --color-surface-container: #f2ece3;
+  --color-surface-container-high: #ece5da;
+  --color-surface-container-highest: #e5ddd1;
+  --color-surface-variant: #e8e1d6;
+  --color-on-surface: #241f19;
+  --color-on-surface-variant: #5b5347;
+  --color-inverse-surface: #383129;
+  --color-inverse-on-surface: #f6f1e9;
+  --color-outline: #857c6e;
+  --color-outline-variant: #d8cfc1;
+  --color-surface-tint: #c2542c;
 
   /* Named spacing tokens (4px base grid) */
   --spacing-base: 4px;
@@ -109,36 +120,49 @@
   --font-body-md: var(--font-inter);
   --font-label-sm: var(--font-jetbrains-mono);
 
-  /* Type scale */
-  --text-display-lg: 48px;
-  --text-display-lg--line-height: 56px;
+  /*
+    Type scale.
+
+    Display/headline sizes are fluid (`clamp`) rather than fixed px. A 14",
+    15.6" and 16" laptop rarely differ in *physical* size as much as they
+    differ in CSS width, because Windows display scaling changes the viewport:
+    1920×1080 lands on 1536 CSS px at 125% and 1280 at 150%. With hard px
+    headings the same page reads "roomy" on one and "cramped" on the next.
+    Interpolating between the breakpoints keeps the proportions steady.
+
+    Line heights are unitless ratios so they track the fluid size.
+    Body/label sizes stay fixed — shrinking running text hurts more than the
+    consistency gains.
+  */
+  --text-display-lg: clamp(30px, 2.2vw + 1rem, 48px);
+  --text-display-lg--line-height: 1.16;
   --text-display-lg--letter-spacing: -0.02em;
   --text-display-lg--font-weight: 700;
 
-  --text-display-lg-mobile: 32px;
-  --text-display-lg-mobile--line-height: 40px;
+  --text-display-lg-mobile: clamp(26px, 1.6vw + 1rem, 32px);
+  --text-display-lg-mobile--line-height: 1.25;
   --text-display-lg-mobile--letter-spacing: -0.02em;
   --text-display-lg-mobile--font-weight: 700;
 
   /* Mid display size — legal/marketing page titles (LegalShell). */
-  --text-display-md: 36px;
-  --text-display-md--line-height: 44px;
+  --text-display-md: clamp(26px, 1.55vw + 0.9rem, 36px);
+  --text-display-md--line-height: 1.22;
   --text-display-md--letter-spacing: -0.02em;
   --text-display-md--font-weight: 700;
 
-  --text-headline-md: 24px;
-  --text-headline-md--line-height: 32px;
+  --text-headline-md: clamp(20px, 0.55vw + 0.95rem, 24px);
+  --text-headline-md--line-height: 1.33;
   --text-headline-md--letter-spacing: -0.01em;
   --text-headline-md--font-weight: 600;
 
   /* Section headings inside long-form legal copy. */
-  --text-headline-sm: 20px;
-  --text-headline-sm--line-height: 28px;
+  --text-headline-sm: clamp(18px, 0.3vw + 1rem, 20px);
+  --text-headline-sm--line-height: 1.4;
   --text-headline-sm--letter-spacing: -0.01em;
   --text-headline-sm--font-weight: 600;
 
-  --text-title-lg: 22px;
-  --text-title-lg--line-height: 28px;
+  --text-title-lg: clamp(19px, 0.45vw + 1rem, 22px);
+  --text-title-lg--line-height: 1.28;
   --text-title-lg--font-weight: 700;
 
   --text-title-sm: 16px;
@@ -169,44 +193,59 @@
 
 /*
   Dark theme — overrides the semantic color tokens under <html class="dark">.
-  Brand gold (secondary) is intentionally inherited unchanged: it reads well on
-  dark surfaces and keeps the brand consistent. Surfaces use a warm-tinted dark
-  to match the cream light theme.
+
+  Unlike the light theme, `secondary` is NOT inherited here. Clay (#c2542c) is
+  tuned to be dark enough to read as ink on cream, which makes it too dark to
+  read against a near-black surface. Dark mode lifts it to a warm apricot
+  (#e8825a) and, because that fill is now light, flips `on-secondary` back to
+  near-black. Every `bg-secondary text-on-secondary` pair stays legible in both
+  themes without any component knowing which theme is active.
+
+  Surfaces use a warm-tinted dark that mirrors the cream light theme.
 */
 .dark {
-  --color-primary: #ece6da;
-  --color-on-primary: #1c1a14;
-  --color-primary-container: #d6cdba;
-  --color-on-primary-container: #36322a;
-  --color-inverse-primary: #5a5446;
+  --color-primary: #f0e8dc;
+  --color-on-primary: #221d16;
+  --color-primary-container: #dad0bf;
+  --color-on-primary-container: #3b342b;
+  --color-inverse-primary: #5e5648;
+
+  --color-secondary: #e8825a; /* lifted clay — 6.6:1 as ink on the dark surface */
+  --color-on-secondary: #2a1004; /* near-black label on the lifted fill */
+  --color-secondary-container: #d06b41;
+  --color-on-secondary-container: #2a1004;
+  --color-secondary-fixed: #4a2211;
+  --color-secondary-fixed-dim: #6a3319;
+  --color-on-secondary-fixed: #ffe0cf;
+  --color-on-secondary-fixed-variant: #f0a883;
 
   --color-error: #ffb4ab;
   --color-on-error: #690005;
-  --color-error-container: #93000a;
+  --color-error-container: #8c1810;
   --color-on-error-container: #ffdad6;
 
-  --color-chip-amber-bg: rgba(245, 158, 11, 0.16);
-  --color-chip-amber-ink: #fcd34d;
-  --color-chip-amber-border: rgba(252, 211, 77, 0.35);
+  --color-chip-amber-bg: rgba(232, 130, 90, 0.16);
+  --color-chip-amber-ink: #f0a883;
+  --color-chip-amber-border: rgba(240, 168, 131, 0.35);
 
-  --color-background: #16140f;
-  --color-on-background: #e8e3d8;
-  --color-surface: #16140f;
-  --color-surface-dim: #16140f;
-  --color-surface-bright: #3b372e;
-  --color-surface-container-lowest: #100e0a;
-  --color-surface-container-low: #1e1b15;
-  --color-surface-container: #221f18;
-  --color-surface-container-high: #2d2920;
-  --color-surface-container-highest: #38332a;
-  --color-surface-variant: #322e25;
-  --color-on-surface: #e8e3d8;
-  --color-on-surface-variant: #cdc6b6;
-  --color-inverse-surface: #e8e3d8;
-  --color-inverse-on-surface: #312e29;
-  --color-outline: #978f7e;
-  --color-outline-variant: #4b463b;
-  --color-surface-tint: #f5a623;
+  --color-background: #191512;
+  --color-on-background: #ede5da;
+  --color-surface: #191512;
+  --color-surface-dim: #191512;
+  --color-surface-bright: #3f372d;
+  --color-surface-container-lowest: #120f0c;
+  --color-surface-container-low: #201b16;
+  --color-surface-container: #26201a;
+  --color-surface-container-high: #322b23;
+  --color-surface-container-highest: #3d352b;
+  --color-surface-variant: #372f26;
+  --color-on-surface: #ede5da;
+  --color-on-surface-variant: #d2c8b8;
+  --color-inverse-surface: #ede5da;
+  --color-inverse-on-surface: #383129;
+  --color-outline: #9e9384;
+  --color-outline-variant: #514739;
+  --color-surface-tint: #e8825a;
 }
 
 body {
@@ -230,7 +269,7 @@ body {
 
 /* Elevation & interaction helpers */
 .ambient-shadow {
-  box-shadow: 0px 4px 20px rgba(40, 30, 10, 0.05);
+  box-shadow: 0px 4px 20px rgba(60, 40, 25, 0.06);
 }
 .dark .ambient-shadow {
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.45);
@@ -240,8 +279,8 @@ body {
 }
 .hover-lift:hover {
   transform: translateY(-2px);
-  box-shadow: 0px 8px 24px rgba(40, 30, 10, 0.1);
-  border-color: #ece6da;
+  box-shadow: 0px 8px 24px rgba(60, 40, 25, 0.11);
+  border-color: var(--color-outline-variant);
 }
 .dark .hover-lift:hover {
   box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.55);
@@ -270,9 +309,9 @@ body:has([data-tool-active]) main {
   padding-bottom: 3rem;
 }
 
-/* Drag-and-drop active state (faint Honey Gold tint) */
+/* Drag-and-drop active state (faint Terracotta Clay tint) */
 .drag-active {
-  background-color: rgba(245, 166, 35, 0.06);
+  background-color: rgba(194, 84, 44, 0.07);
   border-color: var(--color-secondary);
 }
 
