@@ -96,7 +96,9 @@ export function ServerImageTool({
     return (
       <section>
         <TopLoadingBar active={isWorking} />
-        <Dropzone onFiles={onFiles} accept={accept} accent={accent} icon={icon} multiple={false} buttonLabel="Select an image" hint={dropHint} />
+        {/* Always server-side (remove-background, upscale), so the default
+            browser-local wording would contradict the panel below. */}
+        <Dropzone onFiles={onFiles} accept={accept} accent={accent} icon={icon} multiple={false} buttonLabel="Select an image" hint={dropHint} privacyNote="Processed on our server over an encrypted connection — files are deleted right after." />
         <div className="mt-4 rounded-xl border border-outline-variant/40 bg-surface-bright p-4 flex items-start gap-2.5 max-w-xl mx-auto">
           <Icon name="cloud" className="text-[18px] mt-0.5" style={{ color: accent }} />
           <p className="text-label-sm font-label-sm text-on-surface-variant">

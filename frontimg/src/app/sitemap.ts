@@ -17,6 +17,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1.0,
     },
     {
+      // Hub for the format-pair converters. Those are hidden from the home
+      // grid (Tool.homeGrid), so this is their main internal entry point and
+      // ranks above an ordinary tool page.
+      url: `${baseUrl}/image-converter`,
+      lastModified: currentDate,
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    {
       url: `${baseUrl}/pricing`,
       lastModified: currentDate,
       changeFrequency: "weekly",

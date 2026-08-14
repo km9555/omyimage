@@ -208,6 +208,57 @@ Not a licensing issue, but found during the audit and in the same family as the
 `ConvertTool` accept string is `image/png,image/webp,image/gif,image/bmp`. HEIC,
 TIFF and RAW were **never** supported. Corrected to the formats actually accepted.
 
+**Recurrence (2026-08-14).** The same class of claim was found in three more
+places and fixed:
+
+- `ConvertTool` printed *"your images never leave your device"* under the drop
+  zone, while `shouldUseServer()` POSTs anything over 15 MB to `/api/image/convert`.
+  The line is now a `privacyNote` prop derived from the engine.
+- `Dropzone` hardcoded the same wording, so **`heic-to-jpg` displayed it directly
+  above its own intro paragraph explaining that it converts server-side**. Now a
+  `privacyNote` prop; `heic-to-jpg`, `remove-background` and `upscale-image` pass
+  the server wording.
+- `bmp-to-jpg` would have routed >15 MB files to Sharp, which has **no BMP
+  loader** — `looksLikeImage()` accepts BMP magic bytes so the upload passes
+  validation and the conversion then throws. BMP pairs are flagged
+  `serverFallback: false` and always convert locally.
+
+---
+
+## F5 — `tesseract.js` for browser OCR · **Approved** · 2026-08-14
+
+Assessed under rule 1 before adoption, because the shape is superficially
+identical to F1: a permissively-licensed npm wrapper around a large native
+library compiled to WebAssembly and shipped to browsers.
+
+The conclusion is the opposite of F1, and the reason matters:
+
+| | heic2any (F1) | tesseract.js (F5) |
+|---|---|---|
+| npm manifest | MIT | Apache-2.0 |
+| Bundled engine | libheif — **LGPL-3.0-or-later** | Tesseract — Apache-2.0 |
+| Bundled deps | — | Leptonica BSD-2, libpng, libjpeg, libtiff, zlib |
+| Grep of dist for `GPL`/`LGPL` | hits | **clean** |
+| Obligation on distribution | source + relink rights (LGPL §4) | attribution only |
+| Patent exposure | HEVC/H.265 pools | none |
+| Verdict | removed, moved server-side | **shipped to the browser** |
+
+`node_modules/tesseract.js/dist/` and `node_modules/tesseract.js-core/` were both
+grepped for `LGPL`, `GNU General Public`, `GPL-2` and `GPL-3`: zero matches. The
+core's own `LICENSE` is Apache-only.
+
+Because the WASM is one statically-linked artefact, npm sees a single package
+while the browser receives all of the above. Each carries an attribution clause,
+so the bundled C libraries were added to `MANUAL_COMPONENTS` in
+`frontimg/scripts/generate-licenses.mjs` rather than left to the npm tree walk —
+this is the F2 obligation applied to statically-linked code.
+
+**Runtime note.** The engine core and the language models are fetched from the
+jsDelivr CDN on first use of `/image-to-text`, not bundled. The *image* is never
+transmitted, so the page's privacy claim holds; only a generic model file is
+downloaded. Self-hosting them under `public/` is a one-line `corePath`/`langPath`
+change if the third-party request is later judged unacceptable.
+
 ---
 
 ## Rules for adding a dependency

@@ -46,6 +46,37 @@ const MANUAL_COMPONENTS = [
     repository: "https://github.com/JetBrains/JetBrainsMono",
     note: "Webfont served to browsers, self-hosted at build time by next/font.",
   },
+  // The tesseract.js-core WASM is a single emscripten artefact that statically
+  // links these C libraries. npm sees one Apache-2.0 package; the browser
+  // receives all of them, and shipping a browser bundle is distribution, so
+  // each one's attribution clause applies to us. This is the same reasoning
+  // that made heic2any a problem (LICENSE-AUDIT F1) — the difference is that
+  // every library here is permissive, so attribution is the whole obligation
+  // rather than a source/relink requirement.
+  {
+    name: "Leptonica (bundled in tesseract.js-core WASM)",
+    license: "BSD-2-Clause",
+    repository: "https://github.com/DanBloomberg/leptonica",
+    note: "Image-processing library statically linked into the OCR WebAssembly build.",
+  },
+  {
+    name: "Tesseract OCR engine (bundled in tesseract.js-core WASM)",
+    license: "Apache-2.0",
+    repository: "https://github.com/tesseract-ocr/tesseract",
+    note: "Compiled to WebAssembly and served to browsers on /image-to-text.",
+  },
+  {
+    name: "libpng, libjpeg, libtiff, zlib (bundled in tesseract.js-core WASM)",
+    license: "libpng-2.0 / IJG / libtiff (BSD-like) / Zlib",
+    repository: "https://github.com/naptha/tesseract.js-core",
+    note: "Codec libraries statically linked into the OCR WebAssembly build. All permissive; attribution only.",
+  },
+  {
+    name: "Tesseract trained language data",
+    license: "Apache-2.0",
+    repository: "https://github.com/naptha/tessdata",
+    note: "Recognition models fetched from the jsDelivr CDN on first use of /image-to-text.",
+  },
   {
     name: "Material Symbols",
     license: "Apache-2.0",

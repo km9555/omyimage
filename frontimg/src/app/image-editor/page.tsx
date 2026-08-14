@@ -5,7 +5,13 @@ import { absoluteUrl, SITE } from "@/lib/site";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { JsonLd } from "@/components/JsonLd";
 import { Icon } from "@/components/Icon";
-import { SeoContent, type HowToStep, type Faq, type Feature } from "@/components/SeoContent";
+import {
+  SeoContent,
+  type HowToStep,
+  type Faq,
+  type Feature,
+  type SeoSection,
+} from "@/components/SeoContent";
 import { AllInOneEditor } from "./AllInOneEditor";
 
 const tool = getTool("image-editor")!;
@@ -38,6 +44,51 @@ const faqs: Faq[] = [
   { q: "Will I lose quality?", a: "Edits are composited on a full-resolution canvas. Export as PNG for lossless output, or JPG/WEBP with a quality slider." },
   { q: "Do I need to install anything or sign up?", a: "No. It's a free online editor that runs entirely in your browser — no sign-up, no installation, and your image never leaves your device." },
   { q: "Is it really private?", a: "Yes. All editing happens locally in your browser; nothing is uploaded or stored." },
+  { q: "Do I need to install anything?", a: "No. It runs in the browser you already have, on Windows, macOS, Linux, Android and iOS. There is nothing to download, no account to create and no subscription — which is the point, since most edits people need take under a minute and do not justify installing a photo suite." },
+  { q: "How does this compare to Photoshop?", a: "It does not, and it is not trying to. There are no layers, masks, curves or blend modes here. What it does cover is the set of operations that account for the overwhelming majority of everyday edits — crop, rotate, resize, adjust, annotate, export — without a launch time or a licence." },
+  { q: "Does editing modify my original file?", a: "No. The image is loaded into memory and everything happens on a copy — nothing is committed until you export, and the file on your disk is never touched. Drawing can also be cleared without disturbing the rest of your work." },
+  { q: "Which formats can I open and save?", a: "Open JPG, PNG, WEBP, GIF and BMP; save as JPG, PNG or WEBP. Animated GIFs open as their first frame, since the editor works on a single still image." },
+  { q: "Will editing reduce the image quality?", a: "Cropping, rotating by right angles and flipping are all lossless. Resizing down is effectively lossless too. The one place quality is spent is the export step, so choose PNG or WEBP if you want to keep everything exact, or JPG at a high quality setting if you want a smaller file." },
+  { q: "Does it work on a phone?", a: "Yes. The layout adapts to a small screen and the canvas responds to touch, so cropping and annotating work with a finger. Very large images are limited by the memory your phone gives the browser rather than by the tool." },
+];
+
+const sections: SeoSection[] = [
+  {
+    heading: "The edits people actually need",
+    id: "scope",
+    body: [
+      "Most image editing is not retouching. It is straightening a crooked photo, cropping out a distracting edge, resizing something to fit an upload limit, drawing an arrow on a screenshot, or brightening a picture taken in a dim room. Those jobs share two properties: they take under a minute, and they do not justify opening a professional application.",
+      "That is the gap this editor fills. Everything is on one canvas, so you can crop, rotate, adjust and annotate without moving between tools or exporting halfway through. When you are done, one export gives you the finished file.",
+      "It is deliberately not a Photoshop replacement. There are no layers, masks or blend modes, because adding them would slow down the ninety per cent of edits that never needed them.",
+    ],
+  },
+  {
+    heading: "A sensible order of operations",
+    id: "order",
+    body: [
+      "Composition first: crop and straighten before anything else, so that later steps operate only on pixels you are keeping. Adjusting the exposure of an area you are about to cut away is wasted work, and cropping after resizing throws away resolution you deliberately kept.",
+      "Adjustments next — brightness, contrast, saturation — while you still have the full image to judge. Then annotation, since arrows and boxes need to sit in their final positions relative to a frame that is no longer going to change.",
+      "Resize last, immediately before export. That way the annotation scales once, at the end, rather than being drawn at one size and squeezed to another. A common frustration is text that looked right on the canvas and is illegible in the exported file, and it almost always comes from resizing after annotating.",
+    ],
+  },
+  {
+    heading: "Annotating screenshots",
+    id: "annotation",
+    body: [
+      "Drawing on a screenshot is one of the most common reasons anyone opens an editor at all — marking a bug for a developer, pointing at a setting in a support reply, highlighting a clause in a document.",
+      "Two things make annotations work. First, contrast: a red arrow disappears against a red error banner, so pick a colour that fights the interface rather than matching it. Second, restraint: three arrows and a box communicate; fifteen marks do not.",
+      "Export screenshots as PNG rather than JPG. Interface captures are almost entirely sharp edges and small text, which is exactly the content JPG handles worst — you get a faint halo around every character and a file that is often no smaller.",
+    ],
+  },
+  {
+    heading: "Nothing leaves your device",
+    id: "privacy",
+    body: [
+      "The whole editor runs on an HTML canvas inside your browser tab. Your image is read from disk into memory, edited there, and written back out when you export — it is never uploaded, and there is no copy on a server to be retained or leaked.",
+      "That matters more than it might sound, because of what people typically edit. Screenshots contain email addresses, account numbers, internal dashboards and open tabs. Documents photographed for an upload contain everything a document contains. Doing that work locally means the question of who else has a copy does not arise.",
+      "A practical side effect: once the page has loaded, the editor keeps working without a connection.",
+    ],
+  },
 ];
 
 export default function Page() {
@@ -87,7 +138,7 @@ export default function Page() {
         toolName="All-in-One Image Editor"
         intro="One editor for everything. oMyImage's All-in-One Image Editor brings crop, resize, rotate and flip, color adjustments and filters, grayscale, blur, borders, circle crop, text and logo watermarks, and freehand drawing together on a single canvas. Apply edits in any order, undo and redo freely, and export once when you're done. It all runs in your browser, so your image stays completely private."
         howToTitle="How to edit an image online"
-        steps={steps} features={features} faqs={faqs} fullWidthText
+        steps={steps} features={features} faqs={faqs} sections={sections} fullWidthText
         security="Your image stays private. The entire editor runs in your browser with HTML canvas — nothing is uploaded to a server. No storage, no tracking of your files."
       />
 

@@ -5,7 +5,13 @@ import { absoluteUrl, SITE } from "@/lib/site";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { JsonLd } from "@/components/JsonLd";
 import { Icon } from "@/components/Icon";
-import { SeoContent, type HowToStep, type Faq, type Feature } from "@/components/SeoContent";
+import {
+  SeoContent,
+  type HowToStep,
+  type Faq,
+  type Feature,
+  type SeoSection,
+} from "@/components/SeoContent";
 import { ImageToPdfTool } from "./ImageToPdfTool";
 
 const tool = getTool("image-to-pdf")!;
@@ -37,6 +43,48 @@ const faqs: Faq[] = [
   { q: "Can I choose A4 or Letter?", a: "Yes. Pick ‘Fit image’ to size each page to its image, or A4/Letter with portrait or landscape and a margin." },
   { q: "Are my images uploaded?", a: "No. The PDF is built locally in your browser, so your images never leave your device." },
   { q: "Is it free?", a: "Completely free, with no watermark and no sign-up." },
+  { q: "What page size should I choose?", a: "A4 for anything going to a printer outside the United States, Letter for US printing, and 'Fit to image' when the PDF is only ever going to be read on screen. Fit-to-image avoids the white margins you get when a landscape photo is placed on a portrait page." },
+  { q: "Can I control the order of the pages?", a: "Yes — the images are placed in the order they appear in the list, and you can rearrange them before building. This matters most when your file manager sorted them as text, which puts 'page10' before 'page2'." },
+  { q: "Will the PDF be much larger than my images?", a: "Only slightly. The images are embedded largely as they are, so the PDF is roughly the sum of your files plus a small structural overhead. If the result is too big, compress or resize the images first — a PDF built from 4000-pixel photos is enormous and unnecessary for on-screen reading." },
+  { q: "Can I make a PDF from phone photos of documents?", a: "Yes, and it is one of the most common uses. For the best result, photograph each page square-on with even lighting, crop out the surroundings first, and consider running them through the Grayscale tool — a scanned-looking document is far smaller than a full-colour photo and often more legible." },
+  { q: "Is the text in the PDF searchable?", a: "No. The pages are images, so the PDF contains pictures of text rather than text itself. If you need to search or copy the words, run the images through the Image to Text tool first — that extracts the text, which you can then paste into a document." },
+];
+
+const sections: SeoSection[] = [
+  {
+    heading: "Why put images into a PDF at all",
+    id: "why",
+    body: [
+      "A PDF turns a folder of loose files into one document with a fixed order and a predictable appearance. That matters whenever something is being submitted rather than simply shared: application forms, expense claims, insurance documentation, school assignments and legal paperwork are almost always expected as a single PDF, and a ZIP of JPGs is frequently rejected outright.",
+      "It also solves an ordering problem. Images sent as separate attachments arrive in whatever sequence the mail client feels like, and file managers sort 'IMG_10' before 'IMG_2'. A PDF fixes the sequence permanently, so the person at the other end reads the pages in the order you intended.",
+      "Finally, a PDF prints predictably. Page size, orientation and margins are decided when the document is built rather than negotiated by whatever printer dialog the recipient happens to open.",
+    ],
+  },
+  {
+    heading: "Page size, orientation and fit",
+    id: "layout",
+    body: [
+      "A4 is the standard almost everywhere outside North America; Letter is slightly wider and shorter and is the US default. Choosing the one your recipient's printer expects avoids the scaling and clipping that happens when a Letter document meets an A4 tray.",
+      "'Fit to image' sizes each page to the picture instead, which is the right choice for screen-only documents, photo collections and anything with mixed orientations. It eliminates the bands of white space you get when a wide photo is centred on a tall page.",
+      "For scanned or photographed documents, keeping orientation consistent matters more than it sounds. A single sideways page in an otherwise portrait PDF forces the reader to rotate their whole view, so rotate the offending images before building rather than after.",
+    ],
+  },
+  {
+    heading: "Keeping the file size sensible",
+    id: "size",
+    body: [
+      "The PDF is roughly as large as the images you put into it, so a document built from twenty 12-megapixel phone photos will run to tens of megabytes — usually well past the attachment limit of the system you are submitting to.",
+      "The fix is upstream. Resize the images to around 1500–2000 pixels on the long edge, which is more than enough for both screen reading and ordinary printing, and compress them before building. For photographed text documents, converting to grayscale first often halves the size again with no loss of legibility.",
+    ],
+  },
+  {
+    heading: "Everything happens in your browser",
+    id: "privacy",
+    body: [
+      "The PDF is assembled on your own device using a JavaScript PDF library, so the images are never uploaded. That is worth knowing given what people typically convert here — passports, bank statements, medical forms, contracts and ID documents are exactly the kind of thing that should not be passing through someone else's server.",
+      "A practical consequence is that the tool works offline once the page has loaded, and that very large batches are limited by your device's memory rather than by an upload cap.",
+    ],
+  },
 ];
 
 export default function Page() {
@@ -86,7 +134,7 @@ export default function Page() {
         toolName="Image to PDF"
         intro="Need to send a set of photos or scans as one document? oMyImage's Image to PDF tool combines your JPG, PNG and WEBP images into a single PDF, one image per page. Reorder the pages, choose to fit each page to its image or use A4/Letter with a margin, and download. Everything is assembled in your browser, so your images stay private."
         howToTitle="How to convert images to a PDF"
-        steps={steps} features={features} faqs={faqs} fullWidthText
+        steps={steps} features={features} faqs={faqs} sections={sections} fullWidthText
         security="Your images stay private. The PDF is assembled entirely in your browser — nothing is uploaded to a server. No storage, no tracking of your files."
       />
 

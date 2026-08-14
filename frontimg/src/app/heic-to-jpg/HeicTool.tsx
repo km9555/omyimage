@@ -31,9 +31,14 @@ function isHeic(f: File): boolean {
   return f.type === "image/heic" || f.type === "image/heif" || n.endsWith(".heic") || n.endsWith(".heif");
 }
 
-export function HeicTool() {
+/**
+ * `defaultTarget` lets /heic-to-png reuse this component with PNG preselected.
+ * The toggle stays visible either way — the prop sets the starting point, it
+ * does not lock the tool down.
+ */
+export function HeicTool({ defaultTarget = "image/jpeg" }: { defaultTarget?: Target } = {}) {
   const [items, setItems] = useState<Item[]>([]);
-  const [target, setTarget] = useState<Target>("image/jpeg");
+  const [target, setTarget] = useState<Target>(defaultTarget);
   const [quality, setQuality] = useState(0.92);
   const [isWorking, setIsWorking] = useState(false);
   const [done, setDone] = useState(false);
@@ -82,7 +87,9 @@ export function HeicTool() {
     return (
       <section>
         <TopLoadingBar active={isWorking} />
-        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="photo_camera" hint="or drop .heic / .heif photos here" />
+        {/* Server-backed by licence necessity (LICENSE-AUDIT F1), so the
+            default browser-local wording would be false here. */}
+        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="photo_camera" hint="or drop .heic / .heif photos here" privacyNote="Converted on our server over an encrypted connection — files are deleted right after." />
       </section>
     );
   }

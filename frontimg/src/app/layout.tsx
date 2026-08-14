@@ -24,7 +24,9 @@ const jetbrainsMono = JetBrains_Mono({
 
 // Runs before first paint to apply a previously-chosen dark theme with no flash.
 // Default is light: dark only applies when the visitor explicitly opted in.
-const NO_FLASH_THEME = `(function(){try{if(localStorage.getItem('theme')==='dark'){document.documentElement.classList.add('dark');document.documentElement.style.colorScheme='dark';}}catch(e){}})();`;
+// Also repoints <meta name="theme-color"> so the mobile browser toolbar matches
+// the surface the page is about to paint, rather than flashing the light value.
+const NO_FLASH_THEME = `(function(){try{if(localStorage.getItem('theme')==='dark'){document.documentElement.classList.add('dark');document.documentElement.style.colorScheme='dark';document.querySelectorAll('meta[name="theme-color"]').forEach(function(m){m.setAttribute('content','#191512')});}}catch(e){}})();`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -65,7 +67,16 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#C2542C", // oMyImage Terracotta Clay brand mark
+  /*
+    Android Chrome paints its toolbar with this, so it must match the page
+    BACKGROUND, not the brand accent — accent here produced a heavy terracotta
+    slab above the header on mobile. Value is `--color-background` (light).
+    Dark is not handled with a `prefers-color-scheme` media entry because the
+    theme is an explicit opt-in stored in localStorage, not an OS preference:
+    an OS-dark visitor who never opted in gets the light page. The no-flash
+    script and ThemeProvider.applyTheme repoint this tag instead.
+  */
+  themeColor: "#FDFBF8",
 };
 
 export default function RootLayout({

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { toast } from "sonner";
 import { Icon } from "@/components/Icon";
 import { HomeLauncher } from "@/components/HomeLauncher";
@@ -39,8 +40,14 @@ export function ToolDirectory() {
   const pill = PILLS.find((p) => p.id === activePill) ?? PILLS[0];
 
   // Search lives in the header (HeaderSearch); this grid only filters by pill.
+  // `homeGrid !== false` keeps the long-tail format-pair converters off the
+  // home page — they live on /image-converter. Without this the Convert pill
+  // becomes forty near-identical cards.
   const tools = useMemo(
-    () => TOOLS.filter(pill.match).sort((a, b) => a.priority - b.priority),
+    () =>
+      TOOLS.filter((t) => t.homeGrid !== false)
+        .filter(pill.match)
+        .sort((a, b) => a.priority - b.priority),
     [pill],
   );
 
@@ -151,6 +158,19 @@ export function ToolDirectory() {
             No tools in {pill.label} yet.
           </p>
         )}
+
+        {/* The format-pair converters are hidden from this grid, so the hub is
+            how a visitor (and a crawler) reaches them from the home page. */}
+        <div className="mt-8 text-center">
+          <Link
+            href="/image-converter"
+            className="inline-flex items-center gap-2 rounded-lg border border-outline-variant bg-surface-container-lowest px-5 py-3 text-body-md font-semibold text-primary hover-lift"
+          >
+            <Icon name="swap_horiz" className="text-[20px] text-secondary" />
+            Browse all image format converters
+            <Icon name="arrow_forward" className="text-[18px]" />
+          </Link>
+        </div>
       </section>
     </>
   );

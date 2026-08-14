@@ -5,7 +5,13 @@ import { absoluteUrl, SITE } from "@/lib/site";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { JsonLd } from "@/components/JsonLd";
 import { Icon } from "@/components/Icon";
-import { SeoContent, type HowToStep, type Faq, type Feature } from "@/components/SeoContent";
+import {
+  SeoContent,
+  type HowToStep,
+  type Faq,
+  type Feature,
+  type SeoSection,
+} from "@/components/SeoContent";
 import { BlurTool } from "./BlurTool";
 
 const tool = getTool("blur-face")!;
@@ -37,6 +43,51 @@ const faqs: Faq[] = [
   { q: "Is the blur permanent?", a: "Yes. The censored areas are rendered directly into the exported image, so they can't be undone by the recipient." },
   { q: "Are my images uploaded?", a: "No. Everything runs locally in your browser; your image is never uploaded." },
   { q: "Is it free?", a: "Completely free, with no watermark and no sign-up." },
+  { q: "Can the blur be reversed?", a: "Not by any practical means. Blurring discards the information rather than hiding it, so there is nothing left to recover — unlike a black bar drawn in a layered file, or a pixelation applied at a coarse enough level that AI reconstruction becomes plausible. Once exported, the face is gone from the pixels." },
+  { q: "Should I use blur or pixelate?", a: "Blur is the safer choice. Heavy pixelation at a large block size can sometimes be partially reconstructed, because the block averages still carry structure. A strong Gaussian blur leaves far less to work with. Pixelation is more visually obvious that redaction happened, which is occasionally what you want." },
+  { q: "How strong should the blur be?", a: "Strong enough that you cannot recognise the person yourself at full zoom. A light blur that merely softens features is not anonymisation — faces remain identifiable to anyone who knows the person, and often to software. If in doubt, go heavier." },
+  { q: "Does this remove location data from the photo too?", a: "Yes, as a side effect: the image is redrawn from a canvas, which does not carry EXIF metadata across, so GPS coordinates and camera details are dropped. If metadata is your main concern rather than faces, the EXIF Remover is the dedicated tool." },
+  { q: "Do I need to blur faces before posting photos?", a: "It depends where you are and what the photo is. Many jurisdictions treat a recognisable face as personal data, and publishing images of children, patients, bystanders or people in sensitive settings carries real obligations. When you do not have consent, blurring is the simple answer." },
+  { q: "Is my photo uploaded?", a: "No. The whole operation runs on a canvas inside your browser, which matters a great deal here — the images people blur are usually exactly the ones that should not be passing through anyone else's server." },
+];
+
+const sections: SeoSection[] = [
+  {
+    heading: "Why blurring beats a black box",
+    id: "method",
+    body: [
+      "A black rectangle drawn over a face in a layered editing file is not redaction — it is a sticker, and anyone who opens the original file can move it. Even flattened, a solid box announces that something was hidden and invites the question of what.",
+      "Blurring works differently. It destroys the information in place: the pixels are replaced by an average of their neighbours, and the detail that made the face recognisable no longer exists anywhere in the file. Export it and there is nothing to recover, because nothing was preserved.",
+      "That is the property you actually want from redaction. Not concealment, which can be undone, but destruction, which cannot.",
+    ],
+  },
+  {
+    heading: "Blur or pixelate",
+    id: "blur-vs-pixelate",
+    body: [
+      "Pixelation replaces regions with large blocks of a single averaged colour. It looks decisive, and for that reason it is the convention in television and journalism, where the audience is meant to understand that something has been withheld.",
+      "For genuine anonymisation it is the weaker option. The block averages retain structure — the rough position of eyes, the shape of a jaw, the contrast between hair and skin — and researchers have demonstrated recovering identities from pixelated faces where the block size was not aggressive enough. A strong Gaussian blur leaves considerably less signal behind.",
+      "Use pixelation when you want the redaction to be visually obvious, and blur when you want the person to be genuinely unidentifiable. If you need both, pixelate heavily rather than lightly.",
+    ],
+  },
+  {
+    heading: "Getting the coverage right",
+    id: "coverage",
+    body: [
+      "The most common mistake is blurring too tightly. A region covering only the eyes leaves the jawline, hairline, ears and skin tone intact, and people are recognised by all of those. Cover the whole head, and extend slightly past the hairline.",
+      "The second mistake is blurring too weakly. Judge the result at full zoom rather than at the thumbnail size, because a blur that looks sufficient in a small preview often is not. If you can still tell who it is, so can anyone who knows them.",
+      "Remember the rest of the frame too. Name badges, house numbers, licence plates, reflections in windows and the text on a screen behind the subject all identify people, and a photo with a perfectly blurred face and a visible street sign has not achieved much.",
+    ],
+  },
+  {
+    heading: "When this matters legally",
+    id: "legal",
+    body: [
+      "Under GDPR and similar regimes a recognisable face is personal data, and publishing it generally needs a lawful basis — consent being the usual one. That obligation applies to organisations far more heavily than to individuals posting holiday photos, but it is real.",
+      "The situations where it bites hardest are predictable: photographs including children, images from schools, clinics and care settings, crowd shots used commercially, workplace photography, and anything showing people who did not know they were being photographed. Blurring faces is the cheapest way to remove the question entirely.",
+      "Because everything here runs in your browser, the unredacted original never leaves your device — which is the correct handling for exactly this class of image.",
+    ],
+  },
 ];
 
 export default function Page() {
@@ -86,7 +137,7 @@ export default function Page() {
         toolName="Blur Face &amp; Censor"
         intro="Need to hide a face, a name tag or a license plate before sharing a photo? oMyImage's Blur &amp; Censor tool lets you drag boxes over any private detail and blur or pixelate them, with adjustable strength and as many areas as you need. The censoring is baked permanently into the exported image, and everything runs in your browser — your photo is never uploaded."
         howToTitle="How to blur a face in a photo"
-        steps={steps} features={features} faqs={faqs} fullWidthText
+        steps={steps} features={features} faqs={faqs} sections={sections} fullWidthText
         security="Your images stay private. Blurring happens entirely in your browser with HTML canvas — nothing is uploaded to a server. The censored result is permanent in the exported file. No storage, no tracking of your files."
       />
 

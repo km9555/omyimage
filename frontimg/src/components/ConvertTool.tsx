@@ -16,6 +16,7 @@ import {
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
 import { shouldUseServer, toServerFormat, processOnServer } from "@/lib/process-router";
 import { useHandoff } from "@/lib/tool-handoff";
+import { kindOf, type FileKind } from "@/lib/file-actions";
 
 export interface ConvertConfig {
   accent: string;
@@ -30,7 +31,37 @@ export interface ConvertConfig {
   quality: boolean;
   /** Short note shown in the drop zone. */
   dropHint: string;
+  /**
+   * Which file kinds this converter accepts, as `file-actions` classifier
+   * kinds. Optional for back-compat; when set, the drop handler uses `kindOf`
+   * instead of sniffing `file.type`.
+   *
+   * This matters more than it looks: browsers report an EMPTY `type` for .avif
+   * and .heic (and often .tif), so the old `f.type.startsWith("image/")` guard
+   * silently rejected them before any decode was attempted. `kindOf` falls back
+   * to the extension, which is what makes AVIF and JFIF sources possible at all.
+   */
+  sourceKinds?: FileKind[];
+  /** Source format shown in the rejection toast, e.g. "AVIF". */
+  sourceLabel?: string;
+  /**
+   * May an oversize file be offloaded to the backend? Defaults true.
+   * MUST be false when the SOURCE is a format Sharp cannot decode — BMP is the
+   * live case: `looksLikeImage()` accepts BMP magic bytes so the upload passes
+   * validation, then libvips has no BMP loader and the conversion throws.
+   */
+  serverFallback?: boolean;
+  /**
+   * Privacy line under the drop zone. Must describe what actually happens:
+   * anything over BROWSER_MAX_BYTES is POSTed to the backend even on an
+   * otherwise browser-only conversion, so the old hardcoded "never leave your
+   * device" was false for large files. See LICENSE-AUDIT.md F4.
+   */
+  privacyNote?: string;
 }
+
+const DEFAULT_PRIVACY_NOTE =
+  "Converted in your browser — files stay on your device (large files are processed on our server).";
 
 type Item = {
   id: string;
@@ -44,6 +75,7 @@ const uid = () => `f${Date.now()}_${counter++}`;
 
 export function ConvertTool({ config }: { config: ConvertConfig }) {
   const { accent, accept, targetMime, targetLabel, flatten, quality } = config;
+  const serverFallback = config.serverFallback ?? true;
   const [items, setItems] = useState<Item[]>([]);
   const [quality_, setQuality] = useState(0.92);
   const [bg, setBg] = useState<BgValue>({ transparent: false, color: "#ffffff" });
@@ -53,12 +85,34 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
   const [done, setDone] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => () => { items.forEach((i) => URL.revokeObjectURL(i.url)); }, [items]);
+  /*
+    Revoke preview URLs on UNMOUNT only.
+
+    This used to depend on `items`, so React ran the cleanup on every change to
+    the list — including the `setItems(out)` inside convertAll, whose items
+    carry the SAME `url` strings. The effect therefore revoked URLs the very
+    next render still points at, leaving broken thumbnails after conversion
+    (usually masked by Chrome's cache, reliably visible in Firefox).
+
+    A ref mirror keeps the unmount cleanup pointed at the current list without
+    making the effect re-run. Per-item revocation on remove/reset is handled
+    explicitly in `removeItem` and `reset`.
+  */
+  const itemsRef = useRef<Item[]>([]);
+  useEffect(() => { itemsRef.current = items; }, [items]);
+  useEffect(() => () => { itemsRef.current.forEach((i) => URL.revokeObjectURL(i.url)); }, []);
 
   const addFiles = useCallback((incoming: FileList | File[]) => {
-    const imgs = Array.from(incoming).filter((f) => f.type.startsWith("image/"));
+    const kinds = config.sourceKinds;
+    const imgs = Array.from(incoming).filter((f) =>
+      kinds ? kinds.includes(kindOf(f)) : f.type.startsWith("image/"),
+    );
     if (imgs.length === 0) {
-      toast.error("Please select image files.");
+      toast.error(
+        config.sourceLabel
+          ? `Please select ${config.sourceLabel} files.`
+          : "Please select image files.",
+      );
       return;
     }
     setDone(false);
@@ -93,8 +147,11 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
       for (const it of items) {
         const name = `${baseName(it.file.name)}.${ext}`;
         let blob: Blob;
-        if (shouldUseServer(it.file.size)) {
+        if (serverFallback && shouldUseServer(it.file.size)) {
           // > 15 MB → offload to the shared oMyPDF backend (Sharp, /api/image/*).
+          // Gated on `serverFallback`: Sharp/libvips cannot DECODE bmp, so a
+          // large BMP sent here throws instead of converting. Those pairs keep
+          // everything in the browser, where canvas handles BMP fine.
           const r = await processOnServer("/api/image/convert", it.file, {
             format: toServerFormat(targetMime),
             quality: quality_,
@@ -181,7 +238,7 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
             <p className="text-body-md text-on-surface-variant mt-2">{config.dropHint}</p>
           </div>
           <p className="text-label-sm font-label-sm text-on-surface-variant/70 mt-1 flex items-center gap-1.5">
-            <Icon name="lock" className="text-[14px]" /> Converted in your browser — your images never leave your device.
+            <Icon name="lock" className="text-[14px]" /> {config.privacyNote ?? DEFAULT_PRIVACY_NOTE}
           </p>
         </div>
       </section>
@@ -306,7 +363,7 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
           <Icon name="lightbulb" className="text-[18px] mt-0.5" style={{ color: accent }} />
           <p className="text-label-sm font-label-sm text-on-surface-variant">
             {done
-              ? <><strong className="text-on-surface">Total:</strong> {formatBytes(totalIn)} → {formatBytes(totalOut)}. Everything runs in your browser.</>
+              ? <><strong className="text-on-surface">Total:</strong> {formatBytes(totalIn)} → {formatBytes(totalOut)}.</>
               : <><strong className="text-on-surface">{items.length} ready.</strong> Multiple files download together as a ZIP.</>}
           </p>
         </div>

@@ -38,6 +38,17 @@ export interface Tool {
   primaryKeyword: string;
   /** Premium-gated (server AI) tool — surfaced with a badge later. */
   premium?: boolean;
+  /**
+   * Show on the home page tool grid. Defaults true.
+   *
+   * Set false for long-tail format-pair converters: the Convert pill would
+   * otherwise grow from six cards to forty-odd near-identical ones, which
+   * makes a worse page AND splits the home page's internal link equity across
+   * forty anchors. They stay reachable from /image-converter and from each
+   * other, and `sitemap.ts` filters on `status` (not this), so they are still
+   * submitted for indexing.
+   */
+  homeGrid?: boolean;
 }
 
 export const CATEGORIES: CategoryDef[] = [
@@ -181,6 +192,208 @@ export const TOOLS: Tool[] = [
       "Convert WEBP to PNG online for free. Keep transparency, batch convert, fast in-browser processing. No sign-up required.",
     primaryKeyword: "convert webp to png",
   },
+  // Shares HeicTool with heic-to-jpg (PNG preselected). Server-side for the
+  // same F1 licence reason — see the comment above heic-to-jpg.
+  {
+    id: "heic-to-png",
+    name: "HEIC to PNG",
+    slug: "heic-to-png",
+    categoryId: "convert",
+    shortDescription: "Convert iPhone HEIC photos to lossless PNG.",
+    icon: "photo_camera",
+    processing: "server",
+    library: "ImageMagick (libheif)",
+    status: "live",
+    priority: 209,
+    homeGrid: false,
+    seoTitle: "HEIC to PNG Converter Online - Free | oMyImage",
+    seoDescription:
+      "Convert HEIC to PNG online for free. Lossless output from iPhone photos, batch supported, no sign-up. Files are converted securely and deleted right after.",
+    primaryKeyword: "convert heic to png",
+  },
+  // OCR in the browser. tesseract.js + tesseract.js-core are Apache-2.0 and
+  // the WASM bundles only permissive C libraries (Leptonica BSD-2, zlib,
+  // libtiff, libjpeg, libpng) — both dists grepped clean of GPL/LGPL per
+  // LICENSE-AUDIT rule 1. That permissiveness is exactly why this one CAN ship
+  // to the browser where the HEIC decoders (F1) could not.
+  {
+    id: "image-to-text",
+    name: "Image to Text",
+    slug: "image-to-text",
+    categoryId: "convert",
+    shortDescription: "Extract editable text from photos and scans with OCR.",
+    icon: "document_scanner",
+    processing: "client",
+    library: "tesseract.js",
+    status: "live",
+    // 12 is a free slot (11 is watermark-image). Note there is a pre-existing
+    // tie at 10 between image-to-pdf and image-editor — left alone deliberately,
+    // since breaking it would reshuffle the home grid for no functional gain.
+    priority: 12,
+    seoTitle: "Image to Text Converter - Free Online OCR | oMyImage",
+    seoDescription:
+      "Extract text from images online for free. OCR for photos, screenshots and scans in 13 languages, running entirely in your browser so nothing is uploaded.",
+    primaryKeyword: "image to text",
+  },
+  // ── Format-pair converters (data-driven) ───────────────────────────────
+  // These render from src/lib/converters/pairs.ts through <ConverterPage>;
+  // their route files are 5-line stubs. The registry stays the source of
+  // truth for anything sitemap.ts / the home grid also reads, so the entry
+  // still lives here. `homeGrid: false` keeps the long tail out of the home
+  // page (see ToolDirectory) without hiding it from the sitemap.
+  {
+    id: "webp-to-jpg",
+    name: "WEBP to JPG",
+    slug: "webp-to-jpg",
+    categoryId: "convert",
+    shortDescription: "Convert WEBP images to widely-supported JPG.",
+    icon: "sync_alt",
+    processing: "client",
+    library: "Canvas / Sharp",
+    status: "live",
+    priority: 200,
+    homeGrid: false,
+    seoTitle: "WEBP to JPG Converter Online - Free | oMyImage",
+    seoDescription:
+      "Convert WEBP to JPG online for free. Batch convert with quality control and pick the background colour for transparent areas. No sign-up, runs in your browser.",
+    primaryKeyword: "convert webp to jpg",
+  },
+  {
+    id: "jpg-to-webp",
+    name: "JPG to WEBP",
+    slug: "jpg-to-webp",
+    categoryId: "convert",
+    shortDescription: "Shrink JPG photos by converting them to WEBP.",
+    icon: "sync_alt",
+    processing: "client",
+    library: "Canvas / Sharp",
+    status: "live",
+    priority: 201,
+    homeGrid: false,
+    seoTitle: "JPG to WEBP Converter Online - Free | oMyImage",
+    seoDescription:
+      "Convert JPG to WEBP online for free and cut image weight by around 25-35%. Batch convert with a quality slider. Runs in your browser, no sign-up.",
+    primaryKeyword: "convert jpg to webp",
+  },
+  {
+    id: "png-to-webp",
+    name: "PNG to WEBP",
+    slug: "png-to-webp",
+    categoryId: "convert",
+    shortDescription: "Convert PNG to WEBP and keep transparency.",
+    icon: "sync_alt",
+    processing: "client",
+    library: "Canvas / Sharp",
+    status: "live",
+    priority: 202,
+    homeGrid: false,
+    seoTitle: "PNG to WEBP Converter Online - Free | oMyImage",
+    seoDescription:
+      "Convert PNG to WEBP online for free. Much smaller files with transparency preserved, batch supported. Fast in-browser conversion, no sign-up required.",
+    primaryKeyword: "convert png to webp",
+  },
+  {
+    id: "jfif-to-jpg",
+    name: "JFIF to JPG",
+    slug: "jfif-to-jpg",
+    categoryId: "convert",
+    shortDescription: "Rename and repackage .jfif downloads as .jpg.",
+    icon: "sync_alt",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    priority: 203,
+    homeGrid: false,
+    seoTitle: "JFIF to JPG Converter Online - Free | oMyImage",
+    seoDescription:
+      "Convert JFIF to JPG online for free. Fixes the .jfif files Chrome and Windows save so any app will open them. Batch convert in your browser, no sign-up.",
+    primaryKeyword: "convert jfif to jpg",
+  },
+  {
+    id: "gif-to-png",
+    name: "GIF to PNG",
+    slug: "gif-to-png",
+    categoryId: "convert",
+    shortDescription: "Convert a GIF to a lossless PNG still.",
+    icon: "sync_alt",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    priority: 204,
+    homeGrid: false,
+    seoTitle: "GIF to PNG Converter Online - Free | oMyImage",
+    seoDescription:
+      "Convert GIF to PNG online for free. Get a lossless still with full-colour output instead of GIF's 256-colour palette. Batch convert in your browser.",
+    primaryKeyword: "convert gif to png",
+  },
+  {
+    id: "gif-to-jpg",
+    name: "GIF to JPG",
+    slug: "gif-to-jpg",
+    categoryId: "convert",
+    shortDescription: "Convert GIF frames to compact JPG images.",
+    icon: "sync_alt",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    priority: 205,
+    homeGrid: false,
+    seoTitle: "GIF to JPG Converter Online - Free | oMyImage",
+    seoDescription:
+      "Convert GIF to JPG online for free. Turn a GIF into a small, universally-readable photo file with quality control. Batch convert, no sign-up needed.",
+    primaryKeyword: "convert gif to jpg",
+  },
+  {
+    id: "bmp-to-jpg",
+    name: "BMP to JPG",
+    slug: "bmp-to-jpg",
+    categoryId: "convert",
+    shortDescription: "Turn huge uncompressed BMP files into small JPGs.",
+    icon: "sync_alt",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    priority: 206,
+    homeGrid: false,
+    seoTitle: "BMP to JPG Converter Online - Free | oMyImage",
+    seoDescription:
+      "Convert BMP to JPG online for free and cut file size by 90% or more. Quality slider and batch support, running entirely in your browser. No sign-up.",
+    primaryKeyword: "convert bmp to jpg",
+  },
+  {
+    id: "avif-to-jpg",
+    name: "AVIF to JPG",
+    slug: "avif-to-jpg",
+    categoryId: "convert",
+    shortDescription: "Open AVIF images anywhere by converting to JPG.",
+    icon: "sync_alt",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    priority: 207,
+    homeGrid: false,
+    seoTitle: "AVIF to JPG Converter Online - Free | oMyImage",
+    seoDescription:
+      "Convert AVIF to JPG online for free. Opens next-gen AVIF images in software that cannot read them yet. Batch convert in your browser, no sign-up.",
+    primaryKeyword: "convert avif to jpg",
+  },
+  {
+    id: "avif-to-png",
+    name: "AVIF to PNG",
+    slug: "avif-to-png",
+    categoryId: "convert",
+    shortDescription: "Convert AVIF to lossless PNG with transparency.",
+    icon: "sync_alt",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    priority: 208,
+    homeGrid: false,
+    seoTitle: "AVIF to PNG Converter Online - Free | oMyImage",
+    seoDescription:
+      "Convert AVIF to PNG online for free. Lossless output with transparency preserved, batch supported. Runs in your browser with no sign-up required.",
+    primaryKeyword: "convert avif to png",
+  },
   // Server-side on purpose, not for performance: every JS HEIC decoder bundles
   // libheif (LGPL-3.0), and shipping that to a browser is distribution, which
   // triggers the LGPL's source/relink obligations. Decoding on the server means
@@ -277,7 +490,7 @@ export const TOOLS: Tool[] = [
     name: "HTML to Image",
     slug: "html-to-image",
     categoryId: "edit",
-    shortDescription: "Render a URL or raw HTML to JPG/PNG/WEBP.",
+    shortDescription: "Render a URL or raw HTML to PNG or JPG.",
     icon: "code",
     processing: "server",
     library: "Puppeteer",
@@ -285,7 +498,9 @@ export const TOOLS: Tool[] = [
     priority: 14,
     seoTitle: "HTML to Image Converter Online - Free | oMyImage",
     seoDescription:
-      "Convert HTML or a web page URL to an image online for free. Export to JPG, PNG, SVG or WEBP. Fast, accurate rendering. No sign-up required.",
+      // Was "JPG, PNG, SVG or WEBP" — the route only ever emits png or jpeg.
+      // Same class as LICENSE-AUDIT F4; claim only what is delivered.
+      "Convert HTML or a web page URL to an image online for free. Export to PNG or JPG with fast, accurate rendering. No sign-up required.",
     primaryKeyword: "html to image converter",
   },
 
@@ -298,7 +513,10 @@ export const TOOLS: Tool[] = [
     shortDescription: "AI background removal to transparent PNG.",
     icon: "background_replace",
     processing: "ai",
-    library: "rembg / @imgly",
+    // `@imgly` was listed here but has never been a dependency — the tool
+    // posts to the backend, which spawns rembg. Display metadata only, but it
+    // should still say what actually runs.
+    library: "rembg",
     status: "live",
     priority: 15,
     premium: true,
@@ -613,6 +831,7 @@ const TOOL_COLORS: Record<string, string> = {
   "merge-images": "#C99B47",
   "image-color-picker": "#3F9E7C",
   "image-to-base64": "#6E71C4",
+  "image-to-text": "#4B8FC7",
   "base64-to-image": "#8064C6",
   "image-metadata": "#5388C9",
   "remove-exif": "#C55A52",

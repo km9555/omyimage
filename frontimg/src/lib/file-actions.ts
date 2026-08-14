@@ -51,9 +51,23 @@ const TOOL_INPUTS: Record<string, ToolInput> = {
   "png-to-jpg": { kinds: ["png"] },
   "webp-to-png": { kinds: ["webp"] },
   "heic-to-jpg": { kinds: ["heic"] },
+  "heic-to-png": { kinds: ["heic"] },
+  // Format-pair converters. `jfif-to-jpg` takes "jpeg" because kindOf() maps
+  // the .jfif extension to jpeg — a JFIF file IS a JPEG, only the extension
+  // differs, which is the entire reason that tool exists.
+  "webp-to-jpg": { kinds: ["webp"] },
+  "jpg-to-webp": { kinds: ["jpeg"] },
+  "png-to-webp": { kinds: ["png"] },
+  "jfif-to-jpg": { kinds: ["jpeg"] },
+  "gif-to-png": { kinds: ["gif"] },
+  "gif-to-jpg": { kinds: ["gif"] },
+  "bmp-to-jpg": { kinds: ["bmp"] },
+  "avif-to-jpg": { kinds: ["avif"] },
+  "avif-to-png": { kinds: ["avif"] },
   "gif-to-images": { kinds: ["gif"], single: true },
   "image-to-pdf": { kinds: COMMON_GIF_BMP },
   "image-to-base64": { kinds: [...COMMON_GIF_BMP, "svg", "avif"], single: true },
+  "image-to-text": { kinds: [...COMMON, "bmp"], single: true },
 
   // ── Edit & create ───────────────────────────────────────────────────────
   "add-border": { kinds: COMMON },

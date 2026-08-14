@@ -5,7 +5,13 @@ import { absoluteUrl, SITE } from "@/lib/site";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { JsonLd } from "@/components/JsonLd";
 import { Icon } from "@/components/Icon";
-import { SeoContent, type HowToStep, type Faq, type Feature } from "@/components/SeoContent";
+import {
+  SeoContent,
+  type HowToStep,
+  type Faq,
+  type Feature,
+  type SeoSection,
+} from "@/components/SeoContent";
 import { GifMakerTool } from "./GifMakerTool";
 
 const tool = getTool("gif-maker")!;
@@ -36,6 +42,51 @@ const faqs: Faq[] = [
   { q: "Can I control the speed?", a: "Yes. The frame-delay slider sets the time per frame, shown in both milliseconds and frames per second." },
   { q: "What if my images are different sizes?", a: "Each frame is fitted (letterboxed) into a common canvas with your chosen background, so the GIF stays consistent." },
   { q: "Is it free and private?", a: "Yes. No sign-up and no watermark, and the GIF is built locally in your browser." },
+  { q: "Why is my GIF so large?", a: "Because GIF is an old format with weak compression and no way to discard detail the way modern codecs do. Every frame adds to the file, and photographic content is the worst case. Cutting the dimensions, reducing the frame count and shortening the loop are the three levers that matter." },
+  { q: "How do I make the file smaller?", a: "Reduce the pixel dimensions first — halving width and height cuts each frame to a quarter. Then use fewer frames, and keep the loop short. A 480-pixel-wide GIF of 15 frames is a sensible target; 800 pixels and 60 frames rarely is." },
+  { q: "Why do the colours look banded?", a: "GIF allows only 256 colours per frame, so anything with gradients — skies, skin tones, shadows — has to be approximated. The encoder dithers to disguise it, which produces the characteristic speckled texture. Flat graphics and illustration handle the limit far better than photographs." },
+  { q: "What frame delay should I use?", a: "Around 100 ms per frame gives roughly 10 frames per second, which reads as smooth for most short loops. Shorter delays look smoother but multiply the file size; longer ones read as a slideshow, which is often the right choice for a step-by-step sequence." },
+  { q: "Can I make a GIF from a video?", a: "Not with this tool — it builds a GIF from still images you supply. You would need to extract frames from the video first. For a sequence of screenshots, product angles or a stop-motion set, this is exactly the right tool." },
+  { q: "Should I use a GIF or a video?", a: "A video, almost always, if the platform supports one — a short MP4 is a fraction the size at far better quality. GIF wins only where autoplay-anywhere with no player matters: chat apps, README files, email in some clients, and old forums." },
+];
+
+const sections: SeoSection[] = [
+  {
+    heading: "Why GIF survives",
+    id: "why",
+    body: [
+      "By any technical measure GIF should have disappeared decades ago. It dates from 1987, tops out at 256 colours per frame, compresses poorly, and a video file will do the same job at a fraction of the size with far better quality.",
+      "It survives because of what it does not need. A GIF plays automatically, loops forever, needs no player, no controls and no user gesture, and works in places where video does not — chat applications, README files on code hosts, email in some clients, forums, and any system that treats it simply as an image.",
+      "That is the whole calculation. If your destination will accept a video, use one. If it accepts images and nothing else, GIF is the only animated option you have.",
+    ],
+  },
+  {
+    heading: "The 256-colour limit",
+    id: "colours",
+    body: [
+      "GIF stores a palette of at most 256 colours per frame, and every pixel must be one of them. For flat illustration, line art, screen recordings of interfaces and logo animations that is plenty — such images rarely contain more distinct colours than that anyway.",
+      "Photographs are the hard case. A single frame of a real scene contains many thousands of distinct colours, so the encoder must choose 256 and approximate the rest. Dithering scatters pixels of neighbouring palette colours to fake the intermediate shades, which is why photographic GIFs have that speckled, slightly grainy look, most visible in skies and skin.",
+      "Nothing can be done about this within the format. If banding is unacceptable, the answer is a video rather than a better GIF.",
+    ],
+  },
+  {
+    heading: "Controlling the file size",
+    id: "size",
+    body: [
+      "Three things drive it, and dimensions dominate. Every frame stores the full picture, so halving the width and height quarters the data in each one — this is by far the most effective lever, and a 480-pixel-wide GIF looks perfectly good in a chat window or a README.",
+      "Frame count is next. Fewer frames means a choppier animation but a proportionally smaller file, and many loops read fine at 8–12 frames per second rather than 24. Trimming the sequence to only the frames that carry the action is usually painless.",
+      "Loop length is the third. A two-second loop that repeats forever is more watchable than a ten-second one, and it is five times smaller. Resisting the urge to include everything is the single best habit here.",
+    ],
+  },
+  {
+    heading: "Timing and rhythm",
+    id: "timing",
+    body: [
+      "Frame delay decides the pace. Around 100 ms per frame gives roughly ten frames a second — smooth enough for most short loops without the file cost of a higher rate. Faster than about 60 ms and you are paying a lot of bytes for smoothness few people will notice.",
+      "Slower delays turn the animation into a slideshow, which is often exactly what you want. A step-by-step tutorial, a set of product angles or a before-and-after comparison reads better at 500–800 ms per frame, giving the viewer time to take each one in before it changes.",
+      "One practical touch: if the loop repeats forever, holding the final frame slightly longer gives the eye a moment to reset and stops the animation feeling frantic.",
+    ],
+  },
 ];
 
 export default function Page() {
@@ -85,7 +136,7 @@ export default function Page() {
         toolName="GIF Maker"
         intro="Turn a series of images into a looping animation. oMyImage's GIF Maker builds an animated GIF from your photos right in your browser, with a live preview, adjustable speed, output size, looping and frame reordering. Create slideshows, reaction GIFs or simple animations and download instantly — nothing is uploaded, so your images stay private."
         howToTitle="How to make an animated GIF"
-        steps={steps} features={features} faqs={faqs} fullWidthText
+        steps={steps} features={features} faqs={faqs} sections={sections} fullWidthText
         security="Your images stay private. The GIF is encoded entirely in your browser with the open-source gifenc library — nothing is uploaded to a server. No storage, no tracking of your files."
       />
 

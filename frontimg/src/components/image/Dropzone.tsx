@@ -14,6 +14,7 @@ export function Dropzone({
   multiple = true,
   buttonLabel = "Select images",
   hint,
+  privacyNote = "Processed in your browser — your images never leave your device.",
 }: {
   onFiles: (files: FileList | File[]) => void;
   accept: string;
@@ -22,6 +23,14 @@ export function Dropzone({
   multiple?: boolean;
   buttonLabel?: string;
   hint: string;
+  /**
+   * Footer line. This USED to be hardcoded to the browser-local wording, which
+   * put a flat contradiction on every server-backed page — heic-to-jpg said
+   * "your images never leave your device" directly above its own intro
+   * explaining that it converts on the server. Server tools must pass this.
+   * See LICENSE-AUDIT.md F4.
+   */
+  privacyNote?: string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDropping, setIsDropping] = useState(false);
@@ -58,7 +67,7 @@ export function Dropzone({
           <p className="text-body-md text-on-surface-variant mt-2">{hint}</p>
         </div>
         <p className="text-label-sm font-label-sm text-on-surface-variant/70 mt-1 flex items-center gap-1.5">
-          <Icon name="lock" className="text-[14px]" /> Processed in your browser — your images never leave your device.
+          <Icon name="lock" className="text-[14px]" /> {privacyNote}
         </p>
       </div>
     </>

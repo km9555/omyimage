@@ -5,7 +5,13 @@ import { absoluteUrl, SITE } from "@/lib/site";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { JsonLd } from "@/components/JsonLd";
 import { Icon } from "@/components/Icon";
-import { SeoContent, type HowToStep, type Faq, type Feature } from "@/components/SeoContent";
+import {
+  SeoContent,
+  type HowToStep,
+  type Faq,
+  type Feature,
+  type SeoSection,
+} from "@/components/SeoContent";
 import { CircleCropTool } from "./CircleCropTool";
 
 const tool = getTool("circle-crop")!;
@@ -36,6 +42,50 @@ const faqs: Faq[] = [
   { q: "What if my image isn't square?", a: "The tool automatically takes the largest centered square from your image before cropping it to a circle." },
   { q: "Can I add a ring around the circle?", a: "Yes. Set the ring thickness and color to add a clean border around the circular crop." },
   { q: "Is it free and private?", a: "Yes. No sign-up and no watermark, and every image is processed locally in your browser." },
+  { q: "Why does my circle crop have a white square behind it?", a: "Because you exported as JPG. JPG has no transparency, so everything outside the circle has to be filled with a solid colour. Export as PNG or WEBP instead and the corners stay genuinely transparent." },
+  { q: "What size should a profile picture be?", a: "Somewhere around 400×400 to 800×800 covers essentially every platform. They all downscale to their own display size, so supplying more than about 800 pixels gains nothing, while supplying less than about 200 looks soft on a high-density screen." },
+  { q: "Do I need to circle-crop for a profile picture at all?", a: "Usually not — most platforms apply their own circular mask to whatever square you upload. Doing it yourself matters when you need the round image somewhere that will not mask it for you: a website, a slide, a PDF, an email signature or a printed document." },
+  { q: "How do I get the crop centred on a face?", a: "Position the circle so the eyes sit slightly above the middle rather than dead centre. Centring on the whole head tends to leave too much space above and crop the chin. Leave a little room around the head rather than filling the circle edge to edge." },
+  { q: "When is a ring worth adding?", a: "When the image will sit on a background of similar tone — without it the edge of a pale portrait can disappear against a pale page and the head appears to float. Keep it thin; a heavy ring competes with the subject." },
+  { q: "Will the image lose quality?", a: "No. Cropping keeps the remaining pixels exactly as they were. The only quality cost is the export step, and choosing PNG avoids even that." },
+];
+
+const sections: SeoSection[] = [
+  {
+    heading: "Transparency is the whole point",
+    id: "transparency",
+    body: [
+      "A circular crop is only genuinely circular if the corners are transparent. Otherwise you have a square image with a circle drawn on it, and the moment it sits on a background of a different colour the square becomes visible.",
+      "That makes the export format the most important decision here, and the one people most often get wrong. PNG and WEBP both carry an alpha channel and keep the corners empty. JPG has no alpha channel at all, so the area outside the circle must be filled with something — which is why a JPG circle crop arrives with a white box around it.",
+      "If you know the image will always sit on a known solid colour, filling with that colour works fine. If it might go anywhere, use PNG.",
+    ],
+  },
+  {
+    heading: "Where round images are actually needed",
+    id: "uses",
+    body: [
+      "Most social platforms mask avatars into circles themselves, so uploading a square is enough. The cases that need a real circular crop are the ones where nothing will do the masking for you.",
+      "That covers team pages and author bylines on a website, headshots on presentation slides, contributor photos in a PDF or report, logos and badges, email signatures, and printed materials. In all of these you are placing an image file directly, and if its corners are not transparent they will show.",
+      "It is also handy for product shots and icons where a round crop simply looks more finished than a rectangle floating in a layout.",
+    ],
+  },
+  {
+    heading: "Composing inside a circle",
+    id: "composition",
+    body: [
+      "A circle crops more aggressively than it looks — the corners of the original are gone entirely, so anything near an edge disappears. Compose with more room around the subject than you would for a rectangular crop.",
+      "For portraits, the reliable placement is eyes slightly above centre with a little space above the head. Centring the whole head mathematically tends to leave an awkward gap at the top and cut the chin. Fill the circle with the face and it feels claustrophobic; leave a small margin and it reads as a considered portrait.",
+      "Start from a square-ish source if you can. Cropping a wide landscape photograph to a circle throws away most of the frame, so a tighter original gives you far more usable resolution in the result.",
+    ],
+  },
+  {
+    heading: "Sizing and rings",
+    id: "sizing",
+    body: [
+      "Between 400 and 800 pixels square covers every realistic use. Platforms downscale to their own dimensions, so more resolution than that is wasted bytes; much less and the image looks soft on a high-density display.",
+      "A thin ring around the edge solves a specific problem: a light portrait on a light page has no visible boundary, and the head appears to float. A one- or two-pixel ring in a mid tone defines the shape without drawing attention. Thicker rings start to look like a frame, which is a design choice rather than a fix.",
+    ],
+  },
 ];
 
 export default function Page() {
@@ -85,7 +135,7 @@ export default function Page() {
         toolName="Circle Crop Image"
         intro="Create polished round avatars and profile pictures in seconds. oMyImage's Circle Crop tool takes the largest centered square of your image and clips it to a smooth circle right in your browser, with a transparent background by default plus optional color fills and a ring. Crop one image or a whole batch and download instantly — nothing is uploaded, so your images stay private."
         howToTitle="How to crop an image into a circle"
-        steps={steps} features={features} faqs={faqs} fullWidthText
+        steps={steps} features={features} faqs={faqs} sections={sections} fullWidthText
         security="Your images stay private. Circle cropping happens entirely in your browser with HTML canvas — nothing is uploaded to a server. No storage, no tracking of your files."
       />
 

@@ -54,9 +54,12 @@ export const TOOL_ALIASES: Record<string, string[]> = {
   ],
 
   // ── Convert ─────────────────────────────────────────────────────────────
+  // "webp to jpg", "gif to jpg" and "bmp to jpg" used to live here as a
+  // catch-all. Each now has its own page, so they were moved — leaving them
+  // would poach traffic from the dedicated pages the searcher actually wants.
   "convert-to-jpg": [
     "convert to jpeg", "any image to jpg", "to jpg", "change format to jpg",
-    "webp to jpg", "gif to jpg", "bmp to jpg", "make jpg",
+    "make jpg", "image converter", "change image format",
   ],
   "png-to-jpg": [
     "png to jpeg", "png2jpg", "convert png", "png into jpg", "transparent to jpg",
@@ -67,6 +70,27 @@ export const TOOL_ALIASES: Record<string, string[]> = {
   "webp-to-png": [
     "webp2png", "convert webp", "webp into png", "open webp", "webp converter",
   ],
+  "heic-to-png": [
+    "heic2png", "iphone photo to png", "heif to png", "heic lossless",
+    "apple photo to png",
+  ],
+  "image-to-text": [
+    "ocr", "extract text from image", "picture to text", "photo to text",
+    "read text from image", "screenshot to text", "scan to text", "jpg to text",
+    "image text extractor", "copy text from picture",
+  ],
+  "webp-to-jpg": ["webp2jpg", "webp to jpeg", "save webp as jpg", "webp jpg"],
+  "jpg-to-webp": ["jpg2webp", "jpeg to webp", "compress jpg to webp", "webp for website"],
+  "png-to-webp": ["png2webp", "shrink png", "webp with transparency", "png webp"],
+  "jfif-to-jpg": [
+    "jfif2jpg", "jfif file", "change jfif to jpg", "open jfif", "jfif to jpeg",
+    "what is jfif", "jfif converter",
+  ],
+  "gif-to-png": ["gif2png", "gif frame to png", "static gif", "gif still"],
+  "gif-to-jpg": ["gif2jpg", "gif to jpeg", "gif frame to jpg"],
+  "bmp-to-jpg": ["bmp2jpg", "bitmap to jpg", "bmp to jpeg", "shrink bmp", "bitmap converter"],
+  "avif-to-jpg": ["avif2jpg", "open avif", "avif to jpeg", "convert avif", "avif file"],
+  "avif-to-png": ["avif2png", "avif transparent", "avif to png lossless"],
   "heic-to-jpg": [
     "iphone photo", "heif", "convert heic", "apple photo to jpg", "heic converter",
     "heic to jpeg", "open heic", "iphone picture to jpg",
