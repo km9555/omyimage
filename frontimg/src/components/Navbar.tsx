@@ -4,6 +4,8 @@ import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { HeaderSearch } from "@/components/HeaderSearch";
 import { AppsMenu } from "@/components/AppsMenu";
+import { NavToolsDropdown } from "@/components/NavToolsDropdown";
+import { CreditsBadge } from "@/components/CreditsBadge";
 
 const quickLinks = [
   { label: "Compress Image", href: "/compress-image" },
@@ -28,24 +30,34 @@ export function Navbar() {
           </Link>
 
           {/*
-            Quick links start at `lg`, not `md`. The bar is a single flex row of
-            brand + links + search + actions; between 768px and ~1100px the
-            three links (~400px at the xl size) leave the search nothing, and
-            because the search sits in a `flex-1 min-w-0` slot it is the part
-            that gives way — measured 71px at 1024 and fully collapsed to 0px
-            at 900 before this. Holding the links back to `lg` and running them
-            a size down until `xl` keeps the search usable at every width.
+            The bar is a single flex row of brand + nav + search + actions, and
+            the search sits in a `flex-1 min-w-0` slot, so it is always the part
+            that gives way when the row gets tight.
+
+            Quick links start at `lg`, not `md`: between 768px and ~1100px the
+            three links (~400px at the xl size) left the search nothing —
+            measured 71px at 1024 and fully collapsed to 0px at 900 before that
+            change.
+
+            They now start at `xl` instead. Adding the Tools mega-menu (86px)
+            and the credits pill (96px) pushed the 1024 row to 1134px of content
+            in a 1009px bar — a real horizontal overflow. The dropdown reaches
+            every tool on its own, so at `lg` it stands in for the three
+            shortcuts rather than sitting beside them.
           */}
           <nav className="hidden lg:flex items-center gap-1">
-            {quickLinks.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                className="text-body-sm xl:text-body-md px-2.5 xl:px-3 py-1.5 rounded-md whitespace-nowrap text-on-surface-variant hover:bg-secondary/10 hover:text-on-secondary-fixed-variant dark:hover:text-secondary focus-visible:outline-none focus-visible:bg-secondary/10 focus-visible:text-on-secondary-fixed-variant dark:focus-visible:text-secondary transition-colors"
-              >
-                {link.label}
-              </Link>
-            ))}
+            <NavToolsDropdown />
+            <span className="hidden xl:flex items-center gap-1">
+              {quickLinks.map((link) => (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  className="text-body-sm xl:text-body-md px-2.5 xl:px-3 py-1.5 rounded-md whitespace-nowrap text-on-surface-variant hover:bg-secondary/10 hover:text-on-secondary-fixed-variant dark:hover:text-secondary focus-visible:outline-none focus-visible:bg-secondary/10 focus-visible:text-on-secondary-fixed-variant dark:focus-visible:text-secondary transition-colors"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </span>
           </nav>
         </div>
 
@@ -59,10 +71,15 @@ export function Navbar() {
 
         {/* Actions */}
         <div className="flex items-center gap-1.5 shrink-0 ml-auto md:ml-0">
-          {/* Credits pill is built but intentionally not shown — oMyImage has no
-              billing layer yet. Uncomment both blocks once it does. */}
-          {/* <div className="hidden md:block"><CreditsBadge /></div> */}
-          {/* <div className="md:hidden"><CreditsBadge compact /></div> */}
+          {/* Daily premium-run counter. There is still no billing layer, so
+              CreditsBadge counts from localStorage — nothing increments
+              `omyimage:premium-usage` yet, so this reads 0/10 until a tool
+              writes to it. See CreditsBadge for the swap-in point. */}
+          <div className="hidden md:block"><CreditsBadge /></div>
+          {/* Compact form starts at `sm`, not 0: at 375px the brand (142px) and
+              the actions cluster already fill the row, and the 80px pill pushed
+              it 30px into horizontal overflow. */}
+          <div className="hidden sm:block md:hidden"><CreditsBadge compact /></div>
           {/* Single, prominent Login button — replaces the old Login link +
               Sign-up pill pair. Squared corners, icon-led, matching oMyPDF. */}
           <Link

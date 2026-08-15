@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Icon } from "@/components/Icon";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
+import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
+import { SettingsRail, RailAction, RailSecondaryAction } from "@/components/tool/SettingsRail";
 import { downloadBlob, canvasToBlob, mimeExt, type ExportMime } from "@/lib/image/raster";
 
 const ACCENT = "#8064C6";
@@ -98,11 +100,11 @@ export function Base64ToImageTool() {
   const fieldCls = "w-full px-3 py-2.5 rounded-lg bg-surface-container-lowest border border-surface-variant focus:border-secondary focus:ring-1 focus:ring-secondary outline-none text-body-md text-primary";
 
   return (
-    <section className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 items-start">
-      <span data-tool-active hidden aria-hidden="true" />
+    <>
       <TopLoadingBar active={isWorking} />
-
-      <div className="flex flex-col gap-3 lg:sticky lg:top-24 lg:self-start">
+      <ToolWorkspace
+        main={
+          <>
         <div className="bg-surface-container rounded-xl border border-surface-variant p-4 flex items-center justify-center overflow-hidden" style={{ minHeight: 220 }}>
           {valid ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -117,30 +119,39 @@ export function Base64ToImageTool() {
         {valid && dims && (
           <p className="text-center text-label-sm font-label-sm text-on-surface-variant">{dims.w} × {dims.h} px · decoded preview</p>
         )}
-      </div>
-
-      <div className="lg:sticky lg:top-24 flex flex-col gap-4">
-        <div className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-5 flex flex-col gap-4">
-          <h2 className="text-headline-md font-bold text-primary">Base64 input</h2>
+          </>
+        }
+        rail={
+          <SettingsRail
+            title="Base64 Input"
+            icon="image"
+            accent={ACCENT}
+            footer={
+              <>
+                <RailAction onClick={downloadNative} disabled={!valid || isWorking} icon="download">
+                  Download image
+                </RailAction>
+                <RailSecondaryAction icon="sync_alt" onClick={downloadConverted}>
+                  Download as {mimeExt(format).toUpperCase()}
+                </RailSecondaryAction>
+              </>
+            }
+          >
+        <div className="flex flex-col gap-4">
           <textarea value={input} onChange={(e) => setInput(e.target.value)} rows={7} placeholder="Paste a data URI (data:image/png;base64,…) or raw Base64" className={`${fieldCls} font-label-sm resize-y break-all`} style={{ wordBreak: "break-all" }} />
           {input && (error ? <p className="text-label-sm font-label-sm text-error flex items-center gap-1"><Icon name="error" className="text-[16px]" /> {error}</p> : valid ? <p className="text-label-sm font-label-sm text-on-surface-variant flex items-center gap-1"><Icon name="check_circle" className="text-[16px]" style={{ color: ACCENT }} /> Valid image detected.</p> : null)}
         </div>
 
-        <button type="button" onClick={downloadNative} disabled={!valid || isWorking} className="w-full inline-flex items-center justify-center gap-2 bg-secondary hover:bg-secondary-container text-on-secondary font-semibold py-3.5 rounded-lg transition-colors disabled:opacity-50">
-          <Icon name="download" className="text-[20px]" /> Download image
-        </button>
-
-        <div className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-5 flex flex-col gap-3">
-          <h2 className="text-headline-md font-bold text-primary">Convert &amp; download</h2>
+        <div className="flex flex-col gap-3 border-t border-outline-variant/60 pt-5">
+          <h3 className="text-body-lg font-bold text-primary">Convert &amp; download</h3>
           <select value={format} onChange={(e) => setFormat(e.target.value as ExportMime)} className={fieldCls}>{FORMATS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}</select>
           {format !== "image/png" && (
             <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Quality</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span></label><input type="range" min={0.5} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" /></div>
           )}
-          <button type="button" onClick={downloadConverted} disabled={!valid || isWorking} className="w-full inline-flex items-center justify-center gap-2 border border-secondary text-secondary font-semibold py-2.5 rounded-lg hover:bg-secondary/10 transition-colors disabled:opacity-50">
-            <Icon name="sync_alt" className="text-[18px]" /> Download as {mimeExt(format).toUpperCase()}
-          </button>
         </div>
-      </div>
-    </section>
+          </SettingsRail>
+        }
+      />
+    </>
   );
 }

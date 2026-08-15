@@ -6,6 +6,9 @@ import { Icon } from "@/components/Icon";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
 import { Dropzone } from "@/components/image/Dropzone";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
+import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
+import { FileTray, TrayAction, type TrayEntry } from "@/components/tool/FileTray";
+import { SettingsRail, RailAction, RailSecondaryAction, RailNote } from "@/components/tool/SettingsRail";
 import { shouldUseServer, toServerFormat, processOnServer } from "@/lib/process-router";
 import {
   rasterize, imageSize, downloadBlob, zipAndDownload, formatBytes, baseName, mimeExt, type ExportMime,
@@ -149,41 +152,54 @@ export function ResizeTool() {
     );
   }
 
+  const entries: TrayEntry[] = items.map((it) => ({
+    id: it.id,
+    name: it.file.name,
+    url: it.url,
+    meta: (
+      <>
+        {it.w && it.h ? `${it.w} × ${it.h}` : "…"} · {formatBytes(it.file.size)}
+        {it.result && <><Icon name="arrow_forward" className="text-[13px] mx-1 align-middle" /><span className="text-on-surface font-semibold">{it.result.w} × {it.result.h}</span></>}
+      </>
+    ),
+    action: it.result ? (
+      <TrayAction icon="download" tone="accent" label="Download" onClick={() => downloadBlob(it.result!.blob, it.result!.name)} />
+    ) : (
+      <TrayAction icon="close" label="Remove" disabled={isWorking} onClick={() => removeItem(it.id)} />
+    ),
+  }));
+
   return (
-    <section className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6 items-start">
-      <span data-tool-active hidden aria-hidden="true" />
+    <>
       <TopLoadingBar active={isWorking} />
-
-      <div className="flex flex-col gap-3 lg:sticky lg:top-24 lg:self-start">
-        <div className="flex items-center justify-between">
-          <h2 className="text-headline-md font-bold text-primary">{items.length} image{items.length === 1 ? "" : "s"}</h2>
-          <button type="button" onClick={reset} className="inline-flex items-center gap-1.5 text-label-md font-medium text-on-surface-variant hover:text-error"><Icon name="delete_sweep" className="text-[18px]" /> Clear</button>
-        </div>
-        <ul className="flex flex-col gap-2 max-h-[24vh] overflow-y-auto pr-1">
-          {items.map((it) => (
-            <li key={it.id} className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-3 flex items-center gap-3">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={it.url} alt="" className="w-12 h-12 rounded-lg object-cover bg-surface-container shrink-0" />
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-body-md font-semibold text-primary">{it.file.name}</p>
-                <p className="text-label-sm font-label-sm text-on-surface-variant">
-                  {it.w && it.h ? `${it.w} × ${it.h}` : "…"} · {formatBytes(it.file.size)}
-                  {it.result && <><Icon name="arrow_forward" className="text-[13px] mx-1 align-middle" /><span className="text-on-surface font-semibold">{it.result.w} × {it.result.h}</span></>}
-                </p>
-              </div>
-              {it.result ? (
-                <button type="button" onClick={() => downloadBlob(it.result!.blob, it.result!.name)} aria-label="Download" className="flex h-9 w-9 items-center justify-center rounded-lg text-secondary hover:bg-secondary/10 transition-colors"><Icon name="download" className="text-[20px]" /></button>
-              ) : (
-                <button type="button" onClick={() => removeItem(it.id)} disabled={isWorking} aria-label="Remove" className="flex h-9 w-9 items-center justify-center rounded-lg text-on-surface-variant hover:bg-error-container hover:text-error transition-colors disabled:opacity-40"><Icon name="close" className="text-[20px]" /></button>
-              )}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="lg:sticky lg:top-24 flex flex-col gap-4">
-        <div className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-5 flex flex-col gap-4">
-          <h2 className="text-headline-md font-bold text-primary">New size</h2>
+      <ToolWorkspace
+        main={<FileTray entries={entries} accept={ACCEPT} onFiles={addFiles} onClear={reset} busy={isWorking} />}
+        rail={
+          <SettingsRail
+            title="Resize Settings"
+            icon="photo_size_select_large"
+            accent={ACCENT}
+            footer={
+              <>
+                <RailNote>
+                  {previewDims
+                    ? <>First image → {previewDims.width} × {previewDims.height} px{items.length > 1 && keepAspect ? " — each keeps its own ratio" : ""}</>
+                    : "Keep aspect ratio on to avoid stretching."}
+                </RailNote>
+                <RailAction onClick={resizeAll} busy={isWorking} busyLabel="Resizing…" icon="photo_size_select_large">
+                  Resize {items.length > 1 ? `${items.length} images` : "& download"}
+                </RailAction>
+                {done && items.length > 1 && (
+                  <RailSecondaryAction
+                    icon="folder_zip"
+                    onClick={() => zipAndDownload(items.filter((i) => i.result).map((i) => ({ name: i.result!.name, blob: i.result!.blob })), "omyimage_resized.zip")}
+                  >
+                    Download all (ZIP)
+                  </RailSecondaryAction>
+                )}
+              </>
+            }
+          >
           <div className="grid grid-cols-2 gap-1 rounded-lg bg-surface-container p-1">
             {(["pixels", "percent"] as Mode[]).map((m) => (
               <button key={m} type="button" onClick={() => setMode(m)} className={`rounded-md px-3 py-2 text-body-md font-semibold capitalize transition-colors ${mode === m ? "bg-surface-container-lowest text-primary shadow-sm" : "text-on-surface-variant hover:text-primary"}`}>
@@ -221,25 +237,9 @@ export function ResizeTool() {
             </div>
           )}
           {showBg && <BackgroundPicker value={bg} onChange={setBg} allowTransparent={false} label="JPG background" />}
-        </div>
-
-        <button type="button" onClick={resizeAll} disabled={isWorking} className="w-full inline-flex items-center justify-center gap-2 bg-secondary hover:bg-secondary-container text-on-secondary font-semibold py-3.5 rounded-lg transition-colors disabled:opacity-50">
-          {isWorking ? (<><Icon name="progress_activity" className="animate-spin text-[20px]" /> Resizing…</>) : (<><Icon name="photo_size_select_large" fill className="text-[20px]" /> Resize {items.length > 1 ? `${items.length} images` : "& download"}</>)}
-        </button>
-
-        {done && items.length > 1 && (
-          <button type="button" onClick={() => zipAndDownload(items.filter((i) => i.result).map((i) => ({ name: i.result!.name, blob: i.result!.blob })), "omyimage_resized.zip")} className="w-full inline-flex items-center justify-center gap-2 border border-secondary text-secondary font-semibold py-2.5 rounded-lg hover:bg-secondary/10 transition-colors">
-            <Icon name="folder_zip" className="text-[20px]" /> Download all (ZIP)
-          </button>
-        )}
-
-        <div className="rounded-xl border border-outline-variant/40 bg-surface-bright p-4 flex items-start gap-2.5">
-          <Icon name="lightbulb" className="text-[18px] mt-0.5" style={{ color: ACCENT }} />
-          <p className="text-label-sm font-label-sm text-on-surface-variant">
-            {previewDims ? <><strong className="text-on-surface">First image →</strong> {previewDims.width} × {previewDims.height} px.{items.length > 1 && keepAspect ? " Each image keeps its own aspect ratio." : ""}</> : <><strong className="text-on-surface">Tip:</strong> enable “Keep aspect ratio” to avoid stretching.</>}
-          </p>
-        </div>
-      </div>
-    </section>
+          </SettingsRail>
+        }
+      />
+    </>
   );
 }

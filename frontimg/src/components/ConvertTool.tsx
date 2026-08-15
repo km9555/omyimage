@@ -14,6 +14,14 @@ import {
   type ExportMime,
 } from "@/lib/image/raster";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
+import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
+import { FileTray, TrayAction, type TrayEntry } from "@/components/tool/FileTray";
+import {
+  SettingsRail,
+  RailAction,
+  RailSecondaryAction,
+  RailNote,
+} from "@/components/tool/SettingsRail";
 import { shouldUseServer, toServerFormat, processOnServer } from "@/lib/process-router";
 import { useHandoff } from "@/lib/tool-handoff";
 import { kindOf, type FileKind } from "@/lib/file-actions";
@@ -246,128 +254,114 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
   }
 
   // ── Loaded state ──────────────────────────────────────────────────────────
-  return (
-    <section className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6 items-start">
-      <span data-tool-active hidden aria-hidden="true" />
-      <TopLoadingBar active={isWorking} />
-      {fileInput}
-
-      {/* Files */}
-      <div className="flex flex-col gap-3 lg:sticky lg:top-24 lg:self-start">
-        <div className="flex items-center justify-between">
-          <h2 className="text-headline-md font-bold text-primary">
-            {items.length} image{items.length === 1 ? "" : "s"}
-          </h2>
-          <div className="flex items-center gap-2">
-            <button type="button" onClick={openPicker} className="inline-flex items-center gap-1.5 text-label-md font-semibold text-secondary hover:underline">
-              <Icon name="add" className="text-[18px]" /> Add more
-            </button>
-            <button type="button" onClick={reset} className="inline-flex items-center gap-1.5 text-label-md font-medium text-on-surface-variant hover:text-error">
-              <Icon name="delete_sweep" className="text-[18px]" /> Clear
-            </button>
-          </div>
-        </div>
-
-        <ul className="flex flex-col gap-2 max-h-[24vh] overflow-y-auto pr-1">
-          {items.map((it) => (
-            <li key={it.id} className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-3 flex items-center gap-3">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={it.url} alt="" className="w-12 h-12 rounded-lg object-cover bg-surface-container shrink-0" />
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-body-md font-semibold text-primary">{it.file.name}</p>
-                <p className="text-label-sm font-label-sm text-on-surface-variant">
-                  {formatBytes(it.file.size)}
-                  {it.result && (
-                    <>
-                      <Icon name="arrow_forward" className="text-[13px] mx-1 align-middle" />
-                      <span className="text-on-surface font-semibold">{formatBytes(it.result.size)}</span>
-                      <span className="ml-1 uppercase text-[10px] rounded bg-secondary/15 text-on-secondary-fixed-variant px-1.5 py-0.5">{targetLabel}</span>
-                    </>
-                  )}
-                </p>
-              </div>
-              {it.result ? (
-                <button
-                  type="button"
-                  onClick={() => downloadBlob(it.result!.blob, it.result!.name)}
-                  aria-label={`Download ${it.result.name}`}
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-secondary hover:bg-secondary/10 transition-colors"
-                >
-                  <Icon name="download" className="text-[20px]" />
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => removeItem(it.id)}
-                  disabled={isWorking}
-                  aria-label="Remove"
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-on-surface-variant hover:bg-error-container hover:text-error transition-colors disabled:opacity-40"
-                >
-                  <Icon name="close" className="text-[20px]" />
-                </button>
-              )}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Options + action */}
-      <div className="lg:sticky lg:top-24 flex flex-col gap-4">
-        <div className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-5 flex flex-col gap-4">
-          <h2 className="text-headline-md font-bold text-primary">Output: {targetLabel}</h2>
-
-          {quality && (
-            <div className="flex flex-col gap-1.5">
-              <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant">
-                <span>Quality</span>
-                <span className="text-primary font-semibold">{Math.round(quality_ * 100)}%</span>
-              </label>
-              <input type="range" min={0.5} max={1} step={0.01} value={quality_} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" />
-            </div>
-          )}
-
-          {flatten && (
-            <BackgroundPicker value={bg} onChange={setBg} allowTransparent={false} label="Background (replaces transparency)" />
-          )}
-
-          <label className="flex items-center gap-2.5 cursor-pointer">
-            <input type="checkbox" checked={autoOrient} onChange={(e) => setAutoOrient(e.target.checked)} className="w-4 h-4 accent-secondary" />
-            <span className="text-body-md text-on-surface">Auto-rotate by EXIF orientation</span>
-          </label>
-        </div>
-
-        <button
-          type="button"
-          onClick={convertAll}
-          disabled={isWorking}
-          className="w-full inline-flex items-center justify-center gap-2 bg-secondary hover:bg-secondary-container text-on-secondary font-semibold py-3.5 rounded-lg transition-colors disabled:opacity-50"
-        >
-          {isWorking ? (
-            <><Icon name="progress_activity" className="animate-spin text-[20px]" /> Converting…</>
-          ) : (
-            <><Icon name="sync_alt" fill className="text-[20px]" /> Convert {items.length > 1 ? `${items.length} to ${targetLabel}` : `to ${targetLabel}`}</>
-          )}
-        </button>
-
-        {done && items.length > 1 && (
-          <button
-            type="button"
-            onClick={() => zipAndDownload(items.filter((i) => i.result).map((i) => ({ name: i.result!.name, blob: i.result!.blob })), `omyimage_${targetLabel.toLowerCase()}.zip`)}
-            className="w-full inline-flex items-center justify-center gap-2 border border-secondary text-secondary font-semibold py-2.5 rounded-lg hover:bg-secondary/10 transition-colors"
-          >
-            <Icon name="folder_zip" className="text-[20px]" /> Download all (ZIP)
-          </button>
+  const entries: TrayEntry[] = items.map((it) => ({
+    id: it.id,
+    name: it.file.name,
+    url: it.url,
+    meta: (
+      <>
+        {formatBytes(it.file.size)}
+        {it.result && (
+          <>
+            <Icon name="arrow_forward" className="text-[13px] mx-1 align-middle" />
+            <span className="text-on-surface font-semibold">{formatBytes(it.result.size)}</span>
+            <span className="ml-1 uppercase text-[10px] rounded bg-secondary/15 text-on-secondary-fixed-variant px-1.5 py-0.5">{targetLabel}</span>
+          </>
         )}
+      </>
+    ),
+    action: it.result ? (
+      <TrayAction
+        icon="download"
+        tone="accent"
+        label={`Download ${it.result.name}`}
+        onClick={() => downloadBlob(it.result!.blob, it.result!.name)}
+      />
+    ) : (
+      <TrayAction icon="close" label="Remove" disabled={isWorking} onClick={() => removeItem(it.id)} />
+    ),
+  }));
 
-        <div className="rounded-xl border border-outline-variant/40 bg-surface-bright p-4 flex items-start gap-2.5">
-          <Icon name="lightbulb" className="text-[18px] mt-0.5" style={{ color: accent }} />
-          <p className="text-label-sm font-label-sm text-on-surface-variant">
-            {done
-              ? <><strong className="text-on-surface">Total:</strong> {formatBytes(totalIn)} → {formatBytes(totalOut)}.</>
-              : <><strong className="text-on-surface">{items.length} ready.</strong> Multiple files download together as a ZIP.</>}
-          </p>
-        </div>
-      </div>
-    </section>
+  return (
+    <>
+      <TopLoadingBar active={isWorking} />
+      <ToolWorkspace
+        main={
+          <FileTray
+            entries={entries}
+            accept={accept}
+            onFiles={addFiles}
+            onClear={reset}
+            busy={isWorking}
+          />
+        }
+        rail={
+          <SettingsRail
+            title="Conversion Settings"
+            icon="tune"
+            accent={accent}
+            footer={
+              <>
+                <RailNote>
+                  {done ? (
+                    <>Total: {formatBytes(totalIn)} → {formatBytes(totalOut)}</>
+                  ) : (
+                    <>{items.length} file{items.length === 1 ? "" : "s"} ready{items.length > 1 ? " — downloads as a ZIP" : ""}</>
+                  )}
+                </RailNote>
+                <RailAction
+                  onClick={convertAll}
+                  busy={isWorking}
+                  busyLabel="Converting…"
+                  icon="sync_alt"
+                >
+                  Convert {items.length > 1 ? `${items.length} to ${targetLabel}` : `to ${targetLabel}`}
+                </RailAction>
+                {done && items.length > 1 && (
+                  <RailSecondaryAction
+                    icon="folder_zip"
+                    onClick={() =>
+                      zipAndDownload(
+                        items.filter((i) => i.result).map((i) => ({ name: i.result!.name, blob: i.result!.blob })),
+                        `omyimage_${targetLabel.toLowerCase()}.zip`,
+                      )
+                    }
+                  >
+                    Download all (ZIP)
+                  </RailSecondaryAction>
+                )}
+              </>
+            }
+          >
+            <div className="rounded-lg border border-outline-variant/40 bg-surface-bright p-3.5 flex items-start gap-2.5">
+              <Icon name="lightbulb" className="text-[18px] mt-0.5 shrink-0" style={{ color: accent }} />
+              <p className="text-label-sm font-label-sm text-on-surface-variant">
+                Output: <strong className="text-on-surface">{targetLabel}</strong>.{" "}
+                {config.privacyNote ?? DEFAULT_PRIVACY_NOTE}
+              </p>
+            </div>
+
+            {quality && (
+              <div className="flex flex-col gap-1.5">
+                <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant">
+                  <span>Quality</span>
+                  <span className="text-primary font-semibold">{Math.round(quality_ * 100)}%</span>
+                </label>
+                <input type="range" min={0.5} max={1} step={0.01} value={quality_} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" />
+              </div>
+            )}
+
+            {flatten && (
+              <BackgroundPicker value={bg} onChange={setBg} allowTransparent={false} label="Background (replaces transparency)" />
+            )}
+
+            <label className="flex items-center gap-2.5 cursor-pointer">
+              <input type="checkbox" checked={autoOrient} onChange={(e) => setAutoOrient(e.target.checked)} className="w-4 h-4 accent-secondary" />
+              <span className="text-body-md text-on-surface">Auto-rotate by EXIF orientation</span>
+            </label>
+          </SettingsRail>
+        }
+      />
+    </>
   );
 }

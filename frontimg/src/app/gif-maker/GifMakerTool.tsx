@@ -6,6 +6,9 @@ import { Icon } from "@/components/Icon";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
 import { Dropzone } from "@/components/image/Dropzone";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
+import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
+import { FileTray, TrayAction, type TrayEntry } from "@/components/tool/FileTray";
+import { SettingsRail, RailAction, RailNote } from "@/components/tool/SettingsRail";
 import { decodeBitmap, downloadBlob, formatBytes } from "@/lib/image/raster";
 import { useHandoff } from "@/lib/tool-handoff";
 
@@ -132,52 +135,54 @@ export function GifMakerTool() {
     );
   }
 
+  const entries: TrayEntry[] = items.map((it, i) => ({
+    id: it.id,
+    name: it.file.name,
+    url: it.url,
+    badge: (
+      <span className="grid place-items-center w-7 h-7 rounded-full text-label-sm font-bold shrink-0" style={{ backgroundColor: `${ACCENT}1A`, color: ACCENT }}>{i + 1}</span>
+    ),
+    meta: formatBytes(it.file.size),
+    action: <TrayAction icon="close" label="Remove" disabled={isWorking} onClick={() => removeItem(it.id)} />,
+  }));
+
   return (
-    <section className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6 items-start">
-      <span data-tool-active hidden aria-hidden="true" />
+    <>
       <TopLoadingBar active={isWorking} />
-
-      <div className="flex flex-col gap-3 lg:sticky lg:top-24 lg:self-start">
-        <div className="bg-surface-container rounded-xl border border-surface-variant p-4 flex items-center justify-center overflow-hidden" style={{ minHeight: 220 }}>
-          <canvas ref={previewRef} className="max-w-full max-h-[46vh] rounded" />
-        </div>
-        <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
-          Live preview · {outW} × {outH} px · {items.length} frame{items.length === 1 ? "" : "s"}
-        </p>
-
-        <div className="flex items-center justify-between">
-          <h2 className="text-headline-md font-bold text-primary">{items.length} frame{items.length === 1 ? "" : "s"}</h2>
-          <div className="flex items-center gap-2">
-            <label className="inline-flex items-center gap-1.5 text-label-md font-semibold text-secondary hover:underline cursor-pointer">
-              <Icon name="add" className="text-[18px]" /> Add more
-              <input type="file" accept={ACCEPT} multiple className="hidden" onChange={(e) => { if (e.target.files) addFiles(e.target.files); e.target.value = ""; }} />
-            </label>
-            <button type="button" onClick={reset} className="inline-flex items-center gap-1.5 text-label-md font-medium text-on-surface-variant hover:text-error"><Icon name="delete_sweep" className="text-[18px]" /> Clear</button>
-          </div>
-        </div>
-        <ul className="flex flex-col gap-2 max-h-[24vh] overflow-y-auto pr-1">
-          {items.map((it, i) => (
-            <li key={it.id} className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-3 flex items-center gap-3">
-              <span className="grid place-items-center w-7 h-7 rounded-full text-label-sm font-bold shrink-0" style={{ backgroundColor: `${ACCENT}1A`, color: ACCENT }}>{i + 1}</span>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={it.url} alt="" className="w-12 h-12 rounded-lg object-cover bg-surface-container shrink-0" />
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-body-md font-semibold text-primary">{it.file.name}</p>
-                <p className="text-label-sm font-label-sm text-on-surface-variant">{formatBytes(it.file.size)}</p>
-              </div>
-              <div className="flex items-center">
-                <button type="button" onClick={() => move(i, -1)} disabled={i === 0 || isWorking} aria-label="Move up" className="flex h-8 w-8 items-center justify-center rounded text-on-surface-variant hover:bg-surface-container disabled:opacity-30 transition-colors"><Icon name="arrow_upward" className="text-[18px]" /></button>
-                <button type="button" onClick={() => move(i, 1)} disabled={i === items.length - 1 || isWorking} aria-label="Move down" className="flex h-8 w-8 items-center justify-center rounded text-on-surface-variant hover:bg-surface-container disabled:opacity-30 transition-colors"><Icon name="arrow_downward" className="text-[18px]" /></button>
-                <button type="button" onClick={() => removeItem(it.id)} disabled={isWorking} aria-label="Remove" className="flex h-8 w-8 items-center justify-center rounded text-on-surface-variant hover:bg-error-container hover:text-error transition-colors disabled:opacity-40"><Icon name="close" className="text-[18px]" /></button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="lg:sticky lg:top-24 flex flex-col gap-4">
-        <div className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-5 flex flex-col gap-4">
-          <h2 className="text-headline-md font-bold text-primary">Animation</h2>
+      <ToolWorkspace
+        main={
+          <>
+            <div className="bg-surface-container rounded-xl border border-surface-variant p-4 flex items-center justify-center overflow-hidden" style={{ minHeight: 220 }}>
+              <canvas ref={previewRef} className="max-w-full max-h-[46vh] rounded" />
+            </div>
+            <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
+              Live preview · {outW} × {outH} px · {items.length} frame{items.length === 1 ? "" : "s"}
+            </p>
+            <FileTray
+              entries={entries}
+              title={`${items.length} frame${items.length === 1 ? "" : "s"}`}
+              accept={ACCEPT}
+              onFiles={addFiles}
+              onClear={reset}
+              onMove={move}
+              busy={isWorking}
+            />
+          </>
+        }
+        rail={
+          <SettingsRail
+            title="Animation Settings"
+            icon="gif_box"
+            accent={ACCENT}
+            footer={
+              <>
+                <RailNote>Set the order with the arrows. The preview plays at your chosen speed.</RailNote>
+                <RailAction onClick={createGif} disabled={items.length < 2} busy={isWorking} busyLabel="Building GIF…" icon="gif_box">
+                  Create GIF
+                </RailAction>
+              </>
+            }
+          >
           <div className="flex flex-col gap-1.5">
             <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Frame delay</span><span className="text-primary font-semibold">{delay}ms ({(1000 / delay).toFixed(1)} fps)</span></label>
             <input type="range" min={40} max={2000} step={10} value={delay} onChange={(e) => setDelay(parseInt(e.target.value, 10))} className="w-full accent-secondary" />
@@ -188,17 +193,9 @@ export function GifMakerTool() {
           </div>
           <label className="flex items-center gap-2.5 cursor-pointer"><input type="checkbox" checked={loop} onChange={(e) => setLoop(e.target.checked)} className="w-4 h-4 accent-secondary" /><span className="text-body-md text-on-surface">Loop forever</span></label>
           <BackgroundPicker value={bg} onChange={setBg} allowTransparent={false} label="Background (behind transparent areas)" />
-        </div>
-
-        <button type="button" onClick={createGif} disabled={isWorking || items.length < 2} className="w-full inline-flex items-center justify-center gap-2 bg-secondary hover:bg-secondary-container text-on-secondary font-semibold py-3.5 rounded-lg transition-colors disabled:opacity-50">
-          {isWorking ? (<><Icon name="progress_activity" className="animate-spin text-[20px]" /> Building GIF…</>) : (<><Icon name="gif_box" fill className="text-[20px]" /> Create GIF</>)}
-        </button>
-
-        <div className="rounded-xl border border-outline-variant/40 bg-surface-bright p-4 flex items-start gap-2.5">
-          <Icon name="lightbulb" className="text-[18px] mt-0.5" style={{ color: ACCENT }} />
-          <p className="text-label-sm font-label-sm text-on-surface-variant"><strong className="text-on-surface">Tip:</strong> drag frames with the arrows to set the order. The preview plays at your chosen speed. Everything runs in your browser.</p>
-        </div>
-      </div>
-    </section>
+          </SettingsRail>
+        }
+      />
+    </>
   );
 }

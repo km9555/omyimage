@@ -5,6 +5,8 @@ import { toast } from "sonner";
 import { Icon } from "@/components/Icon";
 import { HelpTip } from "@/components/HelpTip";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
+import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
+import { SettingsRail, RailAction, RailNote } from "@/components/tool/SettingsRail";
 import { useHandoff } from "@/lib/tool-handoff";
 
 const ACCENT = "#3E9A90";
@@ -379,12 +381,11 @@ export function CropTool() {
   const handleStyle = { borderColor: ACCENT } as const;
 
   return (
-    <section className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6 items-start">
-      <span data-tool-active hidden aria-hidden="true" />
+    <>
       <TopLoadingBar active={isWorking} />
-
-      {/* Workspace */}
-      <div className="flex flex-col gap-3 lg:sticky lg:top-24 lg:self-start">
+      <ToolWorkspace
+        main={
+          <>
         {/* File card */}
         <div className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-4 flex items-center gap-3">
           <span className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: `${ACCENT}1A` }}>
@@ -465,12 +466,24 @@ export function CropTool() {
         <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
           Drag inside the box to move it, or drag a handle to resize.
         </p>
-      </div>
-
-      {/* Settings + action (right) */}
-      <div className="lg:sticky lg:top-24 flex flex-col gap-4">
+          </>
+        }
+        rail={
+          <SettingsRail
+            title="Crop Settings"
+            icon="crop"
+            accent={ACCENT}
+            footer={
+              <>
+                <RailNote>Output: {crop.w} × {crop.h} px — nothing is uploaded.</RailNote>
+                <RailAction onClick={handleCrop} busy={isWorking} busyLabel="Cropping…" icon="crop">
+                  Crop &amp; download
+                </RailAction>
+              </>
+            }
+          >
         {/* Aspect ratio */}
-        <div className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-5 flex flex-col gap-3">
+        <div className="flex flex-col gap-3">
           <h2 className="text-headline-md font-bold text-primary">Aspect ratio</h2>
           <div className="grid grid-cols-4 gap-1.5">
             {ASPECTS.map((a) => {
@@ -494,7 +507,7 @@ export function CropTool() {
         </div>
 
         {/* Crop dimensions */}
-        <div className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-5 flex flex-col gap-3">
+        <div className="flex flex-col gap-3 border-t border-outline-variant/60 pt-5">
           <span className="flex items-center gap-1.5 text-headline-md font-bold text-primary">
             Selection
             <HelpTip text="Values are in pixels of the original image. Adjust them for a precise crop." />
@@ -515,7 +528,7 @@ export function CropTool() {
         </div>
 
         {/* Output */}
-        <div className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-5 flex flex-col gap-3">
+        <div className="flex flex-col gap-3 border-t border-outline-variant/60 pt-5">
           <h2 className="text-headline-md font-bold text-primary">Output</h2>
           <div className="flex flex-col gap-1.5">
             <label className="text-label-sm font-label-sm text-on-surface-variant">Format</label>
@@ -534,26 +547,9 @@ export function CropTool() {
           )}
         </div>
 
-        <button
-          type="button"
-          onClick={handleCrop}
-          disabled={isWorking}
-          className="w-full inline-flex items-center justify-center gap-2 bg-secondary hover:bg-secondary-container text-on-secondary font-semibold py-3.5 rounded-lg transition-colors disabled:opacity-50"
-        >
-          {isWorking ? (
-            <><Icon name="progress_activity" className="animate-spin text-[20px]" /> Cropping…</>
-          ) : (
-            <><Icon name="crop" fill className="text-[20px]" /> Crop &amp; download</>
-          )}
-        </button>
-
-        <div className="rounded-xl border border-outline-variant/40 bg-surface-bright p-4 flex items-start gap-2.5">
-          <Icon name="lightbulb" className="text-[18px] mt-0.5" style={{ color: ACCENT }} />
-          <p className="text-label-sm font-label-sm text-on-surface-variant">
-            <strong className="text-on-surface">Output:</strong> {crop.w} × {crop.h} px. Everything runs in your browser — nothing is uploaded.
-          </p>
-        </div>
-      </div>
-    </section>
+          </SettingsRail>
+        }
+      />
+    </>
   );
 }

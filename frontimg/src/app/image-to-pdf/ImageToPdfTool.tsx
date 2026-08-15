@@ -5,6 +5,9 @@ import { toast } from "sonner";
 import { Icon } from "@/components/Icon";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
 import { Dropzone } from "@/components/image/Dropzone";
+import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
+import { FileTray, TrayAction, type TrayEntry } from "@/components/tool/FileTray";
+import { SettingsRail, RailAction, RailNote } from "@/components/tool/SettingsRail";
 import { rasterize, downloadBlob, formatBytes } from "@/lib/image/raster";
 import { useHandoff } from "@/lib/tool-handoff";
 
@@ -97,39 +100,46 @@ export function ImageToPdfTool() {
     );
   }
 
+  const entries: TrayEntry[] = items.map((it, i) => ({
+    id: it.id,
+    name: it.file.name,
+    url: it.url,
+    badge: (
+      <span className="grid place-items-center w-7 h-7 rounded-full text-label-sm font-bold shrink-0" style={{ backgroundColor: `${ACCENT}1A`, color: ACCENT }}>{i + 1}</span>
+    ),
+    meta: formatBytes(it.file.size),
+    action: <TrayAction icon="close" label="Remove" disabled={isWorking} onClick={() => removeItem(it.id)} />,
+  }));
+
   return (
-    <section className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6 items-start">
-      <span data-tool-active hidden aria-hidden="true" />
+    <>
       <TopLoadingBar active={isWorking} />
-
-      <div className="flex flex-col gap-3 lg:sticky lg:top-24 lg:self-start">
-        <div className="flex items-center justify-between">
-          <h2 className="text-headline-md font-bold text-primary">{items.length} page{items.length === 1 ? "" : "s"}</h2>
-          <button type="button" onClick={reset} className="inline-flex items-center gap-1.5 text-label-md font-medium text-on-surface-variant hover:text-error"><Icon name="delete_sweep" className="text-[18px]" /> Clear</button>
-        </div>
-        <ul className="flex flex-col gap-2 max-h-[24vh] overflow-y-auto pr-1">
-          {items.map((it, i) => (
-            <li key={it.id} className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-3 flex items-center gap-3">
-              <span className="grid place-items-center w-7 h-7 rounded-full text-label-sm font-bold shrink-0" style={{ backgroundColor: `${ACCENT}1A`, color: ACCENT }}>{i + 1}</span>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={it.url} alt="" className="w-12 h-12 rounded-lg object-cover bg-surface-container shrink-0" />
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-body-md font-semibold text-primary">{it.file.name}</p>
-                <p className="text-label-sm font-label-sm text-on-surface-variant">{formatBytes(it.file.size)}</p>
-              </div>
-              <div className="flex items-center">
-                <button type="button" onClick={() => move(i, -1)} disabled={i === 0 || isWorking} aria-label="Move up" className="flex h-8 w-8 items-center justify-center rounded text-on-surface-variant hover:bg-surface-container disabled:opacity-30 transition-colors"><Icon name="arrow_upward" className="text-[18px]" /></button>
-                <button type="button" onClick={() => move(i, 1)} disabled={i === items.length - 1 || isWorking} aria-label="Move down" className="flex h-8 w-8 items-center justify-center rounded text-on-surface-variant hover:bg-surface-container disabled:opacity-30 transition-colors"><Icon name="arrow_downward" className="text-[18px]" /></button>
-                <button type="button" onClick={() => removeItem(it.id)} disabled={isWorking} aria-label="Remove" className="flex h-8 w-8 items-center justify-center rounded text-on-surface-variant hover:bg-error-container hover:text-error transition-colors disabled:opacity-40"><Icon name="close" className="text-[18px]" /></button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="lg:sticky lg:top-24 flex flex-col gap-4">
-        <div className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-5 flex flex-col gap-4">
-          <h2 className="text-headline-md font-bold text-primary">PDF settings</h2>
+      <ToolWorkspace
+        main={
+          <FileTray
+            entries={entries}
+            title={`${items.length} page${items.length === 1 ? "" : "s"}`}
+            accept={ACCEPT}
+            onFiles={addFiles}
+            onClear={reset}
+            onMove={move}
+            busy={isWorking}
+          />
+        }
+        rail={
+          <SettingsRail
+            title="PDF Settings"
+            icon="picture_as_pdf"
+            accent={ACCENT}
+            footer={
+              <>
+                <RailNote>Use the arrows to reorder pages. Everything runs in your browser.</RailNote>
+                <RailAction onClick={buildPdf} busy={isWorking} busyLabel="Building PDF…" icon="picture_as_pdf">
+                  Create PDF
+                </RailAction>
+              </>
+            }
+          >
           <div className="flex flex-col gap-1.5">
             <label className="text-label-sm font-label-sm text-on-surface-variant">Page size</label>
             <div className="grid grid-cols-3 gap-1 rounded-lg bg-surface-container p-1">
@@ -158,17 +168,9 @@ export function ImageToPdfTool() {
               ))}
             </div>
           </div>
-        </div>
-
-        <button type="button" onClick={buildPdf} disabled={isWorking} className="w-full inline-flex items-center justify-center gap-2 bg-secondary hover:bg-secondary-container text-on-secondary font-semibold py-3.5 rounded-lg transition-colors disabled:opacity-50">
-          {isWorking ? (<><Icon name="progress_activity" className="animate-spin text-[20px]" /> Building PDF…</>) : (<><Icon name="picture_as_pdf" fill className="text-[20px]" /> Create PDF</>)}
-        </button>
-
-        <div className="rounded-xl border border-outline-variant/40 bg-surface-bright p-4 flex items-start gap-2.5">
-          <Icon name="lightbulb" className="text-[18px] mt-0.5" style={{ color: ACCENT }} />
-          <p className="text-label-sm font-label-sm text-on-surface-variant"><strong className="text-on-surface">Tip:</strong> use the arrows to reorder pages. Everything runs in your browser.</p>
-        </div>
-      </div>
-    </section>
+          </SettingsRail>
+        }
+      />
+    </>
   );
 }

@@ -13,6 +13,9 @@ import {
   mimeExt,
   type ExportMime,
 } from "@/lib/image/raster";
+import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
+import { FileTray, TrayAction, type TrayEntry } from "@/components/tool/FileTray";
+import { SettingsRail, RailAction, RailSecondaryAction, RailNote } from "@/components/tool/SettingsRail";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
 import { shouldUseServer, toServerFormat, processOnServer } from "@/lib/process-router";
 import { useHandoff } from "@/lib/tool-handoff";
@@ -116,11 +119,6 @@ export function RotateTool() {
     }
   };
 
-  useEffect(() => {
-    document.body.classList.toggle("tool-active", items.length > 0);
-    return () => document.body.classList.remove("tool-active");
-  }, [items.length]);
-
   const openPicker = () => inputRef.current?.click();
   const fieldCls =
     "w-full px-3 py-2.5 rounded-lg bg-surface-container-lowest border border-surface-variant focus:border-secondary focus:ring-1 focus:ring-secondary outline-none text-body-md text-primary";
@@ -164,69 +162,74 @@ export function RotateTool() {
   const previewTransform = `rotate(${angle}deg) scale(${flipH ? -1 : 1}, ${flipV ? -1 : 1})`;
   const swap = angle % 180 !== 0; // 90/270 → preview box uses rotated footprint
 
+  const entries: TrayEntry[] = items.map((it) => ({
+    id: it.id,
+    name: it.file.name,
+    url: it.url,
+    meta: (
+      <>
+        {formatBytes(it.file.size)}
+        {it.result && <><Icon name="arrow_forward" className="text-[13px] mx-1 align-middle" /><span className="text-on-surface font-semibold">{formatBytes(it.result.size)}</span></>}
+      </>
+    ),
+    action: it.result ? (
+      <TrayAction icon="download" tone="accent" label="Download" onClick={() => downloadBlob(it.result!.blob, it.result!.name)} />
+    ) : (
+      <TrayAction icon="close" label="Remove" disabled={isWorking} onClick={() => removeItem(it.id)} />
+    ),
+  }));
+
   // ── Loaded ──────────────────────────────────────────────────────────────
   return (
-    <section className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6 items-start">
-      <span data-tool-active hidden aria-hidden="true" />
+    <>
       <TopLoadingBar active={isWorking} />
-      {fileInput}
-
-      {/* Preview + files — pinned so they stay visible while scrolling the options */}
-      <div className="flex flex-col gap-4 lg:sticky lg:top-24 lg:self-start">
-        {/* Live preview */}
-        <div className="bg-surface-container rounded-xl border border-surface-variant p-4 flex items-center justify-center overflow-hidden" style={{ minHeight: 220 }}>
-          <div className="flex items-center justify-center" style={{ width: "100%", height: swap ? "44vw" : "auto", maxHeight: "44vh" }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={preview.url}
-              alt="Rotation preview"
-              draggable={false}
-              className="max-w-full max-h-[42vh] object-contain rounded transition-transform duration-200"
-              style={{ transform: previewTransform }}
-            />
-          </div>
-        </div>
-        <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
-          Preview of <span className="font-semibold text-on-surface">{preview.file.name}</span>
-          {items.length > 1 && <> — the same transform applies to all {items.length} images.</>}
-        </p>
-
-        {/* Files */}
-        <div className="flex items-center justify-between">
-          <h2 className="text-headline-md font-bold text-primary">{items.length} image{items.length === 1 ? "" : "s"}</h2>
-          <div className="flex items-center gap-2">
-            <button type="button" onClick={openPicker} className="inline-flex items-center gap-1.5 text-label-md font-semibold text-secondary hover:underline"><Icon name="add" className="text-[18px]" /> Add more</button>
-            <button type="button" onClick={reset} className="inline-flex items-center gap-1.5 text-label-md font-medium text-on-surface-variant hover:text-error"><Icon name="delete_sweep" className="text-[18px]" /> Clear</button>
-          </div>
-        </div>
-        <ul className="flex flex-col gap-2 max-h-[20vh] overflow-y-auto pr-1">
-          {items.map((it) => (
-            <li key={it.id} className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-3 flex items-center gap-3">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={it.url} alt="" className="w-12 h-12 rounded-lg object-cover bg-surface-container shrink-0" />
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-body-md font-semibold text-primary">{it.file.name}</p>
-                <p className="text-label-sm font-label-sm text-on-surface-variant">
-                  {formatBytes(it.file.size)}
-                  {it.result && <><Icon name="arrow_forward" className="text-[13px] mx-1 align-middle" /><span className="text-on-surface font-semibold">{formatBytes(it.result.size)}</span></>}
-                </p>
+      <ToolWorkspace
+        main={
+          <>
+            <div className="bg-surface-container rounded-xl border border-surface-variant p-4 flex items-center justify-center overflow-hidden" style={{ minHeight: 220 }}>
+              <div className="flex items-center justify-center" style={{ width: "100%", height: swap ? "44vw" : "auto", maxHeight: "44vh" }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={preview.url}
+                  alt="Rotation preview"
+                  draggable={false}
+                  className="max-w-full max-h-[42vh] object-contain rounded transition-transform duration-200"
+                  style={{ transform: previewTransform }}
+                />
               </div>
-              {it.result ? (
-                <button type="button" onClick={() => downloadBlob(it.result!.blob, it.result!.name)} aria-label="Download" className="flex h-9 w-9 items-center justify-center rounded-lg text-secondary hover:bg-secondary/10 transition-colors"><Icon name="download" className="text-[20px]" /></button>
-              ) : (
-                <button type="button" onClick={() => removeItem(it.id)} disabled={isWorking} aria-label="Remove" className="flex h-9 w-9 items-center justify-center rounded-lg text-on-surface-variant hover:bg-error-container hover:text-error transition-colors disabled:opacity-40"><Icon name="close" className="text-[20px]" /></button>
-              )}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Controls + action */}
-      <div className="lg:sticky lg:top-24 flex flex-col gap-4">
-        {/* Transform */}
-        <div className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-5 flex flex-col gap-4">
+            </div>
+            <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
+              Preview of <span className="font-semibold text-on-surface">{preview.file.name}</span>
+              {items.length > 1 && <> — the same transform applies to all {items.length} images.</>}
+            </p>
+            <FileTray entries={entries} accept="image/*" onFiles={addFiles} onClear={reset} busy={isWorking} />
+          </>
+        }
+        rail={
+          <SettingsRail
+            title="Transform Settings"
+            icon="rotate_90_degrees_cw"
+            accent={ACCENT}
+            footer={
+              <>
+                <RailNote>90° steps straighten; the angle slider gives a custom tilt.</RailNote>
+                <RailAction onClick={apply} busy={isWorking} busyLabel="Rotating…" icon="rotate_90_degrees_cw">
+                  Rotate {items.length > 1 ? `${items.length} images` : "& download"}
+                </RailAction>
+                {done && items.length > 1 && (
+                  <RailSecondaryAction
+                    icon="folder_zip"
+                    onClick={() => zipAndDownload(items.filter((i) => i.result).map((i) => ({ name: i.result!.name, blob: i.result!.blob })), "omyimage_rotated.zip")}
+                  >
+                    Download all (ZIP)
+                  </RailSecondaryAction>
+                )}
+              </>
+            }
+          >
+        <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-headline-md font-bold text-primary">Transform</h2>
+            <h3 className="text-body-lg font-bold text-primary">Transform</h3>
             <button type="button" onClick={resetTransform} className="text-label-sm font-label-sm font-semibold text-secondary hover:underline">Reset</button>
           </div>
 
@@ -256,8 +259,8 @@ export function RotateTool() {
         </div>
 
         {/* Output */}
-        <div className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-5 flex flex-col gap-3">
-          <h2 className="text-headline-md font-bold text-primary">Output</h2>
+        <div className="flex flex-col gap-3 border-t border-outline-variant/60 pt-5">
+          <h3 className="text-body-lg font-bold text-primary">Output</h3>
           <div className="flex flex-col gap-1.5">
             <label className="text-label-sm font-label-sm text-on-surface-variant">Format</label>
             <select value={format} onChange={(e) => setFormat(e.target.value as Format)} className={fieldCls}>
@@ -274,26 +277,9 @@ export function RotateTool() {
             </div>
           )}
         </div>
-
-        <button type="button" onClick={apply} disabled={isWorking}
-          className="w-full inline-flex items-center justify-center gap-2 bg-secondary hover:bg-secondary-container text-on-secondary font-semibold py-3.5 rounded-lg transition-colors disabled:opacity-50">
-          {isWorking ? (<><Icon name="progress_activity" className="animate-spin text-[20px]" /> Rotating…</>) : (<><Icon name="rotate_90_degrees_cw" fill className="text-[20px]" /> Rotate {items.length > 1 ? `${items.length} images` : "& download"}</>)}
-        </button>
-
-        {done && items.length > 1 && (
-          <button type="button" onClick={() => zipAndDownload(items.filter((i) => i.result).map((i) => ({ name: i.result!.name, blob: i.result!.blob })), "omyimage_rotated.zip")}
-            className="w-full inline-flex items-center justify-center gap-2 border border-secondary text-secondary font-semibold py-2.5 rounded-lg hover:bg-secondary/10 transition-colors">
-            <Icon name="folder_zip" className="text-[20px]" /> Download all (ZIP)
-          </button>
-        )}
-
-        <div className="rounded-xl border border-outline-variant/40 bg-surface-bright p-4 flex items-start gap-2.5">
-          <Icon name="lightbulb" className="text-[18px] mt-0.5" style={{ color: ACCENT }} />
-          <p className="text-label-sm font-label-sm text-on-surface-variant">
-            <strong className="text-on-surface">Tip:</strong> use 90° steps for straightening, or the angle slider for a custom tilt. Everything runs in your browser.
-          </p>
-        </div>
-      </div>
-    </section>
+          </SettingsRail>
+        }
+      />
+    </>
   );
 }

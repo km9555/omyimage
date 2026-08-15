@@ -6,6 +6,9 @@ import { Icon } from "@/components/Icon";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
 import { Dropzone } from "@/components/image/Dropzone";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
+import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
+import { FileTray, TrayAction, TrayBusy, type TrayEntry } from "@/components/tool/FileTray";
+import { SettingsRail, RailAction, RailSecondaryAction, RailNote } from "@/components/tool/SettingsRail";
 import { shouldUseServer, toServerFormat, processOnServer } from "@/lib/process-router";
 import {
   rasterize,
@@ -213,51 +216,68 @@ export function CompressTool() {
     );
   }
 
+  const entries: TrayEntry[] = items.map((it) => {
+    const r = it.result;
+    const pct = r ? Math.round((1 - r.size / it.file.size) * 100) : null;
+    return {
+      id: it.id,
+      name: it.file.name,
+      url: it.url,
+      meta: (
+        <>
+          {formatBytes(it.file.size)}
+          {r && <><Icon name="arrow_forward" className="text-[13px] mx-1 align-middle" /><span className="text-on-surface font-semibold">{formatBytes(r.size)}</span></>}
+          {r?.outcome === "smaller" && pct !== null && pct > 0 && <span className="ml-1.5 text-[11px] rounded px-1.5 py-0.5 font-semibold" style={{ backgroundColor: `${ACCENT}1A`, color: ACCENT }}>−{pct}%</span>}
+          {r?.outcome === "kept-original" && <span className="ml-1.5 text-[11px] rounded px-1.5 py-0.5 font-semibold bg-surface-container text-on-surface-variant">already optimised — kept original</span>}
+          {r?.outcome === "no-gain" && <span className="ml-1.5 text-[11px] rounded px-1.5 py-0.5 font-semibold bg-error-container text-error">no smaller output</span>}
+          {r?.colors && <span className="ml-1.5 text-[11px] text-on-surface-variant/70">{r.colors} colors</span>}
+        </>
+      ),
+      action: it.processing ? (
+        <TrayBusy />
+      ) : r ? (
+        <TrayAction icon="download" tone="accent" label="Download" onClick={() => downloadBlob(r.blob, r.name)} />
+      ) : (
+        <TrayAction icon="close" label="Remove" disabled={isWorking} onClick={() => removeItem(it.id)} />
+      ),
+    };
+  });
+
   return (
-    <section className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6 items-start">
-      <span data-tool-active hidden aria-hidden="true" />
+    <>
       <TopLoadingBar active={isWorking} />
-
-      <div className="flex flex-col gap-3 lg:sticky lg:top-24 lg:self-start">
-        <div className="flex items-center justify-between">
-          <h2 className="text-headline-md font-bold text-primary">{items.length} image{items.length === 1 ? "" : "s"}</h2>
-          <button type="button" onClick={reset} className="inline-flex items-center gap-1.5 text-label-md font-medium text-on-surface-variant hover:text-error"><Icon name="delete_sweep" className="text-[18px]" /> Clear</button>
-        </div>
-        <ul className="flex flex-col gap-2 max-h-[24vh] overflow-y-auto pr-1">
-          {items.map((it) => {
-            const r = it.result;
-            const pct = r ? Math.round((1 - r.size / it.file.size) * 100) : null;
-            return (
-              <li key={it.id} className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-3 flex items-center gap-3">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={it.url} alt="" className="w-12 h-12 rounded-lg object-cover bg-surface-container shrink-0" />
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-body-md font-semibold text-primary">{it.file.name}</p>
-                  <p className="text-label-sm font-label-sm text-on-surface-variant">
-                    {formatBytes(it.file.size)}
-                    {r && <><Icon name="arrow_forward" className="text-[13px] mx-1 align-middle" /><span className="text-on-surface font-semibold">{formatBytes(r.size)}</span></>}
-                    {r?.outcome === "smaller" && pct !== null && pct > 0 && <span className="ml-1.5 text-[11px] rounded px-1.5 py-0.5 font-semibold" style={{ backgroundColor: `${ACCENT}1A`, color: ACCENT }}>−{pct}%</span>}
-                    {r?.outcome === "kept-original" && <span className="ml-1.5 text-[11px] rounded px-1.5 py-0.5 font-semibold bg-surface-container text-on-surface-variant">already optimised — kept original</span>}
-                    {r?.outcome === "no-gain" && <span className="ml-1.5 text-[11px] rounded px-1.5 py-0.5 font-semibold bg-error-container text-error">no smaller output</span>}
-                    {r?.colors && <span className="ml-1.5 text-[11px] text-on-surface-variant/70">{r.colors} colors</span>}
-                  </p>
-                </div>
-                {it.processing ? (
-                  <span className="flex h-9 w-9 items-center justify-center text-secondary"><Icon name="progress_activity" className="animate-spin text-[20px]" /></span>
-                ) : r ? (
-                  <button type="button" onClick={() => downloadBlob(r.blob, r.name)} aria-label="Download" className="flex h-9 w-9 items-center justify-center rounded-lg text-secondary hover:bg-secondary/10 transition-colors"><Icon name="download" className="text-[20px]" /></button>
-                ) : (
-                  <button type="button" onClick={() => removeItem(it.id)} disabled={isWorking} aria-label="Remove" className="flex h-9 w-9 items-center justify-center rounded-lg text-on-surface-variant hover:bg-error-container hover:text-error transition-colors disabled:opacity-40"><Icon name="close" className="text-[20px]" /></button>
+      <ToolWorkspace
+        main={<FileTray entries={entries} accept={ACCEPT} onFiles={addFiles} onClear={reset} busy={isWorking} />}
+        rail={
+          <SettingsRail
+            title="Compression Settings"
+            icon="compress"
+            accent={ACCENT}
+            footer={
+              <>
+                <RailNote>
+                  {!done
+                    ? "WEBP usually gives the smallest files. Everything runs in your browser."
+                    : savedPct > 0
+                      ? `Saved ${savedPct}% — ${formatBytes(totalIn)} → ${formatBytes(totalOut)}`
+                      : keptCount > 0
+                        ? `Already optimised — we kept your original file${keptCount === 1 ? "" : "s"}.`
+                        : "Already optimised. Try a lower quality, or WEBP, for a smaller file."}
+                </RailNote>
+                <RailAction onClick={compressAll} busy={isWorking} busyLabel="Compressing…" icon="compress">
+                  Compress {items.length > 1 ? `${items.length} images` : "& download"}
+                </RailAction>
+                {done && items.length > 1 && (
+                  <RailSecondaryAction
+                    icon="folder_zip"
+                    onClick={() => zipAndDownload(items.filter((i) => i.result).map((i) => ({ name: i.result!.name, blob: i.result!.blob })), "omyimage_compressed.zip")}
+                  >
+                    Download all (ZIP)
+                  </RailSecondaryAction>
                 )}
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-
-      <div className="lg:sticky lg:top-24 flex flex-col gap-4">
-        <div className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-5 flex flex-col gap-4">
-          <h2 className="text-headline-md font-bold text-primary">Compression</h2>
+              </>
+            }
+          >
           <div className="flex flex-col gap-1.5">
             <label className="text-label-sm font-label-sm text-on-surface-variant">Output format</label>
             <select value={format} onChange={(e) => setFormat(e.target.value as Format)} className={fieldCls}>
@@ -295,29 +315,9 @@ export function CompressTool() {
             )}
           </div>
           {showBg && <BackgroundPicker value={bg} onChange={setBg} allowTransparent={false} label="JPG background" />}
-        </div>
-
-        <button type="button" onClick={compressAll} disabled={isWorking} className="w-full inline-flex items-center justify-center gap-2 bg-secondary hover:bg-secondary-container text-on-secondary font-semibold py-3.5 rounded-lg transition-colors disabled:opacity-50">
-          {isWorking ? (<><Icon name="progress_activity" className="animate-spin text-[20px]" /> Compressing…</>) : (<><Icon name="compress" fill className="text-[20px]" /> Compress {items.length > 1 ? `${items.length} images` : "& download"}</>)}
-        </button>
-
-        {done && items.length > 1 && (
-          <button type="button" onClick={() => zipAndDownload(items.filter((i) => i.result).map((i) => ({ name: i.result!.name, blob: i.result!.blob })), "omyimage_compressed.zip")} className="w-full inline-flex items-center justify-center gap-2 border border-secondary text-secondary font-semibold py-2.5 rounded-lg hover:bg-secondary/10 transition-colors">
-            <Icon name="folder_zip" className="text-[20px]" /> Download all (ZIP)
-          </button>
-        )}
-
-        <div className="rounded-xl border border-outline-variant/40 bg-surface-bright p-4 flex items-start gap-2.5">
-          <Icon name="lightbulb" className="text-[18px] mt-0.5" style={{ color: ACCENT }} />
-          <p className="text-label-sm font-label-sm text-on-surface-variant">
-            {!done
-              ? <><strong className="text-on-surface">Tip:</strong> WEBP usually gives the smallest files. Everything runs in your browser.</>
-              : savedPct > 0
-                ? <><strong className="text-on-surface">Saved {savedPct}%</strong> — {formatBytes(totalIn)} → {formatBytes(totalOut)}. All local to your browser.</>
-                : <><strong className="text-on-surface">Already optimised.</strong> {keptCount > 0 ? `We kept your original file${keptCount === 1 ? "" : "s"} — nothing we produced was smaller.` : "Try a lower quality, or WEBP, for a smaller file."}</>}
-          </p>
-        </div>
-      </div>
-    </section>
+          </SettingsRail>
+        }
+      />
+    </>
   );
 }

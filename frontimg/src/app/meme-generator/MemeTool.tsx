@@ -4,6 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Icon } from "@/components/Icon";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
+import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
+import { SettingsRail, RailAction, RailNote } from "@/components/tool/SettingsRail";
 import { Dropzone } from "@/components/image/Dropzone";
 import { BackgroundPicker } from "@/components/BackgroundPicker";
 import { decodeBitmap, canvasToBlob, downloadBlob, baseName, mimeExt, type ExportMime } from "@/lib/image/raster";
@@ -137,10 +139,6 @@ export function MemeTool() {
 
   const fieldCls = "w-full px-3 py-2.5 rounded-lg bg-surface-container-lowest border border-surface-variant focus:border-secondary focus:ring-1 focus:ring-secondary outline-none text-body-md text-primary";
 
-  useEffect(() => {
-    document.body.classList.toggle("tool-active", !!file);
-    return () => document.body.classList.remove("tool-active");
-  }, [file]);
 
   if (!file) {
     return (
@@ -152,23 +150,36 @@ export function MemeTool() {
   }
 
   return (
-    <section className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6 items-start">
-      <span data-tool-active hidden aria-hidden="true" />
+    <>
       <TopLoadingBar active={isWorking} />
-
-      <div className="flex flex-col gap-3 lg:sticky lg:top-24 lg:self-start">
-        <div className="bg-surface-container rounded-xl border border-surface-variant p-4 flex items-center justify-center overflow-hidden" style={{ minHeight: 280 }}>
-          <canvas ref={previewRef} className="max-w-full max-h-[calc(100vh-12rem)] rounded" />
-        </div>
-        <div className="flex items-center justify-between">
-          <p className="text-label-sm font-label-sm text-on-surface-variant truncate">{file.name}</p>
-          <button type="button" onClick={() => setFile(null)} className="inline-flex items-center gap-1.5 text-label-md font-medium text-on-surface-variant hover:text-error"><Icon name="close" className="text-[18px]" /> Change image</button>
-        </div>
-      </div>
-
-      <div className="lg:sticky lg:top-24 flex flex-col gap-4">
-        <div className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-5 flex flex-col gap-4">
-          <h2 className="text-headline-md font-bold text-primary">Caption</h2>
+      <ToolWorkspace
+        main={
+          <>
+            <div className="bg-surface-container rounded-xl border border-surface-variant p-4 flex items-center justify-center overflow-hidden" style={{ minHeight: 280 }}>
+              <canvas ref={previewRef} className="max-w-full max-h-[calc(100vh-12rem)] rounded" />
+            </div>
+            <div className="flex items-center justify-between">
+              <p className="text-label-sm font-label-sm text-on-surface-variant truncate">{file.name}</p>
+              <button type="button" onClick={() => setFile(null)} className="inline-flex items-center gap-1.5 text-label-md font-medium text-on-surface-variant hover:text-error"><Icon name="close" className="text-[18px]" /> Change image</button>
+            </div>
+          </>
+        }
+        rail={
+          <SettingsRail
+            title="Meme Settings"
+            icon="sentiment_very_satisfied"
+            accent={ACCENT}
+            footer={
+              <>
+                <RailNote>Long captions wrap automatically. Everything runs in your browser.</RailNote>
+                <RailAction onClick={exportMeme} busy={isWorking} busyLabel="Exporting…" icon="download">
+                  Export meme
+                </RailAction>
+              </>
+            }
+          >
+        <div className="flex flex-col gap-4">
+          <h3 className="text-body-lg font-bold text-primary">Caption</h3>
           <div className="flex flex-col gap-1.5"><label className="text-label-sm font-label-sm text-on-surface-variant">Top text</label><input type="text" value={opts.top} onChange={(e) => set("top", e.target.value)} placeholder="Top text" className={fieldCls} /></div>
           <div className="flex flex-col gap-1.5"><label className="text-label-sm font-label-sm text-on-surface-variant">Bottom text</label><input type="text" value={opts.bottom} onChange={(e) => set("bottom", e.target.value)} placeholder="Bottom text" className={fieldCls} /></div>
           <div className="grid grid-cols-2 gap-3">
@@ -178,15 +189,15 @@ export function MemeTool() {
           <label className="flex items-center gap-2.5 cursor-pointer"><input type="checkbox" checked={opts.uppercase} onChange={(e) => set("uppercase", e.target.checked)} className="w-4 h-4 accent-secondary" /><span className="text-body-md text-on-surface">UPPERCASE</span></label>
         </div>
 
-        <div className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-5 flex flex-col gap-4">
-          <h2 className="text-headline-md font-bold text-primary">Style</h2>
+        <div className="flex flex-col gap-4 border-t border-outline-variant/60 pt-5">
+          <h3 className="text-body-lg font-bold text-primary">Style</h3>
           <BackgroundPicker value={{ transparent: false, color: opts.color }} onChange={(v) => set("color", v.color)} allowTransparent={false} label="Text color" />
           <BackgroundPicker value={{ transparent: false, color: opts.outlineColor }} onChange={(v) => set("outlineColor", v.color)} allowTransparent={false} label="Outline color" />
           <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Outline thickness</span><span className="text-primary font-semibold">{opts.outlinePct}%</span></label><input type="range" min={0} max={16} step={1} value={opts.outlinePct} onChange={(e) => set("outlinePct", parseInt(e.target.value, 10))} className="w-full accent-secondary" /></div>
         </div>
 
-        <div className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-5 flex flex-col gap-3">
-          <h2 className="text-headline-md font-bold text-primary">Export</h2>
+        <div className="flex flex-col gap-3 border-t border-outline-variant/60 pt-5">
+          <h3 className="text-body-lg font-bold text-primary">Export</h3>
           <select value={format} onChange={(e) => setFormat(e.target.value as ExportMime)} className={fieldCls}>
             <option value="image/png">PNG (lossless)</option>
             <option value="image/jpeg">JPG (smaller)</option>
@@ -196,16 +207,9 @@ export function MemeTool() {
             <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Quality</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span></label><input type="range" min={0.5} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" /></div>
           )}
         </div>
-
-        <button type="button" onClick={exportMeme} disabled={isWorking} className="w-full inline-flex items-center justify-center gap-2 bg-secondary hover:bg-secondary-container text-on-secondary font-semibold py-3.5 rounded-lg transition-colors disabled:opacity-50">
-          {isWorking ? (<><Icon name="progress_activity" className="animate-spin text-[20px]" /> Exporting…</>) : (<><Icon name="download" fill className="text-[20px]" /> Export meme</>)}
-        </button>
-
-        <div className="rounded-xl border border-outline-variant/40 bg-surface-bright p-4 flex items-start gap-2.5">
-          <Icon name="lightbulb" className="text-[18px] mt-0.5" style={{ color: ACCENT }} />
-          <p className="text-label-sm font-label-sm text-on-surface-variant"><strong className="text-on-surface">Tip:</strong> long captions wrap automatically. Everything runs in your browser.</p>
-        </div>
-      </div>
-    </section>
+          </SettingsRail>
+        }
+      />
+    </>
   );
 }

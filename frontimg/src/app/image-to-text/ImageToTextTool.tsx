@@ -5,6 +5,8 @@ import { toast } from "sonner";
 import { Icon } from "@/components/Icon";
 import { Dropzone } from "@/components/image/Dropzone";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
+import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
+import { SettingsRail, RailAction } from "@/components/tool/SettingsRail";
 import { downloadBlob, baseName, formatBytes } from "@/lib/image/raster";
 import { useHandoff } from "@/lib/tool-handoff";
 import type { Worker } from "tesseract.js";
@@ -183,11 +185,11 @@ export function ImageToTextTool() {
   const words = text ? text.split(/\s+/).filter(Boolean).length : 0;
 
   return (
-    <section data-tool-active className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6 items-start">
+    <>
       <TopLoadingBar active={isWorking} />
-
-      {/* Preview + extracted text */}
-      <div className="min-w-0 flex flex-col gap-4">
+      <ToolWorkspace
+        main={
+          <>
         <div className="rounded-xl border border-outline-variant/40 bg-surface-container-lowest p-4 ambient-shadow">
           <div className="flex items-center gap-3 mb-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -247,10 +249,19 @@ export function ImageToTextTool() {
             </div>
           )}
         </div>
-      </div>
-
-      {/* Controls */}
-      <div className="flex flex-col gap-4 rounded-xl border border-outline-variant/40 bg-surface-container-lowest p-5 ambient-shadow">
+          </>
+        }
+        rail={
+          <SettingsRail
+            title="OCR Settings"
+            icon="document_scanner"
+            accent={ACCENT}
+            footer={
+              <RailAction onClick={run} busy={isWorking} busyLabel="Reading…" icon="document_scanner">
+                {text !== null ? "Read again" : "Extract text"}
+              </RailAction>
+            }
+          >
         <div>
           <label
             htmlFor="ocr-lang"
@@ -273,16 +284,6 @@ export function ImageToTextTool() {
             Picking the right language matters more than anything else for accuracy.
           </p>
         </div>
-
-        <button
-          type="button"
-          onClick={run}
-          disabled={isWorking}
-          className="w-full inline-flex items-center justify-center gap-2 bg-secondary hover:bg-secondary-container text-on-secondary font-semibold py-3.5 rounded-lg transition-colors disabled:opacity-50"
-        >
-          <Icon name="document_scanner" className="text-[20px]" />
-          {isWorking ? "Reading…" : text !== null ? "Read again" : "Extract text"}
-        </button>
 
         {text !== null && (
           <div className="flex flex-col gap-2">
@@ -308,7 +309,9 @@ export function ImageToTextTool() {
           Your image is read on your own device and never uploaded. The recognition
           model itself is downloaded once and cached by your browser.
         </p>
-      </div>
-    </section>
+          </SettingsRail>
+        }
+      />
+    </>
   );
 }

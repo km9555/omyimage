@@ -304,9 +304,50 @@ body:has([data-tool-active]) [data-tool-subtitle],
 body:has([data-tool-active]) [data-seo-content] {
   display: none;
 }
-/* Breathing room above the footer once the SEO block is collapsed. */
+
+/*
+  …and the page shell goes full-bleed, so the workspace can use the whole
+  viewport: files on the left starting at the normal page gutter, settings rail
+  docked flush to the right edge. `[data-tool-shell]` marks the
+  `max-w-content mx-auto px-…` div that every tool page wraps its body in; the
+  inner padding moves into ToolWorkspace so the rail can reach the edge while
+  the file column keeps its gutter.
+*/
+body:has([data-tool-active]) [data-tool-shell] {
+  max-width: none;
+  padding-inline: 0;
+  padding-top: 0;
+  gap: 0;
+}
+/*
+  Chrome the workspace replaces. The <h1> and breadcrumbs are only hidden AFTER
+  a file is loaded, so the crawler — which never gets past the empty state —
+  still sees both.
+*/
+body:has([data-tool-active]) [data-tool-shell] > nav[aria-label="Breadcrumb"],
+body:has([data-tool-active]) [data-tool-shell] > header {
+  display: none;
+}
+/* Related tools become a full-width tinted band with centred content. */
+body:has([data-tool-active]) [data-tool-shell] > section[aria-label="More tools"] {
+  margin: 0;
+  padding: var(--spacing-stack-lg) var(--spacing-margin-mobile);
+  background-color: var(--color-surface-container-low);
+  border-top: 1px solid var(--color-outline-variant);
+}
+body:has([data-tool-active]) [data-tool-shell] > section[aria-label="More tools"] > * {
+  max-width: var(--container-content);
+  margin-inline: auto;
+}
+@media (min-width: 768px) {
+  body:has([data-tool-active]) [data-tool-shell] > section[aria-label="More tools"] {
+    padding-inline: var(--spacing-gutter);
+  }
+}
+/* The workspace ends flush with the related-tools band, which owns its own
+   spacing — the old 3rem gap would show as a stripe below it. */
 body:has([data-tool-active]) main {
-  padding-bottom: 3rem;
+  padding-bottom: 0;
 }
 
 /* Drag-and-drop active state (faint Terracotta Clay tint) */

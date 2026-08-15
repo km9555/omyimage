@@ -137,7 +137,7 @@ export default function CropImagePage() {
 
   return (
     <>
-      <div className="max-w-content mx-auto px-margin-mobile md:px-gutter pt-stack-md flex flex-col gap-stack-lg">
+      <div data-tool-shell className="max-w-content mx-auto px-margin-mobile md:px-gutter pt-stack-md flex flex-col gap-stack-lg">
         <Breadcrumbs
           items={[
             { label: "Home", href: "/" },

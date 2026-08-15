@@ -4,6 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Icon } from "@/components/Icon";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
+import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
+import { SettingsRail, RailAction, RailNote } from "@/components/tool/SettingsRail";
 import { Dropzone } from "@/components/image/Dropzone";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
 import { canvasToBlob, downloadBlob, zipAndDownload, baseName, mimeExt, type ExportMime } from "@/lib/image/raster";
@@ -148,11 +150,11 @@ export function GifToImagesTool() {
   }
 
   return (
-    <section className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6 items-start">
-      <span data-tool-active hidden aria-hidden="true" />
+    <>
       <TopLoadingBar active={isWorking} />
-
-      <div className="flex flex-col gap-3 lg:sticky lg:top-24 lg:self-start">
+      <ToolWorkspace
+        main={
+          <>
         <div className="bg-surface-container rounded-xl border border-surface-variant p-3 overflow-hidden" style={{ minHeight: 220 }}>
           <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 max-h-[46vh] overflow-y-auto pr-1">
             {thumbs.map((t, i) => (
@@ -169,10 +171,23 @@ export function GifToImagesTool() {
           {count > MAX_THUMBS && <> · showing first {MAX_THUMBS}, all included in the ZIP</>}
         </p>
         <button type="button" onClick={reset} className="self-center inline-flex items-center gap-1.5 text-label-md font-medium text-on-surface-variant hover:text-error"><Icon name="close" className="text-[18px]" /> Change GIF</button>
-      </div>
-
-      <div className="lg:sticky lg:top-24 flex flex-col gap-4">
-        <div className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-5 flex flex-col gap-4">
+          </>
+        }
+        rail={
+          <SettingsRail
+            title="Frame Settings"
+            icon="burst_mode"
+            accent={ACCENT}
+            footer={
+              <>
+                <RailNote>Click any frame to download it on its own.</RailNote>
+                <RailAction onClick={downloadAll} busy={isWorking} busyLabel="Working…" icon="folder_zip">
+                  Download all {count} frames (ZIP)
+                </RailAction>
+              </>
+            }
+          >
+        <div className="flex flex-col gap-4">
           <h2 className="text-headline-md font-bold text-primary">Output</h2>
           <div className="flex flex-col gap-1.5">
             <label className="text-label-sm font-label-sm text-on-surface-variant">Format</label>
@@ -184,15 +199,9 @@ export function GifToImagesTool() {
           {format === "image/jpeg" && <BackgroundPicker value={bg} onChange={setBg} allowTransparent={false} label="JPG background" />}
         </div>
 
-        <button type="button" onClick={downloadAll} disabled={isWorking} className="w-full inline-flex items-center justify-center gap-2 bg-secondary hover:bg-secondary-container text-on-secondary font-semibold py-3.5 rounded-lg transition-colors disabled:opacity-50">
-          {isWorking ? (<><Icon name="progress_activity" className="animate-spin text-[20px]" /> Working…</>) : (<><Icon name="folder_zip" className="text-[20px]" /> Download all {count} frames (ZIP)</>)}
-        </button>
-
-        <div className="rounded-xl border border-outline-variant/40 bg-surface-bright p-4 flex items-start gap-2.5">
-          <Icon name="lightbulb" className="text-[18px] mt-0.5" style={{ color: ACCENT }} />
-          <p className="text-label-sm font-label-sm text-on-surface-variant"><strong className="text-on-surface">Tip:</strong> click any frame to download it on its own. Every frame is fully composited. Everything runs in your browser.</p>
-        </div>
-      </div>
-    </section>
+          </SettingsRail>
+        }
+      />
+    </>
   );
 }

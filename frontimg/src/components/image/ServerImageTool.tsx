@@ -4,6 +4,8 @@ import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { Icon } from "@/components/Icon";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
+import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
+import { SettingsRail, RailAction, RailSecondaryAction, RailNote } from "@/components/tool/SettingsRail";
 import { Dropzone } from "@/components/image/Dropzone";
 import { processOnServer } from "@/lib/process-router";
 import { downloadBlob, formatBytes } from "@/lib/image/raster";
@@ -112,11 +114,11 @@ export function ServerImageTool({
   const shown = result ?? { url: inUrl!, blob: file, name: file.name };
 
   return (
-    <section className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6 items-start">
-      <span data-tool-active hidden aria-hidden="true" />
+    <>
       <TopLoadingBar active={isWorking} />
-
-      <div className="flex flex-col gap-3 lg:sticky lg:top-24 lg:self-start">
+      <ToolWorkspace
+        main={
+          <>
         <div className="rounded-xl border border-surface-variant p-4 flex items-center justify-center overflow-hidden" style={{ minHeight: 220, ...(result && resultTransparent ? CHECKER : { backgroundColor: "var(--color-surface-container)" }) }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={shown.url} alt={result ? "Result" : "Original"} className="max-w-full max-h-[46vh] rounded" />
@@ -127,31 +129,31 @@ export function ServerImageTool({
           </p>
           <button type="button" onClick={reset} className="inline-flex items-center gap-1.5 text-label-md font-medium text-on-surface-variant hover:text-error"><Icon name="close" className="text-[18px]" /> Change image</button>
         </div>
-      </div>
-
-      <div className="lg:sticky lg:top-24 flex flex-col gap-4">
-        {controls && (
-          <div className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-5 flex flex-col gap-4">
-            <h2 className="text-headline-md font-bold text-primary">Options</h2>
-            {controls(opts, set)}
-          </div>
-        )}
-
-        <button type="button" onClick={run} disabled={isWorking} className="w-full inline-flex items-center justify-center gap-2 bg-secondary hover:bg-secondary-container text-on-secondary font-semibold py-3.5 rounded-lg transition-colors disabled:opacity-50">
-          {isWorking ? (<><Icon name="progress_activity" className="animate-spin text-[20px]" /> {processingLabel}</>) : (<><Icon name={icon} fill className="text-[20px]" /> {actionLabel}</>)}
-        </button>
-
-        {result && (
-          <button type="button" onClick={() => downloadBlob(result.blob, result.name)} className="w-full inline-flex items-center justify-center gap-2 border border-secondary text-secondary font-semibold py-2.5 rounded-lg hover:bg-secondary/10 transition-colors">
-            <Icon name="download" className="text-[20px]" /> Download ({formatBytes(result.blob.size)})
-          </button>
-        )}
-
-        <div className="rounded-xl border border-outline-variant/40 bg-surface-bright p-4 flex items-start gap-2.5">
-          <Icon name="lightbulb" className="text-[18px] mt-0.5" style={{ color: accent }} />
-          <p className="text-label-sm font-label-sm text-on-surface-variant">{note}</p>
-        </div>
-      </div>
-    </section>
+          </>
+        }
+        rail={
+          <SettingsRail
+            title="Options"
+            icon="tune"
+            accent={accent}
+            footer={
+              <>
+                <RailNote>{note}</RailNote>
+                <RailAction onClick={run} busy={isWorking} busyLabel={processingLabel} icon={icon}>
+                  {actionLabel}
+                </RailAction>
+                {result && (
+                  <RailSecondaryAction icon="download" onClick={() => downloadBlob(result.blob, result.name)}>
+                    Download ({formatBytes(result.blob.size)})
+                  </RailSecondaryAction>
+                )}
+              </>
+            }
+          >
+        {controls && controls(opts, set)}
+          </SettingsRail>
+        }
+      />
+    </>
   );
 }

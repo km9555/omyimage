@@ -4,6 +4,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Icon } from "@/components/Icon";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
+import { SettingsRail, RailAction } from "@/components/tool/SettingsRail";
+import { AdSlot } from "@/components/tool/AdSlot";
 import { Dropzone } from "@/components/image/Dropzone";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
 import { decodeBitmap, canvasToBlob, downloadBlob, baseName, mimeExt, type ExportMime } from "@/lib/image/raster";
@@ -501,10 +503,17 @@ export function AllInOneEditor() {
   }
 
   return (
-    <section className="flex flex-col lg:flex-row gap-4 items-stretch">
+    <section className="flex flex-col items-stretch lg:flex-row">
       <span data-tool-active hidden aria-hidden="true" />
       <TopLoadingBar active={isWorking} />
 
+      {/* This one is a flex row rather than ToolWorkspace's grid, so it sizes
+          the reserved ad slot itself — same footer-matching width, expressed as
+          a flex basis because there is no grid track to carry it. */}
+      <AdSlot className="shrink-0 grow-0 basis-[calc((100%-var(--container-content))/2)]" />
+
+      {/* Ribbon + canvas share the padded column; the rail docks to the edge. */}
+      <div className="flex min-w-0 flex-1 flex-col gap-4 px-margin-mobile pt-stack-md pb-stack-lg md:px-gutter lg:flex-row">
       {/* Ribbon */}
       <div className="flex lg:flex-col gap-1.5 overflow-x-auto lg:overflow-visible rounded-xl border border-surface-variant bg-surface-container-lowest ambient-shadow p-1.5 lg:sticky lg:top-24 lg:self-start shrink-0">
         {RIBBON.map((r) => (
@@ -555,11 +564,21 @@ export function AllInOneEditor() {
           {tool === "crop" ? "Drag the box or its corners to set the crop, then Apply." : tool === "annotate" ? "Draw on the image, then Apply to bake it in." : "Live preview — adjust on the right, then Apply."}
         </p>
       </div>
+      </div>
 
       {/* Options panel */}
-      <div className="lg:sticky lg:top-24 flex flex-col gap-4 w-full lg:w-[320px] shrink-0">
-        <div className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-5 flex flex-col gap-4">
-          <h2 className="text-headline-md font-bold text-primary capitalize">{RIBBON.find((r) => r.tool === tool)?.label === "Mark" ? "Watermark" : RIBBON.find((r) => r.tool === tool)?.label}</h2>
+      <SettingsRail
+        title={RIBBON.find((r) => r.tool === tool)?.label === "Mark" ? "Watermark" : RIBBON.find((r) => r.tool === tool)?.label ?? "Editor"}
+        icon="dashboard_customize"
+        accent={ACCENT}
+        className="lg:w-[380px] lg:shrink-0 xl:w-[420px]"
+        footer={
+          <RailAction onClick={exportImage} busy={isWorking} busyLabel="Working…" icon="download">
+            Export image
+          </RailAction>
+        }
+      >
+        <div className="flex flex-col gap-4">
 
           {tool === "crop" && (
             <div className="grid grid-cols-4 gap-1.5">
@@ -676,8 +695,8 @@ export function AllInOneEditor() {
         </div>
 
         {/* Export */}
-        <div className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-5 flex flex-col gap-3">
-          <h2 className="text-headline-md font-bold text-primary">Export</h2>
+        <div className="flex flex-col gap-3 border-t border-outline-variant/60 pt-5">
+          <h3 className="text-body-lg font-bold text-primary">Export</h3>
           <select value={format} onChange={(e) => setFormat(e.target.value as ExportMime)} className={fieldCls}>
             <option value="image/png">PNG</option>
             <option value="image/jpeg">JPG</option>
@@ -685,11 +704,8 @@ export function AllInOneEditor() {
           </select>
           {format !== "image/png" && (<div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Quality</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span></label><input type="range" min={0.5} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" /></div>)}
           {format === "image/jpeg" && <BackgroundPicker value={jpgBg} onChange={setJpgBg} allowTransparent={false} label="JPG background" />}
-          <button type="button" onClick={exportImage} disabled={isWorking} className="w-full inline-flex items-center justify-center gap-2 bg-secondary hover:bg-secondary-container text-on-secondary font-semibold py-3 rounded-lg transition-colors disabled:opacity-50">
-            {isWorking ? (<><Icon name="progress_activity" className="animate-spin text-[20px]" /> Working…</>) : (<><Icon name="download" fill className="text-[20px]" /> Export image</>)}
-          </button>
         </div>
-      </div>
+      </SettingsRail>
     </section>
   );
 }
