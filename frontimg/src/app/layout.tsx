@@ -5,6 +5,7 @@ import { SITE } from "@/lib/site";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ThemedToaster } from "@/components/ThemedToaster";
+import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import { ThemeProvider } from "@/lib/theme/ThemeProvider";
 
 // Self-hosted at build time (works with `output: "export"`), so no third-party
@@ -106,6 +107,7 @@ export default function RootLayout({
           <Footer />
           <ThemedToaster />
         </ThemeProvider>
+        <GoogleAnalytics />
       </body>
     </html>
   );
