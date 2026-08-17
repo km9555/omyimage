@@ -6,6 +6,7 @@ import { HeaderSearch } from "@/components/HeaderSearch";
 import { AppsMenu } from "@/components/AppsMenu";
 import { NavToolsDropdown } from "@/components/NavToolsDropdown";
 import { CreditsBadge } from "@/components/CreditsBadge";
+import { MobileMenu } from "@/components/MobileMenu";
 
 const quickLinks = [
   { label: "Compress Image", href: "/compress-image" },
@@ -63,8 +64,8 @@ export function Navbar() {
 
         {/* Search — fills the middle but right-aligned so it sits next to the
             actions. The floor stops it collapsing when the row gets tight;
-            the cap stops it sprawling on a wide desktop. Below `md` it moves
-            to its own row (see below). */}
+            the cap stops it sprawling on a wide desktop. Below `md` it lives
+            inside the drawer instead. */}
         <div className="hidden md:flex flex-1 min-w-[180px] justify-end px-1 xl:px-2">
           <HeaderSearch className="w-full max-w-[300px] xl:max-w-[380px]" />
         </div>
@@ -76,15 +77,12 @@ export function Navbar() {
               `omyimage:premium-usage` yet, so this reads 0/10 until a tool
               writes to it. See CreditsBadge for the swap-in point. */}
           <div className="hidden md:block"><CreditsBadge /></div>
-          {/* Compact form starts at `sm`, not 0: at 375px the brand (142px) and
-              the actions cluster already fill the row, and the 80px pill pushed
-              it 30px into horizontal overflow. */}
-          <div className="hidden sm:block md:hidden"><CreditsBadge compact /></div>
-          {/* Single, prominent Login button — replaces the old Login link +
-              Sign-up pill pair. Squared corners, icon-led, matching oMyPDF. */}
+          <div className="md:hidden"><CreditsBadge compact /></div>
+          {/* Desktop only — below `md` the drawer carries Login, so keeping it
+              here too would both duplicate it and overflow the row. */}
           <Link
             href="/login"
-            className="inline-flex items-center gap-2 text-body-md bg-secondary text-on-secondary font-semibold px-4 py-2 rounded-lg shadow-md shadow-secondary/30 hover:bg-secondary-container hover:shadow-lg hover:shadow-secondary/40 hover:-translate-y-px transition-all duration-200"
+            className="hidden md:inline-flex items-center gap-2 text-body-md bg-secondary text-on-secondary font-semibold px-4 py-2 rounded-lg shadow-md shadow-secondary/30 hover:bg-secondary-container hover:shadow-lg hover:shadow-secondary/40 hover:-translate-y-px transition-all duration-200"
           >
             <Icon name="login" className="text-[19px]" />
             Login
@@ -93,15 +91,15 @@ export function Navbar() {
           <div className="hidden md:block">
             <AppsMenu />
           </div>
+          {/* Hamburger + drawer. Self-gates to `md:hidden`. */}
+          <MobileMenu />
         </div>
       </div>
 
-      {/* Mobile search row. oMyPDF tucks search into a hamburger drawer;
-          oMyImage has no drawer, so it gets its own full-width row instead of
-          disappearing below `md`. */}
-      <div className="md:hidden px-margin-mobile pb-3">
-        <HeaderSearch />
-      </div>
+      {/* The mobile search row that used to sit here is gone: search now lives
+          in the drawer, same as oMyPDF. That gives the header a uniform 64px
+          height at every width instead of 64px on desktop and ~110px on
+          mobile — which the sticky rail offsets (`top-16`) assume. */}
     </header>
   );
 }
