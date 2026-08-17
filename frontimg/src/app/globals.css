@@ -81,6 +81,14 @@
   --color-chip-amber-ink: #9a4520;
   --color-chip-amber-border: #f3d5bc;
 
+  /* Teal chip — the "done" counterpart to amber, used by the result screen's
+     success header and the Trustpilot panel. Green rather than clay on purpose:
+     completion should not compete with the accent that drives every CTA.
+     `ink` is dark enough to carry body text on `bg` (7.4:1). */
+  --color-chip-teal-bg: #e4f5ee;
+  --color-chip-teal-ink: #106b4c;
+  --color-chip-teal-border: #bfe5d7;
+
   /* Neutrals / surfaces — warm cream to pair with the clay accent. */
   --color-background: #fdfbf8;
   --color-on-background: #241f19;
@@ -227,6 +235,10 @@
   --color-chip-amber-bg: rgba(232, 130, 90, 0.16);
   --color-chip-amber-ink: #f0a883;
   --color-chip-amber-border: rgba(240, 168, 131, 0.35);
+
+  --color-chip-teal-bg: rgba(45, 191, 143, 0.16);
+  --color-chip-teal-ink: #7ad9b8;
+  --color-chip-teal-border: rgba(122, 217, 184, 0.35);
 
   --color-background: #191512;
   --color-on-background: #ede5da;

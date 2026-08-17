@@ -8,14 +8,14 @@ import { Dropzone } from "@/components/image/Dropzone";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
 import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
 import { FileTray, TrayAction, TrayBusy, type TrayEntry } from "@/components/tool/FileTray";
-import { SettingsRail, RailAction, RailSecondaryAction, RailNote } from "@/components/tool/SettingsRail";
+import { SettingsRail, RailAction, RailNote } from "@/components/tool/SettingsRail";
+import { ResultScreen } from "@/components/ResultScreen";
 import { shouldUseServer, toServerFormat, processOnServer } from "@/lib/process-router";
 import {
   rasterize,
   rasterizeToCanvas,
   imageSize,
   downloadBlob,
-  zipAndDownload,
   formatBytes,
   baseName,
   mimeExt,
@@ -187,9 +187,10 @@ export function CompressTool() {
         );
       }
 
+      // The result screen owns the download now — see ResultScreen below.
+      // Auto-firing a save-as here would land a file in Downloads before the
+      // visitor ever sees the completion page, making the page redundant.
       setDone(true);
-      if (finished.length === 1) downloadBlob(finished[0].blob, finished[0].name);
-      else await zipAndDownload(finished, "omyimage_compressed.zip");
       toast.success(`Processed ${finished.length} image${finished.length === 1 ? "" : "s"}.`);
     } catch (err) {
       console.error(err);
@@ -212,6 +213,47 @@ export function CompressTool() {
       <section>
         <TopLoadingBar active={isWorking} />
         <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="compress" hint="or drop JPG, PNG or WEBP images here" />
+      </section>
+    );
+  }
+
+  // Compression finished — hand off to the download page instead of the
+  // workspace. This is also why `data-tool-active` (and with it the full-bleed
+  // layout + reserved ad column) disappears here: neither ToolWorkspace nor
+  // its marker span render past this point, so the page reverts to the normal
+  // centred container with breadcrumbs and the h1 back.
+  if (done) {
+    const resultFiles = items
+      .filter((it): it is Item & { result: NonNullable<Item["result"]> } => !!it.result)
+      .map((it) => ({ blob: it.result.blob, name: it.result.name, originalSize: it.file.size }));
+    return (
+      <section className="max-w-content mx-auto w-full px-margin-mobile pt-stack-md md:px-gutter">
+        <ResultScreen
+          files={resultFiles}
+          zipName="omyimage_compressed.zip"
+          toolSlug="compress-image"
+          onReset={reset}
+          title="Compression complete!"
+          subtitle={
+            savedPct > 0
+              ? `File size reduced by ${savedPct}%`
+              : keptCount > 0
+                ? `Already optimised — kept your original file${keptCount === 1 ? "" : "s"}.`
+                : "Already optimised. Try a lower quality, or WEBP, for a smaller file."
+          }
+          resetLabel="Compress more images"
+        >
+          <div className="grid grid-cols-2 gap-3">
+            <div className="rounded-xl border border-outline-variant/40 bg-surface-container-lowest p-4 text-center">
+              <p className="text-label-sm font-label-sm uppercase tracking-wider text-on-surface-variant">Original</p>
+              <p className="mt-1 text-title-lg font-bold text-primary tabular-nums">{formatBytes(totalIn)}</p>
+            </div>
+            <div className="rounded-xl border border-chip-teal-border bg-chip-teal-bg p-4 text-center">
+              <p className="text-label-sm font-label-sm uppercase tracking-wider text-chip-teal-ink">Compressed</p>
+              <p className="mt-1 text-title-lg font-bold text-primary tabular-nums">{formatBytes(totalOut)}</p>
+            </div>
+          </div>
+        </ResultScreen>
       </section>
     );
   }
@@ -255,26 +297,14 @@ export function CompressTool() {
             accent={ACCENT}
             footer={
               <>
-                <RailNote>
-                  {!done
-                    ? "WEBP usually gives the smallest files. Everything runs in your browser."
-                    : savedPct > 0
-                      ? `Saved ${savedPct}% — ${formatBytes(totalIn)} → ${formatBytes(totalOut)}`
-                      : keptCount > 0
-                        ? `Already optimised — we kept your original file${keptCount === 1 ? "" : "s"}.`
-                        : "Already optimised. Try a lower quality, or WEBP, for a smaller file."}
-                </RailNote>
+                {/* `done` is always false here — the moment it flips true the
+                    component returns the ResultScreen above instead of this
+                    workspace, so there is no post-compression state to word
+                    this note for. */}
+                <RailNote>WEBP usually gives the smallest files. Everything runs in your browser.</RailNote>
                 <RailAction onClick={compressAll} busy={isWorking} busyLabel="Compressing…" icon="compress">
                   Compress {items.length > 1 ? `${items.length} images` : "& download"}
                 </RailAction>
-                {done && items.length > 1 && (
-                  <RailSecondaryAction
-                    icon="folder_zip"
-                    onClick={() => zipAndDownload(items.filter((i) => i.result).map((i) => ({ name: i.result!.name, blob: i.result!.blob })), "omyimage_compressed.zip")}
-                  >
-                    Download all (ZIP)
-                  </RailSecondaryAction>
-                )}
               </>
             }
           >
