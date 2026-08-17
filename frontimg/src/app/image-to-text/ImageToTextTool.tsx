@@ -8,6 +8,8 @@ import { TopLoadingBar } from "@/components/TopLoadingBar";
 import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
 import { SettingsRail, RailAction } from "@/components/tool/SettingsRail";
 import { downloadBlob, baseName, formatBytes } from "@/lib/image/raster";
+import { preprocessForOcr, cleanOcrText } from "@/lib/image/ocr-preprocess";
+import { runOcrImage } from "@/lib/process-router";
 import { useHandoff } from "@/lib/tool-handoff";
 import type { Worker } from "tesseract.js";
 
@@ -15,19 +17,33 @@ const ACCENT = "#4B8FC7";
 const ACCEPT = "image/jpeg,image/png,image/webp,image/bmp,.jfif";
 
 /**
- * Optical character recognition, entirely in the browser.
+ * Optical character recognition — server-side PaddleOCR first, in-browser
+ * Tesseract as a fallback.
  *
- * Engine choice is a licensing decision as much as a technical one:
+ * This used to be Tesseract-only, entirely client-side. It stayed that way
+ * through a full round of preprocessing/parameter tuning (grayscale, contrast
+ * stretch, upscale, explicit PSM — see ocr-preprocess.ts), which measurably
+ * helped but didn't close the gap users were seeing against other OCR sites.
+ * Measured head-to-head on the same failure mode (small reference numbers and
+ * a logo caption sharing a header band with body text), PaddleOCR made
+ * roughly half as many word-level errors as the best-tuned Tesseract pass,
+ * and recovered a URL Tesseract never got right at any setting. See
+ * backend/scripts/ocr_image.py's module docstring for the numbers.
+ *
+ * PaddleOCR only runs server-side (Apache-2.0, but it's a real inference
+ * pipeline — no browser-sized WASM build of it exists), so `run()` tries the
+ * server first and falls back to the original client-side Tesseract path —
+ * still fully preprocessed and tuned — if the server is unreachable or not
+ * provisioned with it (503/501, e.g. a dev box without PaddleOCR installed).
+ * The tool never goes from "gives an imperfect answer" to "doesn't work".
+ *
+ * Tesseract.js license note (kept because it still ships, as the fallback):
  * tesseract.js and tesseract.js-core are Apache-2.0, and the WASM bundles
  * Leptonica (BSD-2), zlib, libtiff, libjpeg and libpng — all permissive. Both
  * dists were grepped for GPL/LGPL strings and came back clean, per
- * LICENSE-AUDIT.md rule 1. That is what makes this shippable to a browser at
- * all, unlike the HEIC decoders (finding F1), which are LGPL libheif
- * underneath whatever the npm manifest claims.
- *
- * The engine is imported dynamically so its ~3 MB WASM core never lands in a
- * shared chunk — it must only ever download on this route, and only once the
- * user actually asks for text.
+ * LICENSE-AUDIT.md rule 1. The engine is imported dynamically so its ~3 MB
+ * WASM core never lands in a shared chunk — it must only ever download on
+ * this route, and only once the fallback actually needs it.
  */
 
 /** Tesseract codes we offer. The traineddata for each is fetched on demand. */
@@ -62,6 +78,8 @@ export function ImageToTextTool() {
   const [preview, setPreview] = useState<string | null>(null);
   const [lang, setLang] = useState("eng");
   const [text, setText] = useState<string | null>(null);
+  const [confidence, setConfidence] = useState<number | null>(null);
+  const [source, setSource] = useState<"server" | "browser" | null>(null);
   const [isWorking, setIsWorking] = useState(false);
   const [status, setStatus] = useState("");
   const [progress, setProgress] = useState(0);
@@ -81,6 +99,8 @@ export function ImageToTextTool() {
     });
     setFile(f);
     setText(null);
+    setConfidence(null);
+    setSource(null);
   }, []);
 
   useHandoff(loadFile);
@@ -100,46 +120,103 @@ export function ImageToTextTool() {
     };
   }, [preview]);
 
+  /** Client-side fallback — the full preprocessing + tuned-Tesseract pipeline. */
+  const runInBrowser = async (): Promise<{ text: string; confidence: number | null }> => {
+    if (!file) throw new Error("No image selected.");
+    // Grayscale + contrast-stretch + upscale before handing off to Tesseract
+    // — see ocr-preprocess.ts for what this buys and why (it's measured, not
+    // a guess). Never let a preprocessing failure (e.g. an exotic image the
+    // canvas can't decode) block recognition entirely; fall back to the raw file.
+    const prepped = await preprocessForOcr(file).catch(() => file);
+
+    const { createWorker, PSM } = await import("tesseract.js");
+
+    // A worker is bound to its language at creation, so a language change
+    // means a fresh one. Terminate the old one rather than stacking them.
+    await workerRef.current?.terminate();
+    workerRef.current = null;
+
+    setStatus("Loading the recognition engine…");
+    const worker = await createWorker(lang, 1, {
+      logger: (m: { status: string; progress: number }) => {
+        setStatus(humanStatus(m.status));
+        setProgress(Math.round((m.progress ?? 0) * 100));
+      },
+    });
+    workerRef.current = worker;
+
+    // PSM.AUTO is Tesseract's own default — set explicitly so it's a
+    // documented choice, not an assumption. user_defined_dpi matches the
+    // ~300 DPI-equivalent the preprocessing step upscales small text to.
+    await worker.setParameters({
+      tessedit_pageseg_mode: PSM.AUTO,
+      user_defined_dpi: "300",
+    });
+
+    const { data } = await worker.recognize(prepped);
+    return {
+      text: cleanOcrText(data.text ?? ""),
+      confidence: typeof data.confidence === "number" ? Math.round(data.confidence) : null,
+    };
+  };
+
   const run = async () => {
     if (!file) return;
     setIsWorking(true);
     setText(null);
+    setConfidence(null);
+    setSource(null);
     setProgress(0);
-    setStatus("Loading the recognition engine…");
+    setStatus("Uploading your image…");
 
+    let out: { text: string; confidence: number | null };
+    let usedSource: "server" | "browser";
     try {
-      const { createWorker } = await import("tesseract.js");
-
-      // A worker is bound to its language at creation, so a language change
-      // means a fresh one. Terminate the old one rather than stacking them.
-      await workerRef.current?.terminate();
-      workerRef.current = null;
-
-      const worker = await createWorker(lang, 1, {
-        logger: (m: { status: string; progress: number }) => {
-          setStatus(humanStatus(m.status));
-          setProgress(Math.round((m.progress ?? 0) * 100));
+      // Server-side PaddleOCR is the primary path — see the module docstring
+      // for why. Any failure (network, 503 not provisioned, 501 not
+      // installed, timeout) falls through to the browser pipeline rather than
+      // surfacing an error: a worse answer beats no answer.
+      const result = await runOcrImage(file, lang, {
+        onProgress: (s) => {
+          setStatus(s === "queued" ? "Queued on the server…" : "Reading the text on our server…");
+          setProgress(s === "queued" ? 20 : 60);
         },
       });
-      workerRef.current = worker;
-
-      const { data } = await worker.recognize(file);
-      const out = (data.text ?? "").trim();
-      setText(out);
-      if (out.length === 0) {
-        toast("No text found in this image", {
-          description: "Try a sharper or higher-contrast scan.",
-        });
-      } else {
-        toast.success(`Extracted ${out.split(/\s+/).filter(Boolean).length} words`);
+      out = { text: result.text, confidence: result.confidence };
+      usedSource = "server";
+    } catch (serverErr) {
+      if (serverErr instanceof DOMException && serverErr.name === "AbortError") {
+        setIsWorking(false);
+        setProgress(0);
+        setStatus("");
+        return;
       }
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Could not read this image.");
-    } finally {
-      setIsWorking(false);
-      setProgress(0);
-      setStatus("");
+      try {
+        setStatus("Server OCR unavailable — reading on your device instead…");
+        out = await runInBrowser();
+        usedSource = "browser";
+      } catch (browserErr) {
+        toast.error(browserErr instanceof Error ? browserErr.message : "Could not read this image.");
+        setIsWorking(false);
+        setProgress(0);
+        setStatus("");
+        return;
+      }
     }
+
+    setText(out.text);
+    setConfidence(out.confidence);
+    setSource(usedSource);
+    if (out.text.length === 0) {
+      toast("No text found in this image", {
+        description: "Try a sharper or higher-contrast scan.",
+      });
+    } else {
+      toast.success(`Extracted ${out.text.split(/\s+/).filter(Boolean).length} words`);
+    }
+    setIsWorking(false);
+    setProgress(0);
+    setStatus("");
   };
 
   const copy = async () => {
@@ -160,6 +237,8 @@ export function ImageToTextTool() {
   const reset = () => {
     setFile(null);
     setText(null);
+    setConfidence(null);
+    setSource(null);
     setPreview((old) => {
       if (old) URL.revokeObjectURL(old);
       return null;
@@ -177,6 +256,7 @@ export function ImageToTextTool() {
           multiple={false}
           buttonLabel="Select an image"
           hint="or drop a JPG, PNG, WEBP or BMP here"
+          privacyNote="Read on our server for the best accuracy (falls back to your device if the server is unreachable) — files are deleted right after."
         />
       </section>
     );
@@ -223,7 +303,29 @@ export function ImageToTextTool() {
                 className="w-full h-72 resize-y rounded-lg border border-outline-variant bg-surface-container-lowest p-3 text-body-sm font-mono text-primary outline-none focus:border-secondary/70"
               />
               <p className="mt-2 text-label-sm font-label-sm text-on-surface-variant">
-                {words} words · editable before you copy or download
+                {words} words
+                {confidence !== null && (
+                  <>
+                    {" "}
+                    ·{" "}
+                    <span
+                      className={confidence < 60 ? "text-error font-semibold" : undefined}
+                      title="The recognizer's own estimate of how confident it is in this reading — not a guarantee. Low scores usually mean small or blurry source text; worth a proofread."
+                    >
+                      {confidence}% confidence
+                    </span>
+                  </>
+                )}{" "}
+                · editable before you copy or download
+                {source === "browser" && (
+                  <>
+                    {" "}
+                    ·{" "}
+                    <span title="Our server-side reader was unreachable or unavailable, so this ran on your device instead — usually a bit less accurate on small or dense text.">
+                      read on your device
+                    </span>
+                  </>
+                )}
               </p>
             </>
           ) : (
@@ -305,9 +407,11 @@ export function ImageToTextTool() {
         )}
 
         <p className="text-label-sm font-label-sm text-on-surface-variant/80 flex items-start gap-1.5">
-          <Icon name="lock" className="text-[14px] mt-0.5 shrink-0" />
-          Your image is read on your own device and never uploaded. The recognition
-          model itself is downloaded once and cached by your browser.
+          <Icon name="cloud" className="text-[14px] mt-0.5 shrink-0" />
+          Read on our server for the best accuracy, over an encrypted connection
+          — the image is deleted right after. If our server can&apos;t be
+          reached, this reads the image on your own device instead, so the
+          tool still works either way.
         </p>
           </SettingsRail>
         }
