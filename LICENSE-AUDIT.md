@@ -261,6 +261,43 @@ change if the third-party request is later judged unacceptable.
 
 ---
 
+## F6 — `@mediapipe/tasks-vision` for browser face detection · **Approved** · 2026-08-18
+
+Added to power automatic face detection on `/blur-face`, replacing a tool that
+had no detection at all.
+
+**Checks performed**
+
+| Check | Result |
+|---|---|
+| Declared licence | `Apache-2.0` (`@mediapipe/tasks-vision@1.0.1`) |
+| Copyleft strings in `vision_bundle.{js,mjs,cjs}`, `vision.d.ts` | none |
+| Copyleft strings in all six `wasm/*.wasm` and their loader JS (`grep -aiE "\b(A?GPL\|LGPL)\b\|GNU General Public\|GNU Lesser"`) | none |
+| Model weights `blaze_face_short_range.tflite` | Apache-2.0, verified `TFL3` flatbuffer, 229,746 bytes |
+
+**Verdict: approved.** Apache-2.0 throughout, permissive, commercially safe.
+Rule 1 was applied properly here — the wasm binaries were grepped directly
+rather than trusting the manifest, which is exactly the check F1 exists to force.
+
+**Obligations discharged**
+
+- Apache-2.0 requires reproducing the licence text; the package ships no
+  `LICENSE` file of its own, but `THIRD-PARTY-NOTICES.txt` already carries the
+  full Apache-2.0 text for other components, so the requirement is met.
+- The two artefacts that actually reach the browser — the wasm runtime and the
+  model weights — are invisible to the npm walk, so both are listed in
+  `MANUAL_COMPONENTS` in `scripts/generate-licenses.mjs` (same reasoning as the
+  tesseract.js-core entries).
+
+**Note on shipping.** The wasm runtime is ~22 MB across the two variants
+`FilesetResolver` can request. It is **not committed**: `scripts/copy-mediapipe.mjs`
+stages it from `node_modules` into `public/mediapipe/wasm/` on `predev`/`prebuild`,
+and that directory is gitignored. Only the 224 KB model is committed. Everything
+is served from our own origin — no CDN request and no upload — which is what
+keeps the "processed entirely in your browser" claim on `/blur-face` true.
+
+---
+
 ## Rules for adding a dependency
 
 1. **Read the bundled code, not just the manifest.** F1 is the whole argument:

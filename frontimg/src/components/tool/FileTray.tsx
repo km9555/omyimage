@@ -3,6 +3,7 @@
 import { useRef, type ReactNode } from "react";
 import { Icon } from "@/components/Icon";
 import { useViewMode, type ViewMode } from "@/lib/view-mode";
+import { CloudImportBar } from "@/components/CloudImportBar";
 
 /**
  * One row/card in the tray. Tools map their own item shape onto this, which
@@ -22,6 +23,11 @@ export interface TrayEntry {
   meta: ReactNode;
   /** Trailing control: download once processed, remove before that. */
   action?: ReactNode;
+  /**
+   * Per-file controls rendered under the name in both views (image-to-pdf's
+   * per-image orientation). Optional, so every other tool renders unchanged.
+   */
+  controls?: ReactNode;
 }
 
 /**
@@ -100,16 +106,20 @@ export function FileTray({
             </button>
           )}
           {onFiles && (
-            <button
-              type="button"
-              onClick={() => inputRef.current?.click()}
-              disabled={busy}
-              aria-label="Add more files"
-              title="Add more files"
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-on-secondary shadow-md shadow-secondary/30 transition-all hover:bg-secondary-container hover:shadow-lg hover:shadow-secondary/40 disabled:opacity-50"
-            >
-              <Icon name="add" className="text-[22px]" />
-            </button>
+            <>
+              {/* Renders nothing unless Google Drive is configured. */}
+              <CloudImportBar onFiles={onFiles} variant="icon" />
+              <button
+                type="button"
+                onClick={() => inputRef.current?.click()}
+                disabled={busy}
+                aria-label="Add more files"
+                title="Add more files"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-on-secondary shadow-md shadow-secondary/30 transition-all hover:bg-secondary-container hover:shadow-lg hover:shadow-secondary/40 disabled:opacity-50"
+              >
+                <Icon name="add" className="text-[22px]" />
+              </button>
+            </>
           )}
         </div>
       </div>
@@ -137,6 +147,7 @@ export function FileTray({
                   {e.name}
                 </p>
                 <p className="truncate text-label-sm font-label-sm text-on-surface-variant">{e.meta}</p>
+                {e.controls && <div className="mt-1.5">{e.controls}</div>}
               </div>
             </li>
           ))}
@@ -156,6 +167,7 @@ export function FileTray({
               <div className="min-w-0 flex-1">
                 <p className="truncate text-body-md font-semibold text-primary">{e.name}</p>
                 <p className="text-label-sm font-label-sm text-on-surface-variant">{e.meta}</p>
+                {e.controls && <div className="mt-1.5">{e.controls}</div>}
               </div>
               {onMove && (
                 <div className="flex shrink-0">

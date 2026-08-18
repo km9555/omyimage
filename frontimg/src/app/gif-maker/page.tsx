@@ -27,24 +27,26 @@ export const metadata: Metadata = {
 
 const steps: HowToStep[] = [
   { title: "Upload frames", description: "Select two or more images, or drag and drop them into the workspace." },
-  { title: "Set the timing", description: "Reorder the frames, choose the delay/speed, size and looping, with a live preview." },
-  { title: "Create & download", description: "Click Create GIF — your animated GIF builds in the browser and downloads instantly." },
+  { title: "Set the timing", description: "Reorder the frames, set the speed globally or per frame, and choose size, fit, colours and looping — all with a live preview." },
+  { title: "Create & download", description: "Click Create GIF — it builds in the browser, shows you the finished animation and its size, then downloads when you are happy with it." },
 ];
 
 const features: Feature[] = [
   { icon: "gif_box", title: "Live animated preview", description: "Watch your animation play at the exact speed before you export — no guesswork." },
-  { icon: "speed", title: "Full control", description: "Set the frame delay, output size, looping and background, and reorder frames freely." },
+  { icon: "speed", title: "Full control", description: "Set the delay globally or per frame, reverse or boomerang the sequence, and choose output size, fit, colour count, looping and background." },
   { icon: "lock", title: "100% private", description: "The GIF is encoded entirely in your browser — your images are never uploaded." },
 ];
 
 const faqs: Faq[] = [
   { q: "How many images can I use?", a: "At least two, and as many as you like — each image becomes one frame of the animation." },
-  { q: "Can I control the speed?", a: "Yes. The frame-delay slider sets the time per frame, shown in both milliseconds and frames per second." },
-  { q: "What if my images are different sizes?", a: "Each frame is fitted (letterboxed) into a common canvas with your chosen background, so the GIF stays consistent." },
+  { q: "Can I control the speed?", a: "Yes, at two levels. The frame-delay slider sets the default time per frame, shown in both milliseconds and frames per second, and any individual frame can override it with its own delay — useful for holding on a title card or a final frame." },
+  { q: "What if my images are different sizes?", a: "They are fitted into one common canvas sized to hold them all. Contain shows every frame whole and pads the difference with your background colour, Cover fills the canvas and crops the overflow, and Stretch forces an exact fit." },
+  { q: "Can I edit an existing GIF?", a: "Yes. Drop a GIF in and it is split back into its frames, keeping each frame's original delay. From there you can reorder, delete, retime, reverse or boomerang it and export again." },
+  { q: "Can the GIF have a transparent background?", a: "Yes — choose Transparent instead of a colour and the transparent areas of your source images stay transparent. GIF transparency is all-or-nothing per pixel, so soft anti-aliased edges become hard ones; if that matters, put a solid colour behind them instead." },
   { q: "Is it free and private?", a: "Yes. No sign-up and no watermark, and the GIF is built locally in your browser." },
   { q: "Why is my GIF so large?", a: "Because GIF is an old format with weak compression and no way to discard detail the way modern codecs do. Every frame adds to the file, and photographic content is the worst case. Cutting the dimensions, reducing the frame count and shortening the loop are the three levers that matter." },
   { q: "How do I make the file smaller?", a: "Reduce the pixel dimensions first — halving width and height cuts each frame to a quarter. Then use fewer frames, and keep the loop short. A 480-pixel-wide GIF of 15 frames is a sensible target; 800 pixels and 60 frames rarely is." },
-  { q: "Why do the colours look banded?", a: "GIF allows only 256 colours per frame, so anything with gradients — skies, skin tones, shadows — has to be approximated. The encoder dithers to disguise it, which produces the characteristic speckled texture. Flat graphics and illustration handle the limit far better than photographs." },
+  { q: "Why do the colours look banded?", a: "GIF allows at most 256 colours, so anything with gradients — skies, skin tones, shadows — has to be approximated, and the steps between the surviving colours show up as bands. This tool builds one shared palette for the whole animation, which keeps colours stable from frame to frame instead of letting them shift. Flat graphics and illustration handle the limit far better than photographs." },
   { q: "What frame delay should I use?", a: "Around 100 ms per frame gives roughly 10 frames per second, which reads as smooth for most short loops. Shorter delays look smoother but multiply the file size; longer ones read as a slideshow, which is often the right choice for a step-by-step sequence." },
   { q: "Can I make a GIF from a video?", a: "Not with this tool — it builds a GIF from still images you supply. You would need to extract frames from the video first. For a sequence of screenshots, product angles or a stop-motion set, this is exactly the right tool." },
   { q: "Should I use a GIF or a video?", a: "A video, almost always, if the platform supports one — a short MP4 is a fraction the size at far better quality. GIF wins only where autoplay-anywhere with no player matters: chat apps, README files, email in some clients, and old forums." },
@@ -137,7 +139,7 @@ export default function Page() {
         intro="Turn a series of images into a looping animation. oMyImage's GIF Maker builds an animated GIF from your photos right in your browser, with a live preview, adjustable speed, output size, looping and frame reordering. Create slideshows, reaction GIFs or simple animations and download instantly — nothing is uploaded, so your images stay private."
         howToTitle="How to make an animated GIF"
         steps={steps} features={features} faqs={faqs} sections={sections} fullWidthText
-        security="Your images stay private. The GIF is encoded entirely in your browser with the open-source gifenc library — nothing is uploaded to a server. No storage, no tracking of your files."
+        security="Your images stay private. The GIF is encoded entirely in your browser with the open-source gifenc library — and an imported GIF is decoded there too, with gifuct-js. Nothing is uploaded to a server. No storage, no tracking of your files."
       />
 
       <JsonLd data={software} />

@@ -32,20 +32,21 @@ const steps: HowToStep[] = [
 ];
 
 const features: Feature[] = [
-  { icon: "lens_blur", title: "Adjustable strength", description: "Smoothly blur from a soft 1px haze to a heavy 50px Gaussian blur, with a live preview." },
+  { icon: "lens_blur", title: "Whole image or selective", description: "Soften the entire photo, or draw areas to blur — or invert it and blur everything except them, keeping your subject sharp." },
+  { icon: "gradient", title: "Blur, pixelate or solid", description: "Smoothly blur from a soft 1px haze to a heavy 50px Gaussian, switch to chunky pixelation, or block areas out entirely." },
   { icon: "burst_mode", title: "Batch blur", description: "Apply the same blur to a whole batch of JPG, PNG or WEBP images and download them as a ZIP." },
   { icon: "lock", title: "100% private", description: "Everything runs in your browser with HTML canvas — your images are never uploaded to a server." },
 ];
 
 const faqs: Faq[] = [
   { q: "Is this a Gaussian blur?", a: "Yes — it uses the browser's native Gaussian blur filter for a smooth, high-quality result at any strength." },
-  { q: "Can I blur just part of the image?", a: "This tool blurs the whole image. To blur only faces or specific regions, use our Blur Face tool instead." },
+  { q: "Can I blur just part of the image?", a: "Yes. Switch to Selective and drag over the areas you want blurred. Turn on Invert to do the opposite — blur everything except those areas, which is how you soften a background while keeping the subject sharp." },
   { q: "Can I blur many images at once?", a: "Yes. Add as many as you like — a single image downloads directly and multiple images download together as a ZIP." },
   { q: "Is it free and private?", a: "Yes. No sign-up and no watermark, and every image is processed locally in your browser." },
   { q: "What is blurring actually useful for?", a: "Three things mostly: hiding sensitive detail such as an address or account number, creating a soft background so text placed over the image stays readable, and faking shallow depth of field so a subject stands out from a busy background." },
   { q: "How strong should the blur be?", a: "For a background behind text, enough that no edge in the image competes with the lettering — usually a fairly heavy setting. For a depth-of-field effect, much lighter, or the result looks artificial. For hiding information, heavy enough that you cannot read it at full zoom." },
   { q: "Can blurred detail be recovered?", a: "Not in any practical sense once the image is exported. Blurring averages pixels together and discards what was there, unlike a coloured box which merely covers it. That is why blur is the right tool for redaction and a drawn rectangle is not." },
-  { q: "Can I blur only part of the image?", a: "This tool applies the blur across the whole image. To blur a specific region — a face, a name badge, a screen — the Blur Face tool lets you draw over just the areas you want, leaving the rest sharp." },
+  { q: "What is the difference between this and the Blur Face tool?", a: "This tool is for the image as a whole, or for areas you draw yourself. The Blur Face tool adds automatic face detection and batch censoring, so it is the better choice when the goal is anonymising people rather than a visual effect." },
   { q: "Does blurring change the file size?", a: "Usually it shrinks it, sometimes considerably. Compression works by encoding differences between neighbouring pixels, and blurring removes exactly those differences, so there is far less detail left to store." },
   { q: "Will blurring fix a noisy photo?", a: "It hides noise by smoothing everything, but it removes the real detail along with the grain, so the result looks soft rather than clean. A light blur can help a very noisy image; anything more and you have traded one problem for another." },
 ];

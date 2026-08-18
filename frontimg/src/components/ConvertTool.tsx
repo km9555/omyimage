@@ -14,6 +14,7 @@ import {
   type ExportMime,
 } from "@/lib/image/raster";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
+import { detectEdgeBackground } from "@/lib/image/bg-detect";
 import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
 import { FileTray, TrayAction, type TrayEntry } from "@/components/tool/FileTray";
 import {
@@ -86,7 +87,7 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
   const serverFallback = config.serverFallback ?? true;
   const [items, setItems] = useState<Item[]>([]);
   const [quality_, setQuality] = useState(0.92);
-  const [bg, setBg] = useState<BgValue>({ transparent: false, color: "#ffffff" });
+  const [bg, setBg] = useState<BgValue>({ transparent: false, color: "#ffffff", auto: true });
   const [autoOrient, setAutoOrient] = useState(true);
   const [isWorking, setIsWorking] = useState(false);
   const [isDropping, setIsDropping] = useState(false);
@@ -154,6 +155,13 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
       const out: Item[] = [];
       for (const it of items) {
         const name = `${baseName(it.file.name)}.${ext}`;
+        // Resolved once per item so "Auto" samples THIS image's own edges
+        // rather than reusing one color across an entire batch.
+        const background = !flatten
+          ? null
+          : bg.auto
+            ? await detectEdgeBackground(it.file, autoOrient).catch(() => bg.color)
+            : resolveBg(bg);
         let blob: Blob;
         if (serverFallback && shouldUseServer(it.file.size)) {
           // > 15 MB → offload to the shared oMyPDF backend (Sharp, /api/image/*).
@@ -163,14 +171,14 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
           const r = await processOnServer("/api/image/convert", it.file, {
             format: toServerFormat(targetMime),
             quality: quality_,
-            background: flatten ? resolveBg(bg) ?? undefined : undefined,
+            background: background ?? undefined,
           });
           blob = r.blob;
         } else {
           const r = await rasterize(it.file, {
             mime: targetMime,
             quality: quality_,
-            background: flatten ? resolveBg(bg) : null,
+            background,
             autoOrient,
           });
           blob = r.blob;
@@ -352,7 +360,7 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
             )}
 
             {flatten && (
-              <BackgroundPicker value={bg} onChange={setBg} allowTransparent={false} label="Background (replaces transparency)" />
+              <BackgroundPicker value={bg} onChange={setBg} allowTransparent={false} allowAuto label="Background (replaces transparency)" />
             )}
 
             <label className="flex items-center gap-2.5 cursor-pointer">

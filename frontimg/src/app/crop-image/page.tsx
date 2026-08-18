@@ -35,21 +35,31 @@ export const metadata: Metadata = {
 };
 
 const steps: HowToStep[] = [
-  { title: "Upload", description: "Select an image, or drag and drop it into the workspace." },
-  { title: "Select the crop", description: "Drag the box to move it and the handles to resize, or lock an aspect ratio like 1:1 or 16:9." },
-  { title: "Crop & download", description: "Choose an output format and click Crop & download — it's done instantly in your browser." },
+  { title: "Upload", description: "Select one or many images, or drag and drop them into the workspace." },
+  { title: "Shape and frame it", description: "Pick a rectangle, square, circle, ellipse or rounded shape, drag the box to move it and the handles to resize, and lock a ratio like 1:1, 4:5 or 16:9. Rotate, flip or straighten if the shot needs it." },
+  { title: "Crop & download", description: "Choose the output size and format, then click Crop & download — instantly, in your browser, as a ZIP if you cropped several." },
 ];
 
 const features: Feature[] = [
   {
     icon: "crop_free",
     title: "Free crop or fixed ratios",
-    description: "Crop freely, type exact pixel dimensions, or lock to 1:1, 4:3, 3:2, 16:9 and more for perfect social or print sizes.",
+    description: "Crop freely, type exact pixel dimensions, or lock to 1:1, 4:3, 3:2, 16:9, 4:5 and more for perfect social or print sizes.",
+  },
+  {
+    icon: "circle",
+    title: "Shapes, not just rectangles",
+    description: "Crop to a square, circle, ellipse or rounded rectangle. PNG and WEBP keep the area outside the shape transparent — ideal for round avatars.",
+  },
+  {
+    icon: "rotate_90_degrees_cw",
+    title: "Rotate, flip & straighten",
+    description: "Turn in 90° steps, mirror horizontally or vertically, and level a crooked horizon with the straighten slider before you crop.",
   },
   {
     icon: "bolt",
-    title: "Instant & in-browser",
-    description: "Cropping runs entirely on your device with HTML canvas — no upload, no waiting, no quality loss from a round trip.",
+    title: "Batch & in-browser",
+    description: "Crop a whole batch with one framing and download a ZIP — all on your device with HTML canvas, no upload and no round trip.",
   },
   {
     icon: "image",
@@ -68,7 +78,9 @@ const faqs: Faq[] = [
   { q: "How is cropping different from resizing?", a: "Cropping removes parts of the image and keeps the remaining pixels at their original size. Resizing keeps the whole image and changes how many pixels it has. Crop to change what is in the frame; resize to change how big the file is." },
   { q: "Can I crop a photo to an exact pixel size?", a: "Yes. Set a fixed ratio to control the shape, then use the Resize tool afterwards to land on exact pixel dimensions. Doing it in that order avoids the stretching you get from forcing dimensions directly." },
   { q: "Does cropping remove EXIF data?", a: "Yes, as a side effect — the image is re-encoded from the canvas, which does not carry metadata across. That includes GPS coordinates, which is often a welcome bonus when posting photos publicly. If stripping metadata is the actual goal, the EXIF Remover is explicit about it." },
-  { q: "Can I crop several images at once?", a: "Yes. Apply the same crop across a batch, which is what you want for product shots or anything photographed in a consistent setup. Images with different dimensions are handled individually so the crop stays proportional." },
+  { q: "Can I crop several images at once?", a: "Yes. Add as many as you like and the same crop is applied to all of them, which is what you want for product shots or anything photographed in a consistent setup. The crop is stored proportionally, so images of different sizes each get the equivalent framing, and everything downloads together as a ZIP." },
+  { q: "Can I crop to a circle or other shapes?", a: "Yes — rectangle, square, circle, ellipse and rounded-corner crops are all available. Export as PNG or WEBP and the area outside the shape stays genuinely transparent, which is what you want for a round avatar. JPG cannot store transparency, so there you pick a colour for the corners instead." },
+  { q: "Can I rotate or straighten while cropping?", a: "Yes. Rotate in 90° steps, flip horizontally or vertically, and use the straighten slider to level a horizon. Straightening zooms in just enough that no empty wedges appear at the corners." },
 ];
 
 const sections: SeoSection[] = [

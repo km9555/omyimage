@@ -6,6 +6,9 @@ import { Icon } from "@/components/Icon";
 export interface BgValue {
   transparent: boolean;
   color: string;
+  /** When true (only meaningful with `allowAuto`), the color is derived per
+   *  image from its own edge pixels instead of using `color` directly. */
+  auto?: boolean;
 }
 
 /** Resolve a background value to a canvas fill (null = keep transparency). */
@@ -59,17 +62,21 @@ export function BackgroundPicker({
   value,
   onChange,
   allowTransparent = true,
+  allowAuto = false,
   label = "Background",
 }: {
   value: BgValue;
   onChange: (v: BgValue) => void;
   allowTransparent?: boolean;
+  /** Show an "Auto" chip that derives the color per image from its own edge
+   *  pixels (see `lib/image/bg-detect.ts`) instead of a fixed color. */
+  allowAuto?: boolean;
   label?: string;
 }) {
   const [hover, setHover] = useState<string | null>(null);
   const matched = COLORS.find((c) => c.value.toLowerCase() === value.color.toLowerCase());
-  const isCustom = !value.transparent && !matched;
-  const activeName = value.transparent ? "Transparent" : matched?.name ?? "Custom";
+  const isCustom = !value.transparent && !value.auto && !matched;
+  const activeName = value.auto ? "Auto" : value.transparent ? "Transparent" : matched?.name ?? "Custom";
   const hoverProps = (name: string) => ({
     onMouseEnter: () => setHover(name),
     onMouseLeave: () => setHover(null),
@@ -86,6 +93,20 @@ export function BackgroundPicker({
         </span>
       </div>
       <div className="flex items-center gap-2 flex-wrap">
+        {allowAuto && (
+          <button
+            type="button"
+            title="Auto — match the image's own edges"
+            aria-label="Auto — match the image's own edges"
+            aria-pressed={!!value.auto}
+            {...hoverProps("Auto")}
+            onClick={() => onChange({ ...value, transparent: false, auto: true })}
+            className={swatchCls(!!value.auto)}
+            style={{ backgroundColor: "var(--color-surface-container)" }}
+          >
+            <Icon name="auto_awesome" fill className="absolute inset-0 m-auto w-fit h-fit text-[15px]" style={{ color: "var(--color-on-surface-variant)" }} />
+          </button>
+        )}
         {allowTransparent && (
           <button
             type="button"
@@ -93,7 +114,7 @@ export function BackgroundPicker({
             aria-label="Transparent"
             aria-pressed={value.transparent}
             {...hoverProps("Transparent")}
-            onClick={() => onChange({ ...value, transparent: true })}
+            onClick={() => onChange({ ...value, transparent: true, auto: false })}
             className={swatchCls(value.transparent)}
             style={CHECKER}
           >
@@ -101,7 +122,7 @@ export function BackgroundPicker({
           </button>
         )}
         {COLORS.map((c) => {
-          const active = !value.transparent && value.color.toLowerCase() === c.value;
+          const active = !value.transparent && !value.auto && value.color.toLowerCase() === c.value;
           return (
             <button
               key={c.name}
@@ -110,7 +131,7 @@ export function BackgroundPicker({
               aria-label={c.name}
               aria-pressed={active}
               {...hoverProps(c.name)}
-              onClick={() => onChange({ transparent: false, color: c.value })}
+              onClick={() => onChange({ transparent: false, auto: false, color: c.value })}
               className={swatchCls(active)}
               style={{ backgroundColor: c.value }}
             >
@@ -132,7 +153,7 @@ export function BackgroundPicker({
           <input
             type="color"
             value={value.color}
-            onChange={(e) => onChange({ transparent: false, color: e.target.value })}
+            onChange={(e) => onChange({ transparent: false, auto: false, color: e.target.value })}
             onFocus={() => setHover("Custom")}
             onBlur={() => setHover(null)}
             aria-label="Custom background color"

@@ -1,0 +1,3 @@
+
+# MediaPipe wasm runtime is staged from node_modules by scripts/copy-mediapipe.mjs
+public/mediapipe/wasm/

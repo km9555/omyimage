@@ -5,28 +5,26 @@ import { toast } from "sonner";
 import { Icon } from "@/components/Icon";
 import { HelpTip } from "@/components/HelpTip";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
+import { Dropzone } from "@/components/image/Dropzone";
+import { CropCanvas } from "@/components/image/CropCanvas";
 import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
-import { SettingsRail, RailAction, RailNote } from "@/components/tool/SettingsRail";
+import { FileTray, TrayAction, type TrayEntry } from "@/components/tool/FileTray";
+import { SettingsRail, RailAction, RailSecondaryAction, RailNote } from "@/components/tool/SettingsRail";
+import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
+import {
+  decodeBitmap, canvasToBlob, downloadBlob, zipAndDownload, formatBytes, baseName, mimeExt, type ExportMime,
+} from "@/lib/image/raster";
+import {
+  applyAspect, centeredCrop, clampCrop, outputSize, renderCrop, transformedSize,
+  NO_TRANSFORM, type CropSel, type CropShape, type CropTransform, type OutputTarget,
+} from "@/lib/image/crop";
 import { useHandoff } from "@/lib/tool-handoff";
 
 const ACCENT = "#3E9A90";
-const MIN = 10; // minimum crop size in natural px
+const ACCEPT = "image/jpeg,image/png,image/webp,image/gif,image/bmp";
 
-type Crop = { x: number; y: number; w: number; h: number };
-type Handle = "move" | "n" | "s" | "e" | "w" | "ne" | "nw" | "se" | "sw";
-type Format = "original" | "image/jpeg" | "image/png" | "image/webp";
-
-const ACCEPT = "image/jpeg,image/png,image/webp,image/gif,image/bmp,.jpg,.jpeg,.png,.webp,.gif,.bmp";
-
-const ASPECTS: { label: string; value: number | null }[] = [
-  { label: "Free", value: null },
-  { label: "1:1", value: 1 },
-  { label: "4:3", value: 4 / 3 },
-  { label: "3:2", value: 3 / 2 },
-  { label: "16:9", value: 16 / 9 },
-  { label: "3:4", value: 3 / 4 },
-  { label: "9:16", value: 9 / 16 },
-];
+type Format = "original" | ExportMime;
+type Item = { id: string; file: File; url: string; result?: { blob: Blob; size: number; name: string } };
 
 const FORMATS: { label: string; value: Format }[] = [
   { label: "Same as original", value: "original" },
@@ -35,350 +33,260 @@ const FORMATS: { label: string; value: Format }[] = [
   { label: "WEBP", value: "image/webp" },
 ];
 
-function formatBytes(n: number): string {
-  if (n < 1024) return `${n} B`;
-  if (n < 1024 * 1024) return `${(n / 1024).toFixed(0)} KB`;
-  return `${(n / (1024 * 1024)).toFixed(2)} MB`;
-}
+/** Shape presets. Square and Circle are a shape plus a 1:1 lock. */
+const SHAPES: { label: string; icon: string; shape: CropShape; aspect: number | null }[] = [
+  { label: "Rectangle", icon: "crop_landscape", shape: "rect", aspect: null },
+  { label: "Square", icon: "crop_square", shape: "rect", aspect: 1 },
+  { label: "Circle", icon: "circle", shape: "ellipse", aspect: 1 },
+  { label: "Ellipse", icon: "blur_circular", shape: "ellipse", aspect: null },
+  { label: "Rounded", icon: "rounded_corner", shape: "rounded", aspect: null },
+];
 
-function clampCrop(c: Crop, natW: number, natH: number, minSize = MIN): Crop {
-  const w = Math.max(minSize, Math.min(c.w, natW));
-  const h = Math.max(minSize, Math.min(c.h, natH));
-  const x = Math.max(0, Math.min(c.x, natW - w));
-  const y = Math.max(0, Math.min(c.y, natH - h));
-  return { x: Math.round(x), y: Math.round(y), w: Math.round(w), h: Math.round(h) };
-}
+const ASPECTS: { label: string; value: number | null }[] = [
+  { label: "Free", value: null },
+  { label: "1:1", value: 1 },
+  { label: "4:3", value: 4 / 3 },
+  { label: "3:2", value: 3 / 2 },
+  { label: "16:9", value: 16 / 9 },
+  { label: "3:4", value: 3 / 4 },
+  { label: "4:5", value: 4 / 5 },
+  { label: "9:16", value: 9 / 16 },
+  { label: "4:1", value: 4 },
+];
 
-/**
- * A number input that lets you type freely (keeps your raw text while focused)
- * and only normalizes to the 0…max range on blur. Defined at module scope so it
- * keeps a stable identity and never loses focus when the parent re-renders.
- */
-function NumberField({
-  label,
-  value,
-  max,
-  onCommit,
-  className,
-}: {
-  label: string;
-  value: number;
-  max: number;
-  onCommit: (n: number) => void;
-  className: string;
-}) {
-  const [val, setVal] = useState(String(value));
-  const [focused, setFocused] = useState(false);
+const OUTPUT_TARGETS: { label: string; value: OutputTarget }[] = [
+  { label: "Original", value: "original" },
+  { label: "256px", value: 256 },
+  { label: "512px", value: 512 },
+  { label: "1024px", value: 1024 },
+];
 
-  useEffect(() => {
-    if (!focused) setVal(String(value));
-  }, [value, focused]);
+let counter = 0;
+const uid = () => `f${Date.now()}_${counter++}`;
 
-  const commit = (raw: string, blur: boolean) => {
-    if (raw === "" || raw === "-") {
-      if (blur) { setVal("0"); onCommit(0); }
-      return;
-    }
-    let n = parseInt(raw, 10);
-    if (!Number.isFinite(n)) {
-      if (blur) { setVal("0"); onCommit(0); }
-      return;
-    }
-    n = Math.max(0, Math.min(max, n)); // min 0, max = image size
-    if (blur) setVal(String(n));
-    onCommit(n);
-  };
-
-  return (
-    <div className="flex flex-col gap-1.5">
-      <label className="text-label-sm font-label-sm text-on-surface-variant">{label}</label>
-      <input
-        type="number"
-        min={0}
-        max={max}
-        value={val}
-        onFocus={() => setFocused(true)}
-        onChange={(e) => { setVal(e.target.value); commit(e.target.value, false); }}
-        onBlur={() => { setFocused(false); commit(val, true); }}
-        className={className}
-      />
-    </div>
-  );
-}
-
-/** Largest crop of the given aspect, centered in the image. */
-function centeredAspect(natW: number, natH: number, aspect: number | null): Crop {
-  if (aspect == null) {
-    const w = Math.round(natW * 0.8);
-    const h = Math.round(natH * 0.8);
-    return { x: Math.round((natW - w) / 2), y: Math.round((natH - h) / 2), w, h };
-  }
-  let w = natW;
-  let h = w / aspect;
-  if (h > natH) {
-    h = natH;
-    w = h * aspect;
-  }
-  w = Math.round(w * 0.9);
-  h = Math.round(h * 0.9);
-  return { x: Math.round((natW - w) / 2), y: Math.round((natH - h) / 2), w, h };
+function outMimeFor(file: File, fmt: Format): ExportMime {
+  if (fmt !== "original") return fmt;
+  const t = file.type;
+  return t === "image/jpeg" || t === "image/webp" || t === "image/png" ? (t as ExportMime) : "image/png";
 }
 
 export function CropTool() {
-  const [file, setFile] = useState<File | null>(null);
-  const [imgUrl, setImgUrl] = useState<string | null>(null);
-  const [nat, setNat] = useState<{ w: number; h: number } | null>(null);
-  const [crop, setCrop] = useState<Crop>({ x: 0, y: 0, w: 0, h: 0 });
+  const [items, setItems] = useState<Item[]>([]);
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const [sel, setSel] = useState<CropSel>({ x: 0.1, y: 0.1, w: 0.8, h: 0.8 });
+  const [shapeIdx, setShapeIdx] = useState(0);
+  const [radius, setRadius] = useState(0.15);
   const [aspect, setAspect] = useState<number | null>(null);
+  const [transform, setTransform] = useState<CropTransform>(NO_TRANSFORM);
+  const [zoom, setZoom] = useState(1);
+  const [target, setTarget] = useState<OutputTarget>("original");
   const [format, setFormat] = useState<Format>("original");
   const [quality, setQuality] = useState(0.92);
+  const [bg, setBg] = useState<BgValue>({ transparent: true, color: "#ffffff" });
   const [isWorking, setIsWorking] = useState(false);
-  const [isDropping, setIsDropping] = useState(false);
-  const [scale, setScale] = useState(1);
+  const [done, setDone] = useState(false);
+  const [bmpTick, setBmpTick] = useState(0);
 
-  const inputRef = useRef<HTMLInputElement>(null);
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const imgRef = useRef<HTMLImageElement>(null);
-  const drag = useRef<{ handle: Handle; sx: number; sy: number; orig: Crop; rect: DOMRect } | null>(null);
+  const bmps = useRef<Map<string, ImageBitmap>>(new Map());
 
-  // Keep the on-screen scale (rendered px ÷ natural px) in sync with layout.
-  const measure = useCallback(() => {
-    const img = imgRef.current;
-    if (img && nat) setScale(img.clientWidth / nat.w);
-  }, [nat]);
+  /*
+    Revoke preview URLs on UNMOUNT only — the ref-mirror pattern from
+    ConvertTool.tsx:97-112, so a second batch cannot revoke the first batch's
+    thumbnails.
+  */
+  const itemsRef = useRef<Item[]>([]);
+  useEffect(() => { itemsRef.current = items; }, [items]);
+  useEffect(() => () => { itemsRef.current.forEach((i) => URL.revokeObjectURL(i.url)); }, []);
+  useEffect(() => () => { bmps.current.forEach((b) => b.close()); bmps.current.clear(); }, []);
 
+  const active = useMemo(() => items.find((i) => i.id === activeId) ?? items[0] ?? null, [items, activeId]);
+
+  /*
+    Decode each file exactly once, with EXIF orientation applied.
+
+    The old tool used a plain <img> and never read the orientation tag, so a
+    phone photo was displayed — and cropped — the wrong way up.
+  */
   useEffect(() => {
-    if (!nat) return;
-    measure();
-    const ro = new ResizeObserver(measure);
-    if (imgRef.current) ro.observe(imgRef.current);
-    window.addEventListener("resize", measure);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", measure);
-    };
-  }, [nat, measure]);
+    let alive = true;
+    const ids = new Set(items.map((i) => i.id));
+    for (const [id, b] of bmps.current) if (!ids.has(id)) { b.close(); bmps.current.delete(id); }
+    const missing = items.filter((i) => !bmps.current.has(i.id));
+    if (missing.length === 0) return;
+    Promise.all(
+      missing.map(async (it) => {
+        try {
+          const bmp = await decodeBitmap(it.file, true);
+          if (!alive || !itemsRef.current.some((p) => p.id === it.id)) { bmp.close(); return; }
+          bmps.current.set(it.id, bmp);
+        } catch {
+          toast.error(`Couldn't read ${it.file.name}.`);
+        }
+      })
+    ).then(() => { if (alive) setBmpTick((n) => n + 1); });
+    return () => { alive = false; };
+  }, [items]);
 
-  useEffect(() => () => { if (imgUrl) URL.revokeObjectURL(imgUrl); }, [imgUrl]);
+  const activeBmp = useMemo(() => {
+    void bmpTick;
+    return active ? bmps.current.get(active.id) ?? null : null;
+  }, [active, bmpTick]);
 
-  const loadFile = useCallback((incoming: FileList | File[]) => {
-    const f = Array.from(incoming).find((x) => x.type.startsWith("image/"));
-    if (!f) {
-      toast.error("Please select an image file (JPG, PNG, WEBP, GIF, BMP).");
-      return;
+  const tSize = useMemo(
+    () => (activeBmp ? transformedSize(activeBmp.width, activeBmp.height, transform) : { w: 0, h: 0 }),
+    [activeBmp, transform]
+  );
+
+  const shapeDef = SHAPES[shapeIdx];
+  const effMime = active ? outMimeFor(active.file, format) : "image/png";
+  const isShaped = shapeDef.shape !== "rect";
+  // JPG cannot hold the transparent corners a circle crop produces.
+  const bgFill = effMime === "image/jpeg" ? resolveBg(bg) ?? "#ffffff" : bg.transparent ? null : resolveBg(bg);
+
+  const out = useMemo(
+    () => (activeBmp ? outputSize(sel, activeBmp.width, activeBmp.height, transform, target) : { w: 0, h: 0 }),
+    [activeBmp, sel, transform, target]
+  );
+
+  const pickShape = (i: number) => {
+    setShapeIdx(i);
+    const a = SHAPES[i].aspect;
+    if (a !== null) {
+      setAspect(a);
+      if (tSize.w) setSel((s) => applyAspect(s, a, tSize.w, tSize.h, "center"));
     }
-    const url = URL.createObjectURL(f);
-    const img = new window.Image();
-    img.onload = () => {
-      const w = img.naturalWidth;
-      const h = img.naturalHeight;
-      setFile(f);
-      setImgUrl(url);
-      setNat({ w, h });
-      setAspect(null);
-      setCrop(centeredAspect(w, h, null));
-    };
-    img.onerror = () => {
-      URL.revokeObjectURL(url);
-      toast.error(`Couldn't read "${f.name}" — is it a valid image?`);
-    };
-    img.src = url;
+  };
+
+  const pickAspect = (a: number | null) => {
+    setAspect(a);
+    if (a !== null && tSize.w) setSel((s) => applyAspect(s, a, tSize.w, tSize.h, "center"));
+  };
+
+  /** Every numeric edit goes through applyAspect, so the lock cannot be broken. */
+  const setField = (key: "x" | "y" | "w" | "h", pxValue: number) => {
+    if (!tSize.w) return;
+    const denom = key === "x" || key === "w" ? tSize.w : tSize.h;
+    const v = Math.max(0, pxValue) / denom;
+    const next = clampCrop({ ...sel, [key]: v });
+    setSel(aspect == null || key === "x" || key === "y" ? next : applyAspect(next, aspect, tSize.w, tSize.h, "center"));
+    setDone(false);
+  };
+
+  const selectWhole = () => {
+    const whole = clampCrop({ x: 0, y: 0, w: 1, h: 1 });
+    setSel(aspect == null ? whole : applyAspect(whole, aspect, tSize.w, tSize.h, "center"));
+  };
+
+  const rotate = (dir: 1 | -1) =>
+    setTransform((t) => ({ ...t, rotate: (((t.rotate + dir * 90) % 360) + 360) % 360 as CropTransform["rotate"] }));
+
+  const addFiles = useCallback((incoming: FileList | File[]) => {
+    const imgs = Array.from(incoming).filter((f) => f.type.startsWith("image/"));
+    if (imgs.length === 0) { toast.error("Please select image files."); return; }
+    setDone(false);
+    const added = imgs.map((file) => ({ id: uid(), file, url: URL.createObjectURL(file) }));
+    setItems((prev) => [...prev, ...added]);
+    setActiveId((cur) => cur ?? added[0].id);
   }, []);
 
-  useHandoff(loadFile);
+  useHandoff(addFiles);
 
+  // Start from a sensible centred crop once the first image is measured.
+  const seeded = useRef(false);
+  useEffect(() => {
+    if (seeded.current || !tSize.w) return;
+    seeded.current = true;
+    setSel(centeredCrop(aspect, tSize.w, tSize.h));
+  }, [tSize.w, tSize.h, aspect]);
+
+  const removeItem = (id: string) => setItems((prev) => {
+    const it = prev.find((p) => p.id === id);
+    if (it) URL.revokeObjectURL(it.url);
+    const next = prev.filter((p) => p.id !== id);
+    if (activeId === id) setActiveId(next[0]?.id ?? null);
+    return next;
+  });
   const reset = () => {
-    if (imgUrl) URL.revokeObjectURL(imgUrl);
-    setFile(null);
-    setImgUrl(null);
-    setNat(null);
-    setCrop({ x: 0, y: 0, w: 0, h: 0 });
-    setAspect(null);
+    items.forEach((i) => URL.revokeObjectURL(i.url));
+    setItems([]); setActiveId(null); setDone(false); seeded.current = false;
+    setTransform(NO_TRANSFORM); setZoom(1);
   };
 
-  const applyAspect = (a: number | null) => {
-    setAspect(a);
-    if (nat) setCrop(centeredAspect(nat.w, nat.h, a));
-  };
-
-  // ── Pointer drag (move + resize) ─────────────────────────────────────────
-  const onPointerDown = (handle: Handle) => (e: React.PointerEvent) => {
-    if (!wrapRef.current) return;
-    e.preventDefault();
-    e.stopPropagation();
-    drag.current = {
-      handle,
-      sx: e.clientX,
-      sy: e.clientY,
-      orig: crop,
-      rect: wrapRef.current.getBoundingClientRect(),
-    };
-    window.addEventListener("pointermove", onPointerMove);
-    window.addEventListener("pointerup", onPointerUp);
-  };
-
-  const onPointerMove = useCallback(
-    (e: PointerEvent) => {
-      const d = drag.current;
-      if (!d || !nat) return;
-      const sc = scale || 1;
-      const dx = (e.clientX - d.sx) / sc;
-      const dy = (e.clientY - d.sy) / sc;
-      const o = d.orig;
-
-      if (d.handle === "move") {
-        setCrop(clampCrop({ ...o, x: o.x + dx, y: o.y + dy }, nat.w, nat.h));
-        return;
-      }
-
-      // Aspect-locked → corner drag anchored at the opposite corner.
-      if (aspect != null && (d.handle.length === 2)) {
-        const ax = d.handle.includes("w") ? o.x + o.w : o.x; // fixed x
-        const ay = d.handle.includes("n") ? o.y + o.h : o.y; // fixed y
-        const px = Math.max(0, Math.min(nat.w, (e.clientX - d.rect.left) / sc));
-        const py = Math.max(0, Math.min(nat.h, (e.clientY - d.rect.top) / sc));
-        let w = Math.abs(px - ax);
-        let h = w / aspect;
-        if (h > Math.abs(py - ay)) {
-          h = Math.abs(py - ay);
-          w = h * aspect;
-        }
-        w = Math.max(MIN, w);
-        h = Math.max(MIN, h);
-        const x = px < ax ? ax - w : ax;
-        const y = py < ay ? ay - h : ay;
-        setCrop(clampCrop({ x, y, w, h }, nat.w, nat.h));
-        return;
-      }
-
-      // Free resize — adjust only the dragged edge(s).
-      let { x, y, w, h } = o;
-      if (d.handle.includes("e")) w = o.w + dx;
-      if (d.handle.includes("s")) h = o.h + dy;
-      if (d.handle.includes("w")) { const r = o.x + o.w; x = o.x + dx; w = r - x; }
-      if (d.handle.includes("n")) { const b = o.y + o.h; y = o.y + dy; h = b - y; }
-      if (w < MIN) { if (d.handle.includes("w")) x = o.x + o.w - MIN; w = MIN; }
-      if (h < MIN) { if (d.handle.includes("n")) y = o.y + o.h - MIN; h = MIN; }
-      setCrop(clampCrop({ x, y, w, h }, nat.w, nat.h));
-    },
-    [nat, scale, aspect]
-  );
-
-  const onPointerUp = useCallback(() => {
-    drag.current = null;
-    window.removeEventListener("pointermove", onPointerMove);
-    window.removeEventListener("pointerup", onPointerUp);
-  }, [onPointerMove]);
-
-  // Commit a manually-entered field value: min 0, max = image size, and keep
-  // the box inside the image. Uses minSize 0 so typing small values isn't fought.
-  const commitField = (k: keyof Crop, n: number) => {
-    if (!nat) return;
-    setCrop((c) => clampCrop({ ...c, [k]: n }, nat.w, nat.h, 0));
-  };
-
-  const outMime = useMemo<string>(() => {
-    if (format !== "original") return format;
-    const t = file?.type || "image/png";
-    return t === "image/gif" || t === "image/bmp" ? "image/png" : t;
-  }, [format, file]);
-
-  const baseName = useMemo(
-    () => (file?.name || "image").replace(/\.[^.]+$/, ""),
-    [file]
-  );
-
-  const handleCrop = async () => {
-    if (!file || !imgUrl || !nat) return;
+  const cropAll = async () => {
+    if (items.length === 0) return;
     setIsWorking(true);
     try {
-      const img = new window.Image();
-      img.src = imgUrl;
-      await img.decode();
-      const c = clampCrop(crop, nat.w, nat.h);
       const canvas = document.createElement("canvas");
-      canvas.width = c.w;
-      canvas.height = c.h;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) throw new Error("Canvas not supported");
-      if (outMime === "image/jpeg") {
-        ctx.fillStyle = "#ffffff"; // flatten transparency for JPG
-        ctx.fillRect(0, 0, c.w, c.h);
+      const outItems: Item[] = [];
+      for (const it of items) {
+        const bmp = bmps.current.get(it.id) ?? (await decodeBitmap(it.file, true));
+        const mime = outMimeFor(it.file, format);
+        renderCrop(canvas, bmp, sel, shapeDef.shape, transform, {
+          target,
+          radius,
+          background: mime === "image/jpeg" ? resolveBg(bg) ?? "#ffffff" : bg.transparent ? null : resolveBg(bg),
+        });
+        const blob = await canvasToBlob(canvas, mime, quality);
+        outItems.push({ ...it, result: { blob, size: blob.size, name: `${baseName(it.file.name)}_cropped.${mimeExt(mime)}` } });
       }
-      ctx.drawImage(img, c.x, c.y, c.w, c.h, 0, 0, c.w, c.h);
-      const useQuality = outMime === "image/jpeg" || outMime === "image/webp";
-      const blob: Blob | null = await new Promise((res) =>
-        canvas.toBlob(res, outMime, useQuality ? quality : undefined)
-      );
-      if (!blob) throw new Error("Could not export image");
-      const ext = outMime.split("/")[1].replace("jpeg", "jpg");
-      const a = document.createElement("a");
-      const dl = URL.createObjectURL(blob);
-      a.href = dl;
-      a.download = `${baseName}_cropped.${ext}`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(() => URL.revokeObjectURL(dl), 1000);
-      toast.success("Cropped — download started.");
+      setItems(outItems);
+      setDone(true);
+      if (outItems.length === 1 && outItems[0].result) downloadBlob(outItems[0].result.blob, outItems[0].result.name);
+      else await zipAndDownload(outItems.map((o) => ({ name: o.result!.name, blob: o.result!.blob })), "omyimage_cropped.zip");
+      toast.success(`Cropped ${outItems.length} image${outItems.length === 1 ? "" : "s"}.`);
     } catch (err) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : "Something went wrong.");
+      toast.error(err instanceof Error ? err.message : "Crop failed.");
     } finally {
       setIsWorking(false);
     }
   };
 
-  const openPicker = () => inputRef.current?.click();
-  const fieldCls =
-    "w-full px-3 py-2.5 rounded-lg bg-surface-container-lowest border border-surface-variant focus:border-secondary focus:ring-1 focus:ring-secondary outline-none text-body-md text-primary";
+  const fieldCls = "w-full px-3 py-2.5 rounded-lg bg-surface-container-lowest border border-surface-variant focus:border-secondary focus:ring-1 focus:ring-secondary outline-none text-body-md text-primary";
+  const seg = (on: boolean) =>
+    `rounded-md px-2 py-2 text-label-sm font-label-sm font-semibold transition-colors ${
+      on ? "bg-surface-container-lowest text-primary shadow-sm" : "text-on-surface-variant hover:text-primary"
+    }`;
 
-  // ── Empty state ───────────────────────────────────────────────────────────
-  if (!file || !imgUrl || !nat) {
+  if (items.length === 0) {
     return (
       <section>
         <TopLoadingBar active={isWorking} />
-        <input
-          ref={inputRef}
-          type="file"
-          accept={ACCEPT}
-          className="hidden"
-          onChange={(e) => {
-            if (e.target.files) loadFile(e.target.files);
-            e.target.value = "";
-          }}
-        />
-        <div
-          onClick={openPicker}
-          onDragOver={(e) => { e.preventDefault(); setIsDropping(true); }}
-          onDragLeave={() => setIsDropping(false)}
-          onDrop={(e) => { e.preventDefault(); setIsDropping(false); loadFile(e.dataTransfer.files); }}
-          className={`relative w-full rounded-xl border-2 border-dashed py-14 px-6 flex flex-col items-center justify-center gap-3 bg-surface-container-lowest ambient-shadow cursor-pointer transition-all ${
-            isDropping ? "drag-active" : "border-outline-variant hover:border-secondary/50"
-          }`}
-        >
-          <div className="hidden sm:flex w-11 h-11 bg-surface-container rounded-full items-center justify-center">
-            <Icon name="crop" fill className="text-[22px]" style={{ color: ACCENT }} />
-          </div>
-          <div className="flex flex-col items-center gap-1 text-center">
-            <span className="bg-secondary hover:bg-secondary-container text-on-secondary text-sm font-semibold px-6 py-2.5 rounded-lg transition-colors">
-              Select an image
-            </span>
-            <p className="text-body-md text-on-surface-variant mt-2">or drop a JPG, PNG, WEBP or GIF here</p>
-          </div>
-          <p className="text-label-sm font-label-sm text-on-surface-variant/70 mt-1 flex items-center gap-1.5">
-            <Icon name="lock" className="text-[14px]" /> Cropped entirely in your browser — your image never leaves your device.
-          </p>
-        </div>
+        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="crop" hint="or drop JPG, PNG, WEBP, GIF or BMP images here" />
       </section>
     );
   }
 
-  // ── Loaded state ──────────────────────────────────────────────────────────
-  const showEdges = aspect == null;
-  const handleBase =
-    "absolute w-3 h-3 bg-surface-container-lowest border-2 rounded-sm";
-  const handleStyle = { borderColor: ACCENT } as const;
+  const entries: TrayEntry[] = items.map((it) => ({
+    id: it.id,
+    name: it.file.name,
+    url: it.url,
+    badge: (
+      <button
+        type="button"
+        onClick={() => setActiveId(it.id)}
+        aria-label={`Preview ${it.file.name}`}
+        aria-pressed={active?.id === it.id}
+        className="grid place-items-center w-7 h-7 rounded-full shrink-0 transition-colors"
+        style={{ backgroundColor: active?.id === it.id ? ACCENT : `${ACCENT}1A`, color: active?.id === it.id ? "#fff" : ACCENT }}
+      >
+        <Icon name={active?.id === it.id ? "visibility" : "visibility_off"} className="text-[15px]" />
+      </button>
+    ),
+    meta: (
+      <>
+        {formatBytes(it.file.size)}
+        {it.result && <><Icon name="check" className="text-[13px] mx-1 align-middle" style={{ color: ACCENT }} />done · {formatBytes(it.result.size)}</>}
+      </>
+    ),
+    action: it.result ? (
+      <TrayAction icon="download" tone="accent" label="Download" onClick={() => downloadBlob(it.result!.blob, it.result!.name)} />
+    ) : (
+      <TrayAction icon="close" label="Remove" disabled={isWorking} onClick={() => removeItem(it.id)} />
+    ),
+  }));
+
+  const px = (v: number, dim: "w" | "h") => Math.round(v * (dim === "w" ? tSize.w : tSize.h));
 
   return (
     <>
@@ -386,86 +294,32 @@ export function CropTool() {
       <ToolWorkspace
         main={
           <>
-        {/* File card */}
-        <div className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-4 flex items-center gap-3">
-          <span className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: `${ACCENT}1A` }}>
-            <Icon name="image" fill className="text-[22px]" style={{ color: ACCENT }} />
-          </span>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-body-md font-semibold text-primary">{file.name}</p>
-            <p className="text-label-sm font-label-sm text-on-surface-variant">
-              {nat.w} × {nat.h} px · {formatBytes(file.size)}
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={reset}
-            disabled={isWorking}
-            aria-label="Remove image"
-            className="flex h-8 w-8 items-center justify-center rounded text-on-surface-variant hover:bg-error-container hover:text-error transition-colors disabled:opacity-40"
-          >
-            <Icon name="close" className="text-[20px]" />
-          </button>
-        </div>
-
-        {/* Crop canvas — the frame hugs the image so the crop is clear at any size/aspect */}
-        <div className="flex justify-center w-full">
-          <div className="bg-surface-container rounded-xl border border-surface-variant p-3 inline-block max-w-full overflow-hidden">
-          <div ref={wrapRef} className="relative max-w-full select-none" style={{ lineHeight: 0, touchAction: "none" }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              ref={imgRef}
-              src={imgUrl}
-              alt="To crop"
-              onLoad={measure}
-              draggable={false}
-              className="block w-auto h-auto max-w-full max-h-[46vh] rounded"
-            />
-            {/* Dim overlay outside the crop */}
-            <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: "0 0 0 9999px rgba(0,0,0,0.45)", clipPath: "inset(0)" }} aria-hidden />
-            {/* Crop rectangle */}
-            <div
-              onPointerDown={onPointerDown("move")}
-              className="absolute cursor-move"
-              style={{
-                left: crop.x * scale,
-                top: crop.y * scale,
-                width: crop.w * scale,
-                height: crop.h * scale,
-                outline: `2px solid ${ACCENT}`,
-                boxShadow: "0 0 0 9999px rgba(0,0,0,0.45)",
-              }}
-            >
-              {/* rule-of-thirds guides */}
-              <div className="absolute inset-0 pointer-events-none opacity-60" style={{
-                backgroundImage:
-                  `linear-gradient(${ACCENT} 1px, transparent 1px), linear-gradient(90deg, ${ACCENT} 1px, transparent 1px)`,
-                backgroundSize: "33.33% 33.33%",
-                backgroundPosition: "0 0",
-                mixBlendMode: "screen",
-                opacity: 0.25,
-              }} aria-hidden />
-              {/* corner handles */}
-              <span className={`${handleBase} -top-1.5 -left-1.5 cursor-nwse-resize`} style={handleStyle} onPointerDown={onPointerDown("nw")} />
-              <span className={`${handleBase} -top-1.5 -right-1.5 cursor-nesw-resize`} style={handleStyle} onPointerDown={onPointerDown("ne")} />
-              <span className={`${handleBase} -bottom-1.5 -left-1.5 cursor-nesw-resize`} style={handleStyle} onPointerDown={onPointerDown("sw")} />
-              <span className={`${handleBase} -bottom-1.5 -right-1.5 cursor-nwse-resize`} style={handleStyle} onPointerDown={onPointerDown("se")} />
-              {/* edge handles (free mode only) */}
-              {showEdges && (
-                <>
-                  <span className={`${handleBase} -top-1.5 left-1/2 -translate-x-1/2 cursor-ns-resize`} style={handleStyle} onPointerDown={onPointerDown("n")} />
-                  <span className={`${handleBase} -bottom-1.5 left-1/2 -translate-x-1/2 cursor-ns-resize`} style={handleStyle} onPointerDown={onPointerDown("s")} />
-                  <span className={`${handleBase} top-1/2 -left-1.5 -translate-y-1/2 cursor-ew-resize`} style={handleStyle} onPointerDown={onPointerDown("w")} />
-                  <span className={`${handleBase} top-1/2 -right-1.5 -translate-y-1/2 cursor-ew-resize`} style={handleStyle} onPointerDown={onPointerDown("e")} />
-                </>
-              )}
+            <div className="bg-surface-container rounded-xl border border-surface-variant p-4 flex items-center justify-center overflow-auto" style={{ minHeight: 300 }}>
+              <CropCanvas
+                bitmap={activeBmp}
+                sel={sel}
+                onChange={(s) => { setSel(s); setDone(false); }}
+                shape={shapeDef.shape}
+                radius={radius}
+                aspect={aspect}
+                transform={transform}
+                zoom={zoom}
+                accent={ACCENT}
+                disabled={isWorking}
+              />
             </div>
-          </div>
-          </div>
-        </div>
-        <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
-          Drag inside the box to move it, or drag a handle to resize.
-        </p>
+            <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
+              Drag inside the box to move it, or a handle to resize · output {out.w} × {out.h} px
+              {items.length > 1 && <> — the same crop is applied to all {items.length} images</>}
+            </p>
+            <FileTray
+              entries={entries}
+              title={`${items.length} image${items.length === 1 ? "" : "s"}`}
+              accept={ACCEPT}
+              onFiles={addFiles}
+              onClear={reset}
+              busy={isWorking}
+            />
           </>
         }
         rail={
@@ -475,78 +329,142 @@ export function CropTool() {
             accent={ACCENT}
             footer={
               <>
-                <RailNote>Output: {crop.w} × {crop.h} px — nothing is uploaded.</RailNote>
-                <RailAction onClick={handleCrop} busy={isWorking} busyLabel="Cropping…" icon="crop">
-                  Crop &amp; download
+                <RailNote>Output: {out.w} × {out.h} px — nothing is uploaded.</RailNote>
+                <RailAction onClick={cropAll} busy={isWorking} busyLabel="Cropping…" icon="crop">
+                  {items.length > 1 ? `Crop ${items.length} images` : "Crop & download"}
                 </RailAction>
+                {done && items.length > 1 && (
+                  <RailSecondaryAction
+                    icon="folder_zip"
+                    onClick={() => zipAndDownload(items.filter((i) => i.result).map((i) => ({ name: i.result!.name, blob: i.result!.blob })), "omyimage_cropped.zip")}
+                  >
+                    Download all (ZIP)
+                  </RailSecondaryAction>
+                )}
               </>
             }
           >
-        {/* Aspect ratio */}
-        <div className="flex flex-col gap-3">
-          <h2 className="text-headline-md font-bold text-primary">Aspect ratio</h2>
-          <div className="grid grid-cols-4 gap-1.5">
-            {ASPECTS.map((a) => {
-              const active = aspect === a.value;
-              return (
-                <button
-                  key={a.label}
-                  type="button"
-                  onClick={() => applyAspect(a.value)}
-                  className={`rounded-md px-2 py-1.5 text-label-sm font-label-sm font-semibold transition-colors ${
-                    active
-                      ? "bg-secondary text-on-secondary"
-                      : "bg-surface-container text-on-surface-variant hover:text-primary"
-                  }`}
-                >
-                  {a.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+            <div className="flex flex-col gap-1.5">
+              <span className="flex items-center gap-1.5 text-label-sm font-label-sm text-on-surface-variant">
+                Shape
+                <HelpTip text="Circle and Ellipse cut away the corners — export as PNG or WEBP to keep them transparent. JPG has no transparency, so those corners take the background colour instead." />
+              </span>
+              <div className="grid grid-cols-5 gap-1 rounded-lg bg-surface-container p-1">
+                {SHAPES.map((s, i) => (
+                  <button
+                    key={s.label}
+                    type="button"
+                    onClick={() => pickShape(i)}
+                    title={s.label}
+                    aria-label={s.label}
+                    aria-pressed={shapeIdx === i}
+                    className={`flex items-center justify-center rounded-md py-2 transition-colors ${
+                      shapeIdx === i ? "bg-surface-container-lowest text-primary shadow-sm" : "text-on-surface-variant hover:text-primary"
+                    }`}
+                  >
+                    <Icon name={s.icon} className="text-[18px]" />
+                  </button>
+                ))}
+              </div>
+              <p className="text-label-sm font-label-sm text-on-surface-variant">{shapeDef.label}</p>
+            </div>
 
-        {/* Crop dimensions */}
-        <div className="flex flex-col gap-3 border-t border-outline-variant/60 pt-5">
-          <span className="flex items-center gap-1.5 text-headline-md font-bold text-primary">
-            Selection
-            <HelpTip text="Values are in pixels of the original image. Adjust them for a precise crop." />
-          </span>
-          <div className="grid grid-cols-2 gap-3">
-            <NumberField label="X" value={crop.x} max={nat.w} onCommit={(n) => commitField("x", n)} className={fieldCls} />
-            <NumberField label="Y" value={crop.y} max={nat.h} onCommit={(n) => commitField("y", n)} className={fieldCls} />
-            <NumberField label="Width" value={crop.w} max={nat.w} onCommit={(n) => commitField("w", n)} className={fieldCls} />
-            <NumberField label="Height" value={crop.h} max={nat.h} onCommit={(n) => commitField("h", n)} className={fieldCls} />
-          </div>
-          <button
-            type="button"
-            onClick={() => nat && setCrop({ x: 0, y: 0, w: nat.w, h: nat.h })}
-            className="self-start text-label-sm font-label-sm font-semibold text-secondary hover:underline"
-          >
-            Select whole image
-          </button>
-        </div>
+            {shapeDef.shape === "rounded" && (
+              <div className="flex flex-col gap-1.5">
+                <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant">
+                  <span>Corner radius</span><span className="text-primary font-semibold">{Math.round(radius * 100)}%</span>
+                </label>
+                <input type="range" min={0} max={50} step={1} value={Math.round(radius * 100)} onChange={(e) => setRadius(parseInt(e.target.value, 10) / 100)} className="w-full accent-secondary" />
+              </div>
+            )}
 
-        {/* Output */}
-        <div className="flex flex-col gap-3 border-t border-outline-variant/60 pt-5">
-          <h2 className="text-headline-md font-bold text-primary">Output</h2>
-          <div className="flex flex-col gap-1.5">
-            <label className="text-label-sm font-label-sm text-on-surface-variant">Format</label>
-            <select value={format} onChange={(e) => setFormat(e.target.value as Format)} className={fieldCls}>
-              {FORMATS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}
-            </select>
-          </div>
-          {(outMime === "image/jpeg" || outMime === "image/webp") && (
+            <div className="flex flex-col gap-1.5">
+              <span className="text-label-sm font-label-sm text-on-surface-variant">Aspect ratio</span>
+              <div className="grid grid-cols-3 gap-1 rounded-lg bg-surface-container p-1">
+                {ASPECTS.map((a) => (
+                  <button key={a.label} type="button" onClick={() => pickAspect(a.value)} className={seg(aspect === a.value)}>{a.label}</button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <span className="text-label-sm font-label-sm text-on-surface-variant">Rotate &amp; flip</span>
+              <div className="grid grid-cols-4 gap-1">
+                <button type="button" onClick={() => rotate(-1)} title="Rotate left" aria-label="Rotate left" className="flex items-center justify-center rounded-lg border border-surface-variant py-2 text-on-surface-variant hover:text-primary transition-colors"><Icon name="rotate_90_degrees_ccw" className="text-[18px]" /></button>
+                <button type="button" onClick={() => rotate(1)} title="Rotate right" aria-label="Rotate right" className="flex items-center justify-center rounded-lg border border-surface-variant py-2 text-on-surface-variant hover:text-primary transition-colors"><Icon name="rotate_90_degrees_cw" className="text-[18px]" /></button>
+                <button type="button" onClick={() => setTransform((t) => ({ ...t, flipH: !t.flipH }))} title="Flip horizontally" aria-label="Flip horizontally" aria-pressed={transform.flipH} className={`flex items-center justify-center rounded-lg border py-2 transition-colors ${transform.flipH ? "border-secondary text-secondary" : "border-surface-variant text-on-surface-variant hover:text-primary"}`}><Icon name="flip" className="text-[18px]" /></button>
+                <button type="button" onClick={() => setTransform((t) => ({ ...t, flipV: !t.flipV }))} title="Flip vertically" aria-label="Flip vertically" aria-pressed={transform.flipV} className={`flex items-center justify-center rounded-lg border py-2 transition-colors ${transform.flipV ? "border-secondary text-secondary" : "border-surface-variant text-on-surface-variant hover:text-primary"}`}><Icon name="flip" className="text-[18px] rotate-90" /></button>
+              </div>
+            </div>
+
             <div className="flex flex-col gap-1.5">
               <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant">
-                <span>Quality</span>
-                <span className="text-primary font-semibold">{Math.round(quality * 100)}%</span>
+                <span className="flex items-center gap-1.5">Straighten <HelpTip text="Fine rotation for levelling a horizon. The image is zoomed just enough that no empty corners appear." /></span>
+                <span className="text-primary font-semibold">{transform.straighten}°</span>
               </label>
-              <input type="range" min={0.5} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" />
+              <input type="range" min={-15} max={15} step={0.5} value={transform.straighten} onChange={(e) => setTransform((t) => ({ ...t, straighten: parseFloat(e.target.value) }))} className="w-full accent-secondary" />
             </div>
-          )}
-        </div>
 
+            <div className="flex flex-col gap-1.5">
+              <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant">
+                <span>Zoom</span><span className="text-primary font-semibold">{zoom.toFixed(1)}x</span>
+              </label>
+              <input type="range" min={1} max={4} step={0.1} value={zoom} onChange={(e) => setZoom(parseFloat(e.target.value))} className="w-full accent-secondary" />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <span className="flex items-center gap-1.5 text-label-sm font-label-sm text-on-surface-variant">
+                Selection (px)
+                <HelpTip text="Exact pixel position and size of the crop on the image, after any rotation." />
+              </span>
+              <div className="grid grid-cols-2 gap-2">
+                {([["X","x"],["Y","y"],["Width","w"],["Height","h"]] as [string, "x"|"y"|"w"|"h"][]).map(([label, key]) => (
+                  <label key={key} className="flex flex-col gap-1 text-label-sm font-label-sm text-on-surface-variant">
+                    {label}
+                    <input
+                      type="number"
+                      min={0}
+                      value={px(sel[key], key === "y" || key === "h" ? "h" : "w")}
+                      onChange={(e) => setField(key, parseInt(e.target.value, 10) || 0)}
+                      className={fieldCls}
+                    />
+                  </label>
+                ))}
+              </div>
+              <RailSecondaryAction icon="select_all" onClick={selectWhole}>Select whole image</RailSecondaryAction>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <span className="text-label-sm font-label-sm text-on-surface-variant">Output size</span>
+              <div className="grid grid-cols-4 gap-1 rounded-lg bg-surface-container p-1">
+                {OUTPUT_TARGETS.map((o) => (
+                  <button key={String(o.value)} type="button" onClick={() => setTarget(o.value)} className={seg(target === o.value)}>{o.label}</button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3 border-t border-outline-variant/60 pt-5">
+              <h3 className="text-body-lg font-bold text-primary">Output</h3>
+              <select value={format} onChange={(e) => setFormat(e.target.value as Format)} className={fieldCls}>
+                {FORMATS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}
+              </select>
+              {effMime !== "image/png" && (
+                <div className="flex flex-col gap-1.5">
+                  <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant">
+                    <span>Quality</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span>
+                  </label>
+                  <input type="range" min={0.5} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" />
+                </div>
+              )}
+              {isShaped && (
+                <BackgroundPicker
+                  value={bg}
+                  onChange={setBg}
+                  allowTransparent={effMime !== "image/jpeg"}
+                  label={effMime === "image/jpeg" ? "Corner fill (JPG has no transparency)" : "Outside the shape"}
+                />
+              )}
+            </div>
           </SettingsRail>
         }
       />

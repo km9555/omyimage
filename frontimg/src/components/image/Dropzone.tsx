@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { Icon } from "@/components/Icon";
+import { CloudImportBar } from "@/components/CloudImportBar";
 
 /**
  * Shared empty-state drop zone for image tools. Click to pick or drag & drop.
@@ -14,6 +15,7 @@ export function Dropzone({
   multiple = true,
   buttonLabel = "Select images",
   hint,
+  cloudMimeTypes,
   privacyNote = "Processed in your browser — your images never leave your device.",
 }: {
   onFiles: (files: FileList | File[]) => void;
@@ -23,6 +25,8 @@ export function Dropzone({
   multiple?: boolean;
   buttonLabel?: string;
   hint: string;
+  /** Override the mime types offered in the cloud picker. Defaults to `accept`. */
+  cloudMimeTypes?: string;
   /**
    * Footer line. This USED to be hardcoded to the browser-local wording, which
    * put a flat contradiction on every server-backed page — heic-to-jpg said
@@ -66,10 +70,29 @@ export function Dropzone({
           </span>
           <p className="text-body-md text-on-surface-variant mt-2">{hint}</p>
         </div>
+        {/*
+          Cloud import sits inside the drop zone so every tool gains it at once.
+          It renders nothing when Drive is unconfigured, and stops click
+          propagation so the chip does not also open the native file dialog.
+        */}
+        <CloudImportBar onFiles={onFiles} mimeTypes={cloudMimeTypes ?? mimeOnly(accept)} />
+
         <p className="text-label-sm font-label-sm text-on-surface-variant/70 mt-1 flex items-center gap-1.5">
           <Icon name="lock" className="text-[14px]" /> {privacyNote}
         </p>
       </div>
     </>
   );
+}
+
+/**
+ * Keep only real mime types from an `accept` string.
+ *
+ * Tool accept lists mix mime types with bare extensions (".heic", ".tif"), and
+ * the Picker only understands mime types — passing an extension through makes
+ * it silently show nothing.
+ */
+function mimeOnly(accept: string): string | undefined {
+  const types = accept.split(",").map((s) => s.trim()).filter((s) => s.includes("/"));
+  return types.length ? types.join(",") : undefined;
 }

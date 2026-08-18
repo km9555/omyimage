@@ -27,20 +27,23 @@ export const metadata: Metadata = {
 
 const steps: HowToStep[] = [
   { title: "Upload", description: "Select your images, or drag and drop them into the workspace." },
-  { title: "Arrange & set up", description: "Reorder pages with the arrows and choose page size, orientation and margin." },
-  { title: "Create PDF", description: "Click Create PDF to download a single document with one image per page." },
+  { title: "Arrange & set up", description: "Reorder pages with the arrows, then choose page size, orientation, how many images per page, fit, margin and background." },
+  { title: "Create PDF", description: "Click Create PDF to download a single document, laid out exactly as you set it." },
 ];
 
 const features: Feature[] = [
   { icon: "reorder", title: "Reorder pages", description: "Drag your images into the order you want with simple up/down controls before exporting." },
-  { icon: "description", title: "Page size & margins", description: "Fit the page to each image, or use A4/Letter with portrait or landscape and a margin of your choice." },
+  { icon: "description", title: "Full page control", description: "Fit each page to its image, or use A4, Letter, Legal, A3 or A5 with auto, portrait or landscape orientation and a margin you set in points." },
+  { icon: "grid_view", title: "Multi-up layouts", description: "Place 1, 2, 4, 6 or 9 images per page and choose whether each one is contained, cropped to fill, or stretched." },
   { icon: "lock", title: "100% private", description: "The PDF is assembled entirely in your browser — your images are never uploaded." },
 ];
 
 const faqs: Faq[] = [
-  { q: "Can I combine many images into one PDF?", a: "Yes. Add as many images as you like; each becomes one page in a single PDF, in the order you arrange them." },
-  { q: "Which image formats are supported?", a: "JPG, PNG, WEBP, GIF and BMP. Transparent areas are placed on a white background." },
-  { q: "Can I choose A4 or Letter?", a: "Yes. Pick ‘Fit image’ to size each page to its image, or A4/Letter with portrait or landscape and a margin." },
+  { q: "Can I combine many images into one PDF?", a: "Yes. Add as many images as you like and arrange them in the order you want. By default each image becomes its own page, or you can place 2, 4, 6 or 9 per page." },
+  { q: "Which image formats are supported?", a: "JPG, PNG, WEBP, GIF and BMP. PNG transparency is preserved, so whatever you set as the page background shows through — including no background at all." },
+  { q: "Can I choose A4 or Letter?", a: "Yes — A4, Letter, Legal, A3 and A5, each in portrait, landscape or auto (which matches the page to the image's own shape). Or pick ‘Fit to image’ to size every page to its picture." },
+  { q: "What do Contain, Cover and Stretch do?", a: "Contain fits the whole image inside the page, adding empty space where the shapes don't match. Cover fills the page completely and crops whatever overflows. Stretch distorts the image to fill the page exactly — useful only when the aspect ratios are already close." },
+  { q: "Does building the PDF reduce my image quality?", a: "No. JPG and PNG files are embedded exactly as they are, with no recompression, so the pages hold your original pixels. The only exception is a photo carrying EXIF rotation, which has to be re-saved so it appears the right way up." },
   { q: "Are my images uploaded?", a: "No. The PDF is built locally in your browser, so your images never leave your device." },
   { q: "Is it free?", a: "Completely free, with no watermark and no sign-up." },
   { q: "What page size should I choose?", a: "A4 for anything going to a printer outside the United States, Letter for US printing, and 'Fit to image' when the PDF is only ever going to be read on screen. Fit-to-image avoids the white margins you get when a landscape photo is placed on a portrait page." },
@@ -65,15 +68,16 @@ const sections: SeoSection[] = [
     id: "layout",
     body: [
       "A4 is the standard almost everywhere outside North America; Letter is slightly wider and shorter and is the US default. Choosing the one your recipient's printer expects avoids the scaling and clipping that happens when a Letter document meets an A4 tray.",
-      "'Fit to image' sizes each page to the picture instead, which is the right choice for screen-only documents, photo collections and anything with mixed orientations. It eliminates the bands of white space you get when a wide photo is centred on a tall page.",
-      "For scanned or photographed documents, keeping orientation consistent matters more than it sounds. A single sideways page in an otherwise portrait PDF forces the reader to rotate their whole view, so rotate the offending images before building rather than after.",
+      "'Fit to image' sizes each page to the picture instead, which is the right choice for screen-only documents, photo collections and anything with mixed orientations. It eliminates the bands of white space you get when a wide photo is centred on a tall page. Auto orientation is the middle ground: it keeps a standard sheet size but turns each page to match its image, so landscape photos stop being letterboxed.",
+      "The fit mode decides what happens when the image and the page still disagree. Contain shows everything and accepts the empty margins; Cover fills the sheet edge to edge and crops the overflow, which suits full-bleed photo pages; Stretch forces an exact fit and should be reserved for images whose proportions are already close, since it visibly distorts anything else.",
+      "Placing several images per page turns the same tool into a contact sheet or a handout. 2-up splits along the page's long edge, while 4, 6 and 9 lay out a reading-order grid — and the margin becomes the gutter between cells as well as the border around them.",
     ],
   },
   {
     heading: "Keeping the file size sensible",
     id: "size",
     body: [
-      "The PDF is roughly as large as the images you put into it, so a document built from twenty 12-megapixel phone photos will run to tens of megabytes — usually well past the attachment limit of the system you are submitting to.",
+      "The PDF is roughly as large as the images you put into it — they are embedded as they are, without recompression — so a document built from twenty 12-megapixel phone photos will run to tens of megabytes, usually well past the attachment limit of the system you are submitting to.",
       "The fix is upstream. Resize the images to around 1500–2000 pixels on the long edge, which is more than enough for both screen reading and ordinary printing, and compress them before building. For photographed text documents, converting to grayscale first often halves the size again with no loss of legibility.",
     ],
   },
@@ -107,7 +111,7 @@ export default function Page() {
         <header className="flex flex-col gap-stack-sm mt-2">
           <h1 className="text-display-lg-mobile md:text-display-lg text-primary">Image to PDF</h1>
           <h2 data-tool-subtitle className="text-body-lg text-on-surface-variant">
-            Convert JPG, PNG and WEBP images into a single PDF online — reorder pages, choose page size and margins. Free, fast and 100% private in your browser.
+            Convert JPG, PNG and WEBP images into a single PDF online — reorder pages, choose page size, orientation, layout and margins. Free, fast and 100% private in your browser.
           </h2>
         </header>
 
@@ -132,7 +136,7 @@ export default function Page() {
 
       <SeoContent
         toolName="Image to PDF"
-        intro="Need to send a set of photos or scans as one document? oMyImage's Image to PDF tool combines your JPG, PNG and WEBP images into a single PDF, one image per page. Reorder the pages, choose to fit each page to its image or use A4/Letter with a margin, and download. Everything is assembled in your browser, so your images stay private."
+        intro="Need to send a set of photos or scans as one document? oMyImage's Image to PDF tool combines your JPG, PNG and WEBP images into a single PDF. Reorder the pages, fit each page to its image or pick A4, Letter, Legal, A3 or A5, place up to nine images per page, and set the fit, margin and background. Everything is assembled in your browser, so your images stay private."
         howToTitle="How to convert images to a PDF"
         steps={steps} features={features} faqs={faqs} sections={sections} fullWidthText
         security="Your images stay private. The PDF is assembled entirely in your browser — nothing is uploaded to a server. No storage, no tracking of your files."

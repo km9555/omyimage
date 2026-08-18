@@ -27,19 +27,21 @@ export const metadata: Metadata = {
 
 const steps: HowToStep[] = [
   { title: "Upload", description: "Select one or many images, or drag and drop them into the workspace." },
-  { title: "Style the circle", description: "Choose a transparent or colored background and an optional colored ring, with a live preview." },
+  { title: "Position the circle", description: "Drag the circle where you want it, drag its handle to resize, zoom in for detail, then set the output size, background and optional ring." },
   { title: "Crop & download", description: "Click Circle crop — one image downloads directly, several download together as a ZIP." },
 ];
 
 const features: Feature[] = [
-  { icon: "panorama_fish_eye", title: "Perfect round avatars", description: "The largest centered square is clipped to a clean circle — ideal for profile pictures and logos." },
+  { icon: "panorama_fish_eye", title: "Crop exactly where you want", description: "Drag the circle over the part of the photo you actually want, resize it with its handle, and zoom in to place it precisely." },
   { icon: "blur_circular", title: "Transparent or framed", description: "Export a transparent PNG/WEBP or add a colored background and a ring around the circle." },
   { icon: "lock", title: "Batch & private", description: "Circle-crop a whole batch at once, entirely in your browser — images are never uploaded." },
 ];
 
 const faqs: Faq[] = [
   { q: "Will the background be transparent?", a: "Yes, by default — export as PNG or WEBP to keep the corners outside the circle transparent. Choose JPG to flatten onto a color." },
-  { q: "What if my image isn't square?", a: "The tool automatically takes the largest centered square from your image before cropping it to a circle." },
+  { q: "What if my image isn't square?", a: "It doesn't need to be. The circle starts as the largest one that fits, and you can drag it anywhere on the image and resize it — so a face in the corner of a wide photo is just as easy to crop as a centred one." },
+  { q: "Can I choose where the circle goes?", a: "Yes. Drag the circle to move it, drag the handle on its edge to resize it, and scroll to zoom in when you need to be precise. Arrow keys nudge it a pixel at a time (hold Shift for ten), and + and − resize it." },
+  { q: "What size will the exported image be?", a: "By default, 'Original' exports the circle at its own resolution in the source image, so nothing is ever upscaled. You can also force 256, 512 or 1024 pixels square, which is convenient for avatars that have a fixed slot to fill." },
   { q: "Can I add a ring around the circle?", a: "Yes. Set the ring thickness and color to add a clean border around the circular crop." },
   { q: "Is it free and private?", a: "Yes. No sign-up and no watermark, and every image is processed locally in your browser." },
   { q: "Why does my circle crop have a white square behind it?", a: "Because you exported as JPG. JPG has no transparency, so everything outside the circle has to be filled with a solid colour. Export as PNG or WEBP instead and the corners stay genuinely transparent." },
@@ -133,7 +135,7 @@ export default function Page() {
 
       <SeoContent
         toolName="Circle Crop Image"
-        intro="Create polished round avatars and profile pictures in seconds. oMyImage's Circle Crop tool takes the largest centered square of your image and clips it to a smooth circle right in your browser, with a transparent background by default plus optional color fills and a ring. Crop one image or a whole batch and download instantly — nothing is uploaded, so your images stay private."
+        intro="Create polished round avatars and profile pictures in seconds. oMyImage's Circle Crop tool clips your image to a smooth circle right in your browser — drag the circle to frame exactly what you want, resize it, zoom in to place it precisely, and pick the export size. Transparent by default, with optional colour fills and a ring. Crop one image or a whole batch — nothing is uploaded, so your images stay private."
         howToTitle="How to crop an image into a circle"
         steps={steps} features={features} faqs={faqs} sections={sections} fullWidthText
         security="Your images stay private. Circle cropping happens entirely in your browser with HTML canvas — nothing is uploaded to a server. No storage, no tracking of your files."

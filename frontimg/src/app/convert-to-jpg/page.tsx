@@ -39,7 +39,7 @@ const features: Feature[] = [
 
 const faqs: Faq[] = [
   { q: "Which formats can I convert to JPG?", a: "PNG, WEBP, GIF and BMP. GIFs are converted using their first frame." },
-  { q: "What happens to transparency?", a: "JPG does not support transparency, so transparent areas are filled with the background color you choose (white by default)." },
+  { q: "What happens to transparency?", a: "JPG does not support transparency, so transparent areas are filled with a background color. By default we automatically match the color at the image's own edges; pick white, black or any custom color instead if you want something different." },
   { q: "Can I convert many images at once?", a: "Yes. Add as many as you like — a single image downloads as a JPG, and multiple images download together as a ZIP." },
   { q: "Is it really free and private?", a: "Yes. There's no sign-up or watermark, and every image is processed locally in your browser." },
   { q: "Which formats can I convert from?", a: "PNG, WEBP, GIF and BMP. Those are the formats a browser can decode natively, which is what allows the conversion to happen on your device. HEIC and AVIF have dedicated pages because they need different handling." },
@@ -79,7 +79,7 @@ const sections: SeoSection[] = [
     heading: "Choosing what fills the transparency",
     id: "background",
     body: [
-      "Since transparency has to become something, this tool lets you decide what rather than defaulting silently to white. White is right for most documents and pages; a matching colour is better when the image will sit on a dark interface or a coloured card, and avoids the obvious rectangle around your subject.",
+      "Since transparency has to become something, this tool automatically matches the colour found at the image's own edges by default — no picking required, and no white rectangle around a subject that was never meant to sit on white. White, black or any custom colour is one click away when you want something different, such as matching a dark interface or a coloured card.",
       "One thing to watch: PNG and WebP transparency is usually anti-aliased, so edge pixels are partially transparent and blend with whatever you choose. An image prepared against white and then filled with black can show a pale fringe. If that appears, re-exporting the source against the correct background is cleaner than trying to correct it afterwards.",
     ],
   },

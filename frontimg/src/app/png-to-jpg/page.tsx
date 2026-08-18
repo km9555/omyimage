@@ -39,7 +39,7 @@ const features: Feature[] = [
 
 const faqs: Faq[] = [
   { q: "Why convert PNG to JPG?", a: "JPG files are much smaller for photographic images, making them faster to upload, email and load on the web." },
-  { q: "What happens to transparent PNG areas?", a: "JPG can't store transparency, so transparent pixels are filled with the background color you pick (white by default)." },
+  { q: "What happens to transparent PNG areas?", a: "JPG can't store transparency, so transparent pixels are filled with a background color. By default we automatically match the color at the image's own edges; pick white, black or any custom color instead if you want something different." },
   { q: "Can I convert several PNGs at once?", a: "Yes. Add as many PNGs as you like — multiple files download together as a ZIP archive." },
   { q: "Does converting reduce quality?", a: "JPG is lossy, but at 90%+ quality the difference is usually invisible while the file is dramatically smaller." },
   { q: "How much smaller will the JPG be?", a: "For photographs, usually 60–90% smaller. A 4 MB PNG photo commonly lands between 300 KB and 1 MB as a JPG. Flat graphics and screenshots benefit far less, and can occasionally get larger — those are the cases where PNG was already the right format." },
@@ -77,7 +77,7 @@ const sections: SeoSection[] = [
     heading: "Choosing a background colour",
     id: "background",
     body: [
-      "Because transparency has to become something, this tool lets you pick what. White is the sensible default and matches most documents and pages. If the image will sit on a dark interface or a coloured card, choosing that colour instead avoids the obvious white rectangle around your subject.",
+      "Because transparency has to become something, this tool automatically matches the colour found at the image's own edges by default, which avoids the obvious white rectangle around a subject that was never meant to sit on white. You can still pick white, black or any custom colour instead — useful when the image will sit on a dark interface or a coloured card.",
       "One caveat: PNG transparency is often anti-aliased, meaning edge pixels are partially transparent. Those blend with whatever colour you choose, so an image prepared for a white background and then filled with black can show a pale fringe. If that happens, the cleanest fix is to re-export the source against the correct background rather than to fight it here.",
     ],
   },

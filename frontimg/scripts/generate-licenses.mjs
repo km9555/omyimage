@@ -83,6 +83,26 @@ const MANUAL_COMPONENTS = [
     repository: "https://github.com/google/material-design-icons",
     note: "Icon font loaded from the Google Fonts CDN.",
   },
+  // The npm walk sees @mediapipe/tasks-vision, but not the two artefacts that
+  // actually reach the browser: the WebAssembly runtime (staged out of
+  // node_modules by scripts/copy-mediapipe.mjs) and the model weights, which
+  // are a separate download from Google and are committed under public/.
+  {
+    name: "MediaPipe Vision WebAssembly runtime",
+    license: "Apache-2.0",
+    repository: "https://github.com/google-ai-edge/mediapipe",
+    note:
+      "Compiled to WebAssembly and served from our own origin on /blur-face. " +
+      "Staged into public/mediapipe/wasm/ at build time from @mediapipe/tasks-vision.",
+  },
+  {
+    name: "MediaPipe BlazeFace (short-range) face detection model",
+    license: "Apache-2.0",
+    repository: "https://ai.google.dev/edge/mediapipe/solutions/vision/face_detector",
+    note:
+      "Model weights (blaze_face_short_range.tflite) served from our own origin on /blur-face. " +
+      "Runs entirely in the browser; no image data leaves the device.",
+  },
   {
     name: "sharp / libvips",
     license: "Apache-2.0 (sharp) AND LGPL-3.0-or-later (libvips and linked libraries)",

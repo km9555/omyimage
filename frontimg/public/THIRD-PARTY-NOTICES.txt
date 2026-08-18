@@ -1,15 +1,24 @@
 oMyImage — Third-Party Software Notices and Information
 ================================================================
 
-Generated: 2026-08-17
-Packages:  49 npm production dependencies
-           + 12 additional components (fonts and external binaries)
+Generated: 2026-08-18
+Packages:  50 npm production dependencies
+           + 14 additional components (fonts and external binaries)
 
 This product incorporates the open-source components listed below.
 Each is provided under its own license, reproduced in full where the
 package ships a license file.
 
 ================================================================
+
+@mediapipe/tasks-vision@1.0.1
+Author:     mediapipe@google.com
+License:    Apache-2.0
+Repository: http://mediapipe.dev
+
+(No bundled license file. Distributed under the Apache-2.0 license.)
+
+----------------------------------------------------------------
 
 @next/env@16.2.7
 Author:     Next.js Team
@@ -3325,6 +3334,20 @@ Material Symbols
 License:    Apache-2.0
 Repository: https://github.com/google/material-design-icons
 Note:       Icon font loaded from the Google Fonts CDN.
+
+----------------------------------------------------------------
+
+MediaPipe Vision WebAssembly runtime
+License:    Apache-2.0
+Repository: https://github.com/google-ai-edge/mediapipe
+Note:       Compiled to WebAssembly and served from our own origin on /blur-face. Staged into public/mediapipe/wasm/ at build time from @mediapipe/tasks-vision.
+
+----------------------------------------------------------------
+
+MediaPipe BlazeFace (short-range) face detection model
+License:    Apache-2.0
+Repository: https://ai.google.dev/edge/mediapipe/solutions/vision/face_detector
+Note:       Model weights (blaze_face_short_range.tflite) served from our own origin on /blur-face. Runs entirely in the browser; no image data leaves the device.
 
 ----------------------------------------------------------------
 

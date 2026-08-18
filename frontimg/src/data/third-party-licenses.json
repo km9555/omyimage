@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-08-17",
-  "count": 49,
+  "generatedAt": "2026-08-18",
+  "count": 50,
   "summary": {
+    "Apache-2.0": 7,
     "MIT": 36,
-    "Apache-2.0": 6,
     "CC-BY-4.0": 1,
     "ISC": 2,
     "(MIT AND Zlib)": 1,
@@ -12,6 +12,14 @@
     "BSD-2-Clause": 1
   },
   "packages": [
+    {
+      "name": "@mediapipe/tasks-vision",
+      "version": "1.0.1",
+      "license": "Apache-2.0",
+      "author": "mediapipe@google.com",
+      "repository": "http://mediapipe.dev",
+      "text": null
+    },
     {
       "name": "@next/env",
       "version": "16.2.7",
@@ -448,6 +456,18 @@
       "license": "Apache-2.0",
       "repository": "https://github.com/google/material-design-icons",
       "note": "Icon font loaded from the Google Fonts CDN."
+    },
+    {
+      "name": "MediaPipe Vision WebAssembly runtime",
+      "license": "Apache-2.0",
+      "repository": "https://github.com/google-ai-edge/mediapipe",
+      "note": "Compiled to WebAssembly and served from our own origin on /blur-face. Staged into public/mediapipe/wasm/ at build time from @mediapipe/tasks-vision."
+    },
+    {
+      "name": "MediaPipe BlazeFace (short-range) face detection model",
+      "license": "Apache-2.0",
+      "repository": "https://ai.google.dev/edge/mediapipe/solutions/vision/face_detector",
+      "note": "Model weights (blaze_face_short_range.tflite) served from our own origin on /blur-face. Runs entirely in the browser; no image data leaves the device."
     },
     {
       "name": "sharp / libvips",
