@@ -23,7 +23,7 @@ import {
   RailSecondaryAction,
   RailNote,
 } from "@/components/tool/SettingsRail";
-import { shouldUseServer, toServerFormat, processOnServer } from "@/lib/process-router";
+import { shouldUseServerForFile, toServerFormat, processOnServer } from "@/lib/process-router";
 import { useHandoff } from "@/lib/tool-handoff";
 import { kindOf, type FileKind } from "@/lib/file-actions";
 
@@ -62,15 +62,20 @@ export interface ConvertConfig {
   serverFallback?: boolean;
   /**
    * Privacy line under the drop zone. Must describe what actually happens:
-   * anything over BROWSER_MAX_BYTES is POSTed to the backend even on an
-   * otherwise browser-only conversion, so the old hardcoded "never leave your
-   * device" was false for large files. See LICENSE-AUDIT.md F4.
+   * some files are POSTed to the backend even on an otherwise browser-only
+   * conversion, so the old hardcoded "never leave your device" was false for
+   * them. See LICENSE-AUDIT.md F4.
+   *
+   * Note the phrasing is about size AND resolution. Routing is decided by
+   * decoded pixel area (process-router.ts), so a 48-megapixel phone photo is
+   * offloaded at only a few MB — saying "large files" would leave exactly that
+   * case reading as a false promise.
    */
   privacyNote?: string;
 }
 
 const DEFAULT_PRIVACY_NOTE =
-  "Converted in your browser — files stay on your device (large files are processed on our server).";
+  "Converted in your browser — files stay on your device (very large or very high-resolution images are processed on our server).";
 
 type Item = {
   id: string;
@@ -163,8 +168,9 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
             ? await detectEdgeBackground(it.file, autoOrient).catch(() => bg.color)
             : resolveBg(bg);
         let blob: Blob;
-        if (serverFallback && shouldUseServer(it.file.size)) {
-          // > 15 MB → offload to the shared oMyPDF backend (Sharp, /api/image/*).
+        if (serverFallback && (await shouldUseServerForFile(it.file))) {
+          // Past the browser's canvas ceiling or the byte cap → offload to the
+          // shared oMyPDF backend (Sharp, /api/image/*).
           // Gated on `serverFallback`: Sharp/libvips cannot DECODE bmp, so a
           // large BMP sent here throws instead of converting. Those pairs keep
           // everything in the browser, where canvas handles BMP fine.

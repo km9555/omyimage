@@ -17,7 +17,7 @@ import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
 import { FileTray, TrayAction, type TrayEntry } from "@/components/tool/FileTray";
 import { SettingsRail, RailAction, RailSecondaryAction, RailNote } from "@/components/tool/SettingsRail";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
-import { shouldUseServer, toServerFormat, processOnServer } from "@/lib/process-router";
+import { shouldUseServerForFile, toServerFormat, processOnServer } from "@/lib/process-router";
 import { useHandoff } from "@/lib/tool-handoff";
 
 const ACCENT = "#8A6FC4";
@@ -93,8 +93,9 @@ export function RotateTool() {
       for (const it of items) {
         const mime = outMimeFor(it.file, format);
         let blob: Blob;
-        if (shouldUseServer(it.file.size)) {
-          // > 15 MB → offload to the shared oMyPDF backend (Sharp, /api/image/*).
+        if (await shouldUseServerForFile(it.file)) {
+          // Past the browser's canvas ceiling or the byte cap → offload to the
+          // shared oMyPDF backend (Sharp, /api/image/*).
           const r = await processOnServer("/api/image/rotate", it.file, {
             angle, flipH, flipV, format: toServerFormat(mime), quality,
             background: background ?? undefined,

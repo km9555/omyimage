@@ -34,7 +34,7 @@ const steps: HowToStep[] = [
 const features: Feature[] = [
   { icon: "burst_mode", title: "Batch compression", description: "Compress dozens of images at once and download them all as a single ZIP, each showing how much was saved." },
   { icon: "tune", title: "Quality & format control", description: "Convert to WEBP for the smallest files, or keep your format and dial in the exact quality you want." },
-  { icon: "lock", title: "100% private", description: "Compression runs in your browser — images under 15 MB are never uploaded anywhere." },
+  { icon: "lock", title: "100% private", description: "Compression runs in your browser for almost every photo, and those images are never uploaded anywhere." },
 ];
 
 const faqs: Faq[] = [
@@ -44,7 +44,7 @@ const faqs: Faq[] = [
   { q: "Will compression reduce quality?", a: "JPG and WEBP are lossy, so very low quality shows artifacts; PNG loses colors rather than detail. The default 70% is a strong balance; raise it for critical images." },
   { q: "Why did one of my images not get smaller?", a: "Because it was already optimised. If nothing we produce beats the file you gave us, we hand your original back untouched and label it — a compressor that returns a bigger file has failed at its job." },
   { q: "Can I compress many images at once?", a: "Yes. Add as many as you like — multiple files download together as a ZIP, each labelled with the percentage saved." },
-  { q: "Is it free and private?", a: "Completely. No sign-up or watermark, and every image under 15 MB is compressed locally in your browser." },
+  { q: "Is it free and private?", a: "Completely. No sign-up or watermark, and almost every image is compressed locally in your browser. Only files too large for a browser tab to paint are sent to our server, and the tool tells you when that happens." },
   { q: "What quality setting should I use?", a: "70–80% is the right starting point for photographs on a website and is where most of the saving happens. Go to 90% or above for product photography, hero images and anything a customer will zoom into. Below about 60% you start to see blocking in skies and smooth gradients." },
   { q: "Does compressing an image reduce its dimensions?", a: "No. Compression changes how the pixels are stored, not how many there are — a 4000×3000 photo stays 4000×3000. If you also want fewer pixels, use the Resize tool, which is usually the bigger win for web images." },
   { q: "Will compression strip my EXIF data?", a: "Re-encoding drops most metadata, including camera settings and GPS coordinates, as a side effect. If removing that data is the actual goal, the EXIF Remover is the tool built for it and is explicit about what it clears." },
@@ -137,7 +137,7 @@ export default function Page() {
         intro="Big image files slow down websites, fill up storage and clog email attachments. oMyImage's Compress Image tool shrinks JPG, PNG and WEBP files right in your browser — convert to WEBP for the smallest size, control the quality, and optionally downscale very large photos. PNGs are compressed properly, by reducing colors with dithering rather than just re-saving them. Compress one image or a whole batch, and see exactly how much you saved."
         howToTitle="How to compress an image"
         steps={steps} features={features} faqs={faqs} sections={sections} fullWidthText
-        security="Your images stay private. Images under 15 MB are compressed entirely in your browser and never leave your device; larger files are processed on our server and deleted straight after. No storage, no tracking of your files."
+        security="Your images stay private. Almost every photo is compressed entirely in your browser and never leaves your device; only very large or very high-resolution images go to our server, where they are deleted straight after. No storage, no tracking of your files."
       />
 
       <JsonLd data={software} />

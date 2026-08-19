@@ -50,7 +50,7 @@ const faqs = [
   },
   {
     q: "Is there a file size limit?",
-    a: "There is no hard limit. Files above 15 MB are handed to our server for processing on most converters, since a browser tab cannot comfortably handle them. BMP is the exception and always converts locally.",
+    a: "There is no hard limit. Very large or very high-resolution images are handed to our server on most converters, since a browser tab cannot paint a canvas beyond a certain size — a 48-megapixel phone photo hits that ceiling even though it is only a few megabytes. BMP is the exception and always converts locally.",
   },
   {
     q: "Do I lose quality when converting?",

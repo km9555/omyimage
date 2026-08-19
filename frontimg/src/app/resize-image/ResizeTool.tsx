@@ -9,7 +9,7 @@ import { BackgroundPicker, resolveBg, type BgValue } from "@/components/Backgrou
 import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
 import { FileTray, TrayAction, type TrayEntry } from "@/components/tool/FileTray";
 import { SettingsRail, RailAction, RailSecondaryAction, RailNote } from "@/components/tool/SettingsRail";
-import { shouldUseServer, toServerFormat, processOnServer } from "@/lib/process-router";
+import { shouldUseServer, shouldUseServerForFile, toServerFormat, processOnServer } from "@/lib/process-router";
 import {
   rasterize, imageSize, downloadBlob, zipAndDownload, formatBytes, baseName, mimeExt, type ExportMime,
 } from "@/lib/image/raster";
@@ -114,8 +114,13 @@ export function ResizeTool() {
         if (!t) { out.push(it); continue; }
         const mime = outMimeFor(it.file, format);
         let blob: Blob; let width = t.width; let height = t.height;
-        if (shouldUseServer(it.file.size)) {
-          // > 15 MB → offload to the shared oMyPDF backend (Sharp, /api/image/*). Dimensions already computed per file → exact fit.
+        // Pixels, not bytes — see process-router.ts.
+        const useServer = it.w && it.h
+          ? shouldUseServer(it.file.size, { width: it.w, height: it.h })
+          : await shouldUseServerForFile(it.file);
+        if (useServer) {
+          // Past the browser's canvas ceiling or the byte cap → offload to the
+          // shared oMyPDF backend (Sharp, /api/image/*). Dimensions already computed per file → exact fit.
           const r = await processOnServer("/api/image/resize", it.file, {
             width: t.width, height: t.height, fit: "fill",
             format: toServerFormat(mime), quality,

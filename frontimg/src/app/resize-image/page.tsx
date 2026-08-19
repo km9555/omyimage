@@ -82,7 +82,7 @@ const sections: SeoSection[] = [
     id: "batch",
     body: [
       "Setting dimensions once and applying them across a folder is the normal case for product catalogues, gallery uploads and any site with a fixed image slot. Percentage mode is often the better choice for a mixed batch, because it scales each image relative to its own size rather than forcing everything to identical dimensions — useful when portrait and landscape shots are mixed together.",
-      "Everything is processed in your browser and delivered as a single ZIP, so a hundred images is one download rather than a hundred. Nothing is uploaded unless a single file exceeds 15 MB, which is beyond what a browser tab can handle comfortably.",
+      "Everything is processed in your browser and delivered as a single ZIP, so a hundred images is one download rather than a hundred. Nothing is uploaded unless an image is too large for a browser tab to paint — which depends on its resolution rather than its file size.",
     ],
   },
 ];

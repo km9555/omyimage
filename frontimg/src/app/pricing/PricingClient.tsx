@@ -99,10 +99,11 @@ const PLANS: Plan[] = [
     highlight: false,
     features: [
       "All 30 tools, no account needed",
-      "Unlimited browser tools (files up to 15 MB)",
-      "10 premium AI runs / day",
-      "Batch processing where supported",
-      "1-hour download links for server results",
+      "Unlimited in-browser processing, no daily cap",
+      "Server processing for files up to 100 MB",
+      "10 AI runs / day",
+      "Batch up to 20 files",
+      "Results download straight to your device",
     ],
   },
   {
@@ -117,18 +118,18 @@ const PLANS: Plan[] = [
     comingSoon: true,
     features: [
       "Everything in Free",
-      "Files up to 400 MB",
-      "100 premium AI runs / day",
+      "Server processing for files up to 200 MB",
+      "100 AI runs / day",
+      "Batch up to 100 files",
       "Priority server processing",
-      "Larger batch sizes",
-      "48-hour download links",
+      "24-hour download links",
     ],
   },
   {
     id: "pro",
     name: "Pro",
     badge: "Coming soon",
-    tagline: "Unlimited power, the largest files, priority speed.",
+    tagline: "Unlimited AI, the largest files, priority speed.",
     priceKey: "pro",
     cta: "Coming soon",
     ctaHref: "/signup",
@@ -136,11 +137,11 @@ const PLANS: Plan[] = [
     comingSoon: true,
     features: [
       "Everything in Plus",
-      "Files up to 1 GB",
-      "Unlimited premium AI runs",
+      "Server processing for files up to 300 MB",
+      "Unlimited AI runs",
+      "Unlimited batch size",
       "Top-priority processing queue",
-      "Unlimited batch processing",
-      "15-day download links",
+      "7-day download links",
     ],
   },
 ];
@@ -163,8 +164,16 @@ const FAQS = [
     a: "Prices are set per market rather than converted at the day's exchange rate, so they stay fair locally instead of tracking currency swings.",
   },
   {
-    q: "What counts as a premium AI run?",
-    a: "The server-side AI tools — Remove Background and Upscale Image. Everything that runs in your browser is unlimited and always will be.",
+    q: "What counts as an AI run?",
+    a: "The server-side AI tools — Remove Background and Upscale Image. Those are the only things we meter, because they are the only ones that cost us real money per use. Everything that runs in your browser is unlimited on every plan and always will be.",
+  },
+  {
+    q: "Why do the paid plans only raise the file size a little?",
+    a: "Because almost nothing needs it. Most images are processed entirely in your browser, where there is no size limit we impose at all — the only ceiling is what your own device can paint. Our server is for the files too large or too high-resolution for that, and 100 MB already covers the overwhelming majority. We would rather quote a number we can actually deliver than a headline gigabyte.",
+  },
+  {
+    q: "What decides whether an image is processed in my browser or on your server?",
+    a: "Resolution, mostly — not file size. A browser can only paint a canvas up to a certain number of pixels, and a modern 48-megapixel phone photo can exceed it while still being only a few megabytes. When that happens we process the image on our server instead and delete it straight after. Each tool tells you which path it took.",
   },
   {
     q: "Are my images kept?",
@@ -401,8 +410,11 @@ export function PricingClient() {
             },
             {
               icon: "auto_delete",
-              title: "Deleted within the hour",
-              body: "Anything processed on our server is removed automatically, and never reused.",
+              title: "Deleted automatically",
+              // Worded to stay true once Plus/Pro ship: Free stores nothing at
+              // all, and the paid tiers' 24-hour / 7-day figures ARE the
+              // retention. "Within the hour" would contradict them on launch.
+              body: "On Free nothing is stored at all — results download straight to you. Where a plan offers download links, that window is the retention, and nothing is ever reused.",
             },
           ].map((t) => (
             <div key={t.title} className="flex flex-col items-center gap-2">

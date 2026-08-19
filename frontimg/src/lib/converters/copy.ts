@@ -17,6 +17,19 @@ import type { ConverterPair } from "./types";
 
 const MB = Math.round(BROWSER_MAX_BYTES / (1024 * 1024));
 
+/**
+ * How the browser/server split is described to users.
+ *
+ * Deliberately not just "over N MB". Routing is decided by decoded pixel area
+ * (see process-router.ts), so a 48-megapixel phone photo goes to the server at
+ * only a few MB. Claiming a pure byte threshold would make the privacy promise
+ * on every converter page false for exactly the files people shoot today.
+ */
+const OFFLOAD_SHORT = "very large or very high-resolution images";
+const OFFLOAD_LONG =
+  `images too big for a browser tab to paint — either over ${MB} MB, or too many ` +
+  `megapixels for its canvas, which a modern phone photo can reach at just a few MB`;
+
 /** Does any part of this conversion send the file off the device? */
 export function isServerBacked(pair: ConverterPair): boolean {
   return pair.engine.decode === "server" || pair.engine.target.kind === "server";
@@ -102,7 +115,7 @@ export function buildFeatures(pair: ConverterPair): Feature[] {
           icon: "lock",
           title: "Private by default",
           description: `The conversion runs inside your browser tab. Your ${from.label} files are never uploaded${
-            pair.engine.serverFallback ? ` unless one is larger than ${MB} MB` : ""
+            pair.engine.serverFallback ? ` unless one is among the ${OFFLOAD_SHORT}` : ""
           }.`,
         },
   ];
@@ -127,7 +140,7 @@ export function buildBoilerplateFaqs(pair: ConverterPair): Faq[] {
         q: "Are my images uploaded anywhere?",
         a: `No. ${from.label} to ${to.label} runs entirely inside your browser tab, so the image data never leaves your computer.${
           pair.engine.serverFallback
-            ? ` The one exception is a file larger than ${MB} MB, which is too big to process locally — those are sent over HTTPS to our server and deleted after conversion.`
+            ? ` The one exception is ${OFFLOAD_LONG}. Those are sent over HTTPS to our server and deleted after conversion, and the tool tells you when it happens.`
             : ""
         }`,
       };
@@ -158,7 +171,7 @@ export function buildSecurity(pair: ConverterPair): string {
   }
   return `Your images stay on your device. ${from.label} to ${to.label} conversion happens entirely inside your browser — there is no upload step, no copy on a server and no record of what you converted.${
     pair.engine.serverFallback
-      ? ` Files over ${MB} MB are the sole exception: they exceed what a browser tab can process, so they are sent over HTTPS, converted and deleted.`
+      ? ` The sole exception is ${OFFLOAD_SHORT}: they exceed what a browser tab can process, so they are sent over HTTPS, converted and deleted.`
       : ""
   }`;
 }
@@ -169,7 +182,7 @@ export function buildPrivacyNote(pair: ConverterPair): string {
     return "Converted on our server over an encrypted connection — files are deleted right after.";
   }
   if (pair.engine.serverFallback) {
-    return `Converted in your browser — files stay on your device (over ${MB} MB is processed on our server).`;
+    return `Converted in your browser — files stay on your device (${OFFLOAD_SHORT} are processed on our server).`;
   }
   return "Converted in your browser — your images never leave your device.";
 }

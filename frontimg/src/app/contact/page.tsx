@@ -40,7 +40,7 @@ const FAQS = [
   },
   {
     q: "Are my images uploaded?",
-    a: "For most tools, no — they run entirely in your browser and the file never leaves your device. Uploads only happen for files over 15 MB, the AI tools, and HEIC conversion. Each of those says so on its own page.",
+    a: "For most tools, no — they run entirely in your browser and the file never leaves your device. Uploads only happen for images too large for a browser tab to handle, the AI tools, and HEIC conversion. Each of those says so on its own page.",
   },
   {
     q: "Why does HEIC conversion upload my photo when other tools don't?",

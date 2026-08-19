@@ -7,7 +7,28 @@
  * batch ZIP download.
  */
 
+import { canBrowserHandlePixels } from "@/lib/process-router";
+
 export type ExportMime = "image/jpeg" | "image/png" | "image/webp";
+
+/**
+ * Thrown when the requested output exceeds what this browser's canvas can
+ * actually paint. A distinct type so tools can tell "too big for the browser"
+ * (retry on the server) apart from a genuine decode or encode failure.
+ */
+export class CanvasTooLargeError extends Error {
+  readonly width: number;
+  readonly height: number;
+  constructor(width: number, height: number) {
+    super(
+      `This image is too large for your browser to process locally (${width}x${height}). ` +
+        `Sending it to our server instead.`
+    );
+    this.name = "CanvasTooLargeError";
+    this.width = width;
+    this.height = height;
+  }
+}
 
 const EXT: Record<string, string> = {
   "image/jpeg": "jpg",
@@ -115,6 +136,15 @@ export async function rasterizeToCanvas(
   const cos = Math.abs(Math.cos(rad));
   const cw = Math.max(1, Math.round(w * cos + h * sin));
   const ch = Math.max(1, Math.round(w * sin + h * cos));
+
+  // Refuse before allocating rather than after. Over Safari's area ceiling a
+  // canvas still constructs and still returns a context — it just discards
+  // every draw — so without this check the tool hands back a blank image and
+  // reports success. Callers catch CanvasTooLargeError and retry server-side.
+  if (!canBrowserHandlePixels(cw * ch)) {
+    bmp.close();
+    throw new CanvasTooLargeError(cw, ch);
+  }
 
   const canvas = document.createElement("canvas");
   canvas.width = cw;
