@@ -5,6 +5,7 @@ import { SITE } from "@/lib/site";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ThemedToaster } from "@/components/ThemedToaster";
+import { CookieBanner } from "@/components/CookieBanner";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import { ThemeProvider } from "@/lib/theme/ThemeProvider";
 
@@ -27,7 +28,12 @@ const jetbrainsMono = JetBrains_Mono({
 // Default is light: dark only applies when the visitor explicitly opted in.
 // Also repoints <meta name="theme-color"> so the mobile browser toolbar matches
 // the surface the page is about to paint, rather than flashing the light value.
-const NO_FLASH_THEME = `(function(){try{if(localStorage.getItem('theme')==='dark'){document.documentElement.classList.add('dark');document.documentElement.style.colorScheme='dark';document.querySelectorAll('meta[name="theme-color"]').forEach(function(m){m.setAttribute('content','#191512')});}}catch(e){}})();`;
+// Also stamps html[data-cookie-choice] for visitors who already answered the
+// consent banner. The banner is server-rendered so it paints with the first
+// contentful paint for new visitors; this attribute is what lets globals.css
+// hide it again for everyone else BEFORE React hydrates, so returning visitors
+// never see it flash.
+const NO_FLASH_THEME = `(function(){try{if(localStorage.getItem('theme')==='dark'){document.documentElement.classList.add('dark');document.documentElement.style.colorScheme='dark';document.querySelectorAll('meta[name="theme-color"]').forEach(function(m){m.setAttribute('content','#191512')});}var c=localStorage.getItem('omyimage_cookie_consent');if(c==='accepted'||c==='declined'){document.documentElement.setAttribute('data-cookie-choice','1');}}catch(e){}})();`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -106,6 +112,7 @@ export default function RootLayout({
           <main className="flex-1">{children}</main>
           <Footer />
           <ThemedToaster />
+          <CookieBanner />
         </ThemeProvider>
         <GoogleAnalytics />
       </body>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
+import { CookieSettingsLink } from "@/components/CookieSettingsLink";
 import { SITE } from "@/lib/site";
 
 const optimize = [
@@ -30,6 +31,7 @@ const legal: { label: string; href: string; external?: boolean }[] = [
   { label: "Privacy Policy", href: "/privacy" },
   { label: "Terms of Service", href: "/terms" },
   { label: "Refund Policy", href: "/refunds" },
+  { label: "Cookie Policy", href: "/cookies" },
   // A static file in public/, not a route — must be a plain <a>, since next/link
   // would try to client-side navigate to it. Regenerated on every build by
   // scripts/generate-licenses.mjs.
@@ -110,6 +112,7 @@ export function Footer() {
                 </Link>
               );
             })}
+            <CookieSettingsLink />
           </nav>
         </div>
       </div>

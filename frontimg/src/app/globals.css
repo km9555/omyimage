@@ -377,3 +377,11 @@ html {
   0%   { left: -45%; width: 45%; }
   100% { left: 110%; width: 45%; }
 }
+
+/* Cookie banner is server-rendered (so it paints at first paint for new
+   visitors instead of appearing at hydration and stealing LCP). Visitors who
+   already made a choice get html[data-cookie-choice] from the pre-paint script
+   in layout.tsx — hide the banner for them before React loads. */
+html[data-cookie-choice="1"] #cookie-banner {
+  display: none;
+}

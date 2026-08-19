@@ -135,20 +135,37 @@ export default function PrivacyPage() {
           We do not build profiles from it and we do not combine it with anything else.
         </LegalP>
         <LegalP>
-          <strong>We run no analytics, no advertising and no tracking scripts.</strong> There is no
-          Google Analytics, no session recording, no advertising pixel and no cross-site tracking on
-          oMyImage.
+          We use <strong>Google Analytics 4</strong>, and only with your consent. Until you accept
+          analytics cookies the script is never requested — it is not loaded and then switched off,
+          it is simply absent, so no analytics cookie is created for a visitor who declined or who
+          never answered the banner. What it collects is aggregate: which tools are used, which pages
+          error, roughly where visitors come from. We do not use it to identify you and we do not
+          connect it to anything you process.
+        </LegalP>
+        <LegalP>
+          <strong>We run no advertising and no cross-site tracking.</strong> There is no session
+          recording, no advertising pixel and no ad network on oMyImage. You can change or withdraw
+          your analytics consent at any time through <strong>Cookie Settings</strong> in the footer —
+          see our{" "}
+          <Link href="/cookies" className="text-secondary hover:underline">
+            Cookie Policy
+          </Link>{" "}
+          for the detail.
         </LegalP>
       </LegalSection>
 
       <LegalSection id="storage" title="5. Browser storage">
         <LegalP>
-          We set no tracking cookies. We do use your browser&apos;s local storage for a few
+          oMyImage sets no cookies of its own. We use your browser&apos;s local storage for a few
           functional preferences, which stay on your device and are never sent to us:
         </LegalP>
         <LegalUl>
           <li>
             <code>theme</code> — whether you chose light or dark mode.
+          </li>
+          <li>
+            <code>omyimage_cookie_consent</code> and <code>omyimage_cookie_prefs</code> — your answer
+            to the cookie banner.
           </li>
           <li>
             <code>omyimage:favorites</code> and recently-used tools — so your shortcuts persist.
@@ -162,6 +179,12 @@ export default function PrivacyPage() {
         </LegalUl>
         <LegalP>
           Clearing your browser&apos;s site data removes all of them. Nothing here identifies you.
+          Cookies set by third parties — Cloudflare, and Google Analytics once you allow it — are
+          listed in our{" "}
+          <Link href="/cookies" className="text-secondary hover:underline">
+            Cookie Policy
+          </Link>
+          .
         </LegalP>
       </LegalSection>
 
@@ -174,6 +197,7 @@ export default function PrivacyPage() {
             ["Cloudflare", "Website hosting, CDN and DDoS protection", "cloudflare.com/privacypolicy"],
             ["Contabo", "Server hosting for the tools that process on our server", "contabo.com/en/legal/privacy-policy"],
             ["Google Fonts", "Serves the icon font used across the interface", "policies.google.com/privacy"],
+            ["Google Analytics", "Aggregate usage measurement, loaded only if you accept analytics cookies", "policies.google.com/privacy"],
             ["Google Drive (optional)", "Imports only the files you pick, and only when you use it — see section 7", "policies.google.com/privacy"],
           ]}
         />
@@ -288,12 +312,6 @@ export default function PrivacyPage() {
             third-party payment processor. Card details would go to that processor directly and would
             never reach or be stored on our servers. We would receive only a transaction reference
             and its status.
-          </li>
-          <li>
-            <strong>Analytics.</strong> If we introduce analytics, we would use it only to understand
-            aggregate usage — which tools are popular, where errors occur. Where the law requires
-            consent, we would ask for it first via a cookie banner, and the site would keep working
-            if you declined.
           </li>
         </LegalUl>
         <LegalP>
