@@ -8,6 +8,7 @@ import { ThemedToaster } from "@/components/ThemedToaster";
 import { CookieBanner } from "@/components/CookieBanner";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import { ThemeProvider } from "@/lib/theme/ThemeProvider";
+import { AuthProvider } from "@/lib/auth/AuthProvider";
 
 // Self-hosted at build time (works with `output: "export"`), so no third-party
 // request and no flash of fallback text. These define the `--font-*` custom
@@ -108,11 +109,17 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col bg-background text-on-background" suppressHydrationWarning>
         <ThemeProvider>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-          <ThemedToaster />
-          <CookieBanner />
+          {/* Inside ThemeProvider so ThemedToaster still reads the theme, and
+              around Navbar because NavbarAuth needs the session. The provider
+              itself renders nothing and does no work until a token exists in
+              localStorage, so signed-out visitors pay no request for it. */}
+          <AuthProvider>
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer />
+            <ThemedToaster />
+            <CookieBanner />
+          </AuthProvider>
         </ThemeProvider>
         <GoogleAnalytics />
       </body>

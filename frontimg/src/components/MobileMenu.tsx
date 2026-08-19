@@ -10,13 +10,13 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { NAV_SECTIONS, navSectionTools } from "@/lib/nav-sections";
 import { searchTools } from "@/lib/tool-search";
 import { TOOLS, toolColor, type Tool } from "@/lib/tools";
+import { NavbarAuth } from "@/components/NavbarAuth";
 
 /**
  * Mobile navigation drawer, ported from oMyPDF's MobileMenu.
  *
- * The account block of the oMyPDF original is dropped rather than stubbed:
- * oMyImage has no auth layer (`lib/auth` does not exist), so there is no user
- * to branch on and the Login link is unconditional.
+ * The account block is <NavbarAuth />, the same component the desktop header
+ * uses, so the signed-in and signed-out states cannot drift between the two.
  *
  * It renders the same NAV_SECTIONS the desktop mega-menu does, so the two
  * cannot drift.
@@ -137,16 +137,11 @@ export function MobileMenu() {
               </div>
 
               <div className="flex-1 overflow-y-auto overscroll-contain">
-                {/* Login — unconditional: there is no auth layer to branch on. */}
-                <div className="border-b border-outline-variant px-4 py-4">
-                  <Link
-                    href="/login"
-                    onClick={close}
-                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-secondary px-4 py-2.5 text-body-md font-semibold text-on-secondary shadow-md shadow-secondary/30 transition-all"
-                  >
-                    <Icon name="login" className="text-[19px]" />
-                    Login
-                  </Link>
+                {/* Account. NavbarAuth resolves to a Login button or an avatar
+                    menu; the wrapper stretches the signed-out button to the
+                    drawer width, which the header version doesn't want. */}
+                <div className="flex justify-center border-b border-outline-variant px-4 py-4 [&>a]:w-full">
+                  <NavbarAuth />
                 </div>
 
                 <div className="flex items-center justify-between gap-2 border-b border-outline-variant px-4 py-3">

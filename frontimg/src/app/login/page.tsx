@@ -1,15 +1,22 @@
 import type { Metadata } from "next";
-import { AccountsComingSoon } from "@/components/AccountsComingSoon";
+import { Suspense } from "react";
+import { LoginForm } from "./LoginForm";
 
-// noindex: there is nothing to sign in to yet, so this shouldn't attract search
-// traffic to a dead end. Remove `robots` when accounts actually launch.
+// noindex: a sign-in form has nothing to offer a search visitor, and the tools
+// — which are the thing worth ranking — never require one.
 export const metadata: Metadata = {
-  title: "Sign in",
-  description: "Accounts are coming soon to oMyImage. Every tool works today without one.",
+  title: "Log in",
+  description: "Log in to your oMyImage account.",
   alternates: { canonical: "/login" },
   robots: { index: false, follow: true },
 };
 
+// Suspense is required, not cosmetic: LoginForm calls useSearchParams(), and
+// `output: "export"` fails the build for a page that does so outside one.
 export default function LoginPage() {
-  return <AccountsComingSoon mode="login" />;
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
+  );
 }
