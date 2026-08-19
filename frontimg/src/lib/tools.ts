@@ -774,6 +774,20 @@ const TOOLS_BY_SLUG: Record<string, Tool> = Object.fromEntries(
 );
 
 /** Resolve a tool by slug (used by tool-prefs / favorites). */
+/**
+ * Premium = the server-side AI tools, the only ones we meter.
+ *
+ * Reads the explicit `premium` flag, falling back to `processing === "ai"` so a
+ * new AI tool is metered the day it is added rather than the day someone
+ * remembers to set the flag. These are exactly what the pricing page calls
+ * "AI runs" — Remove Background and Upscale Image today.
+ */
+export function isPremiumTool(tool: Tool | string): boolean {
+  const t = typeof tool === "string" ? TOOLS_BY_ID[tool] ?? TOOLS.find((x) => x.slug === tool) : tool;
+  if (!t) return false;
+  return t.premium ?? t.processing === "ai";
+}
+
 export function getTool(slug: string): Tool | undefined {
   return TOOLS_BY_SLUG[slug];
 }

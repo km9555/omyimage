@@ -1,56 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Icon } from "@/components/Icon";
+import { usePremiumUsage } from "@/lib/premium-usage";
 
 /**
  * "Credits today" pill — premium (server/AI) runs used vs the daily cap.
  *
- * NOT MOUNTED YET. oMyImage has no auth or billing layer, so this counts
- * locally instead of calling an API. It is wired up and styled so that the day
- * billing lands, `useLocalPremiumUsage` can be swapped for a real hook with no
- * changes to the markup — see Navbar.tsx for where to enable it.
+ * Counts locally rather than calling an API: image routes are anonymous and
+ * unmetered on the server, so there is no server-side count to read yet. The
+ * counter itself lives in lib/premium-usage.ts, shared with the dashboard;
+ * swapping it for a server-backed hook is a change to that file alone.
  *
  * Styled with the amber chip tokens (a calm counter, not the gold CTA).
  */
 
-const STORAGE_KEY = "omyimage:premium-usage";
-const FREE_DAILY_LIMIT = 10;
-
-type Usage = { used: number; limit: number; unlimited: boolean; ready: boolean };
-
-/** Reads today's local count. Same shape as a future server-backed hook. */
-function useLocalPremiumUsage(): Usage {
-  // `ready: false` on the first render keeps SSR and the client markup
-  // identical — localStorage is only readable after mount.
-  const [usage, setUsage] = useState<Usage>({
-    used: 0,
-    limit: FREE_DAILY_LIMIT,
-    unlimited: false,
-    ready: false,
-  });
-
-  useEffect(() => {
-    let used = 0;
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw) as { date?: string; count?: number };
-        // Counts reset at local midnight; a stale date means a fresh day.
-        if (parsed.date === new Date().toDateString()) used = parsed.count ?? 0;
-      }
-    } catch {
-      /* unreadable or malformed storage → treat as a fresh day */
-    }
-    setUsage({ used, limit: FREE_DAILY_LIMIT, unlimited: false, ready: true });
-  }, []);
-
-  return usage;
-}
-
 export function CreditsBadge({ compact = false, className = "" }: { compact?: boolean; className?: string }) {
-  const { used, limit, unlimited, ready } = useLocalPremiumUsage();
+  const { used, limit, unlimited, ready } = usePremiumUsage();
 
   const base =
     "inline-flex items-center gap-1.5 rounded-lg border border-chip-amber-border bg-chip-amber-bg text-chip-amber-ink transition-opacity hover:opacity-90";

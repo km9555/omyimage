@@ -10,10 +10,11 @@ import { useAuth } from "@/lib/auth/useAuth";
  * The account control in the header: a Login button when signed out, an avatar
  * menu when signed in.
  *
- * The menu is deliberately short — email and Sign out. oMyImage has no
- * /account, /dashboard or /admin routes, and on a static export a link to a
- * path that doesn't exist is a hard 404 rather than a soft one. Add entries
- * here when the pages land, not before.
+ * Menu items are gated on the route actually existing — on a static export a
+ * link to a missing path is a hard 404, not a soft one. /dashboard and
+ * /account exist; /admin deliberately does not yet (there are no
+ * /api/image/admin/* endpoints behind it), so it is not linked even for an
+ * admin. Add it here the day that console ships.
  *
  * Takes no className on purpose. Callers control visibility with a wrapper
  * element instead: appending "hidden md:inline-flex" to a base string that
@@ -89,6 +90,24 @@ export function NavbarAuth() {
             <p className="text-label-sm font-label-sm text-on-surface-variant">Signed in as</p>
             <p className="text-body-md font-semibold text-primary truncate">{email}</p>
           </div>
+          <Link
+            href="/dashboard"
+            role="menuitem"
+            onClick={() => setOpen(false)}
+            className="flex items-center gap-3 px-4 py-3 text-body-md text-on-surface hover:bg-surface-container transition-colors"
+          >
+            <Icon name="dashboard" className="text-[20px] text-on-surface-variant" />
+            Dashboard
+          </Link>
+          <Link
+            href="/account"
+            role="menuitem"
+            onClick={() => setOpen(false)}
+            className="flex items-center gap-3 px-4 py-3 text-body-md text-on-surface hover:bg-surface-container transition-colors"
+          >
+            <Icon name="account_circle" className="text-[20px] text-on-surface-variant" />
+            My Account
+          </Link>
           <button
             type="button"
             role="menuitem"
