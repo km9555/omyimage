@@ -56,6 +56,40 @@ export function ToolDirectory() {
       {/* Hero — upload-first launcher */}
       <HomeLauncher />
 
+      {/*
+        Purpose band. Deliberately placed immediately below the fold rather
+        than with the rest of the About copy: Google's OAuth review has to be
+        able to see what this app is for and why it touches Google data
+        WITHOUT scrolling past thirty tool cards, and the full About section
+        on the home page sits roughly four screens down. Keep it short — this
+        is the summary, `#about` is the detail.
+      */}
+      <section className="border-y border-surface-variant bg-surface-container-lowest px-margin-mobile md:px-gutter py-5">
+        <div className="max-w-content mx-auto flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-8">
+          <p className="text-body-md text-on-surface-variant">
+            <strong className="font-semibold text-primary">oMyImage</strong> is a free online
+            image toolkit — over thirty tools to compress, resize, crop, convert, watermark and
+            edit images, most running entirely in your browser so your files never leave your
+            device. Importing from Google Drive is optional, reads only the files you pick, and
+            never stores them on our servers.
+          </p>
+          <div className="flex shrink-0 items-center gap-4 text-body-sm">
+            <Link
+              href="/#about"
+              className="font-semibold text-secondary underline underline-offset-2 whitespace-nowrap"
+            >
+              What is oMyImage?
+            </Link>
+            <Link
+              href="/privacy#google-drive"
+              className="font-semibold text-secondary underline underline-offset-2 whitespace-nowrap"
+            >
+              How we use Google data
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Favorites row */}
       {favorites.length > 0 && (
         <div id="tools" className="max-w-content mx-auto px-margin-mobile md:px-gutter pt-10">
