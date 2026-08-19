@@ -122,12 +122,23 @@ export function HomeLauncher() {
               clamp() that interpolates from 30px to 48px across the viewport,
               so the headline stays in proportion with the upload card beside
               it instead of staying 48px inside a 456px column at 1024. */}
+          {/*
+            "oMyImage" is one uninterrupted text node here on purpose. Google's
+            OAuth verification checks that the app name shown on the home page
+            matches the name on the consent screen, and the two-tone <span>
+            split used for the navbar wordmark reads as "oMy Image" to a plain
+            tag-stripping extractor. Keep it spelled out, and keep it in the h1.
+          */}
           <h1 className="mt-5 text-display-lg font-black tracking-tight text-primary">
-            Effortless Power for Image Workflows.
+            oMyImage
+            <span className="mt-2 block text-headline-md font-bold text-on-surface-variant">
+              Effortless Power for Image Workflows.
+            </span>
           </h1>
           <p className="mt-4 text-body-lg text-on-surface-variant max-w-md mx-auto lg:mx-0">
-            Drop your images, pick what to do — compress, resize, convert and more — and
-            we&apos;ll open the right tool with everything loaded. No signup, no quality loss.
+            oMyImage is a free online image toolkit — compress, resize, crop, convert,
+            watermark and edit your photos. Most tools run entirely in your browser, so
+            your files never leave your device. No signup, no quality loss.
           </p>
         </div>
 

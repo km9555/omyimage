@@ -26,12 +26,13 @@ const toc = [
   { id: "collect", title: "4. What we collect" },
   { id: "storage", title: "5. Browser storage" },
   { id: "subprocessors", title: "6. Third-party services" },
-  { id: "future", title: "7. Planned features" },
-  { id: "rights", title: "8. Your rights" },
-  { id: "children", title: "9. Children" },
-  { id: "security", title: "10. Security" },
-  { id: "changes", title: "11. Changes" },
-  { id: "contact", title: "12. Contact" },
+  { id: "google-drive", title: "7. Google Drive import" },
+  { id: "future", title: "8. Planned features" },
+  { id: "rights", title: "9. Your rights" },
+  { id: "children", title: "10. Children" },
+  { id: "security", title: "11. Security" },
+  { id: "changes", title: "12. Changes" },
+  { id: "contact", title: "13. Contact" },
 ];
 
 export default function PrivacyPage() {
@@ -39,7 +40,7 @@ export default function PrivacyPage() {
     <LegalShell
       title="Privacy Policy"
       subtitle="What happens to your images and your data when you use oMyImage."
-      updated="3 August 2026"
+      updated="19 August 2026"
       toc={toc}
     >
       <LegalSection id="summary" title="Summary">
@@ -173,6 +174,7 @@ export default function PrivacyPage() {
             ["Cloudflare", "Website hosting, CDN and DDoS protection", "cloudflare.com/privacypolicy"],
             ["Contabo", "Server hosting for the tools that process on our server", "contabo.com/en/legal/privacy-policy"],
             ["Google Fonts", "Serves the icon font used across the interface", "policies.google.com/privacy"],
+            ["Google Drive (optional)", "Imports only the files you pick, and only when you use it — see section 7", "policies.google.com/privacy"],
           ]}
         />
         <LegalP>
@@ -182,7 +184,94 @@ export default function PrivacyPage() {
         </LegalP>
       </LegalSection>
 
-      <LegalSection id="future" title="7. Planned features">
+      {/*
+        Google Drive / OAuth disclosure.
+
+        Required by Google's OAuth app verification, which checks the privacy
+        policy for a description of what Google user data is accessed, why, and
+        how it is handled — plus the Limited Use sentence, which is prescribed
+        wording and should not be paraphrased. Keep the scope named here in sync
+        with lib/google-drive.ts (currently drive.file only); adding a scope
+        means updating this section and re-submitting for verification.
+      */}
+      <LegalSection id="google-drive" title="7. Google Drive import">
+        <LegalP>
+          Connecting Google is optional. Every tool on oMyImage works without it, and nothing on the
+          site asks you to sign in. The connection exists for a single feature: importing an image
+          you already keep in Google Drive, instead of uploading it from your device.
+        </LegalP>
+
+        <LegalSubsection title="What we ask for, and what it allows">
+          <LegalP>
+            When you choose &quot;Import from Google Drive&quot;, we request one narrow permission:{" "}
+            {/* break-all: the full scope URI is one 42-character unbreakable
+                token, wider than the prose column on a phone. */}
+            <code className="break-all">https://www.googleapis.com/auth/drive.file</code>. That scope grants access only
+            to the specific files you select in Google&apos;s own file picker. It does not let us
+            list, browse, search or open anything else in your Drive, and it gives us no view of
+            your folders, your file names or your storage as a whole.
+          </LegalP>
+          <LegalP>
+            The permission is also one-directional in practice: we read the file you picked. We do
+            not create, rename, modify, move or delete anything in your Drive.
+          </LegalP>
+        </LegalSubsection>
+
+        <LegalSubsection title="What happens to the file and the token">
+          <LegalUl>
+            <li>
+              The access token Google issues is held in your browser&apos;s memory for that visit
+              only. It is never transmitted to our servers, never written to disk, and disappears
+              when you close the tab.
+            </li>
+            <li>
+              The file you pick is downloaded from Google straight into your browser. It does not
+              pass through our servers on the way in.
+            </li>
+            <li>
+              From that point the file is treated exactly like one you dragged in from your desktop
+              — processed in your browser, or uploaded to our server only if you chose a tool that
+              says it uploads, under the same retention rules described in sections 2 and 3.
+            </li>
+            <li>
+              We do not keep a copy of your Google files, do not index them, and do not retain any
+              record of what you imported.
+            </li>
+          </LegalUl>
+        </LegalSubsection>
+
+        <LegalCallout>
+          oMyImage&apos;s use and transfer of information received from Google APIs to any other app
+          will adhere to the{" "}
+          <a
+            href="https://developers.google.com/terms/api-services-user-data-policy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-secondary hover:underline"
+          >
+            Google API Services User Data Policy
+          </a>
+          , including the Limited Use requirements. In particular, we do not use Google user data
+          for advertising, we do not sell or transfer it, and we do not use it to train
+          generalised or artificial-intelligence models.
+        </LegalCallout>
+
+        <LegalP>
+          You can withdraw this access whenever you like, without affecting the rest of the site,
+          from your{" "}
+          <a
+            href="https://myaccount.google.com/permissions"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-secondary hover:underline"
+          >
+            Google Account permissions page
+          </a>
+          .
+        </LegalP>
+      </LegalSection>
+
+      <LegalSection id="future" title="8. Planned features">
         <LegalP>
           Some features are planned but not yet live. We are describing them here in advance so this
           policy stays honest as they arrive, and so you know what to expect. <strong>None of the
@@ -213,7 +302,7 @@ export default function PrivacyPage() {
         </LegalP>
       </LegalSection>
 
-      <LegalSection id="rights" title="8. Your rights">
+      <LegalSection id="rights" title="9. Your rights">
         <LegalP>
           Depending on where you live, you may have rights to access, correct, export or erase
           personal data held about you, and to object to certain processing. Because we do not
@@ -230,7 +319,7 @@ export default function PrivacyPage() {
         </LegalP>
       </LegalSection>
 
-      <LegalSection id="children" title="9. Children">
+      <LegalSection id="children" title="10. Children">
         <LegalP>
           oMyImage is a general-purpose utility and is not directed at children. We do not knowingly
           collect personal data from children. Since using the tools requires no account and no
@@ -238,7 +327,7 @@ export default function PrivacyPage() {
         </LegalP>
       </LegalSection>
 
-      <LegalSection id="security" title="10. Security">
+      <LegalSection id="security" title="11. Security">
         <LegalP>
           The site is served over HTTPS. Uploads to our server are encrypted in transit, processed in
           isolation, and deleted on the schedule described above. We apply rate limits and upload
@@ -251,7 +340,7 @@ export default function PrivacyPage() {
         </LegalP>
       </LegalSection>
 
-      <LegalSection id="changes" title="11. Changes">
+      <LegalSection id="changes" title="12. Changes">
         <LegalP>
           We may update this policy as the service evolves. The &quot;last updated&quot; date at the
           top of this page always reflects the current version. Material changes will be reflected
@@ -259,7 +348,7 @@ export default function PrivacyPage() {
         </LegalP>
       </LegalSection>
 
-      <LegalSection id="contact" title="12. Contact">
+      <LegalSection id="contact" title="13. Contact">
         <LegalP>
           Questions about this policy, or about how your data is handled, can be sent through the
           options on our{" "}

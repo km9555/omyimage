@@ -32,7 +32,18 @@ export function LegalShell({ title, subtitle, updated, toc, children }: LegalShe
         </p>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-10 items-start">
+      {/*
+        `items-start` is scoped to `lg` on purpose. It exists so the sticky TOC
+        sits at the top of the row rather than stretching to the article's
+        height — but in the stacked mobile layout the cross axis is the WIDTH,
+        so applying it there sized the article to its max-content width and let
+        wide children (the subprocessor table) push the whole page into a
+        horizontal scroll. `min-w-0` cannot help: it constrains the main axis,
+        which is the column. Leaving the default `stretch` below `lg` clamps
+        the article to the container, so the table scrolls inside its own
+        `overflow-x-auto` wrapper as intended.
+      */}
+      <div className="flex flex-col lg:flex-row gap-10 lg:items-start">
         {/* Sticky TOC sidebar */}
         <aside className="lg:sticky lg:top-24 lg:w-56 shrink-0 w-full bg-surface-container-lowest border border-surface-variant rounded-xl p-5">
           <p className="text-label-sm font-label-sm uppercase tracking-widest text-on-surface-variant mb-3">
