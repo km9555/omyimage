@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Icon } from "@/components/Icon";
 import { Logo } from "@/components/Logo";
@@ -50,6 +51,7 @@ export function MobileMenu() {
   const [mounted, setMounted] = useState(false);
   const [query, setQuery] = useState("");
   const [expanded, setExpanded] = useState<string | null>(null);
+  const pathname = usePathname();
 
   // Portal target only exists on the client.
   useEffect(() => {
@@ -71,11 +73,27 @@ export function MobileMenu() {
     };
   }, [open]);
 
-  const close = () => {
+  const close = useCallback(() => {
     setOpen(false);
     setQuery("");
     setExpanded(null);
-  };
+  }, []);
+
+  // Close on navigation.
+  //
+  // Individual links call close() themselves, but the drawer also hosts
+  // components that own their own links and have no idea they are inside a
+  // drawer — CreditsBadge is a <Link href="/pricing">, and NavbarAuth carries
+  // Dashboard / My Account. Clicking those navigated the page while leaving the
+  // drawer open AND `body { overflow: hidden }` still applied, so the visitor
+  // landed on a page they could not scroll.
+  //
+  // Reacting to the pathname is what makes this exhaustive: it covers every
+  // link in the subtree, anything added later, and programmatic navigation too
+  // (NavbarAuth's Sign out is a button that calls router.replace).
+  useEffect(() => {
+    close();
+  }, [pathname, close]);
 
   // Same ranked matcher the header search uses (name-prefix beats mid-name,
   // synonyms resolve).
@@ -113,6 +131,28 @@ export function MobileMenu() {
               role="dialog"
               aria-modal="true"
               aria-label="Site menu"
+              // Any anchor anywhere in the drawer closes it. The pathname effect
+              // above already handles navigation, but not a link to the page you
+              // are ALREADY on — tapping "Credits" while on /pricing changes no
+              // route, so nothing would fire and the drawer would sit there.
+              // Scoped to a[href] on purpose: the category accordions are
+              // <button>s and must keep working without closing the drawer.
+              onClickCapture={(e) => {
+                if (!(e.target as HTMLElement).closest("a[href]")) return;
+                // Slide the drawer shut, but do NOT run the full close() here.
+                // close() also clears the query, which unmounts the search
+                // results — including the anchor being clicked — before its own
+                // navigation handler runs in the bubble phase, so the drawer
+                // would shut and the link would silently do nothing. Only
+                // `open` is safe to touch synchronously: it drives a CSS
+                // transform, so the subtree stays mounted.
+                setOpen(false);
+                // Clear the content once the click has finished propagating.
+                setTimeout(() => {
+                  setQuery("");
+                  setExpanded(null);
+                }, 0);
+              }}
               className={`fixed right-0 top-0 z-[61] flex h-full w-[82%] max-w-[340px] flex-col border-l border-outline-variant bg-background shadow-2xl transition-transform duration-200 ease-out ${
                 open ? "translate-x-0" : "translate-x-full"
               }`}
