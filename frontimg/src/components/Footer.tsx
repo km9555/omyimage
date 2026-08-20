@@ -86,6 +86,16 @@ export function Footer() {
             >
               View Pricing →
             </Link>
+            {/* Sister site. Plain <a> + new tab: cross-domain, and the tools hold
+                in-browser file state that a same-tab navigation would discard. */}
+            <a
+              href="https://omypdf.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-label-sm font-label-sm font-semibold text-secondary hover:underline w-fit"
+            >
+              Need PDF tools? oMyPDF →
+            </a>
           </div>
 
           <FooterCol title="Optimize" links={optimize} />
