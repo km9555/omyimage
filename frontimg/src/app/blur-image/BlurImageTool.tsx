@@ -6,7 +6,7 @@ import { Icon } from "@/components/Icon";
 import { HelpTip } from "@/components/HelpTip";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
 import { Dropzone } from "@/components/image/Dropzone";
-import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
+import { ToolWorkspace, filesHeader } from "@/components/tool/ToolWorkspace";
 import { FileTray, TrayAction, type TrayEntry } from "@/components/tool/FileTray";
 import { SettingsRail, RailAction, RailSecondaryAction } from "@/components/tool/SettingsRail";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
@@ -214,40 +214,83 @@ export function BlurImageTool() {
     ),
   }));
 
+  /*
+    Named so the mobile shell can show the canvas without the tray beneath
+    it. The preview surface claims touch gestures, so anything stacked under
+    it on a phone cannot be scrolled to — the tray gets its own tab instead.
+  */
+  const canvasPane = (
+    <>
+        <div className="bg-surface-container rounded-xl border border-surface-variant p-4 flex items-center justify-center overflow-hidden" style={{ minHeight: 260 }}>
+          {mode === "whole" ? (
+            <canvas ref={previewRef} className="max-w-full max-h-[46dvh] rounded" />
+          ) : (
+            <RegionEditor
+              bitmap={activeBmp}
+              regions={regions}
+              onChange={(next) => { setRegions(next); setDone(false); }}
+              selectedId={selectedRegion}
+              onSelect={setSelectedRegion}
+              style={style}
+              strength={radius}
+              solidColor={resolveBg(bg) ?? "#000000"}
+              invert={invert}
+              shape={shape}
+              accent={ACCENT}
+              disabled={isWorking}
+            />
+          )}
+        </div>
+        <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
+          {mode === "whole" ? (
+            <>Live preview of <span className="font-semibold text-on-surface">{items[0].file.name}</span>{items.length > 1 && <> — applied to all {items.length} images.</>}</>
+          ) : (
+            <>Drag to draw an area, click one to select, drag its handles to resize, Delete to remove.{regions.length > 0 && <span className="font-semibold text-on-surface"> {regions.length} area{regions.length === 1 ? "" : "s"}.</span>}</>
+          )}
+        </p>
+    </>
+  );
+
+  const tray = (
+    <>
+        <FileTray entries={entries} accept={ACCEPT} onFiles={addFiles} onClear={reset} busy={isWorking} />
+    </>
+  );
+
   return (
     <>
       <TopLoadingBar active={isWorking} />
       <ToolWorkspace
+        /* Below `md` the preview becomes the whole body and the file list
+           moves into its own tab — see `body` on ToolMobileShell. */
+        mobile={{
+          ...filesHeader(items.map((i) => i.file)),
+          onBack: reset,
+          backLabel: "Clear images",
+          body: canvasPane,
+          tabs: [
+            {
+              id: "files",
+              icon: "photo_library",
+              label: "Files",
+              badge: items.length > 1 ? items.length : undefined,
+              sheetTitle: `${items.length} image${items.length === 1 ? "" : "s"}`,
+              sheet: tray,
+            },
+          ],
+          settingsTitle: "Blur settings",
+          cta: {
+            icon: "lens_blur",
+            label: "Blur",
+            busyLabel: "Blurring…",
+            busy: isWorking,
+            onClick: applyAll,
+          },
+        }}
         main={
           <>
-            <div className="bg-surface-container rounded-xl border border-surface-variant p-4 flex items-center justify-center overflow-hidden" style={{ minHeight: 260 }}>
-              {mode === "whole" ? (
-                <canvas ref={previewRef} className="max-w-full max-h-[46vh] rounded" />
-              ) : (
-                <RegionEditor
-                  bitmap={activeBmp}
-                  regions={regions}
-                  onChange={(next) => { setRegions(next); setDone(false); }}
-                  selectedId={selectedRegion}
-                  onSelect={setSelectedRegion}
-                  style={style}
-                  strength={radius}
-                  solidColor={resolveBg(bg) ?? "#000000"}
-                  invert={invert}
-                  shape={shape}
-                  accent={ACCENT}
-                  disabled={isWorking}
-                />
-              )}
-            </div>
-            <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
-              {mode === "whole" ? (
-                <>Live preview of <span className="font-semibold text-on-surface">{items[0].file.name}</span>{items.length > 1 && <> — applied to all {items.length} images.</>}</>
-              ) : (
-                <>Drag to draw an area, click one to select, drag its handles to resize, Delete to remove.{regions.length > 0 && <span className="font-semibold text-on-surface"> {regions.length} area{regions.length === 1 ? "" : "s"}.</span>}</>
-              )}
-            </p>
-            <FileTray entries={entries} accept={ACCEPT} onFiles={addFiles} onClear={reset} busy={isWorking} />
+            {canvasPane}
+            {tray}
           </>
         }
         rail={

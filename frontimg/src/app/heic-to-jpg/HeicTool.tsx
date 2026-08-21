@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Icon } from "@/components/Icon";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
 import { Dropzone } from "@/components/image/Dropzone";
-import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
+import { ToolWorkspace, filesHeader } from "@/components/tool/ToolWorkspace";
 import { FileTray, TrayAction, type TrayEntry } from "@/components/tool/FileTray";
 import { SettingsRail, RailAction, RailSecondaryAction, RailNote } from "@/components/tool/SettingsRail";
 import { downloadBlob, zipAndDownload, formatBytes, baseName } from "@/lib/image/raster";
@@ -119,6 +119,22 @@ export function HeicTool({ defaultTarget = "image/jpeg" }: { defaultTarget?: Tar
     <>
       <TopLoadingBar active={isWorking} />
       <ToolWorkspace
+        /* Below `md` this becomes the full-screen app shell: the tray is the
+           body, the rail moves into a sheet, and this tool's primary action
+           becomes the bottom bar CTA. Desktop is untouched. */
+        mobile={{
+          ...filesHeader(items.map((i) => i.file)),
+          onBack: reset,
+          backLabel: "Clear files",
+          settingsTitle: "Conversion settings",
+          cta: {
+            icon: "sync_alt",
+            label: "Convert",
+            busyLabel: "Converting…",
+            busy: isWorking,
+            onClick: convertAll,
+          },
+        }}
         main={
           <FileTray
             entries={entries}

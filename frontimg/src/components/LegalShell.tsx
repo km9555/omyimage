@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
+import { LegalMobileToc } from "@/components/LegalMobileToc";
 
 /**
  * Shared layout and prose blocks for the long-form legal pages
@@ -44,8 +45,12 @@ export function LegalShell({ title, subtitle, updated, toc, children }: LegalShe
         `overflow-x-auto` wrapper as intended.
       */}
       <div className="flex flex-col lg:flex-row gap-10 lg:items-start">
+        {/* Phones get a sticky bar + sheet instead of the card below; see
+            LegalMobileToc for why. It self-gates to `md:hidden`. */}
+        <LegalMobileToc toc={toc} />
+
         {/* Sticky TOC sidebar */}
-        <aside className="lg:sticky lg:top-24 lg:w-56 shrink-0 w-full bg-surface-container-lowest border border-surface-variant rounded-xl p-5">
+        <aside className="hidden md:block lg:sticky lg:top-24 lg:w-56 shrink-0 w-full bg-surface-container-lowest border border-surface-variant rounded-xl p-5">
           <p className="text-label-sm font-label-sm uppercase tracking-widest text-on-surface-variant mb-3">
             Contents
           </p>

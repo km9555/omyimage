@@ -7,7 +7,7 @@ import { HelpTip } from "@/components/HelpTip";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
 import { Dropzone } from "@/components/image/Dropzone";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
-import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
+import { ToolWorkspace, filesHeader } from "@/components/tool/ToolWorkspace";
 import { FileTray, TrayAction, type TrayEntry } from "@/components/tool/FileTray";
 import { SettingsRail, RailAction, RailSecondaryAction, RailNote } from "@/components/tool/SettingsRail";
 import { decodeBitmap, downloadBlob, formatBytes, canvasToBlob } from "@/lib/image/raster";
@@ -365,6 +365,23 @@ export function GifMakerTool() {
     <>
       <TopLoadingBar active={isWorking} />
       <ToolWorkspace
+        /* Below `md` this becomes the full-screen app shell: the tray is the
+           body, the rail moves into a sheet, and this tool's primary action
+           becomes the bottom bar CTA. Desktop is untouched. */
+        mobile={{
+          ...filesHeader(items.map((i) => i.file)),
+          onBack: reset,
+          backLabel: "Clear frames",
+          settingsTitle: "GIF settings",
+          cta: {
+            icon: "gif_box",
+            label: "Create",
+            busyLabel: "Building GIF…",
+            busy: isWorking,
+            disabled: ordered.length < 2,
+            onClick: createGif,
+          },
+        }}
         main={
           <>
             <div className="bg-surface-container rounded-xl border border-surface-variant p-4 flex items-center justify-center overflow-hidden" style={{ minHeight: 220 }}>

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Icon } from "@/components/Icon";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
-import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
+import { ToolWorkspace, filesHeader } from "@/components/tool/ToolWorkspace";
 import { SettingsRail, RailAction, RailNote } from "@/components/tool/SettingsRail";
 import { Dropzone } from "@/components/image/Dropzone";
 import { BackgroundPicker } from "@/components/BackgroundPicker";
@@ -153,10 +153,25 @@ export function MemeTool() {
     <>
       <TopLoadingBar active={isWorking} />
       <ToolWorkspace
+        /* One image and no file list, so the shell needs no Files tab — the
+           canvas is already the whole body. */
+        mobile={{
+          ...filesHeader([file]),
+          onBack: () => setFile(null),
+          backLabel: "Change image",
+          settingsTitle: "Meme settings",
+          cta: {
+            icon: "download",
+            label: "Export",
+            busyLabel: "Exporting…",
+            busy: isWorking,
+            onClick: exportMeme,
+          },
+        }}
         main={
           <>
             <div className="bg-surface-container rounded-xl border border-surface-variant p-4 flex items-center justify-center overflow-hidden" style={{ minHeight: 280 }}>
-              <canvas ref={previewRef} className="max-w-full max-h-[calc(100vh-12rem)] rounded" />
+              <canvas ref={previewRef} className="max-w-full max-h-[calc(100dvh-12rem)] rounded" />
             </div>
             <div className="flex items-center justify-between">
               <p className="text-label-sm font-label-sm text-on-surface-variant truncate">{file.name}</p>

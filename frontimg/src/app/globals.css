@@ -173,6 +173,13 @@
   --text-title-lg--line-height: 1.28;
   --text-title-lg--font-weight: 700;
 
+  /* Sits between title-sm and title-lg. Used by CookieBanner and the mobile
+     bottom-sheet headers; it was referenced before it was ever declared, so
+     under Tailwind v4 `text-title-md` emitted nothing at all. */
+  --text-title-md: 18px;
+  --text-title-md--line-height: 26px;
+  --text-title-md--font-weight: 700;
+
   --text-title-sm: 16px;
   --text-title-sm--line-height: 24px;
   --text-title-sm--font-weight: 600;
@@ -370,6 +377,10 @@ body:has([data-tool-active]) main {
 
 html {
   scroll-behavior: smooth;
+  /* Kills the grey rectangle iOS/Android flash over every tapped control. The
+     UI signals presses with `active:bg-*` states instead, which respect the
+     theme; the OS default does not. */
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Top loading bar animation */
@@ -384,4 +395,64 @@ html {
    in layout.tsx — hide the banner for them before React loads. */
 html[data-cookie-choice="1"] #cookie-banner {
   display: none;
+}
+
+/*
+  ────────────────────────────────────────────────────────────────────────────
+  Mobile app shell
+  ────────────────────────────────────────────────────────────────────────────
+  Supports the full-screen tool shells that `ToolWorkspace` switches to below
+  `md` (see src/lib/use-is-mobile.ts and src/components/tool/mobile-chrome.tsx).
+  Ported from oMyPDF, where the same shell runs the organise/edit/split tools.
+*/
+
+/* Bottom-sheet transitions. The easing is the iOS sheet curve — a fast start
+   that settles slowly — which is what makes a slide-up read as native rather
+   than as a CSS animation. */
+@keyframes sheet-up {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+.animate-sheet-up {
+  animation: sheet-up 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+}
+@keyframes sheet-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.animate-sheet-fade {
+  animation: sheet-fade 0.2s ease;
+}
+
+/* The shell is a fixed full-viewport overlay, so a scroll that reaches the end
+   of its body must not chain to the document behind it (rubber-banding the
+   whole page, or triggering pull-to-refresh mid-drag). */
+.overscroll-shell {
+  overscroll-behavior: contain;
+}
+
+/* Always-visible scrollbars for zoomable preview panes. Touch platforms use
+   overlay scrollbars that stay hidden until you already scroll, so a zoomed-in
+   image gives no hint that it can be panned. Styling ::-webkit-scrollbar opts
+   out of the overlay behaviour and keeps the track on screen. */
+.scrollbar-visible {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-outline-variant, rgb(0 0 0 / 0.3)) transparent;
+}
+.scrollbar-visible::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 8px;
+  height: 8px;
+}
+.scrollbar-visible::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-visible::-webkit-scrollbar-thumb {
+  background-color: rgb(0 0 0 / 0.32);
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+.dark .scrollbar-visible::-webkit-scrollbar-thumb {
+  background-color: rgb(255 255 255 / 0.35);
 }

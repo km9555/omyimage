@@ -105,13 +105,17 @@ export function CookieBanner() {
       aria-label="Cookie consent"
       aria-modal="false"
       className={`fixed z-50 inset-x-0 flex justify-center px-3 sm:px-4 ${
-        customizing ? "inset-y-0 items-center" : "bottom-0 pb-3 sm:pb-6"
+        customizing
+          ? "inset-y-0 items-center"
+          // `max()` keeps the old 0.75rem floor and only grows on a device that
+          // actually reports a bottom inset (see viewport-fit in layout.tsx).
+          : "bottom-0 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:pb-6"
       }`}
     >
       <div
         className={`w-full ${
           customizing ? "sm:max-w-3xl" : "sm:max-w-2xl"
-        } max-h-[90vh] overflow-y-auto rounded-2xl border border-surface-variant bg-surface-container-lowest shadow-2xl ambient-shadow p-5 ${
+        } max-h-[90dvh] overflow-y-auto rounded-2xl border border-surface-variant bg-surface-container-lowest shadow-2xl ambient-shadow p-5 ${
           customizing ? "sm:p-5" : "sm:p-6"
         }`}
       >

@@ -49,7 +49,7 @@ export function CallbackClient() {
   }, []);
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center gap-4 px-margin-mobile text-center">
+    <div className="min-h-[calc(100dvh-4rem)] flex flex-col items-center justify-center gap-4 px-margin-mobile text-center">
       <Logo className="h-10 w-10" />
       {failed ? (
         <p className="text-body-md text-on-surface-variant">Sign-in failed. Redirecting…</p>

@@ -7,7 +7,7 @@ import { HelpTip } from "@/components/HelpTip";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
 import { Dropzone } from "@/components/image/Dropzone";
 import { CropCanvas } from "@/components/image/CropCanvas";
-import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
+import { ToolWorkspace, filesHeader } from "@/components/tool/ToolWorkspace";
 import { FileTray, TrayAction, type TrayEntry } from "@/components/tool/FileTray";
 import { SettingsRail, RailAction, RailSecondaryAction } from "@/components/tool/SettingsRail";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
@@ -221,41 +221,84 @@ export function CircleCropTool() {
     ),
   }));
 
+  /*
+    Named so the mobile shell can show the canvas without the tray beneath
+    it. The preview surface claims touch gestures, so anything stacked under
+    it on a phone cannot be scrolled to — the tray gets its own tab instead.
+  */
+  const canvasPane = (
+    <>
+        <div
+          className="rounded-xl border border-surface-variant p-4 flex items-center justify-center overflow-auto"
+          style={{ minHeight: 260, ...(bg.transparent && effMime !== "image/jpeg" ? CHECKER : { backgroundColor: "var(--color-surface-container)" }) }}
+        >
+          <CropCanvas
+            bitmap={activeBmp}
+            sel={sel}
+            onChange={(s) => { setSel(s); setDone(false); }}
+            shape="ellipse"
+            radius={0}
+            aspect={1}
+            transform={NO_TRANSFORM}
+            zoom={zoom}
+            accent={ACCENT}
+            disabled={isWorking}
+          />
+        </div>
+        <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
+          Drag the circle to move it, or a corner handle to resize · exports at {out.w} × {out.h} px
+          {items.length > 1 && <> — applied to all {items.length} images</>}
+        </p>
+    </>
+  );
+
+  const tray = (
+    <>
+        <FileTray
+          entries={entries}
+          title={`${items.length} image${items.length === 1 ? "" : "s"}`}
+          accept={ACCEPT}
+          onFiles={addFiles}
+          onClear={reset}
+          busy={isWorking}
+        />
+    </>
+  );
+
   return (
     <>
       <TopLoadingBar active={isWorking} />
       <ToolWorkspace
+        /* Below `md` the preview becomes the whole body and the file list
+           moves into its own tab — see `body` on ToolMobileShell. */
+        mobile={{
+          ...filesHeader(items.map((i) => i.file)),
+          onBack: reset,
+          backLabel: "Clear images",
+          body: canvasPane,
+          tabs: [
+            {
+              id: "files",
+              icon: "photo_library",
+              label: "Files",
+              badge: items.length > 1 ? items.length : undefined,
+              sheetTitle: `${items.length} image${items.length === 1 ? "" : "s"}`,
+              sheet: tray,
+            },
+          ],
+          settingsTitle: "Circle crop settings",
+          cta: {
+            icon: "panorama_fish_eye",
+            label: "Crop",
+            busyLabel: "Cropping…",
+            busy: isWorking,
+            onClick: applyAll,
+          },
+        }}
         main={
           <>
-            <div
-              className="rounded-xl border border-surface-variant p-4 flex items-center justify-center overflow-auto"
-              style={{ minHeight: 260, ...(bg.transparent && effMime !== "image/jpeg" ? CHECKER : { backgroundColor: "var(--color-surface-container)" }) }}
-            >
-              <CropCanvas
-                bitmap={activeBmp}
-                sel={sel}
-                onChange={(s) => { setSel(s); setDone(false); }}
-                shape="ellipse"
-                radius={0}
-                aspect={1}
-                transform={NO_TRANSFORM}
-                zoom={zoom}
-                accent={ACCENT}
-                disabled={isWorking}
-              />
-            </div>
-            <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
-              Drag the circle to move it, or a corner handle to resize · exports at {out.w} × {out.h} px
-              {items.length > 1 && <> — applied to all {items.length} images</>}
-            </p>
-            <FileTray
-              entries={entries}
-              title={`${items.length} image${items.length === 1 ? "" : "s"}`}
-              accept={ACCEPT}
-              onFiles={addFiles}
-              onClear={reset}
-              busy={isWorking}
-            />
+            {canvasPane}
+            {tray}
           </>
         }
         rail={

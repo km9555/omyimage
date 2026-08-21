@@ -1,14 +1,27 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCoarsePointer } from "@/lib/use-is-mobile";
 import {
   CURSOR_FOR, MIN_SIZE, clampRegion, handlePoints, moveRegion, pickRegion,
   regionFromPoints, renderRedacted, resizeRegionByHandle, toPixels,
   type Handle, type RedactStyle, type Region, type RegionShape,
 } from "@/lib/image/redact";
 
-const HANDLE_TOL = 9;
-const HANDLE_R = 4.5;
+/*
+  Grip sizes, in SCREEN pixels — deliberately not image pixels.
+
+  This canvas is sized to the image's natural resolution and then scaled down by
+  CSS, so a constant expressed in image pixels shrinks on screen as the image
+  gets bigger: the old 9px tolerance was ~4px of actual target on a 1200px-wide
+  photo at desktop width, and under 3px on a phone. Everything below is divided
+  by the display ratio at use, which makes the target the same physical size
+  whatever the image resolution.
+*/
+const TOL_SCREEN = 10;
+const TOL_SCREEN_COARSE = 24;
+const HANDLE_R_SCREEN = 5;
+const HANDLE_R_SCREEN_COARSE = 9;
 
 /**
  * Canvas editor for redaction regions, shared by /blur-face and /blur-image.
@@ -87,6 +100,29 @@ export function RegionEditor({
   const W = bitmap?.width ?? 0;
   const H = bitmap?.height ?? 0;
 
+  const coarse = useCoarsePointer();
+  /*
+    How many image pixels one screen pixel covers. The canvas is laid out by CSS
+    (`max-w-full`), so this is measured, not derived — and it changes on rotate,
+    on a new image, and when the mobile sheet opens under it.
+  */
+  const [imgPerScreenPx, setImgPerScreenPx] = useState(1);
+  useEffect(() => {
+    const c = canvasRef.current;
+    if (!c || !W) return;
+    const measure = () => {
+      const shown = c.getBoundingClientRect().width;
+      if (shown > 0) setImgPerScreenPx(W / shown);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(c);
+    return () => ro.disconnect();
+  }, [W, H]);
+
+  const tol = (coarse ? TOL_SCREEN_COARSE : TOL_SCREEN) * imgPerScreenPx;
+  const handleR = (coarse ? HANDLE_R_SCREEN_COARSE : HANDLE_R_SCREEN) * imgPerScreenPx;
+
   const visible = useMemo(
     () => (draft ? [...regions, draft] : regions),
     [regions, draft]
@@ -102,7 +138,11 @@ export function RegionEditor({
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    const scale = Math.max(1, W / 900);
+    /* Same reasoning as the grip sizes: strokes are authored in screen pixels
+       and converted, so the outline stays ~2px thick whether the image is 900px
+       or 6000px wide. The old `W / 900` heuristic drew region borders at well
+       under one screen pixel on a phone. */
+    const scale = imgPerScreenPx;
     ctx.lineWidth = 2 * scale;
 
     for (const r of visible) {
@@ -124,7 +164,7 @@ export function RegionEditor({
         for (const key of Object.keys(pts) as Handle[]) {
           const p = pts[key];
           ctx.beginPath();
-          ctx.arc(p.x, p.y, HANDLE_R * scale, 0, Math.PI * 2);
+          ctx.arc(p.x, p.y, handleR, 0, Math.PI * 2);
           ctx.fillStyle = "#ffffff";
           ctx.fill();
           ctx.lineWidth = 1.5 * scale;
@@ -133,7 +173,7 @@ export function RegionEditor({
         }
       }
     }
-  }, [bitmap, visible, style, strength, solidColor, invert, selectedId, draft, accent, W, H]);
+  }, [bitmap, visible, style, strength, solidColor, invert, selectedId, draft, accent, W, H, imgPerScreenPx, handleR]);
 
   /** Pointer position in image pixels. */
   const toImage = useCallback((e: React.PointerEvent<HTMLCanvasElement>) => {
@@ -149,7 +189,7 @@ export function RegionEditor({
     if (!bitmap || disabled) return;
     e.preventDefault();
     const { x, y } = toImage(e);
-    const hit = pickRegion(x, y, regionsRef.current, W, H, HANDLE_TOL);
+    const hit = pickRegion(x, y, regionsRef.current, W, H, tol);
     e.currentTarget.setPointerCapture(e.pointerId);
 
     if (hit && hit.target === "inside") {
@@ -173,7 +213,7 @@ export function RegionEditor({
     const d = drag.current;
 
     if (!d) {
-      const hit = pickRegion(x, y, regionsRef.current, W, H, HANDLE_TOL);
+      const hit = pickRegion(x, y, regionsRef.current, W, H, tol);
       setCursor(
         !hit ? "crosshair" : hit.target === "inside" ? "move" : CURSOR_FOR[hit.target as Handle] ?? "crosshair"
       );
@@ -253,7 +293,7 @@ export function RegionEditor({
       onPointerUp={endDrag}
       onPointerCancel={endDrag}
       onKeyDown={onKeyDown}
-      className="max-w-full max-h-[calc(100vh-14rem)] rounded touch-none select-none outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+      className="max-w-full max-h-[calc(100dvh-14rem)] rounded touch-none select-none outline-none focus-visible:ring-2 focus-visible:ring-secondary"
       style={{ cursor: disabled ? "default" : cursor, touchAction: "none" }}
     />
   );

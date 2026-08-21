@@ -369,6 +369,28 @@ export function ResultScreen({
           Leave a review <Icon name="open_in_new" className="text-[18px]" />
         </span>
       </a>
+
+      {/*
+        Phones only: keep the download reachable while the visitor scrolls past
+        the file card into the handoff, share and review sections — on a 375px
+        screen those push it well off the top. Sticky rather than fixed, so it
+        travels with the screen and releases at its end instead of hovering over
+        the footer for the rest of the page.
+      */}
+      <div className="sticky bottom-0 z-10 -mb-2 flex border-t border-outline-variant bg-background/95 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-sm md:hidden">
+        <button
+          type="button"
+          onClick={() => (multi ? dlZip() : downloadBlob(files[0].blob, files[0].name))}
+          disabled={zipping}
+          className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-secondary font-semibold text-on-secondary transition-colors disabled:opacity-60"
+        >
+          <Icon
+            name={zipping ? "progress_activity" : multi ? "folder_zip" : "download"}
+            className={`text-[20px] ${zipping ? "animate-spin" : ""}`}
+          />
+          {zipping ? "Preparing ZIP…" : multi ? `Download all (${files.length})` : "Download"}
+        </button>
+      </div>
     </div>
   );
 }

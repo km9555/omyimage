@@ -2,6 +2,7 @@
 
 import type { CSSProperties, ReactNode } from "react";
 import { Icon } from "@/components/Icon";
+import { useInMobileRail } from "@/components/tool/mobile-chrome";
 
 /**
  * The docked options column of a tool workspace.
@@ -12,6 +13,11 @@ import { Icon } from "@/components/Icon";
  * below the 64px navbar, with only the options body scrolling, so the CTA is
  * always reachable no matter how long the file list gets. Below `lg` it
  * unsticks and stacks under the files, as before.
+ *
+ * Inside the mobile app shell it is rendered in a bottom sheet instead, and
+ * every piece of that chrome would be duplicated: the sheet already draws a
+ * panel, a heading and its own scroller. So in that context the rail strips
+ * itself back to the controls — see `useInMobileRail`.
  */
 export function SettingsRail({
   title,
@@ -38,9 +44,22 @@ export function SettingsRail({
   children: ReactNode;
 }) {
   const iconStyle: CSSProperties | undefined = accent ? { color: accent } : undefined;
+  const bare = useInMobileRail();
+
+  // In a sheet: no <aside>, no header, no sticky column, and no border — just
+  // the controls and whatever secondary actions the footer carries. The gap
+  // matches the docked rail's so the controls keep their rhythm.
+  if (bare) {
+    return (
+      <div className="flex flex-col gap-5 pb-1">
+        {children}
+        {footer && <div className="flex flex-col gap-3">{footer}</div>}
+      </div>
+    );
+  }
 
   return (
-    <aside className={`flex flex-col border-t border-outline-variant bg-surface-container-lowest lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] lg:border-t-0 lg:border-l ${className}`}>
+    <aside className={`flex flex-col border-t border-outline-variant bg-surface-container-lowest lg:sticky lg:top-16 lg:h-[calc(100dvh-4rem)] lg:border-t-0 lg:border-l ${className}`}>
       <div className="flex items-center gap-2.5 border-b border-outline-variant/60 px-5 py-4">
         <span
           className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-secondary/12"
@@ -64,7 +83,14 @@ export function SettingsRail({
   );
 }
 
-/** Full-width primary action for a rail footer. */
+/**
+ * Full-width primary action for a rail footer.
+ *
+ * Renders nothing inside the mobile sheet: the shell promotes this same action
+ * to the bottom nav's CTA cell, where it stays visible while the visitor scrolls
+ * the options. Showing both would be two buttons doing one job, and the one in
+ * the sheet would be the one they had to hunt for.
+ */
 export function RailAction({
   onClick,
   disabled,
@@ -80,6 +106,9 @@ export function RailAction({
   icon: string;
   children: ReactNode;
 }) {
+  const bare = useInMobileRail();
+  if (bare) return null;
+
   return (
     <button
       type="button"

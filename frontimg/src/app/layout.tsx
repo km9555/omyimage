@@ -85,6 +85,14 @@ export const viewport: Viewport = {
     script and ThemeProvider.applyTheme repoint this tag instead.
   */
   themeColor: "#FDFBF8",
+  /*
+    Lets the page paint into the notch / home-indicator area, which is what
+    makes `env(safe-area-inset-*)` resolve to a real number on iOS. Without it
+    every inset reads 0 and the mobile tool shells' bottom bars sit under the
+    home indicator. Chrome that now needs its own bottom inset: Footer and
+    CookieBanner.
+  */
+  viewportFit: "cover",
 };
 
 export default function RootLayout({

@@ -7,7 +7,7 @@ import { HelpTip } from "@/components/HelpTip";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
 import { Dropzone } from "@/components/image/Dropzone";
 import { CropCanvas } from "@/components/image/CropCanvas";
-import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
+import { ToolWorkspace, filesHeader } from "@/components/tool/ToolWorkspace";
 import { FileTray, TrayAction, type TrayEntry } from "@/components/tool/FileTray";
 import { SettingsRail, RailAction, RailSecondaryAction, RailNote } from "@/components/tool/SettingsRail";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
@@ -288,38 +288,85 @@ export function CropTool() {
 
   const px = (v: number, dim: "w" | "h") => Math.round(v * (dim === "w" ? tSize.w : tSize.h));
 
+  /*
+    Named so the mobile shell can take the canvas without the tray. The canvas
+    sets `touch-action: none` to claim drags for the crop box, so anything
+    stacked under it on a phone is unreachable — the tray moves to its own tab
+    instead. Desktop still renders all three in the middle column.
+  */
+  const canvasPane = (
+    <div className="bg-surface-container rounded-xl border border-surface-variant p-4 flex items-center justify-center overflow-auto" style={{ minHeight: 300 }}>
+      <CropCanvas
+        bitmap={activeBmp}
+        sel={sel}
+        onChange={(s) => { setSel(s); setDone(false); }}
+        shape={shapeDef.shape}
+        radius={radius}
+        aspect={aspect}
+        transform={transform}
+        zoom={zoom}
+        accent={ACCENT}
+        disabled={isWorking}
+      />
+    </div>
+  );
+
+  const canvasHint = (
+    <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
+      Drag inside the box to move it, or a handle to resize · output {out.w} × {out.h} px
+      {items.length > 1 && <> — the same crop is applied to all {items.length} images</>}
+    </p>
+  );
+
+  const tray = (
+    <FileTray
+      entries={entries}
+      title={`${items.length} image${items.length === 1 ? "" : "s"}`}
+      accept={ACCEPT}
+      onFiles={addFiles}
+      onClear={reset}
+      busy={isWorking}
+    />
+  );
+
   return (
     <>
       <TopLoadingBar active={isWorking} />
       <ToolWorkspace
+        mobile={{
+          ...filesHeader(items.map((i) => i.file)),
+          onBack: reset,
+          backLabel: "Clear images",
+          body: (
+            <>
+              {canvasPane}
+              {canvasHint}
+            </>
+          ),
+          tabs: [
+            {
+              id: "files",
+              icon: "photo_library",
+              label: "Files",
+              badge: items.length > 1 ? items.length : undefined,
+              sheetTitle: `${items.length} image${items.length === 1 ? "" : "s"}`,
+              sheet: tray,
+            },
+          ],
+          settingsTitle: "Crop settings",
+          cta: {
+            icon: "crop",
+            label: "Crop",
+            busyLabel: "Cropping…",
+            busy: isWorking,
+            onClick: cropAll,
+          },
+        }}
         main={
           <>
-            <div className="bg-surface-container rounded-xl border border-surface-variant p-4 flex items-center justify-center overflow-auto" style={{ minHeight: 300 }}>
-              <CropCanvas
-                bitmap={activeBmp}
-                sel={sel}
-                onChange={(s) => { setSel(s); setDone(false); }}
-                shape={shapeDef.shape}
-                radius={radius}
-                aspect={aspect}
-                transform={transform}
-                zoom={zoom}
-                accent={ACCENT}
-                disabled={isWorking}
-              />
-            </div>
-            <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
-              Drag inside the box to move it, or a handle to resize · output {out.w} × {out.h} px
-              {items.length > 1 && <> — the same crop is applied to all {items.length} images</>}
-            </p>
-            <FileTray
-              entries={entries}
-              title={`${items.length} image${items.length === 1 ? "" : "s"}`}
-              accept={ACCEPT}
-              onFiles={addFiles}
-              onClear={reset}
-              busy={isWorking}
-            />
+            {canvasPane}
+            {canvasHint}
+            {tray}
           </>
         }
         rail={

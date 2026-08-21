@@ -61,7 +61,10 @@ function FooterCol({ title, links }: { title: string; links: { label: string; hr
 
 export function Footer() {
   return (
-    <footer className="bg-surface-container-low border-t border-outline-variant/60">
+    // `viewport-fit=cover` (layout.tsx) lets the page paint under the iOS home
+    // indicator, so the last thing on the page has to reserve that strip itself
+    // or its bottom row sits beneath the bar. Zero everywhere else.
+    <footer className="bg-surface-container-low border-t border-outline-variant/60 pb-[env(safe-area-inset-bottom)]">
       <div className="max-w-content mx-auto px-margin-mobile md:px-gutter">
         {/* Main grid. The 4-across layout needs `lg`, not `md`: at 768 it gave
             the three link columns ~148px each, enough to wrap "Remove

@@ -6,7 +6,7 @@ import { Icon } from "@/components/Icon";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
 import { Dropzone } from "@/components/image/Dropzone";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
-import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
+import { ToolWorkspace, filesHeader } from "@/components/tool/ToolWorkspace";
 import { FileTray, TrayAction, TrayBusy, type TrayEntry } from "@/components/tool/FileTray";
 import { SettingsRail, RailAction, RailNote } from "@/components/tool/SettingsRail";
 import { ResultScreen } from "@/components/ResultScreen";
@@ -296,6 +296,27 @@ export function CompressTool() {
     <>
       <TopLoadingBar active={isWorking} />
       <ToolWorkspace
+        /*
+          Below `md` this swaps the stacked grid for the full-screen app shell:
+          the tray becomes the shell's body, the rail below moves into a sheet,
+          and the Compress button becomes the bottom bar's CTA. Everything else
+          on this component — state, handlers, the tray, the rail — is reused
+          verbatim.
+        */
+        mobile={{
+          ...filesHeader(items.map((i) => i.file)),
+          onBack: reset,
+          backLabel: "Clear files",
+          settingsLabel: "Settings",
+          settingsTitle: "Compression settings",
+          cta: {
+            icon: "compress",
+            label: "Compress",
+            busyLabel: "Compressing…",
+            busy: isWorking,
+            onClick: compressAll,
+          },
+        }}
         main={<FileTray entries={entries} accept={ACCEPT} onFiles={addFiles} onClear={reset} busy={isWorking} />}
         rail={
           <SettingsRail

@@ -153,6 +153,28 @@ export function GifToImagesTool() {
     <>
       <TopLoadingBar active={isWorking} />
       <ToolWorkspace
+        /* Below `md` this becomes the full-screen app shell. This tool holds one
+           GIF rather than a file list, so it writes its own header instead of
+           using `filesHeader`. */
+        mobile={{
+          title: file?.name ?? "GIF",
+          meta: (
+            <span className="shrink-0">
+              {count} frame{count === 1 ? "" : "s"}
+              {dims && ` · ${dims.w} × ${dims.h}`}
+            </span>
+          ),
+          onBack: reset,
+          backLabel: "Clear GIF",
+          settingsTitle: "Frame settings",
+          cta: {
+            icon: "folder_zip",
+            label: "Download",
+            busyLabel: "Working…",
+            busy: isWorking,
+            onClick: downloadAll,
+          },
+        }}
         main={
           <>
         <div className="bg-surface-container rounded-xl border border-surface-variant p-3 overflow-hidden" style={{ minHeight: 220 }}>

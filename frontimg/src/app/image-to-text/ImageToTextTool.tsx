@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Icon } from "@/components/Icon";
 import { Dropzone } from "@/components/image/Dropzone";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
-import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
+import { ToolWorkspace, filesHeader } from "@/components/tool/ToolWorkspace";
 import { SettingsRail, RailAction } from "@/components/tool/SettingsRail";
 import { downloadBlob, baseName, formatBytes } from "@/lib/image/raster";
 import { preprocessForOcr, cleanOcrText } from "@/lib/image/ocr-preprocess";
@@ -268,6 +268,21 @@ export function ImageToTextTool() {
     <>
       <TopLoadingBar active={isWorking} />
       <ToolWorkspace
+        /* Below `md` this becomes the full-screen app shell. One image, so the
+           header names it directly and the rail moves into a sheet. */
+        mobile={{
+          ...filesHeader(file ? [file] : []),
+          onBack: reset,
+          backLabel: "Clear image",
+          settingsTitle: "OCR settings",
+          cta: {
+            icon: "document_scanner",
+            label: "Read",
+            busyLabel: "Reading…",
+            busy: isWorking,
+            onClick: run,
+          },
+        }}
         main={
           <>
         <div className="rounded-xl border border-outline-variant/40 bg-surface-container-lowest p-4 ambient-shadow">

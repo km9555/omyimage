@@ -28,6 +28,7 @@ export function HomeLauncher() {
   const [open, setOpen] = useState(false);
   const [chosen, setChosen] = useState<Tool | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const cameraRef = useRef<HTMLInputElement>(null);
   const comboRef = useRef<HTMLDivElement>(null);
 
   const files = useMemo(() => staged.map((s) => s.file), [staged]);
@@ -135,20 +136,47 @@ export function HomeLauncher() {
               Effortless Power for Image Workflows.
             </span>
           </h1>
+          {/*
+            The trailing sentences are a span rather than a second paragraph so
+            the phone copy is a PREFIX of the desktop copy — one string in the
+            HTML, nothing duplicated for a crawler to weigh twice. On a 375px
+            screen this is the difference between five lines and two, which is
+            what lets the upload card sit on the first screen.
+          */}
           <p className="mt-4 text-body-lg text-on-surface-variant max-w-md mx-auto lg:mx-0">
             oMyImage is a free online image toolkit — compress, resize, crop, convert,
-            watermark and edit your photos. Most tools run entirely in your browser, so
-            your files never leave your device. No signup, no quality loss.
+            watermark and edit photos.{" "}
+            <span className="hidden md:inline">
+              Most tools run right in your browser, so files never leave your device. No signup.
+            </span>
           </p>
         </div>
 
-        {/* Right — upload / action card */}
-        <div className="min-w-0 rounded-2xl border border-surface-variant bg-surface-container-lowest ambient-shadow p-5 sm:p-6 flex flex-col gap-5">
+        {/* Right — upload / action card.
+
+            `order-first` below `lg`: stacked, the marketing block pushed the
+            card most of a screen down, so the one thing a visitor came to do
+            started below the fold. This is CSS order only — the <h1> keeps its
+            position in the DOM, so heading order for crawlers and the OAuth
+            name check above are untouched. */}
+        <div className="order-first lg:order-none min-w-0 rounded-2xl border border-surface-variant bg-surface-container-lowest ambient-shadow p-5 sm:p-6 flex flex-col gap-5">
           <input
             ref={inputRef}
             type="file"
             accept={ACCEPT}
             multiple
+            className="hidden"
+            onChange={(e) => { if (e.target.files) addStaged(e.target.files); e.target.value = ""; }}
+          />
+          {/* `capture` asks the OS for the camera rather than the file browser.
+              Never `multiple` — a capture returns exactly one shot, and pairing
+              the two makes Android fall back to the plain picker. Same pattern
+              as Dropzone. */}
+          <input
+            ref={cameraRef}
+            type="file"
+            accept={ACCEPT}
+            capture="environment"
             className="hidden"
             onChange={(e) => { if (e.target.files) addStaged(e.target.files); e.target.value = ""; }}
           />
@@ -170,6 +198,15 @@ export function HomeLauncher() {
               <span className="inline-flex items-center gap-2 bg-secondary hover:bg-secondary-container text-on-secondary text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors">
                 <Icon name="upload" className="text-[18px]" /> Add images
               </span>
+              <button
+                type="button"
+                // The drop box's own onClick opens the file picker, so this must
+                // not bubble or the visitor gets both dialogs at once.
+                onClick={(e) => { e.stopPropagation(); cameraRef.current?.click(); }}
+                className="md:hidden inline-flex items-center gap-2 rounded-lg border border-secondary px-5 py-2.5 text-sm font-semibold text-secondary transition-colors active:bg-secondary/10"
+              >
+                <Icon name="photo_camera" className="text-[18px]" /> Take photo
+              </button>
               <p className="text-body-sm text-on-surface-variant">Drag &amp; drop images or click to browse</p>
               <div className="flex flex-wrap justify-center gap-1.5">
                 {CHIPS.map((c) => (

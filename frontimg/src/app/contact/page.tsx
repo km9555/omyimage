@@ -87,12 +87,15 @@ export default function ContactPage() {
             </span>
             <h2 className="text-body-lg font-bold text-primary">{c.title}</h2>
             <p className="text-body-sm text-on-surface-variant flex-1 leading-relaxed">{c.body}</p>
+            {/* On a phone this is the one thing you came to tap, so it gets a
+                real 48px target across the card instead of a text-height link.
+                From `sm` up it goes back to reading as an inline address. */}
             <a
               href={`mailto:${c.address}`}
-              className="inline-flex items-center gap-1.5 text-label-md font-semibold text-secondary hover:underline w-fit"
+              className="inline-flex min-h-12 w-full items-center justify-center gap-1.5 rounded-lg border border-secondary px-3 text-label-md font-semibold text-secondary transition-colors active:bg-secondary/10 sm:min-h-0 sm:w-fit sm:justify-start sm:rounded-none sm:border-0 sm:px-0 sm:hover:underline"
             >
-              <Icon name="mail" className="text-[18px]" />
-              {c.address}
+              <Icon name="mail" className="shrink-0 text-[18px]" />
+              <span className="truncate">{c.address}</span>
             </a>
           </div>
         ))}

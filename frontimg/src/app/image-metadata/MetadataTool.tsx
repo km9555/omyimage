@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Icon } from "@/components/Icon";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
-import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
+import { ToolWorkspace, filesHeader } from "@/components/tool/ToolWorkspace";
 import { SettingsRail } from "@/components/tool/SettingsRail";
 import { Dropzone } from "@/components/image/Dropzone";
 import { downloadBlob, formatBytes, baseName } from "@/lib/image/raster";
@@ -300,6 +300,20 @@ export function MetadataTool() {
     <>
       <TopLoadingBar active={isWorking} />
       <ToolWorkspace
+        /* Below `md` this becomes the full-screen app shell. One image, so the
+           header names it directly and the rail moves into a sheet. */
+        mobile={{
+          ...filesHeader(file ? [file] : []),
+          onBack: reset,
+          backLabel: "Clear image",
+          settingsTitle: "Metadata options",
+          cta: {
+            icon: "content_copy",
+            label: "Copy",
+            busy: isWorking,
+            onClick: copyAll,
+          },
+        }}
         main={
           <>
             <div className="bg-surface-container rounded-xl border border-surface-variant p-3 flex items-center justify-center overflow-hidden" style={{ minHeight: 220 }}>

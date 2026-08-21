@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { Icon } from "@/components/Icon";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
-import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
+import { ToolWorkspace, filesHeader } from "@/components/tool/ToolWorkspace";
 import { SettingsRail, RailAction, RailSecondaryAction, RailNote } from "@/components/tool/SettingsRail";
 import { Dropzone } from "@/components/image/Dropzone";
 import { processOnServer } from "@/lib/process-router";
@@ -117,6 +117,21 @@ export function ServerImageTool({
     <>
       <TopLoadingBar active={isWorking} />
       <ToolWorkspace
+        /* Below `md` this becomes the full-screen app shell. One image, so the
+           header names it directly and the rail moves into a sheet. */
+        mobile={{
+          ...filesHeader(file ? [file] : []),
+          onBack: reset,
+          backLabel: "Clear image",
+          settingsTitle: "Options",
+          cta: {
+            icon: icon,
+            label: actionLabel,
+            busyLabel: processingLabel,
+            busy: isWorking,
+            onClick: run,
+          },
+        }}
         main={
           <>
         <div className="rounded-xl border border-surface-variant p-4 flex items-center justify-center overflow-hidden" style={{ minHeight: 220, ...(result && resultTransparent ? CHECKER : { backgroundColor: "var(--color-surface-container)" }) }}>

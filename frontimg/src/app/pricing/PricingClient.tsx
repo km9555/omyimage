@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Icon } from "@/components/Icon";
+import { getRegionPrices, type PriceBook } from "@/lib/billing";
 
 /**
  * Pricing page. Prices mirror oMyPDF's.
@@ -12,65 +13,53 @@ import { Icon } from "@/components/Icon";
  * possible — wire `ctaHref` to a real checkout only once billing exists.
  */
 
-// ── Currency configuration ─────────────────────────────────────────────────
-// Prices are CURATED per market (not live FX) so they stay "pretty" and sit
-// comfortably under the incumbents in every region. A raw FX conversion would
-// make India more expensive than local competitors, so INR is PPP-discounted.
+// ── Pricing ────────────────────────────────────────────────────────────────
+// There is no price table here and no currency picker. The backend resolves the
+// visitor's country by geoip and answers with the price book for that market;
+// this page renders what it is told. India is priced ~40% below everywhere else,
+// which is exactly why the browser gets no say — see lib/billing.ts.
 
-type CurrencyCode = "USD" | "EUR" | "GBP" | "INR";
 type Billing = "monthly" | "yearly";
 
-interface CurrencyDef {
-  code: CurrencyCode;
-  symbol: string;
-  label: string;
-  decimals: number;
-}
-
-const CURRENCIES: Record<CurrencyCode, CurrencyDef> = {
-  USD: { code: "USD", symbol: "$", label: "USD", decimals: 2 },
-  EUR: { code: "EUR", symbol: "€", label: "EUR", decimals: 2 },
-  GBP: { code: "GBP", symbol: "£", label: "GBP", decimals: 2 },
-  INR: { code: "INR", symbol: "₹", label: "INR", decimals: 0 },
-};
-
-const PRICES: Record<"plus" | "pro", Record<CurrencyCode, Record<Billing, number>>> = {
-  plus: {
-    USD: { monthly: 2.99, yearly: 1.99 },
-    EUR: { monthly: 2.99, yearly: 1.99 },
-    GBP: { monthly: 2.49, yearly: 1.79 },
-    INR: { monthly: 199, yearly: 99 },
-  },
-  pro: {
-    USD: { monthly: 5.99, yearly: 3.49 },
-    EUR: { monthly: 5.99, yearly: 3.49 },
-    GBP: { monthly: 4.99, yearly: 2.99 },
-    INR: { monthly: 399, yearly: 159 },
+/**
+ * Shown only when the quote cannot be fetched (backend down, or a browser
+ * blocking the request). Mirrors the USD entry of OVERRIDES in the backend's
+ * lib/pricing.ts — list prices, and the page says so.
+ */
+const FALLBACK_BOOK: PriceBook = {
+  currency: "USD",
+  decimals: 2,
+  plans: {
+    plus: { monthly: 2.99, yearly: 1.99, yearlyTotal: 23.88, savePct: 33, monthlyMinor: 299, yearlyMinor: 2388 },
+    pro: { monthly: 5.99, yearly: 3.49, yearlyTotal: 41.88, savePct: 42, monthlyMinor: 599, yearlyMinor: 4188 },
   },
 };
 
-// Country → currency. Eurozone members map to EUR; everything else defaults USD.
-const EUROZONE = new Set([
-  "AT", "BE", "CY", "EE", "FI", "FR", "DE", "GR", "IE", "IT", "LV", "LT", "LU",
-  "MT", "NL", "PT", "SK", "SI", "ES",
-]);
-
-function currencyForCountry(loc: string): CurrencyCode {
-  if (loc === "IN") return "INR";
-  if (loc === "GB") return "GBP";
-  if (EUROZONE.has(loc)) return "EUR";
-  return "USD";
+/**
+ * Format in the visitor's own locale — Intl knows every currency's symbol and
+ * grouping (₹1,18,800 in India, 4,29 € in Germany), which a symbol table of ours
+ * would only ever approximate. `decimals` comes from the server so whole-unit
+ * currencies read ₹199 and ¥479 rather than ₹199.00.
+ */
+function formatMoney(amount: number, book: PriceBook): string {
+  const opts: Intl.NumberFormatOptions = {
+    style: "currency",
+    currency: book.currency,
+    minimumFractionDigits: book.decimals,
+    maximumFractionDigits: book.decimals,
+  };
+  try {
+    // narrowSymbol keeps it "$2.99" rather than "US$2.99"; unsupported on older
+    // Safari, where the plain symbol is the right thing to fall back to.
+    return new Intl.NumberFormat(undefined, { ...opts, currencyDisplay: "narrowSymbol" }).format(amount);
+  } catch {
+    try {
+      return new Intl.NumberFormat(undefined, opts).format(amount);
+    } catch {
+      return `${book.currency} ${amount.toFixed(book.decimals)}`;
+    }
+  }
 }
-
-function formatMoney(amount: number, cur: CurrencyDef): string {
-  const fixed = amount.toFixed(cur.decimals);
-  // Thousands separators (matters for INR yearly totals like ₹1,188).
-  const [int, dec] = fixed.split(".");
-  const withSep = int.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  return `${cur.symbol}${dec ? `${withSep}.${dec}` : withSep}`;
-}
-
-const STORAGE_KEY = "omyimage:currency";
 
 // ── Plan definitions ───────────────────────────────────────────────────────
 
@@ -161,7 +150,7 @@ const FAQS = [
   },
   {
     q: "Why are prices different in my country?",
-    a: "Prices are set per market rather than converted at the day's exchange rate, so they stay fair locally instead of tracking currency swings.",
+    a: "Your currency follows the country you're browsing from, so there's nothing to pick. India and a few other markets are priced deliberately lower rather than converted; everywhere else is derived from our US prices at a rate we refresh periodically, not the day's exchange rate.",
   },
   {
     q: "What counts as an AI run?",
@@ -183,48 +172,36 @@ const FAQS = [
 
 export function PricingClient() {
   const [billing, setBilling] = useState<Billing>("yearly");
-  const [currency, setCurrency] = useState<CurrencyCode>("USD");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-  // On mount: restore a saved currency choice, else guess once from the CDN's
-  // geo hint. Failure is fine — USD is a sane default.
+  // Null until the quote lands, so the page shows placeholders rather than
+  // briefly quoting dollars to someone about to be quoted rupees.
+  const [book, setBook] = useState<PriceBook | null>(null);
+
   useEffect(() => {
     let cancelled = false;
-    let saved: string | null = null;
-    try {
-      saved = localStorage.getItem(STORAGE_KEY);
-    } catch {
-      /* storage unavailable (private mode) — fall through to detection */
-    }
-    if (saved && saved in CURRENCIES) {
-      setCurrency(saved as CurrencyCode);
-      return;
-    }
-    fetch("https://www.cloudflare.com/cdn-cgi/trace")
-      .then((r) => r.text())
-      .then((txt) => {
+    getRegionPrices()
+      .then((r) => {
         if (cancelled) return;
-        const loc = /^loc=([A-Z]{2})$/m.exec(txt)?.[1];
-        if (loc) setCurrency(currencyForCountry(loc));
+        setBook({ currency: r.currency, decimals: r.decimals, plans: r.plans });
       })
       .catch(() => {
-        /* offline or blocked — keep USD */
+        // Backend unreachable, or the request was blocked. Show USD list prices
+        // and label them as such rather than an empty page.
+        if (!cancelled) setBook(FALLBACK_BOOK);
       });
     return () => {
       cancelled = true;
     };
   }, []);
 
-  const pickCurrency = (c: CurrencyCode) => {
-    setCurrency(c);
-    try {
-      localStorage.setItem(STORAGE_KEY, c);
-    } catch {
-      /* non-fatal */
-    }
-  };
-
-  const cur = CURRENCIES[currency];
+  const prices = book ?? FALLBACK_BOOK;
+  const priced = book !== null;
+  // The badge should promise the best saving actually on offer, not a number
+  // baked in here that a re-priced market would quietly contradict.
+  const maxSavePct = Math.max(
+    ...PLANS.filter((p) => p.priceKey).map((p) => prices.plans[p.priceKey!].savePct),
+  );
 
   return (
     <>
@@ -271,31 +248,22 @@ export function PricingClient() {
                 {b}
                 {b === "yearly" && (
                   <span className="ml-1.5 rounded-full bg-secondary/20 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-on-secondary-fixed-variant">
-                    Save 33%
+                    Save {maxSavePct}%
                   </span>
                 )}
               </button>
             ))}
           </div>
 
-          {/* Currency selector */}
-          <div className="inline-flex items-center gap-1 rounded-lg border border-surface-variant bg-surface-container-lowest p-1">
-            {(Object.keys(CURRENCIES) as CurrencyCode[]).map((c) => (
-              <button
-                key={c}
-                type="button"
-                onClick={() => pickCurrency(c)}
-                aria-pressed={currency === c}
-                className={`rounded-md px-3 py-1.5 text-label-sm font-label-sm font-semibold transition-colors ${
-                  currency === c
-                    ? "bg-secondary text-on-secondary"
-                    : "text-on-surface-variant hover:text-primary"
-                }`}
-              >
-                {CURRENCIES[c].label}
-              </button>
-            ))}
-          </div>
+          {/* Where the currency picker used to be: what we're quoting in, as a
+              statement of fact. It follows the region, so it needs no control. */}
+          <span
+            className="inline-flex items-center gap-2 rounded-full border border-surface-variant bg-surface-container-lowest px-4 py-2.5 text-label-md font-medium text-on-surface-variant"
+            title="Prices are shown in the currency of your region."
+          >
+            <Icon name="payments" className="text-[18px]" />
+            {priced ? `Prices in ${prices.currency}` : "Loading prices…"}
+          </span>
         </div>
         {billing === "yearly" && (
           <p className="mt-3 text-center text-label-sm font-label-sm text-on-surface-variant">
@@ -308,7 +276,8 @@ export function PricingClient() {
       <section className="max-w-content mx-auto px-margin-mobile md:px-gutter py-10 w-full">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
           {PLANS.map((plan) => {
-            const price = plan.priceKey ? PRICES[plan.priceKey][currency][billing] : 0;
+            const quote = plan.priceKey ? prices.plans[plan.priceKey] : null;
+            const price = quote ? quote[billing] : 0;
             const isFree = plan.priceKey === null;
             return (
               <div
@@ -334,7 +303,7 @@ export function PricingClient() {
 
                 <div className="mt-5 flex items-baseline gap-1.5">
                   <span className="text-display-md font-black text-primary">
-                    {isFree ? formatMoney(0, cur) : formatMoney(price, cur)}
+                    {formatMoney(price, prices)}
                   </span>
                   {!isFree && (
                     <span className="text-body-sm text-on-surface-variant">/ month</span>
@@ -344,7 +313,9 @@ export function PricingClient() {
                   {isFree
                     ? "Free forever"
                     : billing === "yearly"
-                      ? `Billed annually — ${formatMoney(price * 12, cur)} / year`
+                      /* The server's own annual figure, not price × 12 — the two
+                         disagree in rounded currencies (₹99 × 12 ≠ ₹1,188). */
+                      ? `Billed annually — ${formatMoney(quote!.yearlyTotal, prices)} / year`
                       : "Billed monthly"}
                 </p>
 

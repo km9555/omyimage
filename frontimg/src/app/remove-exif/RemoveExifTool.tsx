@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Icon } from "@/components/Icon";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
 import { Dropzone } from "@/components/image/Dropzone";
-import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
+import { ToolWorkspace, filesHeader } from "@/components/tool/ToolWorkspace";
 import { FileTray, TrayAction, type TrayEntry } from "@/components/tool/FileTray";
 import { SettingsRail, RailAction, RailSecondaryAction, RailNote } from "@/components/tool/SettingsRail";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
@@ -117,6 +117,22 @@ export function RemoveExifTool() {
     <>
       <TopLoadingBar active={isWorking} />
       <ToolWorkspace
+        /* Below `md` this becomes the full-screen app shell: the tray is the
+           body, the rail moves into a sheet, and this tool's primary action
+           becomes the bottom bar CTA. Desktop is untouched. */
+        mobile={{
+          ...filesHeader(items.map((i) => i.file)),
+          onBack: reset,
+          backLabel: "Clear files",
+          settingsTitle: "Metadata settings",
+          cta: {
+            icon: "privacy_tip",
+            label: "Clean",
+            busyLabel: "Cleaning…",
+            busy: isWorking,
+            onClick: cleanAll,
+          },
+        }}
         main={<FileTray entries={entries} accept={ACCEPT} onFiles={addFiles} onClear={reset} busy={isWorking} />}
         rail={
           <SettingsRail

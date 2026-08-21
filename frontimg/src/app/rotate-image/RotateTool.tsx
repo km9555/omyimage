@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Icon } from "@/components/Icon";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
@@ -13,7 +13,8 @@ import {
   mimeExt,
   type ExportMime,
 } from "@/lib/image/raster";
-import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
+import { ToolWorkspace, filesHeader } from "@/components/tool/ToolWorkspace";
+import { Dropzone } from "@/components/image/Dropzone";
 import { FileTray, TrayAction, type TrayEntry } from "@/components/tool/FileTray";
 import { SettingsRail, RailAction, RailSecondaryAction, RailNote } from "@/components/tool/SettingsRail";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
@@ -53,8 +54,6 @@ export function RotateTool() {
   const [bg, setBg] = useState<BgValue>({ transparent: true, color: "#ffffff" });
   const [isWorking, setIsWorking] = useState(false);
   const [done, setDone] = useState(false);
-  const [isDropping, setIsDropping] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => () => { items.forEach((i) => URL.revokeObjectURL(i.url)); }, [items]);
 
@@ -120,41 +119,24 @@ export function RotateTool() {
     }
   };
 
-  const openPicker = () => inputRef.current?.click();
   const fieldCls =
     "w-full px-3 py-2.5 rounded-lg bg-surface-container-lowest border border-surface-variant focus:border-secondary focus:ring-1 focus:ring-secondary outline-none text-body-md text-primary";
-
-  const fileInput = (
-    <input ref={inputRef} type="file" accept="image/*" multiple className="hidden"
-      onChange={(e) => { if (e.target.files) addFiles(e.target.files); e.target.value = ""; }} />
-  );
 
   // ── Empty ───────────────────────────────────────────────────────────────
   if (items.length === 0) {
     return (
       <section>
         <TopLoadingBar active={isWorking} />
-        {fileInput}
-        <div
-          onClick={openPicker}
-          onDragOver={(e) => { e.preventDefault(); setIsDropping(true); }}
-          onDragLeave={() => setIsDropping(false)}
-          onDrop={(e) => { e.preventDefault(); setIsDropping(false); addFiles(e.dataTransfer.files); }}
-          className={`relative w-full rounded-xl border-2 border-dashed py-14 px-6 flex flex-col items-center justify-center gap-3 bg-surface-container-lowest ambient-shadow cursor-pointer transition-all ${
-            isDropping ? "drag-active" : "border-outline-variant hover:border-secondary/50"
-          }`}
-        >
-          <div className="hidden sm:flex w-11 h-11 bg-surface-container rounded-full items-center justify-center">
-            <Icon name="rotate_90_degrees_cw" fill className="text-[22px]" style={{ color: ACCENT }} />
-          </div>
-          <div className="flex flex-col items-center gap-1 text-center">
-            <span className="bg-secondary hover:bg-secondary-container text-on-secondary text-sm font-semibold px-6 py-2.5 rounded-lg transition-colors">Select images</span>
-            <p className="text-body-md text-on-surface-variant mt-2">or drop JPG, PNG, WEBP or GIF images here</p>
-          </div>
-          <p className="text-label-sm font-label-sm text-on-surface-variant/70 mt-1 flex items-center gap-1.5">
-            <Icon name="lock" className="text-[14px]" /> Rotated in your browser — your images never leave your device.
-          </p>
-        </div>
+        {/* Was a second hand-rolled copy of <Dropzone> (ConvertTool had the
+            other one), so it missed Drive import and the mobile treatment. */}
+        <Dropzone
+          onFiles={addFiles}
+          accept="image/*"
+          accent={ACCENT}
+          icon="rotate_90_degrees_cw"
+          hint="or drop JPG, PNG, WEBP or GIF images here"
+          privacyNote="Rotated in your browser — your images never leave your device."
+        />
       </section>
     );
   }
@@ -185,6 +167,22 @@ export function RotateTool() {
     <>
       <TopLoadingBar active={isWorking} />
       <ToolWorkspace
+        /* Below `md` this becomes the full-screen app shell: the tray is the
+           body, the rail moves into a sheet, and this tool's primary action
+           becomes the bottom bar CTA. Desktop is untouched. */
+        mobile={{
+          ...filesHeader(items.map((i) => i.file)),
+          onBack: reset,
+          backLabel: "Clear files",
+          settingsTitle: "Rotate & flip",
+          cta: {
+            icon: "rotate_90_degrees_cw",
+            label: "Rotate",
+            busyLabel: "Rotating…",
+            busy: isWorking,
+            onClick: apply,
+          },
+        }}
         main={
           <>
             <div className="bg-surface-container rounded-xl border border-surface-variant p-4 flex items-center justify-center overflow-hidden" style={{ minHeight: 220 }}>

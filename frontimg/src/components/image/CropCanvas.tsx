@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCoarsePointer } from "@/lib/use-is-mobile";
 import {
   CURSOR_FOR, handlePoints, hitTestRegion, resizeRegionByHandle,
   type Handle, type Region,
@@ -10,8 +11,18 @@ import {
   type CropSel, type CropShape, type CropTransform,
 } from "@/lib/image/crop";
 
+/* Hit tolerance and drawn grip radius, in canvas pixels. The coarse variants
+   are what a finger needs: the mouse numbers give a ~10px grip that is roughly
+   a quarter of a fingertip, so on touch every resize started as a move. */
 const TOL = 10;
+const TOL_COARSE = 24;
 const HANDLE_R = 5;
+const HANDLE_R_COARSE = 10;
+
+/* Desktop ceiling for the drawn surface. On a phone the container is narrower
+   than this and wins — see `view`. */
+const MAX_W = 560;
+const MAX_H = 460;
 
 /**
  * Interactive crop surface, shared by /crop-image and /circle-crop.
@@ -45,7 +56,34 @@ export function CropCanvas({
   disabled?: boolean;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
   const [cursor, setCursor] = useState("crosshair");
+  const coarse = useCoarsePointer();
+  const tol = coarse ? TOL_COARSE : TOL;
+
+  /*
+    Available width, measured rather than assumed.
+
+    The canvas used to be laid out at a fixed 560px and then squeezed by
+    `max-w-full`, so on a phone every drawn pixel — the grips included — was
+    displayed at ~60% of its nominal size while the hit tolerance stayed in
+    untransformed canvas units. Measuring means one canvas pixel is one CSS
+    pixel at every width, which is what makes the grip sizes above mean
+    anything. Desktop is unaffected: the column there is wider than MAX_W.
+  */
+  const [availW, setAvailW] = useState(MAX_W);
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const measure = () => {
+      const w = el.clientWidth;
+      if (w > 0) setAvailW(w);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   /*
     Drag state lives in a ref, and each handler snapshots the delta BEFORE
@@ -64,12 +102,12 @@ export function CropCanvas({
 
   const view = useMemo(() => {
     if (!bitmap || !tSize.w) return null;
-    const maxW = 560;
-    const maxH = 460;
+    const maxW = Math.min(MAX_W, availW);
+    const maxH = MAX_H;
     const fit = Math.min(maxW / tSize.w, maxH / tSize.h, 1);
     const scale = fit * zoom;
     return { vw: Math.round(tSize.w * scale), vh: Math.round(tSize.h * scale), scale };
-  }, [bitmap, tSize, zoom]);
+  }, [bitmap, tSize, zoom, availW]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -155,14 +193,14 @@ export function CropCanvas({
     for (const k of keys) {
       const p = pts[k];
       ctx.beginPath();
-      ctx.arc(p.x, p.y, HANDLE_R, 0, Math.PI * 2);
+      ctx.arc(p.x, p.y, coarse ? HANDLE_R_COARSE : HANDLE_R, 0, Math.PI * 2);
       ctx.fillStyle = "#fff";
       ctx.fill();
       ctx.lineWidth = 2;
       ctx.strokeStyle = accent;
       ctx.stroke();
     }
-  }, [bitmap, view, sel, shape, radius, aspect, transform, accent]);
+  }, [bitmap, view, sel, shape, radius, aspect, transform, accent, coarse]);
 
   const toNorm = useCallback((e: React.PointerEvent<HTMLCanvasElement>) => {
     const c = e.currentTarget;
@@ -181,7 +219,7 @@ export function CropCanvas({
     if (!bitmap || !view || disabled) return;
     e.preventDefault();
     const p = toNorm(e);
-    const hit = hitTestRegion(p.px, p.py, asRegion(selRef.current), view.vw, view.vh, TOL);
+    const hit = hitTestRegion(p.px, p.py, asRegion(selRef.current), view.vw, view.vh, tol);
     const allowed: (Handle | "move")[] = aspect == null
       ? ["nw", "n", "ne", "e", "se", "s", "sw", "w", "move"]
       : ["nw", "ne", "se", "sw", "move"];
@@ -197,7 +235,7 @@ export function CropCanvas({
     const d = drag.current;
 
     if (!d) {
-      const hit = hitTestRegion(p.px, p.py, asRegion(selRef.current), view.vw, view.vh, TOL);
+      const hit = hitTestRegion(p.px, p.py, asRegion(selRef.current), view.vw, view.vh, tol);
       const usable = hit === "inside"
         ? "move"
         : hit && (aspect == null || ["nw", "ne", "se", "sw"].includes(hit)) ? hit : null;
@@ -247,6 +285,9 @@ export function CropCanvas({
   };
 
   return (
+    /* The wrapper is what gets measured — the canvas cannot measure itself,
+       since its own width is the thing being decided. */
+    <div ref={wrapRef} className="flex w-full justify-center">
     <canvas
       ref={canvasRef}
       tabIndex={0}
@@ -258,7 +299,12 @@ export function CropCanvas({
       onPointerCancel={endDrag}
       onKeyDown={onKeyDown}
       className="max-w-full rounded touch-none select-none outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+      /* `touch-action: none` claims the gesture: this is a direct-manipulation
+         surface, so a swipe across it must move the crop box, not scroll the
+         page. In the mobile shell the file list lives in its own tab rather
+         than under the canvas, so nothing important sits behind this. */
       style={{ cursor: disabled ? "default" : cursor, touchAction: "none" }}
     />
+    </div>
   );
 }

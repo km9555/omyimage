@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Icon } from "@/components/Icon";
 import { HelpTip } from "@/components/HelpTip";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
-import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
+import { ToolWorkspace, filesHeader } from "@/components/tool/ToolWorkspace";
 import { FileTray, TrayAction, type TrayEntry } from "@/components/tool/FileTray";
 import { SettingsRail, RailAction, RailSecondaryAction, RailNote } from "@/components/tool/SettingsRail";
 import { Dropzone } from "@/components/image/Dropzone";
@@ -246,41 +246,84 @@ export function BlurTool() {
     ),
   }));
 
+  /*
+    Named so the mobile shell can show the canvas without the tray beneath
+    it. The preview surface claims touch gestures, so anything stacked under
+    it on a phone cannot be scrolled to — the tray gets its own tab instead.
+  */
+  const canvasPane = (
+    <>
+        <div className="bg-surface-container rounded-xl border border-surface-variant p-4 flex items-center justify-center overflow-hidden" style={{ minHeight: 300 }}>
+          <RegionEditor
+            bitmap={activeBmp}
+            regions={active?.regions ?? []}
+            onChange={setRegions}
+            selectedId={selectedRegion}
+            onSelect={setSelectedRegion}
+            style={style}
+            strength={strength}
+            solidColor="#000000"
+            shape={shape}
+            accent={ACCENT}
+            disabled={isWorking || isDetecting}
+          />
+        </div>
+        <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
+          Drag to draw an area, click one to select, drag its handles to resize, Delete to remove.
+          {active && active.regions.length > 0 && (
+            <span className="font-semibold text-on-surface"> {active.regions.length} area{active.regions.length === 1 ? "" : "s"} on this image.</span>
+          )}
+        </p>
+    </>
+  );
+
+  const tray = (
+    <>
+        <FileTray
+          entries={entries}
+          title={`${items.length} image${items.length === 1 ? "" : "s"}`}
+          accept={ACCEPT}
+          onFiles={addFiles}
+          onClear={reset}
+          busy={isWorking}
+        />
+    </>
+  );
+
   return (
     <>
       <TopLoadingBar active={isWorking || isDetecting} />
       <ToolWorkspace
+        /* Below `md` the preview becomes the whole body and the file list
+           moves into its own tab — see `body` on ToolMobileShell. */
+        mobile={{
+          ...filesHeader(items.map((i) => i.file)),
+          onBack: reset,
+          backLabel: "Clear images",
+          body: canvasPane,
+          tabs: [
+            {
+              id: "files",
+              icon: "photo_library",
+              label: "Files",
+              badge: items.length > 1 ? items.length : undefined,
+              sheetTitle: `${items.length} image${items.length === 1 ? "" : "s"}`,
+              sheet: tray,
+            },
+          ],
+          settingsTitle: "Blur settings",
+          cta: {
+            icon: "download",
+            label: "Export",
+            busyLabel: "Exporting…",
+            busy: isWorking,
+            onClick: exportAll,
+          },
+        }}
         main={
           <>
-            <div className="bg-surface-container rounded-xl border border-surface-variant p-4 flex items-center justify-center overflow-hidden" style={{ minHeight: 300 }}>
-              <RegionEditor
-                bitmap={activeBmp}
-                regions={active?.regions ?? []}
-                onChange={setRegions}
-                selectedId={selectedRegion}
-                onSelect={setSelectedRegion}
-                style={style}
-                strength={strength}
-                solidColor="#000000"
-                shape={shape}
-                accent={ACCENT}
-                disabled={isWorking || isDetecting}
-              />
-            </div>
-            <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
-              Drag to draw an area, click one to select, drag its handles to resize, Delete to remove.
-              {active && active.regions.length > 0 && (
-                <span className="font-semibold text-on-surface"> {active.regions.length} area{active.regions.length === 1 ? "" : "s"} on this image.</span>
-              )}
-            </p>
-            <FileTray
-              entries={entries}
-              title={`${items.length} image${items.length === 1 ? "" : "s"}`}
-              accept={ACCEPT}
-              onFiles={addFiles}
-              onClear={reset}
-              busy={isWorking}
-            />
+            {canvasPane}
+            {tray}
           </>
         }
         rail={

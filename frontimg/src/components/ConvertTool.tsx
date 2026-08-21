@@ -15,7 +15,8 @@ import {
 } from "@/lib/image/raster";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
 import { detectEdgeBackground } from "@/lib/image/bg-detect";
-import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
+import { ToolWorkspace, filesHeader } from "@/components/tool/ToolWorkspace";
+import { Dropzone } from "@/components/image/Dropzone";
 import { FileTray, TrayAction, type TrayEntry } from "@/components/tool/FileTray";
 import {
   SettingsRail,
@@ -95,9 +96,9 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
   const [bg, setBg] = useState<BgValue>({ transparent: false, color: "#ffffff", auto: true });
   const [autoOrient, setAutoOrient] = useState(true);
   const [isWorking, setIsWorking] = useState(false);
-  const [isDropping, setIsDropping] = useState(false);
+
   const [done, setDone] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
+
 
   /*
     Revoke preview URLs on UNMOUNT only.
@@ -217,52 +218,26 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
     [items]
   );
 
-  const openPicker = () => inputRef.current?.click();
   const fieldCls =
     "w-full px-3 py-2.5 rounded-lg bg-surface-container-lowest border border-surface-variant focus:border-secondary focus:ring-1 focus:ring-secondary outline-none text-body-md text-primary";
 
-  const fileInput = (
-    <input
-      ref={inputRef}
-      type="file"
-      accept={accept}
-      multiple
-      className="hidden"
-      onChange={(e) => {
-        if (e.target.files) addFiles(e.target.files);
-        e.target.value = "";
-      }}
-    />
-  );
 
   // ── Empty state ───────────────────────────────────────────────────────────
   if (items.length === 0) {
     return (
       <section>
         <TopLoadingBar active={isWorking} />
-        {fileInput}
-        <div
-          onClick={openPicker}
-          onDragOver={(e) => { e.preventDefault(); setIsDropping(true); }}
-          onDragLeave={() => setIsDropping(false)}
-          onDrop={(e) => { e.preventDefault(); setIsDropping(false); addFiles(e.dataTransfer.files); }}
-          className={`relative w-full rounded-xl border-2 border-dashed py-14 px-6 flex flex-col items-center justify-center gap-3 bg-surface-container-lowest ambient-shadow cursor-pointer transition-all ${
-            isDropping ? "drag-active" : "border-outline-variant hover:border-secondary/50"
-          }`}
-        >
-          <div className="hidden sm:flex w-11 h-11 bg-surface-container rounded-full items-center justify-center">
-            <Icon name="sync_alt" fill className="text-[22px]" style={{ color: accent }} />
-          </div>
-          <div className="flex flex-col items-center gap-1 text-center">
-            <span className="bg-secondary hover:bg-secondary-container text-on-secondary text-sm font-semibold px-6 py-2.5 rounded-lg transition-colors">
-              Select images
-            </span>
-            <p className="text-body-md text-on-surface-variant mt-2">{config.dropHint}</p>
-          </div>
-          <p className="text-label-sm font-label-sm text-on-surface-variant/70 mt-1 flex items-center gap-1.5">
-            <Icon name="lock" className="text-[14px]" /> {config.privacyNote ?? DEFAULT_PRIVACY_NOTE}
-          </p>
-        </div>
+        {/* This used to be a hand-rolled copy of <Dropzone>, which meant it
+            silently missed Drive import and every later fix to the shared one.
+            Thirteen converter routes render this component. */}
+        <Dropzone
+          onFiles={addFiles}
+          accept={accept}
+          accent={accent}
+          icon="sync_alt"
+          hint={config.dropHint}
+          privacyNote={config.privacyNote ?? DEFAULT_PRIVACY_NOTE}
+        />
       </section>
     );
   }
@@ -300,6 +275,22 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
     <>
       <TopLoadingBar active={isWorking} />
       <ToolWorkspace
+        /* Below `md` this becomes the full-screen app shell: the tray is the
+           body, the rail moves into a sheet, and this tool's primary action
+           becomes the bottom bar CTA. Desktop is untouched. */
+        mobile={{
+          ...filesHeader(items.map((i) => i.file)),
+          onBack: reset,
+          backLabel: "Clear files",
+          settingsTitle: "Conversion settings",
+          cta: {
+            icon: "sync_alt",
+            label: "Convert",
+            busyLabel: "Converting…",
+            busy: isWorking,
+            onClick: convertAll,
+          },
+        }}
         main={
           <FileTray
             entries={entries}

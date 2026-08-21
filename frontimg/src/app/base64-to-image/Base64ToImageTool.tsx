@@ -103,12 +103,41 @@ export function Base64ToImageTool() {
     <>
       <TopLoadingBar active={isWorking} />
       <ToolWorkspace
+        /*
+          Gated on `valid`, not just on being mobile. Unlike the upload tools
+          this one has no empty state to sit behind — the workspace renders from
+          first paint — so an unconditional shell would cover the page heading
+          and the explanatory copy before the visitor has pasted anything. Once
+          a string decodes there IS something to work on, and the full screen is
+          the right place for it.
+        */
+        mobile={
+          valid
+            ? {
+                title: "Decoded image",
+                meta: dims && (
+                  <span className="shrink-0">
+                    {dims.w} × {dims.h} · {format.replace("image/", "").toUpperCase()}
+                  </span>
+                ),
+                onBack: () => setInput(""),
+                backLabel: "Clear input",
+                settingsTitle: "Output settings",
+                cta: {
+                  icon: "download",
+                  label: "Download",
+                  busy: isWorking,
+                  onClick: downloadNative,
+                },
+              }
+            : undefined
+        }
         main={
           <>
         <div className="bg-surface-container rounded-xl border border-surface-variant p-4 flex items-center justify-center overflow-hidden" style={{ minHeight: 220 }}>
           {valid ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img ref={imgRef} src={dataUri} alt="Decoded" className="max-w-full max-h-[calc(100vh-12rem)] rounded shadow" />
+            <img ref={imgRef} src={dataUri} alt="Decoded" className="max-w-full max-h-[calc(100dvh-12rem)] rounded shadow" />
           ) : (
             <div className="flex flex-col items-center gap-2 text-on-surface-variant text-center px-4">
               <Icon name={error ? "error" : "image"} className="text-[40px]" style={{ color: error ? "#EF4444" : ACCENT }} />
