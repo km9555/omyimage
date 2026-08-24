@@ -1,0 +1,11 @@
+# Cloudflare Pages reads this file from the deploy root; `output: "export"`
+# copies public/ verbatim into out/, so it lands there automatically.
+#
+# Everything under /_next/static/ already gets an immutable far-future
+# Cache-Control from Next itself, because those filenames are content-hashed.
+# /fonts/ is the one hashed asset Next does not emit, so it would otherwise be
+# served with the short default TTL and re-validated on every visit. The
+# filename carries a content hash (see scripts/build-icon-font.mjs), so a
+# changed subset is a changed URL and a year of immutability is safe.
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable

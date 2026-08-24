@@ -1,7 +1,16 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ToolDirectory } from "@/components/ToolDirectory";
 import { JsonLd } from "@/components/JsonLd";
-import { SITE } from "@/lib/site";
+import { absoluteUrl, SITE } from "@/lib/site";
+
+// Every other page sets its own canonical via `alternates`; the home page had
+// no `metadata` export at all, so it shipped none — on the one URL search
+// engines resolve duplicates against. Title/description/OG are inherited from
+// the root layout, so only the canonical belongs here.
+export const metadata: Metadata = {
+  alternates: { canonical: absoluteUrl("/") },
+};
 
 const steps = [
   {

@@ -9,6 +9,7 @@ import { CookieBanner } from "@/components/CookieBanner";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import { ThemeProvider } from "@/lib/theme/ThemeProvider";
 import { AuthProvider } from "@/lib/auth/AuthProvider";
+import { ICON_FONT_URL } from "@/lib/icon-font";
 
 // Self-hosted at build time (works with `output: "export"`), so no third-party
 // request and no flash of fallback text. These define the `--font-*` custom
@@ -109,10 +110,22 @@ export default function RootLayout({
       <head>
         {/* Apply saved theme before paint to avoid a flash of the wrong theme. */}
         <script dangerouslySetInnerHTML={{ __html: NO_FLASH_THEME }} />
-        {/* Material Symbols (variable icon font). */}
+        {/*
+          Material Symbols is self-hosted and subsetted (see
+          scripts/build-icon-font.mjs); its @font-face lives in globals.css, so
+          there is no third-party stylesheet to block rendering here any more.
+          Preloading it is what keeps `font-display: block` invisible in
+          practice: the icon font is discovered with the CSS rather than after
+          it, and icons paint with the first frame instead of a beat later.
+          `crossOrigin` is required even same-origin — fonts always fetch in
+          CORS mode, and without it the preload is discarded and re-requested.
+        */}
         <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+          rel="preload"
+          as="font"
+          type="font/woff2"
+          href={ICON_FONT_URL}
+          crossOrigin="anonymous"
         />
       </head>
       <body className="min-h-full flex flex-col bg-background text-on-background" suppressHydrationWarning>
