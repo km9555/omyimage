@@ -1,7 +1,7 @@
 {
-  "axes": "opsz,wght,FILL@24..48,400..600,0..1",
-  "file": "/fonts/material-symbols-outlined-5f8d6f90.woff2",
-  "bytes": 120928,
+  "axes": "wght,FILL@400..600,0..1",
+  "file": "/fonts/material-symbols-outlined-0268a788.woff2",
+  "bytes": 57696,
   "icons": [
     "account_circle",
     "add",

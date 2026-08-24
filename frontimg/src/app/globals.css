@@ -41,9 +41,9 @@
   text-on-surface, border-surface-variant, …) so the whole brand re-skins from
   here.
 
-  NOTE: `--font-inter` / `--font-jetbrains-mono` are defined by next/font in
-  layout.tsx, which puts them on <html> via a generated class. Do NOT redeclare
-  them in a `:root` block here — `:root` and `.__variable_xxx` have identical
+  NOTE: `--font-inter` is defined by next/font in layout.tsx, which puts it on
+  <html> via a generated class. Do NOT redeclare
+  it in a `:root` block here — `:root` and `.__variable_xxx` have identical
   specificity, so source order would decide the winner and the real webfont
   could silently lose to a fallback string.
 */
@@ -138,7 +138,7 @@
   --font-headline-md: var(--font-inter);
   --font-body-lg: var(--font-inter);
   --font-body-md: var(--font-inter);
-  --font-label-sm: var(--font-jetbrains-mono);
+  --font-label-sm: var(--font-inter);
 
   /*
     Type scale.
@@ -289,18 +289,21 @@ body {
 /*
   Material Symbols variants. The base rules (font-family, size, `liga`) come
   from the generated material-symbols.css imported at the top of this file.
-  No GRAD axis: all three variants pinned it to its 0 default, so the subset
-  drops it — that alone was ~76 KB of variation data nothing asked for.
+
+  Only FILL and wght are set, because they are the only axes the subset still
+  carries. GRAD (−76 KB) and opsz (−63 KB) were both dropped in
+  scripts/build-icon-font.mjs; keep this list in step with the AXES constant
+  there, since asking for an axis the font lacks fails silently.
 */
 .material-symbols-outlined {
-  font-variation-settings: "FILL" 0, "wght" 400, "opsz" 24;
+  font-variation-settings: "FILL" 0, "wght" 400;
 }
 .material-symbols-outlined.fill {
-  font-variation-settings: "FILL" 1, "wght" 400, "opsz" 24;
+  font-variation-settings: "FILL" 1, "wght" 400;
 }
 /* Bold outline (no fill, heavier stroke) — the premium no-tile card icon style. */
 .material-symbols-outlined.bold {
-  font-variation-settings: "FILL" 0, "wght" 600, "opsz" 48;
+  font-variation-settings: "FILL" 0, "wght" 600;
 }
 
 /* Elevation & interaction helpers */

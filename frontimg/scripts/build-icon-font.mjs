@@ -43,13 +43,24 @@ const cssFile = join(root, "src", "app", "material-symbols.css");
 const tsFile = join(root, "src", "lib", "icon-font.ts");
 
 /*
-  Axes kept in the subset. GRAD is dropped: globals.css pins it to 0 in all
-  three variants, which is the axis default, so carrying it cost ~76 KB to
-  express variation nobody requests. FILL, wght and opsz are all really used —
-  `.material-symbols-outlined` is opsz 24 / wght 400, `.fill` flips FILL to 1,
-  and `.bold` is wght 600 / opsz 48.
+  Axes kept in the subset. Each one is expensive — a variable axis has to carry
+  deltas for every glyph — so only the axes the CSS genuinely varies survive:
+
+    • FILL 0..1     `.fill` flips it to 1 for the solid variant.
+    • wght 400..600 `.bold` uses 600 for the heavier no-tile card icons.
+
+  Dropped, with what each cost measured over this exact 194-icon set:
+    • GRAD  −76 KB. All three variants pinned it to its 0 default.
+    • opsz  −63 KB. `.bold` asked for 48 and the rest for 24, but optical-size
+            compensation is a subtle change in stroke and detail that is not
+            perceptible at the 14–24 px these icons actually render at. Fixing
+            it at the 24 default halves the file: 120,928 → 57,696 bytes.
+
+  Anything removed here must also come out of the `font-variation-settings` in
+  globals.css — a request for an axis the font does not have is silently
+  ignored, so a stale setting reads as working while doing nothing.
 */
-const AXES = "opsz,wght,FILL@24..48,400..600,0..1";
+const AXES = "wght,FILL@400..600,0..1";
 // Google serves woff2 only to a UA it recognises as modern; a Node UA gets TTF.
 const UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";

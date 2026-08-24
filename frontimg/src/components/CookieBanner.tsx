@@ -131,6 +131,11 @@ export function CookieBanner() {
               involved either way.{" "}
               <Link
                 href="/cookies"
+                // Low-intent policy link that sits in the viewport on every first
+                // visit, so Next prefetched its whole RSC payload on every page
+                // load. Those requests land inside Lighthouse's LCP window and
+                // are simulated as render-blocking. Fetch it on click instead.
+                prefetch={false}
                 className="text-secondary font-semibold hover:underline whitespace-nowrap"
               >
                 Cookie Policy

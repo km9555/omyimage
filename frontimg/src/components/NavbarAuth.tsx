@@ -48,6 +48,9 @@ export function NavbarAuth() {
     return (
       <Link
         href="/login"
+        // See CookieBanner: in-viewport but rarely clicked, so its prefetch is
+        // pure cost on the initial load.
+        prefetch={false}
         className="inline-flex items-center justify-center gap-2 text-body-md bg-secondary text-on-secondary font-semibold px-4 py-2 rounded-lg shadow-md shadow-secondary/30 hover:bg-secondary-container hover:shadow-lg hover:shadow-secondary/40 hover:-translate-y-px transition-all duration-200"
       >
         <Icon name="login" className="text-[19px]" />

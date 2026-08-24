@@ -40,6 +40,8 @@ export function CreditsBadge({ compact = false, className = "" }: { compact?: bo
   return (
     <Link
       href="/pricing"
+      // Prefetching /pricing on every page load costs more than it saves.
+      prefetch={false}
       aria-label={label}
       title={label}
       className={`${base} ${compact ? "h-9 px-2.5" : "h-10 px-3"} ${className}`}

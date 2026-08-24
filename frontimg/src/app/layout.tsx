@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { SITE } from "@/lib/site";
 import { Navbar } from "@/components/Navbar";
@@ -9,20 +9,21 @@ import { CookieBanner } from "@/components/CookieBanner";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import { ThemeProvider } from "@/lib/theme/ThemeProvider";
 import { AuthProvider } from "@/lib/auth/AuthProvider";
+import { preload } from "react-dom";
 import { ICON_FONT_URL } from "@/lib/icon-font";
 
 // Self-hosted at build time (works with `output: "export"`), so no third-party
-// request and no flash of fallback text. These define the `--font-*` custom
-// properties that globals.css `@theme` maps the type tokens onto.
+// request and no flash of fallback text. This defines the `--font-inter` custom
+// property that globals.css `@theme` maps the type tokens onto.
+//
+// Inter is the ONLY webfont the page loads. JetBrains Mono used to back
+// `--font-label-sm`, but it was a second 21.7 KB download in the critical path
+// for small labels alone, and Lighthouse re-simulates everything fetched before
+// the paint as render-blocking (see the LCP note in build-icon-font.mjs). The
+// label token now points at Inter, which is already on the wire.
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
-  display: "swap",
-});
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
-  subsets: ["latin"],
-  weight: ["500"],
   display: "swap",
 });
 
@@ -101,32 +102,30 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  /*
+    Preload the self-hosted Material Symbols subset (scripts/build-icon-font.mjs).
+    Its @font-face lives in globals.css, so nothing here blocks rendering; the
+    preload is what keeps `font-display: block` invisible in practice — the font
+    is discovered alongside the CSS rather than after it, so icons arrive with
+    the first frame instead of a beat later.
+
+    Via react-dom's preload() rather than a <link> in <head>: React hoists a
+    rendered preload link into the head but also leaves the original in place,
+    which emitted the tag twice. This API emits exactly one. `crossOrigin` is
+    required even same-origin — fonts always fetch in CORS mode, and without it
+    the preload is discarded and the font requested a second time.
+  */
+  preload(ICON_FONT_URL, { as: "font", type: "font/woff2", crossOrigin: "anonymous" });
+
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${jetbrainsMono.variable} h-full`}
+      className={`${inter.variable} h-full`}
       suppressHydrationWarning
     >
       <head>
         {/* Apply saved theme before paint to avoid a flash of the wrong theme. */}
         <script dangerouslySetInnerHTML={{ __html: NO_FLASH_THEME }} />
-        {/*
-          Material Symbols is self-hosted and subsetted (see
-          scripts/build-icon-font.mjs); its @font-face lives in globals.css, so
-          there is no third-party stylesheet to block rendering here any more.
-          Preloading it is what keeps `font-display: block` invisible in
-          practice: the icon font is discovered with the CSS rather than after
-          it, and icons paint with the first frame instead of a beat later.
-          `crossOrigin` is required even same-origin — fonts always fetch in
-          CORS mode, and without it the preload is discarded and re-requested.
-        */}
-        <link
-          rel="preload"
-          as="font"
-          type="font/woff2"
-          href={ICON_FONT_URL}
-          crossOrigin="anonymous"
-        />
       </head>
       <body className="min-h-full flex flex-col bg-background text-on-background" suppressHydrationWarning>
         <ThemeProvider>

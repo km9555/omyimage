@@ -85,6 +85,7 @@ export function Footer() {
             </p>
             <Link
               href="/pricing"
+              prefetch={false}
               className="text-label-sm font-label-sm font-semibold text-secondary hover:underline w-fit"
             >
               View Pricing →
