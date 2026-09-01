@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import { AdSlot } from "@/components/tool/AdSlot";
-import { formatBytes } from "@/lib/image/raster";
+import { formatBytes } from "@/lib/image/file-naming";
 import { useIsMobile, useOverlayScrollLock } from "@/lib/use-is-mobile";
 import {
   MobileBarButton,

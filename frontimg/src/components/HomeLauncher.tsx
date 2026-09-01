@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/Icon";
-import { formatBytes } from "@/lib/image/raster";
+import { formatBytes } from "@/lib/image/file-naming";
 import { stashFiles } from "@/lib/tool-handoff";
 import { applicableTools } from "@/lib/file-actions";
 import type { Tool } from "@/lib/tools";

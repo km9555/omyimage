@@ -30,30 +30,11 @@ export class CanvasTooLargeError extends Error {
   }
 }
 
-const EXT: Record<string, string> = {
-  "image/jpeg": "jpg",
-  "image/png": "png",
-  "image/webp": "webp",
-  "image/gif": "gif",
-  "image/bmp": "bmp",
-  "image/avif": "avif",
-};
-
-/** File extension (no dot) for a mime type. */
-export function mimeExt(mime: string): string {
-  return EXT[mime] ?? "png";
-}
-
-export function formatBytes(n: number): string {
-  if (n < 1024) return `${n} B`;
-  if (n < 1024 * 1024) return `${(n / 1024).toFixed(0)} KB`;
-  return `${(n / (1024 * 1024)).toFixed(2)} MB`;
-}
-
-/** Strip the extension from a filename. */
-export function baseName(name: string): string {
-  return name.replace(/\.[^./\\]+$/, "");
-}
+// Re-exported so every tool that already imports these from the raster engine
+// keeps working unchanged. They now live in a leaf module with no imports, so a
+// component that wants only `formatBytes` no longer drags `process-router` —
+// and the whole decode/encode pipeline — into its chunk.
+export { mimeExt, formatBytes, baseName } from "./file-naming";
 
 /** Decode a file to an ImageBitmap (EXIF-oriented by default). */
 export function decodeBitmap(file: File, autoOrient = true): Promise<ImageBitmap> {
