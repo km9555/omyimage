@@ -24,7 +24,11 @@ import { ICON_FONT_URL } from "@/lib/icon-font";
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
-  display: "swap",
+  // Mobile uses the system stack in globals.css, so a global preload would
+  // waste ~48 KB there. Desktop still discovers Inter from this font-face;
+  // `optional` prevents a late swap from creating a new paint milestone.
+  display: "optional",
+  preload: false,
 });
 
 // Runs before first paint to apply a previously-chosen dark theme with no flash.

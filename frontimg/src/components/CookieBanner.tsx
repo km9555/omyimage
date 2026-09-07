@@ -126,9 +126,8 @@ export function CookieBanner() {
           <div className="min-w-0">
             <h2 className="text-title-md font-bold text-primary">We value your privacy</h2>
             <p className="mt-1.5 text-body-sm text-on-surface-variant leading-relaxed">
-              oMyImage uses a small number of cookies. The necessary ones keep the site working;
-              analytics cookies are optional and off until you allow them. Your images are never
-              involved either way.{" "}
+              oMyImage uses necessary cookies to run the site and optional analytics only with
+              your consent. Your images are never involved.{" "}
               <Link
                 href="/cookies"
                 // Low-intent policy link that sits in the viewport on every first

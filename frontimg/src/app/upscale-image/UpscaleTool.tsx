@@ -14,7 +14,8 @@ export function UpscaleTool() {
       dropHint="or drop a JPG, PNG or WEBP here"
       actionLabel="Upscale"
       processingLabel="Upscaling…"
-      initialOptions={{ scale: 4 }}
+      compare
+      initialOptions={{ scale: 2 }}
       controls={(o, set) => (
         <div className="flex flex-col gap-1.5">
           <label className="text-label-sm font-label-sm text-on-surface-variant">Scale factor</label>
@@ -34,7 +35,6 @@ export function UpscaleTool() {
           </div>
         </div>
       )}
-      note={<><strong className="text-on-surface">Engine:</strong> open-source Real-ESRGAN. Higher scales take longer and need a capable server.</>}
     />
   );
 }

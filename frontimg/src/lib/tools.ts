@@ -559,10 +559,13 @@ export const TOOLS: Tool[] = [
     primaryKeyword: "blur face online",
   },
   // NOTE: "image-enhancer" was retired — it was the same tool as "upscale-image".
-  // The backend's enhance() is literally upscale() with the scale hard-coded to
-  // 2 (same realesrgan-ncnn-vulkan binary, same realesrgan-x4plus model), and
-  // Upscale already exposes 2× as a user option. Its search aliases were folded
-  // into "upscale-image". See the oMyPDF backend, src/lib/image/ai.ts.
+  // The backend's enhance() was literally upscale() with the scale hard-coded to
+  // 2 (same realesrgan-ncnn-vulkan binary, same model), and Upscale already
+  // exposes 2× as a user option — it is now the default, so the folded-in
+  // enhancer traffic lands on exactly what it used to ask for. Its search aliases
+  // moved to "upscale-image". See the oMyPDF backend, src/lib/image/ai.ts.
+  // (The model is whatever REALESRGAN_MODEL is set to on the box — production
+  // runs realesr-animevideov3, NOT realesrgan-x4plus. See backend/ai/README.md.)
 
   // ── Batch 2: new client-side tools ────────────────────────────────────────
   {
