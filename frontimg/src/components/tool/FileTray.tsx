@@ -24,6 +24,17 @@ export interface TrayEntry {
   /** Trailing control: download once processed, remove before that. */
   action?: ReactNode;
   /**
+   * A row of per-file buttons given its own band ABOVE the thumbnail, rather
+   * than floated over it (resize's crop / rotate / info).
+   *
+   * `action` is the right slot for one or two buttons — a lone download or ✕
+   * reads fine over a corner of the image. A five-button cluster does not: it
+   * covers the middle of the preview on a narrow card, which is exactly what
+   * the user is trying to look at. Pass bare `TrayIconButton`s; the band owns
+   * the background, padding and alignment.
+   */
+  toolbar?: ReactNode;
+  /**
    * Per-file controls rendered under the name in both views (image-to-pdf's
    * per-image orientation). Optional, so every other tool renders unchanged.
    */
@@ -131,7 +142,14 @@ export function FileTray({
               key={e.id}
               className="flex flex-col overflow-hidden rounded-xl border border-surface-variant bg-surface-container-lowest ambient-shadow"
             >
-              <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden bg-surface-container p-3">
+              {e.toolbar && (
+                /* px-1 rather than px-2: the narrowest card this grid makes is
+                   ~133px at `lg`, and five 24px buttons need 120 of them. */
+                <div className="flex shrink-0 items-center justify-center gap-0.5 border-b border-surface-variant px-1 py-1">
+                  {e.toolbar}
+                </div>
+              )}
+              <div className="relative flex aspect-[19/16] items-center justify-center overflow-hidden bg-surface-container p-3">
                 <Thumb entry={e} className="max-h-full max-w-full object-contain" />
                 {e.badge && <div className="absolute left-2 top-2">{e.badge}</div>}
                 {e.action && <div className="absolute right-2 top-2">{e.action}</div>}
@@ -175,6 +193,9 @@ export function FileTray({
                   <MoveButton dir={1} index={i} count={entries.length} onMove={onMove} busy={busy} />
                 </div>
               )}
+              {/* A list row is wide enough that the buttons just sit inline
+                  before the trailing control — no band needed. */}
+              {e.toolbar && <div className="flex shrink-0 items-center gap-0.5">{e.toolbar}</div>}
               {e.action}
             </li>
           ))}
@@ -216,6 +237,53 @@ export function TrayAction({
       }`}
     >
       <Icon name={icon} className="text-[20px]" />
+    </button>
+  );
+}
+
+/**
+ * One button for a tray entry's `toolbar` band.
+ *
+ * The 24px size is not a style preference. The narrowest card this grid
+ * produces is ~133px wide at `lg`, and five of these come to 120px — so the
+ * whole cluster fits the band at every breakpoint. Keep the count and the size
+ * in step if either changes.
+ */
+export function TrayIconButton({
+  icon,
+  label,
+  onClick,
+  disabled = false,
+  active = false,
+  tone = "neutral",
+}: {
+  icon: string;
+  label: string;
+  onClick: () => void;
+  disabled?: boolean;
+  /** Renders pressed — used by resize's info toggle. */
+  active?: boolean;
+  tone?: "neutral" | "accent" | "danger";
+}) {
+  const toneCls =
+    tone === "danger"
+      ? "text-on-surface-variant hover:bg-error-container hover:text-error"
+      : tone === "accent"
+        ? "text-secondary hover:bg-secondary/10"
+        : "text-on-surface-variant hover:bg-surface-container hover:text-primary";
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={label}
+      aria-pressed={active}
+      title={label}
+      className={`flex h-6 w-6 items-center justify-center rounded-md transition-colors disabled:opacity-30 ${
+        active ? "bg-secondary/15 text-secondary" : toneCls
+      }`}
+    >
+      <Icon name={icon} className="text-[15px]" />
     </button>
   );
 }

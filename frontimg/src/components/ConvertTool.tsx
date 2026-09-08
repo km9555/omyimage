@@ -25,6 +25,9 @@ import {
   RailNote,
 } from "@/components/tool/SettingsRail";
 import { shouldUseServerForFile, toServerFormat, processOnServer } from "@/lib/process-router";
+import {
+  readSourceMetadata, normaliseExif, injectJpegMetadata, stripJpegMetadata,
+} from "@/lib/image/jpeg-metadata";
 import { useHandoff } from "@/lib/tool-handoff";
 import { kindOf, type FileKind } from "@/lib/file-actions";
 
@@ -73,6 +76,15 @@ export interface ConvertConfig {
    * case reading as a false promise.
    */
   privacyNote?: string;
+  /**
+   * Show the "Strip metadata" checkbox, and with it the ability to KEEP the
+   * source's EXIF/XMP in the output (see `lib/image/jpeg-metadata.ts`).
+   *
+   * Opt-in, because this component backs 13 converter routes and only
+   * /convert-to-jpg has asked for the control. Meaningful for JPG targets only
+   * — the injector writes JPEG APP1 segments and nothing else.
+   */
+  metadata?: boolean;
 }
 
 const DEFAULT_PRIVACY_NOTE =
@@ -95,6 +107,9 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
   const [quality_, setQuality] = useState(0.92);
   const [bg, setBg] = useState<BgValue>({ transparent: false, color: "#ffffff", auto: true });
   const [autoOrient, setAutoOrient] = useState(true);
+  /* Named for the checkbox, not the behaviour: unchecked (the default) KEEPS
+     the source's EXIF, which is the opposite of what this tool used to do. */
+  const [stripMeta, setStripMeta] = useState(false);
   const [isWorking, setIsWorking] = useState(false);
 
   const [done, setDone] = useState(false);
@@ -168,7 +183,15 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
           : bg.auto
             ? await detectEdgeBackground(it.file, autoOrient).catch(() => bg.color)
             : resolveBg(bg);
+        /* Read the SOURCE's metadata before converting, so it can be written
+           back into whichever JPEG we end up with. Skipped entirely when the
+           user asked to strip — no reason to read the file for nothing. */
+        const keepMeta =
+          config.metadata && !stripMeta && targetMime === "image/jpeg"
+            ? readSourceMetadata(new Uint8Array(await it.file.arrayBuffer()))
+            : null;
         let blob: Blob;
+        let onServer = false;
         if (serverFallback && (await shouldUseServerForFile(it.file))) {
           // Past the browser's canvas ceiling or the byte cap → offload to the
           // shared oMyPDF backend (Sharp, /api/image/*).
@@ -181,6 +204,7 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
             background: background ?? undefined,
           });
           blob = r.blob;
+          onServer = true;
         } else {
           const r = await rasterize(it.file, {
             mime: targetMime,
@@ -189,6 +213,24 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
             autoOrient,
           });
           blob = r.blob;
+        }
+        if (keepMeta && (keepMeta.exif || keepMeta.xmp)) {
+          /* The server's pipeline() calls .rotate() unconditionally, so its
+             output is always upright; the browser path only rotates when the
+             auto-orient box is ticked. Either way the stored Orientation has to
+             agree with the pixels, or viewers rotate the image a second time. */
+          const rotated = onServer || autoOrient;
+          const withMeta = injectJpegMetadata(new Uint8Array(await blob.arrayBuffer()), {
+            xmp: keepMeta.xmp,
+            exif: keepMeta.exif && normaliseExif(keepMeta.exif, { orientationApplied: rotated }),
+          });
+          blob = new Blob([withMeta as BlobPart], { type: targetMime });
+        } else if (config.metadata && stripMeta && targetMime === "image/jpeg") {
+          /* Not a no-op even though nothing was added: Chrome's toBlob writes an
+             sRGB ICC profile of its own, which a user ticking "Strip metadata"
+             expects gone. */
+          const bare = stripJpegMetadata(new Uint8Array(await blob.arrayBuffer()));
+          blob = new Blob([bare as BlobPart], { type: targetMime });
         }
         out.push({ ...it, result: { blob, size: blob.size, name } });
       }
@@ -364,6 +406,23 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
               <input type="checkbox" checked={autoOrient} onChange={(e) => setAutoOrient(e.target.checked)} className="w-4 h-4 accent-secondary" />
               <span className="text-body-md text-on-surface">Auto-rotate by EXIF orientation</span>
             </label>
+
+            {config.metadata && (
+              <div className="flex flex-col gap-2">
+                <label className="flex items-center gap-2.5 cursor-pointer">
+                  <input type="checkbox" checked={stripMeta} onChange={(e) => setStripMeta(e.target.checked)} className="w-4 h-4 accent-secondary" />
+                  <span className="text-body-md text-on-surface">Strip metadata</span>
+                </label>
+                {/* "Colour profile" is honest here: ticking the box removes the
+                    sRGB profile the encoder writes. What it never does is carry
+                    the SOURCE's profile across — the pixels are decoded to sRGB,
+                    so that profile would misdescribe them. See
+                    lib/image/jpeg-metadata.ts. */}
+                <p className="text-label-sm font-label-sm text-on-surface-variant">
+                  Remove EXIF, colour profile, camera and location data from the converted image to reduce size.
+                </p>
+              </div>
+            )}
           </SettingsRail>
         }
       />

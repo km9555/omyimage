@@ -42,6 +42,8 @@ const faqs: Faq[] = [
   { q: "What happens to transparency?", a: "JPG does not support transparency, so transparent areas are filled with a background color. By default we automatically match the color at the image's own edges; pick white, black or any custom color instead if you want something different." },
   { q: "Can I convert many images at once?", a: "Yes. Add as many as you like — a single image downloads as a JPG, and multiple images download together as a ZIP." },
   { q: "Is it really free and private?", a: "Yes. There's no sign-up or watermark, and every image is processed locally in your browser." },
+  { q: "Does the JPG keep my EXIF and camera data?", a: "By default yes — any EXIF or XMP the source carries is copied into the JPG, including the capture date, camera model and GPS coordinates if they are present. Tick 'Strip metadata' to leave all of it out, along with the colour profile. Note that PNG, GIF and BMP files rarely carry EXIF at all, so for most sources there is nothing to keep." },
+  { q: "Is the colour profile preserved?", a: "No, and that is deliberate. Converting decodes the image to sRGB, so carrying the original profile across would describe the new pixels wrongly and shift the colours. The JPG is saved as sRGB — which is what a viewer assumes anyway — and the embedded sRGB profile is dropped entirely if you tick 'Strip metadata'." },
   { q: "Which formats can I convert from?", a: "PNG, WEBP, GIF and BMP. Those are the formats a browser can decode natively, which is what allows the conversion to happen on your device. HEIC and AVIF have dedicated pages because they need different handling." },
   { q: "Why is JPG still the safest format?", a: "Because it is thirty years old, patent-free and implemented in essentially every piece of software that has ever displayed an image. Newer formats compress better, but 'better' is worth nothing when the system you are uploading to rejects the file." },
   { q: "What quality setting should I use?", a: "85–92% suits almost everything. Go higher for photographs you will print or that a customer will zoom into. Below 70% you start to see blocking in skies and smooth gradients, which is the point where people notice the compression rather than the picture." },
@@ -109,7 +111,7 @@ export default function Page() {
           </h2>
         </header>
 
-        <ConvertTool config={{ accent: toolColor(tool), accept: "image/png,image/webp,image/gif,image/bmp", targetMime: "image/jpeg", targetLabel: "JPG", flatten: true, quality: true, dropHint: "or drop PNG, WEBP, GIF or BMP images here" }} />
+        <ConvertTool config={{ accent: toolColor(tool), accept: "image/png,image/webp,image/gif,image/bmp", targetMime: "image/jpeg", targetLabel: "JPG", flatten: true, quality: true, metadata: true, dropHint: "or drop PNG, WEBP, GIF or BMP images here" }} />
 
         {related.length > 0 && (
           <section aria-label="More tools" className="mt-4">

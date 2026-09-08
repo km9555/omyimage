@@ -76,6 +76,19 @@ export interface RasterOptions {
   background?: string | null;
   /** Output content size; the source is scaled to fit these dimensions. */
   resize?: { width: number; height: number };
+  /**
+   * Rectangle of the source to read, in source pixels. Defaults to the whole
+   * image. Set by "crop to fill" fits, which centre-crop on the way in so the
+   * canvas can stay exactly the requested size — see `lib/image/fit.ts`.
+   */
+  source?: { x: number; y: number; w: number; h: number };
+  /**
+   * Output canvas size, when it differs from the content size. The content is
+   * centred inside it and the remainder is painted with `background`, which is
+   * how a "pad to fit" social preset gets its bars. Defaults to the content
+   * size (grown to hold the rotation, as before).
+   */
+  canvas?: { width: number; height: number };
   /** Clockwise rotation in degrees. */
   rotate?: number;
   flipH?: boolean;
@@ -107,16 +120,24 @@ export async function rasterizeToCanvas(
 ): Promise<HTMLCanvasElement> {
   const bmp = await decodeBitmap(file, opts.autoOrient ?? false);
 
+  // Source rectangle — the whole bitmap unless a `cover` fit cropped it.
+  const sx = opts.source?.x ?? 0;
+  const sy = opts.source?.y ?? 0;
+  const sw = Math.max(1, opts.source?.w ?? bmp.width);
+  const sh = Math.max(1, opts.source?.h ?? bmp.height);
+
   // Content size after optional resize (before rotation).
-  const w = Math.max(1, Math.round(opts.resize?.width ?? bmp.width));
-  const h = Math.max(1, Math.round(opts.resize?.height ?? bmp.height));
+  const w = Math.max(1, Math.round(opts.resize?.width ?? sw));
+  const h = Math.max(1, Math.round(opts.resize?.height ?? sh));
 
   const deg = (((opts.rotate ?? 0) % 360) + 360) % 360;
   const rad = (deg * Math.PI) / 180;
   const sin = Math.abs(Math.sin(rad));
   const cos = Math.abs(Math.cos(rad));
-  const cw = Math.max(1, Math.round(w * cos + h * sin));
-  const ch = Math.max(1, Math.round(w * sin + h * cos));
+  // An explicit canvas wins: padding is the caller saying "this exact size",
+  // and it is already computed against the post-rotation content.
+  const cw = opts.canvas ? Math.max(1, Math.round(opts.canvas.width)) : Math.max(1, Math.round(w * cos + h * sin));
+  const ch = opts.canvas ? Math.max(1, Math.round(opts.canvas.height)) : Math.max(1, Math.round(w * sin + h * cos));
 
   // Refuse before allocating rather than after. Over Safari's area ceiling a
   // canvas still constructs and still returns a context — it just discards
@@ -136,7 +157,8 @@ export async function rasterizeToCanvas(
     throw new Error("Canvas is not supported in this browser.");
   }
 
-  // JPG cannot store transparency — always flatten onto a background.
+  // JPG cannot store transparency — always flatten onto a background. This is
+  // also what fills the bars when `canvas` is larger than the content.
   const bg = opts.mime === "image/jpeg" ? opts.background ?? "#ffffff" : opts.background;
   if (bg) {
     ctx.fillStyle = bg;
@@ -147,7 +169,7 @@ export async function rasterizeToCanvas(
   ctx.translate(cw / 2, ch / 2);
   if (rad) ctx.rotate(rad);
   ctx.scale(opts.flipH ? -1 : 1, opts.flipV ? -1 : 1);
-  ctx.drawImage(bmp, -w / 2, -h / 2, w, h);
+  ctx.drawImage(bmp, sx, sy, sw, sh, -w / 2, -h / 2, w, h);
   bmp.close();
 
   return canvas;

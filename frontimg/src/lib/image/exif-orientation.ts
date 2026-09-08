@@ -18,33 +18,54 @@ export function orientationSwapsAxes(orientation: number): boolean {
   return orientation >= 5 && orientation <= 8;
 }
 
-export function readJpegOrientation(bytes: Uint8Array): number {
+/**
+ * Walk a JPEG's marker segments, calling `visit` for each one.
+ *
+ * `segStart`/`segEnd` bound the segment's PAYLOAD — the marker and its two
+ * size bytes are already skipped. Return `true` from `visit` to stop early.
+ *
+ * Shared with `jpeg-metadata.ts`, which needs the same walk to find APP1. The
+ * walk is deliberately forgiving: anything desynced or truncated ends the loop
+ * rather than throwing, so a malformed file degrades to "found nothing".
+ */
+export function eachJpegSegment(
+  bytes: Uint8Array,
+  visit: (marker: number, segStart: number, segEnd: number, view: DataView) => boolean | void
+): void {
   // SOI
-  if (bytes.length < 4 || bytes[0] !== 0xff || bytes[1] !== 0xd8) return 1;
+  if (bytes.length < 4 || bytes[0] !== 0xff || bytes[1] !== 0xd8) return;
 
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   let offset = 2;
 
   while (offset + 4 <= bytes.length) {
-    if (view.getUint8(offset) !== 0xff) return 1; // desynced — give up
+    if (view.getUint8(offset) !== 0xff) return; // desynced — give up
     const marker = view.getUint8(offset + 1);
-    // SOS / EOI: pixel data starts here, no APP1 to find beyond it.
-    if (marker === 0xda || marker === 0xd9) return 1;
+    // SOS / EOI: pixel data starts here, no metadata segment beyond it.
+    if (marker === 0xda || marker === 0xd9) return;
     const size = view.getUint16(offset + 2, false);
-    if (size < 2) return 1;
+    if (size < 2) return;
     const segStart = offset + 4;
     const segEnd = segStart + size - 2;
-    if (segEnd > bytes.length) return 1;
+    if (segEnd > bytes.length) return;
 
-    if (marker === 0xe1 && segEnd - segStart >= 6) {
-      // "Exif\0\0"
-      const isExif =
-        view.getUint32(segStart, false) === 0x45786966 && view.getUint16(segStart + 4, false) === 0;
-      if (isExif) return readIfd0Orientation(view, segStart + 6, segEnd);
-    }
+    if (visit(marker, segStart, segEnd, view) === true) return;
     offset = segEnd;
   }
-  return 1;
+}
+
+export function readJpegOrientation(bytes: Uint8Array): number {
+  let orientation = 1;
+  eachJpegSegment(bytes, (marker, segStart, segEnd, view) => {
+    if (marker !== 0xe1 || segEnd - segStart < 6) return;
+    // "Exif\0\0"
+    const isExif =
+      view.getUint32(segStart, false) === 0x45786966 && view.getUint16(segStart + 4, false) === 0;
+    if (!isExif) return;
+    orientation = readIfd0Orientation(view, segStart + 6, segEnd);
+    return true;
+  });
+  return orientation;
 }
 
 /** Parse the TIFF header + IFD0 sitting inside an APP1 segment. */
