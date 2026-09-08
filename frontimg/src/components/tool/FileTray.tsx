@@ -242,7 +242,12 @@ export function TrayAction({
 }
 
 /**
- * One button for a tray entry's `toolbar` band.
+ * One button for a tray entry's toolbar band.
+ *
+ * Note the missing backticks around that word. `build-icon-font.mjs` treats any
+ * quoted or backticked snake_case token in src/ as an icon in use, and toolbar
+ * is a real Material Symbols name — so marking it up as code here adds a glyph
+ * nothing renders and fails the build's --check step.
  *
  * The 24px size is not a style preference. The narrowest card this grid
  * produces is ~133px wide at `lg`, and five of these come to 120px — so the
