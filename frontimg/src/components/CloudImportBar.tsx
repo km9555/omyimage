@@ -3,19 +3,23 @@
 /**
  * CloudImportBar — cloud-source import options, rendered below a drop zone.
  *
- * Ported from oMyPDF. Only Google Drive is wired up here; the structure is kept
- * so another provider is a drop-in:
+ * Ported from oMyPDF. Google Drive and Dropbox are wired up; the structure is
+ * kept so a third provider stays a drop-in:
  *   1. add lib/<source>.ts with the picker logic
  *   2. add a <Source>Button.tsx with the same Props contract as GoogleDriveButton
  *   3. drop it into the slots below — every tool picks it up automatically
  *
- * Renders NOTHING when Drive is not configured, so a build without credentials
- * simply has no cloud import rather than a button that throws on click.
+ * Each source is gated on its own credentials, and the bar renders NOTHING when
+ * none are set. So a build with no credentials simply has no cloud import
+ * rather than a button that throws on click, and configuring one provider does
+ * not require configuring the other.
  */
 
 import { useState } from "react";
 import { toast } from "sonner";
 import { driveConfigured, openGoogleDrivePicker, IMAGE_MIME_TYPES } from "@/lib/google-drive";
+import { dropboxConfigured } from "@/lib/dropbox";
+import { DropboxButton } from "@/components/DropboxButton";
 
 function DriveIcon({ className }: { className?: string }) {
   return (
@@ -115,18 +119,23 @@ export function GoogleDriveButton({
 export function CloudImportBar({
   onFiles,
   mimeTypes,
+  extensions,
   variant = "chip",
 }: {
   onFiles: (files: File[]) => void;
+  /** What the Drive picker offers. Mime types only — it understands nothing else. */
   mimeTypes?: string;
+  /** What the Dropbox Chooser offers. Extensions only — same reason, other way round. */
+  extensions?: string[];
   variant?: "chip" | "ghost" | "icon";
 }) {
-  if (!driveConfigured) return null;
+  if (!driveConfigured && !dropboxConfigured) return null;
 
   if (variant === "icon") {
     return (
       <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-        <GoogleDriveButton onFiles={onFiles} mimeTypes={mimeTypes} variant="icon" />
+        {driveConfigured && <GoogleDriveButton onFiles={onFiles} mimeTypes={mimeTypes} variant="icon" />}
+        {dropboxConfigured && <DropboxButton onFiles={onFiles} extensions={extensions} variant="icon" />}
       </div>
     );
   }
@@ -134,7 +143,8 @@ export function CloudImportBar({
   if (variant === "ghost") {
     return (
       <div className="flex items-center justify-center gap-4" onClick={(e) => e.stopPropagation()}>
-        <GoogleDriveButton onFiles={onFiles} mimeTypes={mimeTypes} variant="ghost" />
+        {driveConfigured && <GoogleDriveButton onFiles={onFiles} mimeTypes={mimeTypes} variant="ghost" />}
+        {dropboxConfigured && <DropboxButton onFiles={onFiles} extensions={extensions} variant="ghost" />}
       </div>
     );
   }
@@ -142,13 +152,14 @@ export function CloudImportBar({
   return (
     /*
      * stopPropagation: the drop zone wrapping this has its own onClick that
-     * opens the native file dialog. Without it, clicking the Drive chip would
+     * opens the native file dialog. Without it, clicking a cloud chip would
      * also pop the OS picker.
      */
     <div className="flex flex-col items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
       <p className="text-label-sm font-label-sm text-on-surface-variant/60">or import from</p>
       <div className="flex items-center gap-2 flex-wrap justify-center">
-        <GoogleDriveButton onFiles={onFiles} mimeTypes={mimeTypes} variant="chip" />
+        {driveConfigured && <GoogleDriveButton onFiles={onFiles} mimeTypes={mimeTypes} variant="chip" />}
+        {dropboxConfigured && <DropboxButton onFiles={onFiles} extensions={extensions} variant="chip" />}
       </div>
     </div>
   );

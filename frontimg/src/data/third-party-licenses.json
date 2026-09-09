@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-01",
+  "generatedAt": "2026-09-09",
   "count": 50,
   "summary": {
     "Apache-2.0": 7,
@@ -54,7 +54,7 @@
     },
     {
       "name": "baseline-browser-mapping",
-      "version": "2.10.38",
+      "version": "2.11.21",
       "license": "Apache-2.0",
       "author": "",
       "repository": "https://github.com/web-platform-dx/baseline-browser-mapping",
@@ -70,7 +70,7 @@
     },
     {
       "name": "caniuse-lite",
-      "version": "1.0.30001799",
+      "version": "1.0.30001810",
       "license": "CC-BY-4.0",
       "author": "Ben Briggs",
       "repository": "browserslist/caniuse-lite",
@@ -183,7 +183,7 @@
     },
     {
       "name": "nanoid",
-      "version": "3.3.15",
+      "version": "3.3.18",
       "license": "MIT",
       "author": "Andrey Sitnik",
       "repository": "ai/nanoid",
@@ -239,7 +239,7 @@
     },
     {
       "name": "postcss",
-      "version": "8.5.15",
+      "version": "8.5.28",
       "license": "MIT",
       "author": "Andrey Sitnik",
       "repository": "postcss/postcss",
@@ -311,7 +311,7 @@
     },
     {
       "name": "sonner",
-      "version": "2.0.7",
+      "version": "2.0.8",
       "license": "MIT",
       "author": "Emil Kowalski",
       "repository": "https://github.com/emilkowalski/sonner",

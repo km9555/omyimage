@@ -39,6 +39,9 @@ const nextConfig: NextConfig = {
     // Falsy → google-drive.ts hides the Drive entry point entirely.
     NEXT_PUBLIC_GOOGLE_CLIENT_ID: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "",
     NEXT_PUBLIC_GOOGLE_PICKER_API_KEY: process.env.NEXT_PUBLIC_GOOGLE_PICKER_API_KEY ?? "",
+    // Falsy → dropbox.ts hides the Dropbox entry point entirely. Independent of
+    // the Drive pair above: either provider can ship without the other.
+    NEXT_PUBLIC_DROPBOX_APP_KEY: process.env.NEXT_PUBLIC_DROPBOX_APP_KEY ?? "",
   },
 };
 

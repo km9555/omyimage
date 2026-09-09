@@ -122,6 +122,22 @@ function paintWatermark(ctx: CanvasRenderingContext2D, W: number, H: number, o: 
 type Shape = "pen" | "line" | "arrow" | "rect" | "ellipse" | "text";
 type Op = { shape: Shape; color: string; width: number; points: { x: number; y: number }[]; text?: string };
 
+/*
+  The annotate toolbar, in order. Named rather than written inline at the
+  button: scripts/build-icon-font.mjs reads icon names out of `icon` props,
+  `icon` fields and `…_ICONS` tables, and this is the only one of the three
+  these names can be — nothing here is keyed `icon`. Renaming the const drops
+  the glyphs from the subset and the buttons draw "horizontal_rule" as text.
+*/
+const SHAPE_ICONS: [Shape, string][] = [
+  ["pen", "draw"],
+  ["line", "horizontal_rule"],
+  ["arrow", "north_east"],
+  ["rect", "crop_din"],
+  ["ellipse", "circle"],
+  ["text", "title"],
+];
+
 function drawArrowHead(ctx: CanvasRenderingContext2D, from: { x: number; y: number }, to: { x: number; y: number }, size: number) {
   const ang = Math.atan2(to.y - from.y, to.x - from.x);
   ctx.beginPath();
@@ -672,7 +688,7 @@ export function AllInOneEditor() {
       {tool === "annotate" && (
         <>
           <div className="grid grid-cols-6 gap-1">
-            {([["pen", "draw"], ["line", "horizontal_rule"], ["arrow", "north_east"], ["rect", "crop_din"], ["ellipse", "circle"], ["text", "title"]] as [Shape, string][]).map(([s, ic]) => (
+            {SHAPE_ICONS.map(([s, ic]) => (
               <button key={s} type="button" onClick={() => setAnnot((a) => ({ ...a, shape: s }))} aria-label={s} className={`flex items-center justify-center rounded-lg py-2 transition-colors ${annot.shape === s ? "bg-secondary text-on-secondary" : "bg-surface-container text-on-surface-variant hover:text-primary"}`}><Icon name={ic} className="text-[18px]" /></button>
             ))}
           </div>

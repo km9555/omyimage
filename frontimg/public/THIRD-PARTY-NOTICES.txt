@@ -1,7 +1,7 @@
 oMyImage — Third-Party Software Notices and Information
 ================================================================
 
-Generated: 2026-09-01
+Generated: 2026-09-09
 Packages:  50 npm production dependencies
            + 14 additional components (fonts and external binaries)
 
@@ -296,7 +296,7 @@ limitations under the License.
 
 ----------------------------------------------------------------
 
-baseline-browser-mapping@2.10.38
+baseline-browser-mapping@2.11.21
 License:    Apache-2.0
 Repository: https://github.com/web-platform-dx/baseline-browser-mapping
 
@@ -533,7 +533,7 @@ SOFTWARE.
 
 ----------------------------------------------------------------
 
-caniuse-lite@1.0.30001799
+caniuse-lite@1.0.30001810
 Author:     Ben Briggs
 License:    CC-BY-4.0
 Repository: browserslist/caniuse-lite
@@ -1888,7 +1888,7 @@ The above copyright notice and this permission notice shall be included in all c
 
 ----------------------------------------------------------------
 
-nanoid@3.3.15
+nanoid@3.3.18
 Author:     Andrey Sitnik
 License:    MIT
 Repository: ai/nanoid
@@ -2083,7 +2083,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ----------------------------------------------------------------
 
-postcss@8.5.15
+postcss@8.5.28
 Author:     Andrey Sitnik
 License:    MIT
 Repository: postcss/postcss
@@ -2361,7 +2361,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ----------------------------------------------------------------
 
-sonner@2.0.7
+sonner@2.0.8
 Author:     Emil Kowalski
 License:    MIT
 Repository: https://github.com/emilkowalski/sonner

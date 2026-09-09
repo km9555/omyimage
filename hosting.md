@@ -42,6 +42,17 @@ secrets**.
 | --- | ----- |
 | `NEXT_PUBLIC_SITE_URL` | `https://omyimage.com` |
 | `NEXT_PUBLIC_BACKEND_URL` | `https://api.omyimage.com` |
+| `NEXT_PUBLIC_GOOGLE_CLIENT_ID` | OAuth web client ID — optional |
+| `NEXT_PUBLIC_GOOGLE_PICKER_API_KEY` | Picker API key — optional |
+| `NEXT_PUBLIC_DROPBOX_APP_KEY` | Dropbox app key — optional |
+
+The three optional keys switch on the cloud-import buttons. Leaving one blank is
+a valid deploy, not an error: the button it drives just does not render. They are
+public identifiers that ship in the browser bundle, so none of them is a secret.
+The Dropbox key additionally needs `omyimage.com`, `www.omyimage.com` and
+`omyimage.pages.dev` listed under **Chooser / Saver / Embedder domains** in the
+Dropbox App Console — that list is matched against the origin serving the page,
+and a missing entry makes the chooser popup open and refuse.
 
 > ⚠ **These are read at BUILD time, and they are load-bearing.** If
 > `NEXT_PUBLIC_BACKEND_URL` is unset, `frontimg/src/lib/site.ts` falls back to

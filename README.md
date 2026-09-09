@@ -54,18 +54,31 @@ libheif — server-side for *licensing* reasons, see `LICENSE-AUDIT.md` F1),
 
 ## Configuration
 
-`frontimg` reads exactly two env vars, both at **build** time:
+`frontimg` reads these env vars, all at **build** time. The first two are
+required; the rest each switch on one optional feature, and a blank value simply
+means that feature does not render.
 
-| Var | Value |
-|---|---|
-| `NEXT_PUBLIC_BACKEND_URL` | `https://api.omyimage.com` |
-| `NEXT_PUBLIC_SITE_URL` | `https://omyimage.com` |
+| Var | Value | Required |
+|---|---|---|
+| `NEXT_PUBLIC_BACKEND_URL` | `https://api.omyimage.com` | yes |
+| `NEXT_PUBLIC_SITE_URL` | `https://omyimage.com` | yes |
+| `NEXT_PUBLIC_GA_ID` | GA4 measurement ID | no — falls back to the production property |
+| `NEXT_PUBLIC_GOOGLE_CLIENT_ID` | OAuth web client ID | no — blank hides "import from Google Drive" |
+| `NEXT_PUBLIC_GOOGLE_PICKER_API_KEY` | Picker API key | no — same |
+| `NEXT_PUBLIC_DROPBOX_APP_KEY` | Dropbox app key | no — blank hides "import from Dropbox" |
+
+Every one of them is public: they ship inside the browser bundle by design. No
+secret belongs in this list. See `frontimg/.env.local.example` for how the cloud
+import credentials are obtained, and `frontimg/next.config.ts` for why each var
+also has to be declared in its `env` block.
 
 These must be set in **Cloudflare Pages → Settings → Variables and secrets**, and
 they only take effect on the next build. If `NEXT_PUBLIC_BACKEND_URL` is missing,
 `src/lib/site.ts` falls back to `http://localhost:5000` — which works locally and
 silently breaks every server tool in production. That is not hypothetical; it is
-exactly what happened before 2026-08-11.
+exactly what happened before 2026-08-11. The optional keys fail more quietly: a
+missing cloud-import key gives you a working site where the import button is
+simply absent in production while it works on your machine.
 
 ## Status
 

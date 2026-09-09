@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { Icon } from "@/components/Icon";
 import { CloudImportBar } from "@/components/CloudImportBar";
+import { extensionsFromAccept } from "@/lib/dropbox";
 
 /**
  * Shared empty-state drop zone for image tools. Click to pick or drag & drop.
@@ -118,10 +119,20 @@ export function Dropzone({
         </div>
         {/*
           Cloud import sits inside the drop zone so every tool gains it at once.
-          It renders nothing when Drive is unconfigured, and stops click
-          propagation so the chip does not also open the native file dialog.
+          It renders nothing when no provider is configured, and stops click
+          propagation so a chip does not also open the native file dialog.
+
+          The two providers need the same filter in opposite formats: Drive
+          takes mime types, the Dropbox Chooser takes extensions. Note the
+          Chooser gets the raw `accept`, because `extensionsFromAccept` reads
+          both halves of it — so the bare ".heic" that `mimeOnly` has to throw
+          away is exactly what /heic-to-jpg needs the Chooser to filter on.
         */}
-        <CloudImportBar onFiles={onFiles} mimeTypes={cloudMimeTypes ?? mimeOnly(accept)} />
+        <CloudImportBar
+          onFiles={onFiles}
+          mimeTypes={cloudMimeTypes ?? mimeOnly(accept)}
+          extensions={extensionsFromAccept(cloudMimeTypes ?? accept)}
+        />
 
         <p className="mt-1 flex items-center gap-1.5 text-label-sm font-label-sm text-on-surface-variant/70">
           <Icon name="lock" className="text-[14px]" /> {privacyNote}

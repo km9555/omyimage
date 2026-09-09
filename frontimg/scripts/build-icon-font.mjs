@@ -18,16 +18,17 @@
  * pure local file comparison, so it costs nothing and cannot flake.
  *
  * ── How icon names are discovered ───────────────────────────────────────────
- * Every lowercase_snake string literal in src/ is intersected with the official
- * Material Symbols name list (scripts/material-symbols.codepoints, committed).
- * That is deliberately broader than "parse the <Icon name=…> props": names also
- * reach <Icon> through data (`icon:` fields in tools.ts, nav-sections.ts,
- * converters) and through inline tuples — e.g. AllInOneEditor's annotate
- * toolbar holds `["line", "horizontal_rule"]`, whose glyph no prop-scanner
- * would ever see. A missed name renders as literal text like "horizontal_rule"
- * in the UI, so the scan errs toward including too much. The cost of a false
- * positive (a real icon name that is also an ordinary word, like "code" or
- * "image") is a few hundred bytes of glyph.
+ * Names are read out of the four SYNTACTIC POSITIONS that reach <Icon>, and
+ * intersected with the official Material Symbols name list
+ * (scripts/material-symbols.codepoints, committed). See the scan below for
+ * what each position looks like.
+ *
+ * This used to be a single regex — every lowercase_snake string literal in
+ * src/, intersected with the same list. It needed no positions, but it fired
+ * on ordinary English. Adding the string "preview" to a Dropbox type shim
+ * failed the build with an error naming an icon nobody had touched, and the
+ * only fix was to delete the word; src/lib/dropbox.ts still carries the
+ * comment from that hunt.
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, rmSync } from "node:fs";
 import { createHash } from "node:crypto";
@@ -77,21 +78,180 @@ if (valid.size === 0) {
   process.exit(1);
 }
 
+// Only .ts/.tsx: every glyph is drawn by <Icon>, which takes its name from
+// JavaScript. No stylesheet names an icon (globals.css sets the axes, nothing
+// else), so CSS has nothing to contribute but false positives.
 const files = [];
 (function walk(dir) {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const p = join(dir, entry.name);
     if (entry.isDirectory()) walk(p);
-    else if (/\.(tsx?|css)$/.test(entry.name)) files.push(p);
+    else if (/\.tsx?$/.test(entry.name)) files.push(p);
   }
 })(srcDir);
 
-const ICON_TOKEN = /["'`]([a-z][a-z0-9]*(?:_[a-z0-9]+)*)["'`]/g;
+/*
+  ── The four positions ──────────────────────────────────────────────────────
+
+    1. <Icon name={…}>   the component itself, including the ternaries it is
+                         usually written with:
+                           <Icon name={busy ? "progress_activity" : "save"} />
+
+    2. a prop whose NAME ends in `icon`/`Icon`
+                           <Dropzone icon="crop_din" … />
+                           <IconButton icon={shell.settingsIcon ?? "tune"} />
+
+    3. an object field whose NAME ends in `icon`/`Icon`
+                           { icon: "lock", title: "100% private", … }
+                         the feature cards under src/app/…/page.tsx, TOOLS,
+                         nav-sections, the converters and every tray/rail
+                         entry are all this shape.
+
+    4. a `const …_ICON(S)` table
+                           const PILL_ICONS = { all: "apps", … }
+                         for the handful of names that reach <Icon> through a
+                         lookup or a tuple, where there is no `icon` key to
+                         key off — AllInOneEditor's annotate toolbar and
+                         ToolDirectory's category pills.
+
+  What this gives up: a name reaching <Icon> through none of the four is not
+  seen, and its glyph renders as its own text — "photo_camera" where the
+  camera belongs. Position 4 is the escape hatch for exactly that case, and
+  the reason it exists: hoist the names into a `…_ICONS` const and the scan
+  finds them again.
+
+  The helpers below skip over string and comment bodies so that structure is
+  never read out of prose, and read each value as a balanced expression so
+  that ternaries, `??` chains and nested objects come through whole.
+*/
+const QUOTES = new Set(['"', "'", "`"]);
+const OPEN = "([{";
+const CLOSE = ")]}";
+
+/** Index just past the string or template literal opening at `i`. */
+function endOfString(src, i) {
+  const q = src[i];
+  for (let j = i + 1; j < src.length; j++) {
+    const c = src[j];
+    if (c === "\\") { j++; continue; }
+    if (c === q) return j + 1;
+    // `${…}` can hold anything, quotes and JSX included — step over it whole.
+    if (q === "`" && c === "$" && src[j + 1] === "{") { j = endOfBalanced(src, j + 1) - 1; continue; }
+    if (q !== "`" && (c === "\n" || c === "\r")) return j; // unterminated
+  }
+  return src.length;
+}
+
+/** Index just past a comment starting at `i`, or -1 if `i` starts no comment. */
+function endOfComment(src, i) {
+  if (src[i] !== "/") return -1;
+  if (src[i + 1] === "/") {
+    const nl = src.indexOf("\n", i);
+    return nl < 0 ? src.length : nl;
+  }
+  if (src[i + 1] === "*") {
+    const close = src.indexOf("*/", i + 2);
+    return close < 0 ? src.length : close + 2;
+  }
+  return -1;
+}
+
+/** Index just past the bracket pair opening at `i`. */
+function endOfBalanced(src, i) {
+  const stack = [CLOSE[OPEN.indexOf(src[i])]];
+  for (let j = i + 1; j < src.length; j++) {
+    const c = src[j];
+    if (QUOTES.has(c)) { j = endOfString(src, j) - 1; continue; }
+    const cmt = endOfComment(src, j);
+    if (cmt >= 0) { j = cmt - 1; continue; }
+    if (OPEN.includes(c)) { stack.push(CLOSE[OPEN.indexOf(c)]); continue; }
+    if (c === stack[stack.length - 1]) {
+      stack.pop();
+      if (stack.length === 0) return j + 1;
+    }
+  }
+  return src.length;
+}
+
+/** Index just past the `>` closing the JSX opening tag that starts at `i`. */
+function endOfTag(src, i) {
+  for (let j = i + 1; j < src.length; j++) {
+    const c = src[j];
+    if (QUOTES.has(c)) { j = endOfString(src, j) - 1; continue; }
+    const cmt = endOfComment(src, j);
+    if (cmt >= 0) { j = cmt - 1; continue; }
+    if (OPEN.includes(c)) { j = endOfBalanced(src, j) - 1; continue; }
+    if (c === ">") return j + 1;
+  }
+  return src.length;
+}
+
+/** `[from, to)` of the value that follows the `=` or `:` ending at `i`. */
+function valueSpan(src, i) {
+  let j = i;
+  for (;;) {
+    while (j < src.length && /\s/.test(src[j])) j++;
+    const cmt = endOfComment(src, j);
+    if (cmt < 0) break;
+    j = cmt;
+  }
+  if (QUOTES.has(src[j])) return [j, endOfString(src, j)];
+  if (OPEN.includes(src[j])) return [j, endOfBalanced(src, j)];
+  // A bare expression (`shell.settingsIcon ?? "tune"`). Runs to the first
+  // separator at depth 0; capped so a stray match in prose cannot run away.
+  const limit = Math.min(src.length, j + 400);
+  for (let k = j; k < limit; k++) {
+    const c = src[k];
+    if (QUOTES.has(c)) { k = endOfString(src, k) - 1; continue; }
+    if (OPEN.includes(c)) { k = endOfBalanced(src, k) - 1; continue; }
+    if (c === "," || c === ";" || c === "\n" || CLOSE.includes(c)) return [j, k];
+  }
+  return [j, limit];
+}
+
+/** Every plain string literal in `[from, to)`; templates with `${}` are skipped. */
+function* literalsIn(src, from, to) {
+  for (let j = from; j < to; j++) {
+    const cmt = endOfComment(src, j);
+    if (cmt >= 0) { j = cmt - 1; continue; }
+    if (!QUOTES.has(src[j])) continue;
+    const end = endOfString(src, j);
+    const body = src.slice(j + 1, end - 1);
+    if (!body.includes("${")) yield body;
+    j = end - 1;
+  }
+}
+
+const ICON_TAG = /<Icon(?![A-Za-z0-9_$])/g;
+const NAME_ATTR = /(?<![A-Za-z0-9_$])name\s*=(?![=>])/g;
+// Every `ident =` / `ident :`; the `icon`/`Icon` suffix is checked after, so
+// that `settingsIcon:` counts and `settingsIcon?:` (a type, no value) does not.
+const KEYED = /(?<![A-Za-z0-9_$])([A-Za-z_$][A-Za-z0-9_$]*)\s*(?:=(?![=>])|:)/g;
+const TABLE = /(?<![A-Za-z0-9_$])(?:const|let|var)\s+(?:[A-Z][A-Z0-9_$]*_)?ICONS?\s*(?::[^=;]*)?=/g;
+
 const used = new Set();
+const add = (name) => {
+  if (valid.has(name)) used.add(name);
+};
+const addSpan = (src, at) => {
+  const [from, to] = valueSpan(src, at);
+  for (const lit of literalsIn(src, from, to)) add(lit);
+};
+
 for (const file of files) {
-  const text = readFileSync(file, "utf8");
-  for (const m of text.matchAll(ICON_TOKEN)) {
-    if (valid.has(m[1])) used.add(m[1]);
+  const src = readFileSync(file, "utf8");
+
+  for (const tag of src.matchAll(ICON_TAG)) {
+    const inner = src.slice(tag.index, endOfTag(src, tag.index));
+    for (const attr of inner.matchAll(NAME_ATTR)) {
+      addSpan(src, tag.index + attr.index + attr[0].length);
+    }
+  }
+  for (const m of src.matchAll(KEYED)) {
+    if (/[Ii]con$/.test(m[1])) addSpan(src, m.index + m[0].length);
+  }
+  for (const m of src.matchAll(TABLE)) {
+    addSpan(src, m.index + m[0].length);
   }
 }
 const icons = [...used].sort();

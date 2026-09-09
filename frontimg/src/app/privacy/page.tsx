@@ -27,12 +27,13 @@ const toc = [
   { id: "storage", title: "5. Browser storage" },
   { id: "subprocessors", title: "6. Third-party services" },
   { id: "google-drive", title: "7. Google Drive import" },
-  { id: "future", title: "8. Planned features" },
-  { id: "rights", title: "9. Your rights" },
-  { id: "children", title: "10. Children" },
-  { id: "security", title: "11. Security" },
-  { id: "changes", title: "12. Changes" },
-  { id: "contact", title: "13. Contact" },
+  { id: "dropbox", title: "8. Dropbox import" },
+  { id: "future", title: "9. Planned features" },
+  { id: "rights", title: "10. Your rights" },
+  { id: "children", title: "11. Children" },
+  { id: "security", title: "12. Security" },
+  { id: "changes", title: "13. Changes" },
+  { id: "contact", title: "14. Contact" },
 ];
 
 export default function PrivacyPage() {
@@ -40,7 +41,7 @@ export default function PrivacyPage() {
     <LegalShell
       title="Privacy Policy"
       subtitle="What happens to your images and your data when you use oMyImage."
-      updated="19 August 2026"
+      updated="9 September 2026"
       toc={toc}
     >
       <LegalSection id="summary" title="Summary">
@@ -199,6 +200,7 @@ export default function PrivacyPage() {
             ["Google Fonts", "Serves the icon font used across the interface", "policies.google.com/privacy"],
             ["Google Analytics", "Aggregate usage measurement, loaded only if you accept analytics cookies", "policies.google.com/privacy"],
             ["Google Drive (optional)", "Imports only the files you pick, and only when you use it — see section 7", "policies.google.com/privacy"],
+            ["Dropbox (optional)", "Imports only the files you pick, and only when you use it — see section 8", "dropbox.com/privacy"],
           ]}
         />
         <LegalP>
@@ -295,7 +297,64 @@ export default function PrivacyPage() {
         </LegalP>
       </LegalSection>
 
-      <LegalSection id="future" title="8. Planned features">
+      {/*
+        Dropbox disclosure.
+
+        Deliberately shorter than section 7. That section is long because
+        Google's OAuth verification audits it against the scope requested in
+        lib/google-drive.ts. Dropbox has no equivalent review, and the Chooser
+        asks for far less: no account is linked and no token is ever issued, so
+        there is nothing here to say about scopes or revoking access. Keep this
+        in sync with lib/dropbox.ts if the integration ever moves off the
+        Chooser and onto the Dropbox API, which WOULD mean OAuth and a token.
+      */}
+      <LegalSection id="dropbox" title="8. Dropbox import">
+        <LegalP>
+          Connecting Dropbox is optional, and works the same way as Google Drive: it exists only so
+          you can pick an image you already keep in Dropbox instead of uploading it from your
+          device. Every tool on oMyImage works without it, and nothing on the site asks you to sign
+          in.
+        </LegalP>
+
+        <LegalP>
+          Choosing &quot;Dropbox&quot; opens Dropbox&apos;s own file chooser in a popup window. The
+          browsing and selecting happen entirely inside that window, which belongs to Dropbox — we
+          never see your folders, your file names, or anything you do not pick.
+        </LegalP>
+
+        <LegalUl>
+          <li>
+            No account is linked and no access token is issued. Unlike the Google Drive import,
+            there is no permission to grant and nothing to revoke afterwards.
+          </li>
+          <li>
+            Dropbox hands back a temporary download link for each file you picked, valid for a few
+            hours. Your browser uses it immediately and then forgets it; the link is never sent to
+            our servers or written to disk.
+          </li>
+          <li>
+            The file is downloaded from Dropbox straight into your browser. It does not pass
+            through our servers on the way in.
+          </li>
+          <li>
+            From that point the file is treated exactly like one you dragged in from your desktop —
+            processed in your browser, or uploaded to our server only if you chose a tool that says
+            it uploads, under the same retention rules described in sections 2 and 3.
+          </li>
+          <li>
+            We do not keep a copy of your Dropbox files, do not index them, and do not retain any
+            record of what you imported.
+          </li>
+        </LegalUl>
+
+        <LegalP>
+          Dropbox sees this as a visit to Dropbox, and its own privacy policy applies to what
+          happens inside that window. The Dropbox code is loaded only when you reach for the
+          button, so visitors who never use the feature are never in touch with Dropbox at all.
+        </LegalP>
+      </LegalSection>
+
+      <LegalSection id="future" title="9. Planned features">
         <LegalP>
           Some features are planned but not yet live. We are describing them here in advance so this
           policy stays honest as they arrive, and so you know what to expect. <strong>None of the
@@ -320,7 +379,7 @@ export default function PrivacyPage() {
         </LegalP>
       </LegalSection>
 
-      <LegalSection id="rights" title="9. Your rights">
+      <LegalSection id="rights" title="10. Your rights">
         <LegalP>
           Depending on where you live, you may have rights to access, correct, export or erase
           personal data held about you, and to object to certain processing. Because we do not
@@ -337,7 +396,7 @@ export default function PrivacyPage() {
         </LegalP>
       </LegalSection>
 
-      <LegalSection id="children" title="10. Children">
+      <LegalSection id="children" title="11. Children">
         <LegalP>
           oMyImage is a general-purpose utility and is not directed at children. We do not knowingly
           collect personal data from children. Since using the tools requires no account and no
@@ -345,7 +404,7 @@ export default function PrivacyPage() {
         </LegalP>
       </LegalSection>
 
-      <LegalSection id="security" title="11. Security">
+      <LegalSection id="security" title="12. Security">
         <LegalP>
           The site is served over HTTPS. Uploads to our server are encrypted in transit, processed in
           isolation, and deleted on the schedule described above. We apply rate limits and upload
@@ -358,7 +417,7 @@ export default function PrivacyPage() {
         </LegalP>
       </LegalSection>
 
-      <LegalSection id="changes" title="12. Changes">
+      <LegalSection id="changes" title="13. Changes">
         <LegalP>
           We may update this policy as the service evolves. The &quot;last updated&quot; date at the
           top of this page always reflects the current version. Material changes will be reflected
@@ -366,7 +425,7 @@ export default function PrivacyPage() {
         </LegalP>
       </LegalSection>
 
-      <LegalSection id="contact" title="13. Contact">
+      <LegalSection id="contact" title="14. Contact">
         <LegalP>
           Questions about this policy, or about how your data is handled, can be sent through the
           options on our{" "}

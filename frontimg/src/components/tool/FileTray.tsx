@@ -118,7 +118,8 @@ export function FileTray({
           )}
           {onFiles && (
             <>
-              {/* Renders nothing unless Google Drive is configured. */}
+              {/* Renders nothing unless Google Drive or Dropbox is configured.
+                  No filter is passed, so both offer every image type. */}
               <CloudImportBar onFiles={onFiles} variant="icon" />
               <button
                 type="button"

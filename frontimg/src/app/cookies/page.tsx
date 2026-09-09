@@ -184,10 +184,15 @@ export default function CookiesPage() {
               "Only if you use Drive import. The access token is held in memory for that visit and never stored",
               "policies.google.com/privacy",
             ],
+            [
+              "Dropbox (optional)",
+              "Only if you use Dropbox import. Its chooser runs in a Dropbox popup window; no account is linked and no token is issued",
+              "dropbox.com/privacy",
+            ],
           ]}
         />
         <LegalP>
-          The Google Drive integration is described in full in section 7 of our{" "}
+          The cloud imports are described in full in sections 7 and 8 of our{" "}
           <Link href="/privacy#google-drive" className="text-secondary hover:underline">
             Privacy Policy
           </Link>
