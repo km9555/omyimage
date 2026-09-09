@@ -14,7 +14,10 @@ import { RegionEditor } from "@/components/image/RegionEditor";
 import {
   decodeBitmap, canvasToBlob, downloadBlob, zipAndDownload, formatBytes, baseName, mimeExt, type ExportMime,
 } from "@/lib/image/raster";
-import { renderRedacted, type RedactStyle, type Region, type RegionShape } from "@/lib/image/redact";
+import {
+  legacyToEffect, renderRedacted,
+  type RedactStyle, type Region, type RegionShape,
+} from "@/lib/image/redact";
 import { useHandoff } from "@/lib/tool-handoff";
 
 const ACCENT = "#3E8CA6";
@@ -231,9 +234,10 @@ export function BlurImageTool() {
               onChange={(next) => { setRegions(next); setDone(false); }}
               selectedId={selectedRegion}
               onSelect={setSelectedRegion}
-              style={style}
-              strength={radius}
-              solidColor={resolveBg(bg) ?? "#000000"}
+              /* The rail still speaks style + pixel radius; the editor now
+                 speaks effect + 0-100 intensity. Convert at the boundary. */
+              {...legacyToEffect(style, radius, activeBmp?.width ?? 1, activeBmp?.height ?? 1)}
+              color={resolveBg(bg) ?? "#000000"}
               invert={invert}
               shape={shape}
               accent={ACCENT}

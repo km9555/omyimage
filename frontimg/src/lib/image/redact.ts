@@ -10,12 +10,22 @@
  * `renderRedacted` touches a canvas.
  */
 
+import { renderMasked } from "./mask";
+import type { EffectId } from "./effects";
+
 export type RegionShape = "rect" | "ellipse";
 export type RedactStyle = "blur" | "pixelate" | "solid";
+
+/** Where a region came from, so the mask list can name and group them. */
+export type RegionSource = "face" | "text" | "shape";
 
 export interface Region {
   id: string;
   shape: RegionShape;
+  /** Defaults to "shape" — anything the user drew by hand. */
+  source?: RegionSource;
+  /** Muted in the mask list: still listed and outlined, but has no effect. */
+  hidden?: boolean;
   /** Normalised bounds, 0–1, always with positive width/height. */
   x: number;
   y: number;
@@ -200,7 +210,7 @@ export interface RedactOptions {
  * survived to be clipped, and the invert case threw away the full-canvas
  * rectangle that makes the even-odd hole work. The caller opens the path.
  */
-function addRegionPath(ctx: CanvasRenderingContext2D, r: Rect, shape: RegionShape) {
+export function addRegionPath(ctx: CanvasRenderingContext2D, r: Rect, shape: RegionShape) {
   if (shape === "ellipse") {
     ctx.moveTo(r.x + r.w, r.y + r.h / 2);
     ctx.ellipse(r.x + r.w / 2, r.y + r.h / 2, r.w / 2, r.h / 2, 0, 0, Math.PI * 2);
@@ -210,17 +220,13 @@ function addRegionPath(ctx: CanvasRenderingContext2D, r: Rect, shape: RegionShap
   ctx.closePath();
 }
 
-/** Scratch canvas reused across pixelate regions and repaints. */
-let scratch: HTMLCanvasElement | null = null;
-const getScratch = () => (scratch ??= document.createElement("canvas"));
-
 /**
  * Draw the image with the given regions redacted.
  *
- * The blurred copy is produced **once** per call and composited per region. The
- * previous implementation re-drew the entire bitmap through a blur filter for
- * every region, so N regions cost N full-image blurs on every repaint — which
- * on a slider drag meant N blurs per frame.
+ * Kept as the old style/strength API because /blur-image and `RegionEditor`
+ * speak it, but the work now happens in `lib/image/mask.ts` — one shared alpha
+ * mask instead of a clip path, so brush strokes and regions can compose. The
+ * three legacy styles map onto the effect ids one for one.
  */
 export function renderRedacted(
   canvas: HTMLCanvasElement,
@@ -228,68 +234,54 @@ export function renderRedacted(
   regions: Region[],
   opts: RedactOptions
 ): void {
-  const W = bmp.width;
-  const H = bmp.height;
-  canvas.width = W;
-  canvas.height = H;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return;
+  renderMasked(canvas, bmp, bmp.width, bmp.height, {
+    regions,
+    strokes: [],
+    invert: opts.invert,
+    effect: STYLE_EFFECT[opts.style],
+    /* The old API is in pixels — a blur radius or a block size — while the new
+       one takes a 0-100 slider. Convert rather than reinterpret, or every
+       existing /blur-image setting would silently change meaning. */
+    intensity: strengthToIntensity(opts.style, opts.strength, bmp.width, bmp.height),
+    color: opts.solidColor ?? "#000000",
+    background: opts.background,
+  });
+}
 
-  if (opts.background) {
-    ctx.fillStyle = opts.background;
-    ctx.fillRect(0, 0, W, H);
-  }
-  ctx.drawImage(bmp, 0, 0);
+/**
+ * Translate the legacy style/strength pair into the new effect/intensity one.
+ *
+ * Exported so /blur-image can keep its pixel-valued radius slider while handing
+ * `RegionEditor` what it now speaks, without either side guessing at the other
+ * side's scale.
+ */
+export function legacyToEffect(
+  style: RedactStyle,
+  strength: number,
+  W: number,
+  H: number
+): { effect: EffectId; intensity: number } {
+  return { effect: STYLE_EFFECT[style], intensity: strengthToIntensity(style, strength, W, H) };
+}
 
-  const usable = regions.filter((r) => r.w > 0 && r.h > 0);
-  if (usable.length === 0) return;
+const STYLE_EFFECT: Record<RedactStyle, EffectId> = {
+  blur: "gaussian",
+  pixelate: "pixelate",
+  solid: "color",
+};
 
-  // Build the redacted layer once, then reveal it only where it belongs.
-  const layer = getScratch();
-  layer.width = W;
-  layer.height = H;
-  const lctx = layer.getContext("2d", { willReadFrequently: false });
-  if (!lctx) return;
-  lctx.setTransform(1, 0, 0, 1, 0, 0);
-  lctx.clearRect(0, 0, W, H);
-
-  if (opts.style === "solid") {
-    lctx.fillStyle = opts.solidColor ?? "#000000";
-    lctx.fillRect(0, 0, W, H);
-  } else if (opts.style === "blur") {
-    lctx.filter = `blur(${Math.max(1, opts.strength)}px)`;
-    lctx.drawImage(bmp, 0, 0);
-    lctx.filter = "none";
-  } else {
-    // Pixelate: shrink then scale back up with smoothing off.
-    const px = Math.max(2, opts.strength);
-    const sw = Math.max(1, Math.round(W / px));
-    const sh = Math.max(1, Math.round(H / px));
-    const tiny = document.createElement("canvas");
-    tiny.width = sw;
-    tiny.height = sh;
-    const tctx = tiny.getContext("2d");
-    if (!tctx) return;
-    tctx.drawImage(bmp, 0, 0, sw, sh);
-    lctx.imageSmoothingEnabled = false;
-    lctx.drawImage(tiny, 0, 0, sw, sh, 0, 0, W, H);
-    lctx.imageSmoothingEnabled = true;
-  }
-
-  ctx.save();
-  // One path holding every region as a sub-path, so all of them clip — not
-  // just the last.
-  ctx.beginPath();
-  if (opts.invert) {
-    // Even-odd with a full-canvas rect leaves the regions as holes, so the
-    // redacted layer lands everywhere except inside them.
-    ctx.rect(0, 0, W, H);
-    for (const r of usable) addRegionPath(ctx, toPixels(r, W, H), r.shape);
-    ctx.clip("evenodd");
-  } else {
-    for (const r of usable) addRegionPath(ctx, toPixels(r, W, H), r.shape);
-    ctx.clip();
-  }
-  ctx.drawImage(layer, 0, 0);
-  ctx.restore();
+/**
+ * Invert the effect module's intensity mapping, so a legacy pixel value lands
+ * on the same pixel value after the round trip.
+ */
+function strengthToIntensity(style: RedactStyle, strength: number, W: number, H: number): number {
+  if (style === "solid") return 100;
+  const diag = Math.hypot(W, H);
+  /* Must mirror `blurCeiling`/`blockCeiling` in effects.ts exactly — this is
+     the inverse of that mapping, and a drift between them shows up as a
+     slider whose top end quietly stops responding. */
+  const max = style === "blur" ? Math.max(64, diag * 0.05) : Math.max(64, diag * 0.06);
+  const min = style === "blur" ? 1 : 2;
+  if (max <= min) return 100;
+  return Math.max(0, Math.min(100, ((strength - min) / (max - min)) * 100));
 }

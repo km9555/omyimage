@@ -4,9 +4,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useCoarsePointer } from "@/lib/use-is-mobile";
 import {
   CURSOR_FOR, MIN_SIZE, clampRegion, handlePoints, moveRegion, pickRegion,
-  regionFromPoints, renderRedacted, resizeRegionByHandle, toPixels,
-  type Handle, type RedactStyle, type Region, type RegionShape,
+  regionFromPoints, resizeRegionByHandle, toPixels,
+  type Handle, type Region, type RegionShape,
 } from "@/lib/image/redact";
+import { newStrokeId, renderMasked, type BrushStroke } from "@/lib/image/mask";
+import type { EffectId } from "@/lib/image/effects";
 
 /*
   Grip sizes, in SCREEN pixels — deliberately not image pixels.
@@ -23,6 +25,9 @@ const TOL_SCREEN_COARSE = 24;
 const HANDLE_R_SCREEN = 5;
 const HANDLE_R_SCREEN_COARSE = 9;
 
+/** Stable identity so the default prop does not retrigger the repaint effect. */
+const NO_STROKES: BrushStroke[] = [];
+
 /**
  * Canvas editor for redaction regions, shared by /blur-face and /blur-image.
  *
@@ -38,31 +43,53 @@ export function RegionEditor({
   onChange,
   selectedId,
   onSelect,
-  style,
-  strength,
-  solidColor,
+  effect,
+  intensity,
+  color,
   invert = false,
   shape = "rect",
   accent,
   disabled = false,
+  strokes = NO_STROKES,
+  onStrokesChange,
+  brush = null,
 }: {
   bitmap: ImageBitmap | null;
   regions: Region[];
   onChange: (next: Region[]) => void;
   selectedId: string | null;
   onSelect: (id: string | null) => void;
-  style: RedactStyle;
-  strength: number;
-  solidColor?: string;
+  effect: EffectId;
+  /** 0-100 slider value. */
+  intensity: number;
+  /** Fill for the `color` effect. */
+  color?: string;
   invert?: boolean;
   /** Shape used for newly drawn regions. */
   shape?: RegionShape;
   accent: string;
   disabled?: boolean;
+  /** Brush strokes painted into the same mask as the regions. */
+  strokes?: BrushStroke[];
+  onStrokesChange?: (next: BrushStroke[]) => void;
+  /**
+   * Non-null puts the canvas in brush mode: dragging paints instead of drawing
+   * or moving regions. `size` is a fraction of the longest side.
+   */
+  brush?: { mode: "add" | "erase"; size: number; fade: number } | null;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [draft, setDraftState] = useState<Region | null>(null);
   const [cursor, setCursor] = useState("crosshair");
+  /* The stroke under the pointer, mirrored into a ref for the same reason the
+     region draft is: the pointerup handler has to read the finished stroke
+     synchronously, and a state updater would not have run yet. */
+  const [wet, setWetState] = useState<BrushStroke | null>(null);
+  const wetRef = useRef<BrushStroke | null>(null);
+  const setWet = useCallback((next: BrushStroke | null) => {
+    wetRef.current = next;
+    setWetState(next);
+  }, []);
 
   /*
     The in-progress draft is mirrored into a ref so `endDrag` can read the very
@@ -128,13 +155,25 @@ export function RegionEditor({
     [regions, draft]
   );
 
+  const liveStrokes = useMemo(
+    () => (wet ? [...strokes, wet] : strokes),
+    [strokes, wet]
+  );
+
   // Repaint whenever anything visual changes. Note this does NOT re-decode the
   // image — the bitmap is owned by the caller. The old tools re-ran
   // `decodeBitmap` on every pointer move and every slider tick.
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || !bitmap) return;
-    renderRedacted(canvas, bitmap, visible, { style, strength, solidColor, invert });
+    renderMasked(canvas, bitmap, W, H, {
+      regions: visible,
+      strokes: liveStrokes,
+      invert,
+      effect,
+      intensity,
+      color,
+    });
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
@@ -173,7 +212,7 @@ export function RegionEditor({
         }
       }
     }
-  }, [bitmap, visible, style, strength, solidColor, invert, selectedId, draft, accent, W, H, imgPerScreenPx, handleR]);
+  }, [bitmap, visible, liveStrokes, effect, intensity, color, invert, selectedId, draft, accent, W, H, imgPerScreenPx, handleR]);
 
   /** Pointer position in image pixels. */
   const toImage = useCallback((e: React.PointerEvent<HTMLCanvasElement>) => {
@@ -189,8 +228,22 @@ export function RegionEditor({
     if (!bitmap || disabled) return;
     e.preventDefault();
     const { x, y } = toImage(e);
-    const hit = pickRegion(x, y, regionsRef.current, W, H, tol);
     e.currentTarget.setPointerCapture(e.pointerId);
+
+    /* Brush mode owns the pointer: no region hit-testing, no selection. Mixing
+       the two would mean a stroke that starts on a face silently drags it. */
+    if (brush) {
+      setWet({
+        id: newStrokeId(),
+        mode: brush.mode,
+        size: brush.size,
+        fade: brush.fade,
+        points: [{ x: x / W, y: y / H }],
+      });
+      return;
+    }
+
+    const hit = pickRegion(x, y, regionsRef.current, W, H, tol);
 
     if (hit && hit.target === "inside") {
       onSelect(hit.region.id);
@@ -210,6 +263,14 @@ export function RegionEditor({
   const onPointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
     if (!bitmap || disabled) return;
     const { x, y } = toImage(e);
+
+    if (brush) {
+      const cur = wetRef.current;
+      if (!cur) return;
+      setWet({ ...cur, points: [...cur.points, { x: x / W, y: y / H }] });
+      return;
+    }
+
     const d = drag.current;
 
     if (!d) {
@@ -247,6 +308,13 @@ export function RegionEditor({
     drag.current = null;
     if (e.currentTarget.hasPointerCapture(e.pointerId)) {
       e.currentTarget.releasePointerCapture(e.pointerId);
+    }
+
+    if (brush) {
+      const finished = wetRef.current;
+      setWet(null);
+      if (finished && finished.points.length > 0) onStrokesChange?.([...strokes, finished]);
+      return;
     }
     if (d?.kind === "draw") {
       const current = draftRef.current;
@@ -287,14 +355,18 @@ export function RegionEditor({
       ref={canvasRef}
       tabIndex={0}
       role="application"
-      aria-label="Redaction area. Drag to draw a region, click one to select it, drag its handles to resize, Delete to remove, arrow keys to nudge."
+      aria-label={
+        brush
+          ? "Redaction area. Drag to paint over what you want hidden."
+          : "Redaction area. Drag to draw a region, click one to select it, drag its handles to resize, Delete to remove, arrow keys to nudge."
+      }
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={endDrag}
       onPointerCancel={endDrag}
       onKeyDown={onKeyDown}
       className="max-w-full max-h-[calc(100dvh-14rem)] rounded touch-none select-none outline-none focus-visible:ring-2 focus-visible:ring-secondary"
-      style={{ cursor: disabled ? "default" : cursor, touchAction: "none" }}
+      style={{ cursor: disabled ? "default" : brush ? "crosshair" : cursor, touchAction: "none" }}
     />
   );
 }

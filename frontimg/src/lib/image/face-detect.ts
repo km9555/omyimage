@@ -124,6 +124,7 @@ export async function detectFaces(
     out.push(
       clampRegion({
         id: newRegionId(),
+        source: "face",
         shape,
         x: box.originX / bmp.width - padX,
         y: box.originY / bmp.height - padY,
