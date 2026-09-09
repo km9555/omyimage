@@ -29,6 +29,7 @@ export const CONVERTER_PAIRS: ConverterPair[] = [
     sourceKinds: ["webp"],
     flatten: false,
     quality: false,
+    metadata: true,
     aliases: ["webp2png", "open webp", "webp converter", "save webp as png"],
     rating: { value: "4.8", count: "471" },
     unique: {
@@ -91,6 +92,7 @@ export const CONVERTER_PAIRS: ConverterPair[] = [
     sourceKinds: ["webp"],
     flatten: true,
     quality: true,
+    metadata: true,
     aliases: ["webp2jpg", "webp to jpeg", "save webp as jpg"],
     rating: { value: "4.8", count: "612" },
     unique: {
@@ -134,6 +136,7 @@ export const CONVERTER_PAIRS: ConverterPair[] = [
     sourceKinds: ["jpeg"],
     flatten: false,
     quality: true,
+    metadata: false,
     aliases: ["jpg2webp", "jpeg to webp", "compress jpg to webp", "webp for website"],
     rating: { value: "4.9", count: "588" },
     unique: {
@@ -178,6 +181,7 @@ export const CONVERTER_PAIRS: ConverterPair[] = [
     sourceKinds: ["png"],
     flatten: false,
     quality: true,
+    metadata: false,
     aliases: ["png2webp", "shrink png", "webp with transparency"],
     rating: { value: "4.8", count: "534" },
     unique: {
@@ -221,6 +225,7 @@ export const CONVERTER_PAIRS: ConverterPair[] = [
     sourceKinds: ["jpeg"],
     flatten: true,
     quality: true,
+    metadata: true,
     aliases: ["jfif2jpg", "jfif file", "change jfif to jpg", "open jfif", "jfif to jpeg"],
     rating: { value: "4.9", count: "914" },
     unique: {
@@ -265,6 +270,7 @@ export const CONVERTER_PAIRS: ConverterPair[] = [
     sourceKinds: ["gif"],
     flatten: false,
     quality: false,
+    metadata: false,
     aliases: ["gif2png", "gif frame to png", "static gif"],
     rating: { value: "4.7", count: "398" },
     unique: {
@@ -308,6 +314,7 @@ export const CONVERTER_PAIRS: ConverterPair[] = [
     sourceKinds: ["gif"],
     flatten: true,
     quality: true,
+    metadata: false,
     aliases: ["gif2jpg", "gif to jpeg", "gif frame to jpg"],
     rating: { value: "4.7", count: "356" },
     unique: {
@@ -357,6 +364,7 @@ export const CONVERTER_PAIRS: ConverterPair[] = [
     sourceKinds: ["bmp"],
     flatten: true,
     quality: true,
+    metadata: false,
     aliases: ["bmp2jpg", "bitmap to jpg", "bmp to jpeg", "shrink bmp"],
     rating: { value: "4.8", count: "489" },
     unique: {
@@ -401,6 +409,7 @@ export const CONVERTER_PAIRS: ConverterPair[] = [
     sourceKinds: ["avif"],
     flatten: true,
     quality: true,
+    metadata: true,
     aliases: ["avif2jpg", "open avif", "avif to jpeg", "convert avif"],
     rating: { value: "4.8", count: "441" },
     unique: {
@@ -444,6 +453,7 @@ export const CONVERTER_PAIRS: ConverterPair[] = [
     sourceKinds: ["avif"],
     flatten: false,
     quality: false,
+    metadata: true,
     aliases: ["avif2png", "avif transparent", "avif to png lossless"],
     rating: { value: "4.8", count: "377" },
     unique: {

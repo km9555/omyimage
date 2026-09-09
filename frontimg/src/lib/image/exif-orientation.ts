@@ -24,7 +24,7 @@ export function orientationSwapsAxes(orientation: number): boolean {
  * `segStart`/`segEnd` bound the segment's PAYLOAD — the marker and its two
  * size bytes are already skipped. Return `true` from `visit` to stop early.
  *
- * Shared with `jpeg-metadata.ts`, which needs the same walk to find APP1. The
+ * Shared with `metadata.ts`, which needs the same walk to find APP1. The
  * walk is deliberately forgiving: anything desynced or truncated ends the loop
  * rather than throwing, so a malformed file degrades to "found nothing".
  */

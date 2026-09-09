@@ -123,6 +123,7 @@ export function ConverterPage({ slug }: { slug: string }) {
             targetLabel: to.label,
             flatten: pair.flatten,
             quality: pair.quality,
+    metadata: pair.metadata,
             dropHint: `or drop ${from.label} images here`,
             sourceKinds: pair.sourceKinds,
             sourceLabel: from.label,

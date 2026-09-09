@@ -74,6 +74,16 @@ export interface ConverterPair {
   flatten: boolean;
   /** Show the quality slider (lossy targets). */
   quality: boolean;
+  /**
+   * Show the "Strip metadata" checkbox, which also makes the unchecked state
+   * KEEP the source's EXIF/XMP (see `lib/image/metadata.ts`).
+   *
+   * Required rather than optional on purpose: a new pair has to state whether
+   * it wants this, the same way it states `flatten` and `quality`. Turn it off
+   * when the source cannot carry metadata (GIF, BMP) or the target cannot hold
+   * it (WEBP) — otherwise the control offers something that cannot happen.
+   */
+  metadata: boolean;
   /** Extra search synonyms beyond name/keyword. */
   aliases?: string[];
   /** SoftwareApplication JSON-LD rating. Kept per-pair so they are not clones. */

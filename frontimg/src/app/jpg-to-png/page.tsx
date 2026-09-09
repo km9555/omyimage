@@ -108,7 +108,7 @@ export default function Page() {
           </h2>
         </header>
 
-        <ConvertTool config={{ accent: toolColor(tool), accept: "image/jpeg", targetMime: "image/png", targetLabel: "PNG", flatten: false, quality: false, dropHint: "or drop JPG images here" }} />
+        <ConvertTool config={{ accent: toolColor(tool), accept: "image/jpeg", targetMime: "image/png", targetLabel: "PNG", flatten: false, quality: false, metadata: true, dropHint: "or drop JPG images here" }} />
 
         {related.length > 0 && (
           <section aria-label="More tools" className="mt-4">

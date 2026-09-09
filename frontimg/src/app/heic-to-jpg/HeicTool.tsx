@@ -10,6 +10,7 @@ import { FileTray, TrayAction, type TrayEntry } from "@/components/tool/FileTray
 import { SettingsRail, RailAction, RailSecondaryAction, RailNote } from "@/components/tool/SettingsRail";
 import { downloadBlob, zipAndDownload, formatBytes, baseName } from "@/lib/image/raster";
 import { processOnServer } from "@/lib/process-router";
+import { stripOutputMetadata } from "@/lib/image/metadata";
 import { useHandoff } from "@/lib/tool-handoff";
 
 /**
@@ -43,6 +44,11 @@ export function HeicTool({ defaultTarget = "image/jpeg" }: { defaultTarget?: Tar
   const [items, setItems] = useState<Item[]>([]);
   const [target, setTarget] = useState<Target>(defaultTarget);
   const [quality, setQuality] = useState(0.92);
+  /* Unlike the canvas converters, this one starts with the metadata INTACT:
+     ImageMagick copies EXIF across unless told otherwise, and the server does
+     not pass -strip. So there is nothing to preserve here and no source to
+     re-read — the checkbox only ever removes. */
+  const [stripMeta, setStripMeta] = useState(false);
   const [isWorking, setIsWorking] = useState(false);
   const [done, setDone] = useState(false);
 
@@ -69,7 +75,13 @@ export function HeicTool({ defaultTarget = "image/jpeg" }: { defaultTarget?: Tar
           format: target === "image/png" ? "png" : "jpeg",
           quality: Math.round(quality * 100),
         });
-        out.push({ ...it, result: { blob: r.blob, size: r.blob.size, name: r.filename || `${baseName(it.file.name)}.${ext}` } });
+        /* Strip the server's output rather than rewriting it. Re-injecting
+           would mean guessing whether ImageMagick rotated the pixels, and
+           guessing wrong shows up as a sideways photo. */
+        const blob = stripMeta
+          ? new Blob([stripOutputMetadata(new Uint8Array(await r.blob.arrayBuffer()), target) as BlobPart], { type: target })
+          : r.blob;
+        out.push({ ...it, result: { blob, size: blob.size, name: r.filename || `${baseName(it.file.name)}.${ext}` } });
       }
       setItems(out);
       setDone(true);
@@ -175,6 +187,18 @@ export function HeicTool({ defaultTarget = "image/jpeg" }: { defaultTarget?: Tar
           {target === "image/jpeg" && (
             <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Quality</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span></label><input type="range" min={0.5} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" /></div>
           )}
+
+          <div className="flex flex-col gap-2">
+            <label className="flex items-center gap-2.5 cursor-pointer">
+              <input type="checkbox" checked={stripMeta} onChange={(e) => setStripMeta(e.target.checked)} className="w-4 h-4 accent-secondary" />
+              <span className="text-body-md text-on-surface">Strip metadata</span>
+            </label>
+            {/* Worth spelling out on this page specifically: HEIC comes from
+                phones, so the file almost always carries a capture location. */}
+            <p className="text-label-sm font-label-sm text-on-surface-variant">
+              Remove EXIF, colour profile, camera and location data. Photos from a phone usually carry GPS coordinates.
+            </p>
+          </div>
           </SettingsRail>
         }
       />
