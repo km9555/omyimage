@@ -364,6 +364,14 @@ export function CompressTool() {
               <input type="checkbox" checked={shrink} onChange={(e) => setShrink(e.target.checked)} className="w-4 h-4 accent-secondary" />
               <span className="text-body-md text-on-surface">Shrink large images</span>
             </label>
+            {/* The one setting people miss. Quality only changes how the SAME
+                pixels are stored; this changes how many there are, which is
+                usually where the weight actually is. */}
+            <p className="text-label-sm font-label-sm text-on-surface-variant/70">
+              Also reduce the dimensions, not just the quality. A phone photo is around 4000px wide,
+              while a web page or an email attachment rarely needs more than 2000 — and halving the
+              width quarters the pixel count, which saves far more than quality alone.
+            </p>
             {shrink && (
               <div className="flex items-center gap-2 pl-6">
                 <span className="text-label-sm font-label-sm text-on-surface-variant">Max width/height</span>

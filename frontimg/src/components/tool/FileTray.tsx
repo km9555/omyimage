@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, type ReactNode } from "react";
+import { useCallback, useRef, useState, type ReactNode } from "react";
 import { Icon } from "@/components/Icon";
 import { useViewMode, type ViewMode } from "@/lib/view-mode";
 import { CloudImportBar } from "@/components/CloudImportBar";
@@ -58,6 +58,7 @@ export function FileTray({
   onFiles,
   onClear,
   onMove,
+  onReorder,
   busy = false,
 }: {
   entries: TrayEntry[];
@@ -75,10 +76,92 @@ export function FileTray({
   onClear?: () => void;
   /** Supplied by the ordered tools (merge, image-to-pdf, gif-maker). */
   onMove?: (index: number, dir: -1 | 1) => void;
+  /**
+   * Move an entry from one position to another, for drag-to-reorder.
+   *
+   * Additive alongside `onMove` rather than replacing it: the arrows are the
+   * keyboard and assistive path, and on a touch screen a press-and-drag competes
+   * with the swipe that scrolls the page, so they stay as the reliable route.
+   */
+  onReorder?: (from: number, to: number) => void;
   busy?: boolean;
 }) {
   const [view, setView] = useViewMode();
   const inputRef = useRef<HTMLInputElement>(null);
+
+  /*
+    Pointer-based reordering, because the project has no drag-and-drop library
+    and HTML5 drag events do not fire on touch at all.
+
+    The live index lives in a ref as well as state: `pointerup` can land in the
+    same batch as the last `pointermove`, and the handler has to read where the
+    card actually finished, not where the previous render thought it was.
+  */
+  const [dragFrom, setDragFrom] = useState<number | null>(null);
+  const [dragOver, setDragOver] = useState<number | null>(null);
+  /* BOTH indices are mirrored into refs, not just the hovered one. A state value
+     read inside a pointer handler is the value from the last RENDER: a quick
+     drag delivers pointerdown and the first pointermoves in one batch, so
+     `dragFrom` would still be null and every early move would be dropped. */
+  const fromRef = useRef<number | null>(null);
+  const overRef = useRef<number | null>(null);
+  const setFrom = useCallback((i: number | null) => {
+    fromRef.current = i;
+    setDragFrom(i);
+  }, []);
+  const setOver = useCallback((i: number | null) => {
+    overRef.current = i;
+    setDragOver(i);
+  }, []);
+
+  const startDrag = (index: number) => (e: React.PointerEvent<HTMLLIElement>) => {
+    if (!onReorder || busy) return;
+    // Let buttons inside the card do their own job.
+    if ((e.target as HTMLElement).closest("button")) return;
+    e.currentTarget.setPointerCapture(e.pointerId);
+    setFrom(index);
+    setOver(index);
+  };
+
+  const overDrag = (e: React.PointerEvent<HTMLLIElement>) => {
+    if (fromRef.current === null) return;
+    // Which card is under the pointer right now.
+    const el = document.elementFromPoint(e.clientX, e.clientY)?.closest("[data-tray-index]");
+    const i = el ? Number((el as HTMLElement).dataset.trayIndex) : null;
+    if (i !== null && Number.isFinite(i) && i !== overRef.current) setOver(i);
+  };
+
+  const endDrag = (e: React.PointerEvent<HTMLLIElement>) => {
+    if (fromRef.current === null) return;
+    try { e.currentTarget.releasePointerCapture(e.pointerId); } catch { /* already gone */ }
+    const to = overRef.current;
+    const from = fromRef.current;
+    setFrom(null);
+    setOver(null);
+    if (onReorder && to !== null && to !== from) onReorder(from, to);
+  };
+
+  const dragProps = (index: number) =>
+    onReorder
+      ? {
+          "data-tray-index": index,
+          onPointerDown: startDrag(index),
+          onPointerMove: overDrag,
+          onPointerUp: endDrag,
+          onPointerCancel: endDrag,
+          style: { touchAction: "none" as const },
+        }
+      : {};
+
+  /** Lifted card, or the gap it would drop into. */
+  const dragCls = (index: number) =>
+    dragFrom === null
+      ? ""
+      : index === dragFrom
+        ? " opacity-40"
+        : index === dragOver
+          ? " ring-2 ring-secondary"
+          : "";
   const heading = title ?? `Selected files (${entries.length})`;
   // Single-image tools force the compact row: there is only ever one file, and
   // a card grid of one is just a large thumbnail with a toggle that does
@@ -141,7 +224,8 @@ export function FileTray({
           {entries.map((e, i) => (
             <li
               key={e.id}
-              className="flex flex-col overflow-hidden rounded-xl border border-surface-variant bg-surface-container-lowest ambient-shadow"
+              {...dragProps(i)}
+              className={`flex flex-col overflow-hidden rounded-xl border border-surface-variant bg-surface-container-lowest ambient-shadow${dragCls(i)}${onReorder ? " cursor-grab active:cursor-grabbing" : ""}`}
             >
               {e.toolbar && (
                 /* px-1 rather than px-2: the narrowest card this grid makes is
@@ -176,7 +260,8 @@ export function FileTray({
           {entries.map((e, i) => (
             <li
               key={e.id}
-              className="flex items-center gap-3 rounded-xl border border-surface-variant bg-surface-container-lowest ambient-shadow p-3"
+              {...dragProps(i)}
+              className={`flex items-center gap-3 rounded-xl border border-surface-variant bg-surface-container-lowest ambient-shadow p-3${dragCls(i)}${onReorder ? " cursor-grab active:cursor-grabbing" : ""}`}
             >
               {e.badge}
               <Thumb

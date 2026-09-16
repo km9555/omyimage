@@ -27,26 +27,26 @@ export const metadata: Metadata = {
 
 const steps: HowToStep[] = [
   { title: "Upload", description: "Select two or more images, or drag and drop them into the workspace." },
-  { title: "Arrange & style", description: "Pick side-by-side, stacked or grid, reorder the images, and set spacing and background." },
+  { title: "Arrange & style", description: "Pick side-by-side, stacked or grid, drag the thumbnails to reorder, and set spacing and background. Custom lets you move, rotate and resize each image by hand." },
   { title: "Merge & download", description: "Click Merge — the combined image downloads instantly as PNG, JPG or WEBP." },
 ];
 
 const features: Feature[] = [
-  { icon: "grid_view", title: "Three layouts", description: "Combine photos side by side, stacked vertically, or in a clean grid with adjustable columns." },
-  { icon: "space_bar", title: "Spacing & background", description: "Add space between images and a solid or transparent background, with a live preview." },
+  { icon: "grid_view", title: "Four layouts", description: "Combine photos side by side, stacked vertically, in a grid, or arrange them freely on a custom canvas." },
+  { icon: "open_with", title: "Editable preview", description: "In Custom mode the preview is the editor \u2014 drag an image to move it, pull a corner to resize, and use the top handle to rotate, with edges snapping into line as you go." },
   { icon: "lock", title: "100% private", description: "Merging runs entirely in your browser with HTML canvas — your images are never uploaded." },
 ];
 
 const faqs: Faq[] = [
   { q: "How many images can I merge?", a: "As many as you like — add two or more and arrange them side by side, stacked, or in a grid." },
-  { q: "Can I reorder the images?", a: "Yes. Use the up and down arrows in the list to set the exact order before merging." },
+  { q: "Can I reorder the images?", a: "Yes. Drag a thumbnail to a new position in the list, or use the up and down arrows if you prefer \u2014 both set the order the images are combined in. In Custom mode the order also decides which image sits on top where they overlap, and the Bring forward and Send back buttons change it." },
   { q: "Can I keep a transparent background?", a: "Yes. Choose a transparent background and export as PNG or WEBP to keep the spacing see-through." },
   { q: "Is it free and private?", a: "Yes. No sign-up and no watermark, and every image is processed locally in your browser." },
-  { q: "What happens if my images are different sizes?", a: "They are aligned along the joining edge and any leftover space is filled with the background colour you choose. If you would rather they matched exactly, resize them to a common width (for a vertical stack) or height (for a horizontal strip) before merging." },
+  { q: "What happens if my images are different sizes?", a: "By default they keep their own dimensions, are aligned along the joining edge, and any leftover space takes the background colour you choose. If you would rather they matched, switch Image sizes to Match \u2014 that gives every image the same height in a row or the same width in a column. Fill goes further and crops them all to identical tiles." },
   { q: "Should I merge horizontally or vertically?", a: "Horizontal for before-and-after pairs and side-by-side comparisons, since the eye compares more easily across than down. Vertical for sequences, step-by-step instructions and anything that will be read on a phone, where a tall image uses the screen better than a wide one." },
   { q: "Can I add space between the images?", a: "Yes — a gap with your chosen background colour. A small gap of ten or twenty pixels makes it obvious that these are separate images rather than one continuous scene, which matters for comparisons where a seamless join would be misleading." },
   { q: "What is this useful for?", a: "Before-and-after edits, product photos from several angles in one listing image, step-by-step tutorials, screenshot sequences for bug reports or documentation, contact sheets, and social posts where the platform only allows one image but you have three things to show." },
-  { q: "Does merging reduce quality?", a: "No. The images are drawn onto a canvas at their original pixel dimensions, so nothing is resampled. Exporting as JPG costs the usual small amount of quality; PNG and WEBP keep it exact." },
+  { q: "Does merging reduce quality?", a: "Not in the automatic layouts with Image sizes left on Original \u2014 there the images are drawn at their native pixel dimensions and nothing is resampled. Resizing an image in Custom mode, or using Match or Fill, does rescale it, which is the usual small cost of changing an image\u2019s size. Exporting as JPG costs a little more; PNG and WEBP keep whatever you give them exact." },
   { q: "Is there a practical limit on how many I should merge?", a: "There is no hard cap, but a very long strip becomes hard to view — most platforms scale a wide image down to fit, so a ten-image horizontal merge can end up too small to read. Two to four is the practical sweet spot." },
 ];
 
@@ -82,7 +82,8 @@ const sections: SeoSection[] = [
     heading: "Merging is lossless",
     id: "quality",
     body: [
-      "The images are drawn onto a canvas at their native pixel dimensions, so no resampling happens and nothing is softened. The merged result is exactly as sharp as its inputs.",
+      "In the automatic layouts, with Image sizes left on Original, the images are drawn at their native pixel dimensions. No resampling happens and nothing is softened, so the merged result is exactly as sharp as its inputs. That is the mode to use for stitching screenshots, where a half-pixel of softening on text is immediately visible.",
+      "Scaling is what costs you. Resizing an image on the Custom canvas, or choosing Match or Fill so everything shares a size, resamples that image \u2014 unavoidable, and no worse than any other resize, but worth knowing when the alternative was free.",
       "The only quality consideration is the export format. Choose PNG or WEBP to keep everything exact, or JPG if the result is a photograph and you want a smaller file. If the merge contains screenshots or text, PNG is clearly the better choice — JPG's artefacts cluster around exactly the sharp edges that lettering is made of.",
     ],
   },
