@@ -13,6 +13,7 @@ const quickLinks = [
   { label: "Compress Image", href: "/compress-image" },
   { label: "Resize Image",   href: "/resize-image" },
   { label: "Crop Image",     href: "/crop-image" },
+  { label: "Blog",           href: "/blog" },
 ];
 
 export function Navbar() {

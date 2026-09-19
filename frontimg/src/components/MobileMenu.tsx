@@ -294,6 +294,16 @@ export function MobileMenu() {
 
                     <div className="mt-2 border-t border-outline-variant pt-2">
                       <Link
+                        href="/blog"
+                        onClick={close}
+                        className="flex items-center gap-2.5 rounded-lg px-2 py-2.5 text-body-md text-on-surface transition-colors hover:bg-surface-container"
+                      >
+                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-surface-container">
+                          <Icon name="article" className="text-[15px] text-on-surface-variant" />
+                        </span>
+                        Blog
+                      </Link>
+                      <Link
                         href="/pricing"
                         onClick={close}
                         className="flex items-center gap-2.5 rounded-lg px-2 py-2.5 text-body-md text-on-surface transition-colors hover:bg-surface-container"

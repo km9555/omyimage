@@ -145,6 +145,11 @@ const LICENSE_ELECTIONS = {
     offered: "(MIT OR GPL-3.0-or-later)",
     elected: "MIT",
   },
+  // Pulled in by isomorphic-dompurify for the blog's Markdown sanitizer.
+  dompurify: {
+    offered: "(MPL-2.0 OR Apache-2.0)",
+    elected: "Apache-2.0",
+  },
 };
 
 /** Resolve a package's install directory under a hoisted node_modules. */

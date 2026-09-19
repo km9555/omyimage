@@ -27,6 +27,7 @@ const create = [
 ];
 
 const legal: { label: string; href: string; external?: boolean }[] = [
+  { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/contact" },
   { label: "Privacy Policy", href: "/privacy" },
   { label: "Terms of Service", href: "/terms" },

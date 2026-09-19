@@ -1,10 +1,11 @@
 import type { MetadataRoute } from "next";
 import { SITE } from "@/lib/site";
 import { TOOLS } from "@/lib/tools";
+import { getPublishedPosts } from "@/lib/blog";
 
 export const dynamic = "force-static";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = SITE.url;
   const currentDate = new Date().toISOString();
 
@@ -73,5 +74,27 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.9,
   }));
 
-  return [...staticPages, ...toolPages];
+  // Blog hub + individual posts, only once a post actually exists. With an
+  // empty backend the hub renders a little chrome and nothing else, which reads
+  // to a crawler as a soft 404. Fetched at build time (lib/blog.ts).
+  const posts = await getPublishedPosts();
+  const blogPages: MetadataRoute.Sitemap =
+    posts.length > 0
+      ? [
+          {
+            url: `${baseUrl}/blog`,
+            lastModified: currentDate,
+            changeFrequency: "weekly",
+            priority: 0.6,
+          },
+          ...posts.map((p) => ({
+            url: `${baseUrl}/blog/${p.slug}`,
+            lastModified: new Date(p.updatedAt).toISOString(),
+            changeFrequency: "monthly" as const,
+            priority: 0.6,
+          })),
+        ]
+      : [];
+
+  return [...staticPages, ...toolPages, ...blogPages];
 }

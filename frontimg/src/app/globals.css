@@ -101,6 +101,12 @@
   --color-chip-teal-ink: #106b4c;
   --color-chip-teal-border: #bfe5d7;
 
+  /* Sky chip — the third of the blog's rotating tag triad (components/BlogTags.tsx).
+     A cool blue so three tags stay distinguishable next to amber and teal. */
+  --color-chip-sky-bg: #e8f1fb;
+  --color-chip-sky-ink: #1f5a9e;
+  --color-chip-sky-border: #bcd5f0;
+
   /* Neutrals / surfaces — warm cream to pair with the clay accent. */
   --color-background: #fdfbf8;
   --color-on-background: #241f19;
@@ -258,6 +264,10 @@
   --color-chip-teal-bg: rgba(45, 191, 143, 0.16);
   --color-chip-teal-ink: #7ad9b8;
   --color-chip-teal-border: rgba(122, 217, 184, 0.35);
+
+  --color-chip-sky-bg: rgba(96, 156, 230, 0.16);
+  --color-chip-sky-ink: #93bff0;
+  --color-chip-sky-border: rgba(147, 191, 240, 0.35);
 
   --color-background: #191512;
   --color-on-background: #ede5da;
@@ -496,4 +506,109 @@ html[data-cookie-choice="1"] #cookie-banner {
 }
 .dark .scrollbar-visible::-webkit-scrollbar-thumb {
   background-color: rgb(255 255 255 / 0.35);
+}
+
+/* ── Blog article body ────────────────────────────────────────────────────────
+   Styles the sanitized HTML produced by lib/blog-render.ts. The project has no
+   Tailwind typography plugin, so this is a scoped, token-driven prose style that
+   respects light/dark just like the rest of the site. */
+.blog-body {
+  color: var(--color-on-surface);
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+.blog-body > * + * {
+  margin-top: 1.25rem;
+}
+.blog-body h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--color-primary);
+  margin-top: 2.5rem;
+  scroll-margin-top: 6rem;
+}
+.blog-body h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-top: 1.75rem;
+  scroll-margin-top: 6rem;
+}
+.blog-body p,
+.blog-body li {
+  color: var(--color-on-surface);
+}
+.blog-body a {
+  color: var(--color-secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.blog-body a:hover {
+  opacity: 0.85;
+}
+.blog-body strong {
+  font-weight: 700;
+  color: var(--color-primary);
+}
+.blog-body ul,
+.blog-body ol {
+  padding-left: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.blog-body ul { list-style: disc; }
+.blog-body ol { list-style: decimal; }
+.blog-body blockquote {
+  border-left: 3px solid var(--color-secondary);
+  padding-left: 1rem;
+  color: var(--color-on-surface-variant);
+  font-style: italic;
+}
+.blog-body img {
+  width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-outline-variant);
+}
+.blog-body code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  background: var(--color-surface-container);
+  padding: 0.15em 0.4em;
+  border-radius: 0.3rem;
+}
+.blog-body pre {
+  background: var(--color-surface-container);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+}
+.blog-body pre code {
+  background: none;
+  padding: 0;
+}
+.blog-body table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  display: block;
+  overflow-x: auto;
+}
+.blog-body th,
+.blog-body td {
+  border: 1px solid var(--color-outline-variant);
+  padding: 0.6rem 0.8rem;
+  text-align: left;
+}
+.blog-body th {
+  background: var(--color-surface-container);
+  font-weight: 600;
+  color: var(--color-primary);
+}
+.blog-body hr {
+  border: none;
+  border-top: 1px solid var(--color-outline-variant);
 }
