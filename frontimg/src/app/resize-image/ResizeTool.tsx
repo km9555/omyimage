@@ -14,13 +14,15 @@ import {
   shouldUseServer, shouldUseServerForFile, toServerFormat, processOnServer, canBrowserHandlePixels,
 } from "@/lib/process-router";
 import {
-  rasterize, imageSize, downloadBlob, zipAndDownload, formatBytes, baseName, mimeExt,
+  rasterize, imageSize, downloadBlob, zipAndDownload, baseName, mimeExt,
   decodeBitmap, canvasToBlob, type ExportMime,
 } from "@/lib/image/raster";
 import { renderCrop, type CropSel } from "@/lib/image/crop";
 import { fitBox, FIT_NOTE, type FitMode } from "@/lib/image/fit";
-import { SOCIAL_PLATFORMS, presetLabel, CUSTOM_PRESET } from "@/lib/social-presets";
+import { SOCIAL_PLATFORMS, CUSTOM_PRESET } from "@/lib/social-presets";
 import { useHandoff } from "@/lib/tool-handoff";
+import { useFormatBytes, useT } from "@/i18n/I18nScope";
+import { translateError } from "@/i18n/errors";
 
 const ACCENT = "#4B8FC7";
 const ACCEPT = "image/jpeg,image/png,image/webp,image/gif,image/bmp";
@@ -63,6 +65,9 @@ type Plan = {
   serverSize: { width: number; height: number };
 };
 
+// FORMATS, MODES, FITS, the social preset names (lib/social-presets.ts) and
+// FIT_NOTE (lib/image/fit.ts) are all module scope: translated at the render
+// site, keys in resize-image.<loc>.ts (§4.2).
 const FORMATS: { label: string; value: Format }[] = [
   { label: "Same as original", value: "original" },
   { label: "JPG", value: "image/jpeg" },
@@ -108,6 +113,8 @@ function workingMime(file: File): ExportMime {
 }
 
 export function ResizeTool() {
+  const t = useT();
+  const formatBytes = useFormatBytes();
   const [items, setItems] = useState<Item[]>([]);
   const [mode, setMode] = useState<Mode>("pixels");
   const [widthStr, setWidthStr] = useState("");
@@ -159,7 +166,7 @@ export function ResizeTool() {
 
   const addFiles = useCallback((incoming: FileList | File[]) => {
     const imgs = Array.from(incoming).filter((f) => f.type.startsWith("image/"));
-    if (imgs.length === 0) { toast.error("Please select image files."); return; }
+    if (imgs.length === 0) { toast.error(t("Please select image files.")); return; }
     setDone(false);
     const next: Item[] = imgs.map((file) => ({
       id: uid(), original: file, file, url: URL.createObjectURL(file), rotate: 0, crop: null,
@@ -188,7 +195,7 @@ export function ResizeTool() {
         setHeightStr((cur) => (cur === "" ? String(h) : cur));
       } catch { prefilledRef.current = false; }
     })();
-  }, []);
+  }, [t]);
 
   useHandoff(addFiles);
 
@@ -252,11 +259,11 @@ export function ResizeTool() {
       }));
     } catch (err) {
       console.error(err);
-      toast.error("Couldn't apply that edit.");
+      toast.error(t("Couldn't apply that edit."));
     } finally {
       setEditingId(null);
     }
-  }, []);
+  }, [t]);
 
   const rotateBy = (it: Item, dir: 1 | -1) =>
     applyEdit(it.id, it.crop, ((((it.rotate + dir * 90) % 360) + 360) % 360) as Quarter);
@@ -388,10 +395,11 @@ export function ResizeTool() {
       setDone(true);
       if (out.length === 1 && out[0].result) downloadBlob(out[0].result.blob, out[0].result.name);
       else await zipAndDownload(out.filter((o) => o.result).map((o) => ({ name: o.result!.name, blob: o.result!.blob })), "omyimage_resized.zip");
-      toast.success(`Resized ${out.filter((o) => o.result).length} image${out.length === 1 ? "" : "s"}.`);
+      const resized = out.filter((o) => o.result).length;
+      toast.success(resized === 1 ? t("Resized 1 image.") : t("Resized {n} images.", { n: resized }));
     } catch (err) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : "Resize failed.");
+      toast.error(translateError(err, t, "Resize failed."));
     } finally {
       setIsWorking(false);
     }
@@ -407,7 +415,7 @@ export function ResizeTool() {
     return (
       <section>
         <TopLoadingBar active={isWorking} />
-        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="photo_size_select_large" hint="or drop JPG, PNG, WEBP or GIF images here" />
+        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="photo_size_select_large" hint={t("or drop JPG, PNG, WEBP or GIF images here")} />
       </section>
     );
   }
@@ -420,7 +428,7 @@ export function ResizeTool() {
     const busy = editingId === it.id;
     const editable = canEdit(it) && !busy && !isWorking;
     const tooBig = !canEdit(it);
-    const why = tooBig ? "This image is too large to edit in the browser" : undefined;
+    const why = tooBig ? t("This image is too large to edit in the browser") : undefined;
 
     return {
       id: it.id,
@@ -429,7 +437,7 @@ export function ResizeTool() {
       meta: (
         <>
           {it.w && it.h ? `${it.w} × ${it.h}` : "…"} · {formatBytes(it.file.size)}
-          {edited && <span className="ml-1.5 text-secondary font-semibold">· edited</span>}
+          {edited && <span className="ml-1.5 text-secondary font-semibold">· {t("edited")}</span>}
           {it.result && <><Icon name="arrow_forward" className="text-[13px] mx-1 align-middle" /><span className="text-on-surface font-semibold">{it.result.w} × {it.result.h}</span></>}
         </>
       ),
@@ -438,7 +446,7 @@ export function ResizeTool() {
          is trying to judge the crop against. The download, once there is one,
          is a single button and reads fine in the corner. */
       action: it.result ? (
-        <TrayAction icon="download" tone="accent" label="Download" onClick={() => downloadBlob(it.result!.blob, it.result!.name)} />
+        <TrayAction icon="download" tone="accent" label={t("Download")} onClick={() => downloadBlob(it.result!.blob, it.result!.name)} />
       ) : undefined,
       toolbar: it.result ? undefined : (
         <>
@@ -447,26 +455,29 @@ export function ResizeTool() {
               <Icon name="progress_activity" className="animate-spin text-[15px]" />
             </span>
           ) : (
-            <TrayIconButton icon="crop" label={why ?? "Crop"} disabled={!editable} onClick={() => setCropId(it.id)} />
+            <TrayIconButton icon="crop" label={why ?? t("Crop|verb")} disabled={!editable} onClick={() => setCropId(it.id)} />
           )}
-          <TrayIconButton icon="rotate_left" label={why ?? "Rotate left"} disabled={!editable} onClick={() => rotateBy(it, -1)} />
-          <TrayIconButton icon="rotate_right" label={why ?? "Rotate right"} disabled={!editable} onClick={() => rotateBy(it, 1)} />
-          <TrayIconButton icon="info" label="Details" active={infoId === it.id} onClick={() => setInfoId((cur) => (cur === it.id ? null : it.id))} />
-          <TrayIconButton icon="close" label="Remove" tone="danger" disabled={isWorking} onClick={() => removeItem(it.id)} />
+          <TrayIconButton icon="rotate_left" label={why ?? t("Rotate left")} disabled={!editable} onClick={() => rotateBy(it, -1)} />
+          <TrayIconButton icon="rotate_right" label={why ?? t("Rotate right")} disabled={!editable} onClick={() => rotateBy(it, 1)} />
+          <TrayIconButton icon="info" label={t("Details")} active={infoId === it.id} onClick={() => setInfoId((cur) => (cur === it.id ? null : it.id))} />
+          <TrayIconButton icon="close" label={t("Remove")} tone="danger" disabled={isWorking} onClick={() => removeItem(it.id)} />
         </>
       ),
       controls: infoId === it.id ? (
         <dl className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-0.5 rounded-lg bg-surface-container px-2.5 py-2 text-label-sm font-label-sm">
-          <dt className="text-on-surface-variant">Type</dt>
-          <dd className="truncate text-on-surface">{it.file.type || "unknown"}</dd>
-          <dt className="text-on-surface-variant">Original</dt>
+          <dt className="text-on-surface-variant">{t("Type")}</dt>
+          <dd className="truncate text-on-surface">{it.file.type || t("unknown")}</dd>
+          <dt className="text-on-surface-variant">{t("Original")}</dt>
+          {/* i18n-raw: dimensions, not copy */}
           <dd className="text-on-surface">{it.ow && it.oh ? `${it.ow} × ${it.oh} px` : "…"}</dd>
-          <dt className="text-on-surface-variant">Current</dt>
+          <dt className="text-on-surface-variant">{t("Current")}</dt>
+          {/* i18n-raw: dimensions, not copy */}
           <dd className="text-on-surface">{it.w && it.h ? `${it.w} × ${it.h} px` : "…"}</dd>
-          <dt className="text-on-surface-variant">Size</dt>
+          <dt className="text-on-surface-variant">{t("Size")}</dt>
           <dd className="text-on-surface">{formatBytes(it.file.size)}</dd>
-          <dt className="text-on-surface-variant">Target</dt>
-          <dd className="font-semibold text-secondary">{plan ? `${plan.out.width} × ${plan.out.height} px` : "set a size"}</dd>
+          <dt className="text-on-surface-variant">{t("Target")}</dt>
+          {/* i18n-raw: dimensions, not copy (the fallback is translated) */}
+          <dd className="font-semibold text-secondary">{plan ? `${plan.out.width} × ${plan.out.height} px` : t("set a size")}</dd>
         </dl>
       ) : undefined,
     };
@@ -482,12 +493,12 @@ export function ResizeTool() {
         mobile={{
           ...filesHeader(items.map((i) => i.file)),
           onBack: reset,
-          backLabel: "Clear files",
-          settingsTitle: "Resize settings",
+          backLabel: t("Clear files"),
+          settingsTitle: t("Resize settings"),
           cta: {
             icon: "photo_size_select_large",
-            label: "Resize",
-            busyLabel: "Resizing…",
+            label: t("Resize"),
+            busyLabel: t("Resizing…"),
             busy: isWorking,
             onClick: resizeAll,
           },
@@ -495,7 +506,7 @@ export function ResizeTool() {
         main={<FileTray entries={entries} accept={ACCEPT} onFiles={addFiles} onClear={reset} busy={isWorking} />}
         rail={
           <SettingsRail
-            title="Resize Settings"
+            title={t("Resize Settings")}
             icon="photo_size_select_large"
             accent={ACCENT}
             footer={
@@ -503,20 +514,26 @@ export function ResizeTool() {
                 <RailNote>
                   {previewPlan
                     ? <>
-                        First image → {previewPlan.out.width} × {previewPlan.out.height} px
-                        {mode === "social" ? ` · ${FIT_NOTE[fit]}` : items.length > 1 && keepAspect ? " — each keeps its own ratio" : ""}
+                        {t("First image → {w} × {h} px", { w: previewPlan.out.width, h: previewPlan.out.height })}
+                        {mode === "social"
+                          ? ` · ${t(FIT_NOTE[fit])}`
+                          : items.length > 1 && keepAspect
+                            ? ` ${t("— each keeps its own ratio")}`
+                            : ""}
                       </>
-                    : mode === "social" ? "Pick a platform and a preset size." : "Keep aspect ratio on to avoid stretching."}
+                    : mode === "social"
+                      ? t("Pick a platform and a preset size.")
+                      : t("Keep aspect ratio on to avoid stretching.")}
                 </RailNote>
-                <RailAction onClick={resizeAll} busy={isWorking} busyLabel="Resizing…" icon="photo_size_select_large">
-                  Resize {items.length > 1 ? `${items.length} images` : "& download"}
+                <RailAction onClick={resizeAll} busy={isWorking} busyLabel={t("Resizing…")} icon="photo_size_select_large">
+                  {items.length > 1 ? t("Resize {n} images", { n: items.length }) : t("Resize & download")}
                 </RailAction>
                 {done && items.length > 1 && (
                   <RailSecondaryAction
                     icon="folder_zip"
                     onClick={() => zipAndDownload(items.filter((i) => i.result).map((i) => ({ name: i.result!.name, blob: i.result!.blob })), "omyimage_resized.zip")}
                   >
-                    Download all (ZIP)
+                    {t("Download all (ZIP)")}
                   </RailSecondaryAction>
                 )}
               </>
@@ -525,7 +542,7 @@ export function ResizeTool() {
           <div className="grid grid-cols-3 gap-1 rounded-lg bg-surface-container p-1">
             {MODES.map((m) => (
               <button key={m.value} type="button" onClick={() => setMode(m.value)} className={segCls(mode === m.value)}>
-                {m.label}
+                {t(m.label)}
               </button>
             ))}
           </div>
@@ -533,19 +550,19 @@ export function ResizeTool() {
           {mode === "pixels" && (
             <div className="flex flex-col gap-3">
               <div className="grid grid-cols-2 gap-3">
-                <div className="flex flex-col gap-1.5"><label className="text-label-sm font-label-sm text-on-surface-variant">Width (px)</label><input type="number" min={1} value={widthStr} onChange={(e) => onWidth(e.target.value)} className={fieldCls} /></div>
-                <div className="flex flex-col gap-1.5"><label className="text-label-sm font-label-sm text-on-surface-variant">Height (px)</label><input type="number" min={1} value={heightStr} onChange={(e) => onHeight(e.target.value)} className={fieldCls} /></div>
+                <div className="flex flex-col gap-1.5"><label className="text-label-sm font-label-sm text-on-surface-variant">{t("Width (px)")}</label><input type="number" min={1} value={widthStr} onChange={(e) => onWidth(e.target.value)} className={fieldCls} /></div>
+                <div className="flex flex-col gap-1.5"><label className="text-label-sm font-label-sm text-on-surface-variant">{t("Height (px)")}</label><input type="number" min={1} value={heightStr} onChange={(e) => onHeight(e.target.value)} className={fieldCls} /></div>
               </div>
               <label className="flex items-center gap-2.5 cursor-pointer">
                 <input type="checkbox" checked={keepAspect} onChange={(e) => setKeepAspect(e.target.checked)} className="w-4 h-4 accent-secondary" />
-                <span className="text-body-md text-on-surface flex items-center gap-1.5"><Icon name="link" className="text-[18px]" /> Keep aspect ratio (fit)</span>
+                <span className="text-body-md text-on-surface flex items-center gap-1.5"><Icon name="link" className="text-[18px]" /> {t("Keep aspect ratio (fit)")}</span>
               </label>
             </div>
           )}
 
           {mode === "percent" && (
             <div className="flex flex-col gap-1.5">
-              <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Scale</span><span className="text-primary font-semibold">{Math.max(1, toInt(percentStr))}%</span></label>
+              <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Scale")}</span><span className="text-primary font-semibold">{Math.max(1, toInt(percentStr))}%</span></label>
               <input type="range" min={1} max={200} step={1} value={Math.max(1, toInt(percentStr))} onChange={(e) => setPercentStr(e.target.value)} className="w-full accent-secondary" />
             </div>
           )}
@@ -553,46 +570,46 @@ export function ResizeTool() {
           {mode === "social" && (
             <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-1.5">
-                <label className="text-label-sm font-label-sm text-on-surface-variant">Choose the social media platform</label>
+                <label className="text-label-sm font-label-sm text-on-surface-variant">{t("Choose the social media platform")}</label>
                 <select value={platformId} onChange={(e) => pickPlatform(e.target.value)} className={fieldCls}>
                   {SOCIAL_PLATFORMS.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
                 </select>
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-label-sm font-label-sm text-on-surface-variant">Preset type</label>
+                <label className="text-label-sm font-label-sm text-on-surface-variant">{t("Preset type")}</label>
                 <select value={presetKey} onChange={(e) => pickPreset(e.target.value)} className={fieldCls}>
-                  {platform.presets.map((p, i) => <option key={p.label} value={String(i)}>{presetLabel(p)}</option>)}
-                  <option value={CUSTOM_PRESET}>Custom size</option>
+                  {platform.presets.map((p, i) => <option key={p.label} value={String(i)}>{`${t(p.label)} (${p.w} × ${p.h})`}</option>)}
+                  <option value={CUSTOM_PRESET}>{t("Custom size")}</option>
                 </select>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <div className="flex flex-col gap-1.5"><label className="text-label-sm font-label-sm text-on-surface-variant">Width (px)</label><input type="number" min={1} value={socialW} onChange={(e) => onSocialW(e.target.value)} className={fieldCls} /></div>
-                <div className="flex flex-col gap-1.5"><label className="text-label-sm font-label-sm text-on-surface-variant">Height (px)</label><input type="number" min={1} value={socialH} onChange={(e) => onSocialH(e.target.value)} className={fieldCls} /></div>
+                <div className="flex flex-col gap-1.5"><label className="text-label-sm font-label-sm text-on-surface-variant">{t("Width (px)")}</label><input type="number" min={1} value={socialW} onChange={(e) => onSocialW(e.target.value)} className={fieldCls} /></div>
+                <div className="flex flex-col gap-1.5"><label className="text-label-sm font-label-sm text-on-surface-variant">{t("Height (px)")}</label><input type="number" min={1} value={socialH} onChange={(e) => onSocialH(e.target.value)} className={fieldCls} /></div>
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-label-sm font-label-sm text-on-surface-variant">How to fit the image</label>
+                <label className="text-label-sm font-label-sm text-on-surface-variant">{t("How to fit the image")}</label>
                 <div className="grid grid-cols-3 gap-1 rounded-lg bg-surface-container p-1">
                   {FITS.map((f) => (
-                    <button key={f.value} type="button" title={f.hint} onClick={() => setFit(f.value)} className={`${segCls(fit === f.value)} text-label-md`}>
-                      {f.label}
+                    <button key={f.value} type="button" title={t(f.hint)} onClick={() => setFit(f.value)} className={`${segCls(fit === f.value)} text-label-md`}>
+                      {t(f.label)}
                     </button>
                   ))}
                 </div>
-                <p className="text-label-sm font-label-sm text-on-surface-variant">{FITS.find((f) => f.value === fit)?.hint}</p>
+                <p className="text-label-sm font-label-sm text-on-surface-variant">{t(FITS.find((f) => f.value === fit)?.hint ?? "")}</p>
               </div>
             </div>
           )}
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-label-sm font-label-sm text-on-surface-variant">Output format</label>
-            <select value={format} onChange={(e) => setFormat(e.target.value as Format)} className={fieldCls}>{FORMATS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}</select>
+            <label className="text-label-sm font-label-sm text-on-surface-variant">{t("Output format")}</label>
+            <select value={format} onChange={(e) => setFormat(e.target.value as Format)} className={fieldCls}>{FORMATS.map((f) => <option key={f.value} value={f.value}>{t(f.label)}</option>)}</select>
           </div>
           {showQuality && (
             <div className="flex flex-col gap-1.5">
-              <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Quality</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span></label>
+              <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Quality")}</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span></label>
               <input type="range" min={0.5} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" />
             </div>
           )}
@@ -603,7 +620,7 @@ export function ResizeTool() {
               /* Transparent is only honest when nothing in the batch exports as
                  JPG, which cannot store it. */
               allowTransparent={isPadding && !anyJpg}
-              label={isPadding ? "Padding colour" : "JPG background"}
+              label={isPadding ? t("Padding colour") : t("JPG background")}
             />
           )}
           </SettingsRail>

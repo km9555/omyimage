@@ -10,6 +10,9 @@ import { QuickAccessCard } from "@/components/QuickAccessCard";
 import { TOOLS } from "@/lib/tools";
 import { CATEGORY_PILLS as PILLS } from "@/lib/tool-categories";
 import { useFavoriteTools } from "@/lib/useToolPrefs";
+import { useLocale, useT } from "@/i18n/I18nScope";
+import { localeHome, localeHref } from "@/lib/i18n/links";
+import { toolName } from "@/lib/i18n/tool-labels";
 
 const PILL_ICONS: Record<string, string> = {
   all:      "apps",
@@ -19,7 +22,14 @@ const PILL_ICONS: Record<string, string> = {
   ai:       "auto_awesome",
 };
 
+/**
+ * Renders only on the home page, inside HomeShell's <I18nScope>, so its keys
+ * live in dictionaries/<loc>/pages/home.ts rather than common.ts.
+ */
 export function ToolDirectory() {
+  const t = useT();
+  const locale = useLocale();
+  const home = localeHome(locale);
   const [activePill, setActivePill] = useState("all");
   const { favorites, favoriteSlugs, toggle } = useFavoriteTools();
 
@@ -67,24 +77,22 @@ export function ToolDirectory() {
       <section className="border-y border-surface-variant bg-surface-container-lowest px-margin-mobile md:px-gutter py-5">
         <div className="max-w-content mx-auto flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-8">
           <p className="text-body-md text-on-surface-variant">
-            <strong className="font-semibold text-primary">oMyImage</strong> is a free online
-            image toolkit — over thirty tools to compress, resize, crop, convert, watermark and
-            edit images, most running entirely in your browser so your files never leave your
-            device. Importing from Google Drive is optional, reads only the files you pick, and
-            never stores them on our servers.
+            {/* i18n-raw: brand name */}
+            <strong className="font-semibold text-primary">oMyImage</strong>{" "}
+            {t("is a free online image toolkit — over thirty tools to compress, resize, crop, convert, watermark and edit images, most running entirely in your browser so your files never leave your device. Importing from Google Drive is optional, reads only the files you pick, and never stores them on our servers.")}
           </p>
           <div className="flex shrink-0 items-center gap-4 text-body-sm">
             <Link
-              href="/#about"
+              href={`${home}#about`}
               className="font-semibold text-secondary underline underline-offset-2 whitespace-nowrap"
             >
-              What is oMyImage?
+              {t("What is oMyImage?")}
             </Link>
             <Link
-              href="/privacy#google-drive"
+              href={localeHref("/privacy#google-drive", locale)}
               className="font-semibold text-secondary underline underline-offset-2 whitespace-nowrap"
             >
-              How we use Google data
+              {t("How we use Google data")}
             </Link>
           </div>
         </div>
@@ -94,7 +102,7 @@ export function ToolDirectory() {
       {favorites.length > 0 && (
         <div id="tools" className="max-w-content mx-auto px-margin-mobile md:px-gutter pt-10">
           <p className="text-center text-label-md font-semibold text-on-surface mb-4">
-            Favorites
+            {t("Favorites")}
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             {favorites.map((tool) => (
@@ -137,7 +145,8 @@ export function ToolDirectory() {
                 {PILL_ICONS[p.id] && (
                   <Icon name={PILL_ICONS[p.id]} className="text-[15px]" />
                 )}
-                {p.label}
+                {/* CATEGORY_PILLS is module scope (lib/tool-categories.ts) — §4.2. */}
+                {t(p.label)}
               </button>
             );
           })}
@@ -163,13 +172,17 @@ export function ToolDirectory() {
                       e.stopPropagation();
                       const isFav = favoriteSlugs.has(tool.slug);
                       toggle(tool.slug);
-                      toast(isFav ? "Removed from Favorites" : "Added to Favorites", {
-                        description: tool.name,
+                      toast(isFav ? t("Removed from Favorites") : t("Added to Favorites"), {
+                        description: toolName(tool, locale),
                         icon: isFav ? "♡" : "❤️",
                         duration: 2000,
                       });
                     }}
-                    aria-label={favoriteSlugs.has(tool.slug) ? `Remove ${tool.name} from favorites` : `Add ${tool.name} to favorites`}
+                    aria-label={
+                      favoriteSlugs.has(tool.slug)
+                        ? t("Remove {tool} from favorites", { tool: toolName(tool, locale) })
+                        : t("Add {tool} to favorites", { tool: toolName(tool, locale) })
+                    }
                     aria-pressed={favoriteSlugs.has(tool.slug)}
                     className="absolute top-2.5 right-2.5 grid place-items-center w-7 h-7 rounded-full hover:bg-surface-container transition-colors"
                   >
@@ -189,7 +202,7 @@ export function ToolDirectory() {
           </div>
         ) : (
           <p className="text-center text-body-lg text-on-surface-variant py-16">
-            No tools in {pill.label} yet.
+            {t("No tools in {category} yet.", { category: t(pill.label) })}
           </p>
         )}
 
@@ -197,11 +210,11 @@ export function ToolDirectory() {
             how a visitor (and a crawler) reaches them from the home page. */}
         <div className="mt-8 text-center">
           <Link
-            href="/image-converter"
+            href={localeHref("/image-converter", locale)}
             className="inline-flex items-center gap-2 rounded-lg border border-outline-variant bg-surface-container-lowest px-5 py-3 text-body-md font-semibold text-primary hover-lift"
           >
             <Icon name="swap_horiz" className="text-[20px] text-secondary" />
-            Browse all image format converters
+            {t("Browse all image format converters")}
             <Icon name="arrow_forward" className="text-[18px]" />
           </Link>
         </div>

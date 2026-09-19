@@ -19,13 +19,24 @@ import { DEFAULT_LOCALE, type Locale, type TranslatedLocale } from "@/i18n/confi
 /** Tool ids whose localized tool page is live. */
 const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
   // Portuguese (Brazilian) — batches of five, ordered by Brazilian search
-  // value. Empty is the correct starting state.
-  pt: [],
+  // value (tracker.csv is the plan of record).
+  pt: [
+    // Batch 1 — the highest-value head terms in the Brazilian SERP.
+    "compress-image",
+    "resize-image",
+    "remove-background",
+    "image-to-text",
+  ],
 };
 
 /** English paths of the non-tool pages that are live in each locale. */
 const SHIPPED_PAGES: Record<TranslatedLocale, string[]> = {
-  pt: [],
+  pt: [
+    // Batch 1. The home ships first: it is where swapLocale sends a visitor
+    // whose page has no Portuguese twin yet, and its presence is what flips
+    // "Português" from "Em breve" to a live link in the language menus.
+    "/",
+  ],
 };
 
 const TOOL_SETS: Record<string, ReadonlySet<string>> = Object.fromEntries(

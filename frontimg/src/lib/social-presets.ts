@@ -106,8 +106,9 @@ export const SOCIAL_PLATFORMS: SocialPlatform[] = [
   },
 ];
 
-/** Dropdown text, e.g. `Portrait post (1080 × 1350)`. */
-export const presetLabel = (p: SocialPreset) => `${p.label} (${p.w} × ${p.h})`;
+// Preset labels are English source strings, translated where the dropdown
+// renders them (ResizeTool: `${t(p.label)} (${p.w} × ${p.h})`), so there is
+// no label-building helper here any more.
 
 /** Marks "the width/height no longer match any preset" in the Preset select. */
 export const CUSTOM_PRESET = "__custom";

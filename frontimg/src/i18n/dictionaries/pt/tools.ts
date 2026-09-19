@@ -74,7 +74,7 @@ export const ptTools: Record<string, LocalizedTool> = {
     shortDescription: "Converta fotos HEIC do iPhone em PNG sem perdas.",
   },
   "image-to-text": {
-    name: "Imagem para texto",
+    name: "Converter imagem em texto",
     shortDescription: "Extraia texto editável de fotos e digitalizações com OCR.",
   },
   "webp-to-jpg": {

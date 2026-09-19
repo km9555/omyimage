@@ -115,8 +115,6 @@ function walkFiles(p, out = []) {
  * empty when the last batch lands.
  */
 const PENDING = new Set([
-  "src/components/HomeLauncher.tsx", // batch 1 — home page
-  "src/components/ToolDirectory.tsx", // batch 1 — home page
   "src/components/ConverterPage.tsx", // batch 7 — converter copy layer
 ]);
 

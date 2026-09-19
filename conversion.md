@@ -362,6 +362,62 @@ puppeteer") are deliberately left English.
 `[^a-z0-9]`, which turned "câmera" into "c mera". It now strips accents (NFD)
 first, and scores the Portuguese name and aliases ahead of the English ones.
 
+### 6.2.1 Batch 1 (home, comprimir, redimensionar, remover-fundo, imagem-em-texto)
+
+**Third-party components carry their own English.** Sonner renders
+`aria-label="Close toast"` on every toast's close button and "Notifications"
+on its region. Neither is a literal in our source, so neither scan can see it —
+it surfaced only when the DOM of a Portuguese result screen was read back after
+a real run. Both are props (`toastOptions.closeButtonAriaLabel`,
+`containerAriaLabel`) set in `ThemedToaster`. **Every batch: read the DOM after
+an upload, including the toast.**
+
+**One English word can be two Portuguese words.** The home "How it works" step
+"Download" is an imperative ("Baixe"); the common button "Download" is
+"Baixar". A page dictionary layered over `common.ts` would have made every
+Download button inside the home scope read "Baixe". The step uses
+`t("Download|step")` — the context suffix is stripped for English.
+
+**Page-owned components.** HomeLauncher and ToolDirectory live in
+`components/` but render only on the home page, so their keys ride with
+`pages/home.ts` (HomeShell wraps them in `<I18nScope dict={ptHome}>`), and
+`i18n-keys.mjs` knows it through its `PAGE_OWNED` map. Add to that map rather
+than to `common.ts` for any future single-page component.
+
+**Mixed markup is split at the markup, and each fragment must read on its own
+in the target language.** "…requests the `drive.file` scope. That scope…"
+rendered "…solicita o escopo drive.file . Esse escopo…" (the JSX space before
+the fragment). The Portuguese fragments were rephrased around the code token
+("…solicita a permissão drive.file — um escopo que…"). Check rendered text, not
+the dictionary, for every split sentence.
+
+**The translation must describe what the tool does now, not what the English
+says.** `image-to-text.en.ts` still claims recognition runs in the browser and
+the image is never uploaded; the tool has since become server-first (PaddleOCR)
+with a Tesseract fallback. The Portuguese page describes the real behaviour.
+The English page needs its own fix (tracked separately) — a translator who
+copies a false privacy claim into a second language doubles it.
+
+**OCR language follows the page.** `/pt/imagem-em-texto` defaults to `por`;
+verified by reading "Ação de graças é ótima" back with every accent intact.
+
+**Slug corrected before shipping.** `imagem-para-texto` → `imagem-em-texto`:
+the Brazilian SERP says "converter imagem **em** texto" (invertexto, QuillBot,
+imagetotext.info `/br/imagem-em-texto`). This is exactly why §4 step 1
+re-checks head terms at the start of each batch.
+
+**Git Bash rewrites a leading `/` argument into a Windows path.**
+`npm run i18n:list -- --done "/"` marked nothing, because MSYS turned `/` into
+`C:/Program Files/Git/`. Use `MSYS_NO_PATHCONV=1` for any argument that is a
+URL path.
+
+**Browser QA snippet.** A TreeWalker over visible text plus
+`aria-label`/`title`/`placeholder`/`alt` and `<option>` text, flagging strings
+with ≥2 English function words or a known UI verb; the file is fed with a
+canvas-generated `File` through `DataTransfer` on the drop zone's input. Expect
+false positives on Portuguese words sharing an English stem ("Compressão"),
+on "Post"/"Stories"/"Reels" (Brazilian usage) and on the brand wordmark.
+
 ### 6.3 Image-specific traps (watch for these in every batch)
 
 - **Text drawn INTO the image.** Meme captions, watermark defaults, the

@@ -42,7 +42,7 @@ const PT_TOOL_SLUGS: Record<string, string> = {
   "jpg-to-png": "jpg-para-png",
   "webp-to-png": "webp-para-png",
   "heic-to-png": "heic-para-png",
-  "image-to-text": "imagem-para-texto",
+  "image-to-text": "imagem-em-texto",
   "webp-to-jpg": "webp-para-jpg",
   "jpg-to-webp": "jpg-para-webp",
   "png-to-webp": "png-para-webp",

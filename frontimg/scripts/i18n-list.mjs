@@ -110,6 +110,27 @@ if (existsSync(FILE)) {
   }
 }
 
+/**
+ * `--done id,id,…` marks every hand-set stage of those rows done (the batch has
+ * passed its gates and browser QA). `--note id="text"` sets a row's note.
+ * Derived columns are never set by hand — they come from disk.
+ */
+const argAfter = (flag) => {
+  const i = process.argv.indexOf(flag);
+  return i === -1 ? null : process.argv[i + 1];
+};
+const doneIds = new Set((argAfter("--done") ?? "").split(",").filter(Boolean));
+for (const id of doneIds) {
+  const p = prev.get(id) ?? {};
+  for (const h of HAND) if (h !== "notes") p[h] = "done";
+  prev.set(id, p);
+}
+for (let i = 0; i < process.argv.length; i++) {
+  if (process.argv[i] !== "--note") continue;
+  const m = /^([^=]+)=(.*)$/.exec(process.argv[i + 1] ?? "");
+  if (m) prev.set(m[1], { ...(prev.get(m[1]) ?? {}), notes: m[2] });
+}
+
 // ── Build ───────────────────────────────────────────────────────────────
 const rows = [];
 let sn = 0;

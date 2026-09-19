@@ -73,9 +73,22 @@ const SLUG_TO_ID = slugToId();
 /** Route folders that are never localized. */
 const IGNORED = new Set(["pt", "blog", "admin", "auth"]);
 
+/**
+ * Components that render on ONE page only, so their keys ride with that page's
+ * dictionary instead of bloating common.ts on every route. They must be
+ * rendered inside an <I18nScope dict={…}> carrying that dictionary.
+ */
+const PAGE_OWNED = {
+  "app/page.tsx": "home",
+  "components/HomeShell.tsx": "home",
+  "components/HomeLauncher.tsx": "home",
+  "components/ToolDirectory.tsx": "home",
+};
+
 /** Which bucket a file's keys belong to. */
 function bucketOf(file) {
   const rel = relative(SRC, file).replace(/\\/g, "/");
+  if (PAGE_OWNED[rel]) return PAGE_OWNED[rel];
   const m = /^app\/([^/]+)\//.exec(rel);
   if (m) {
     if (IGNORED.has(m[1])) return null;

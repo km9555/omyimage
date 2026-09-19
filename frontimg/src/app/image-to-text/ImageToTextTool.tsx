@@ -7,11 +7,13 @@ import { Dropzone } from "@/components/image/Dropzone";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
 import { ToolWorkspace, filesHeader } from "@/components/tool/ToolWorkspace";
 import { SettingsRail, RailAction } from "@/components/tool/SettingsRail";
-import { downloadBlob, baseName, formatBytes } from "@/lib/image/raster";
+import { downloadBlob, baseName } from "@/lib/image/raster";
 import { preprocessForOcr, cleanOcrText } from "@/lib/image/ocr-preprocess";
 import { runOcrImage } from "@/lib/process-router";
 import { useHandoff } from "@/lib/tool-handoff";
 import type { Worker } from "tesseract.js";
+import { useFormatBytes, useLocale, useT } from "@/i18n/I18nScope";
+import { translateError } from "@/i18n/errors";
 
 const ACCENT = "#4B8FC7";
 const ACCEPT = "image/jpeg,image/png,image/webp,image/bmp,.jfif";
@@ -46,7 +48,10 @@ const ACCEPT = "image/jpeg,image/png,image/webp,image/bmp,.jfif";
  * this route, and only once the fallback actually needs it.
  */
 
-/** Tesseract codes we offer. The traineddata for each is fetched on demand. */
+/**
+ * Tesseract codes we offer. The traineddata for each is fetched on demand.
+ * Labels are English source strings, translated at the render site (§4.2).
+ */
 const LANGUAGES: { code: string; label: string }[] = [
   { code: "eng", label: "English" },
   { code: "spa", label: "Spanish" },
@@ -63,7 +68,10 @@ const LANGUAGES: { code: string; label: string }[] = [
   { code: "kor", label: "Korean" },
 ];
 
-/** Map tesseract's status strings onto something a human can read. */
+/**
+ * Map tesseract's status strings onto something a human can read. Returns the
+ * English source string; the caller translates it (a plain function has no t).
+ */
 function humanStatus(status: string): string {
   if (status.includes("loading language") || status.includes("loading tesseract")) {
     return "Downloading the recognition model (first run only)…";
@@ -74,9 +82,14 @@ function humanStatus(status: string): string {
 }
 
 export function ImageToTextTool() {
+  const t = useT();
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-  const [lang, setLang] = useState("eng");
+  const locale = useLocale();
+  const formatBytes = useFormatBytes();
+  // Default the recognition language to the page's: an English model drops the
+  // accents from Portuguese text (conversion.md §6.3).
+  const [lang, setLang] = useState(locale === "pt" ? "por" : "eng");
   const [text, setText] = useState<string | null>(null);
   const [confidence, setConfidence] = useState<number | null>(null);
   const [source, setSource] = useState<"server" | "browser" | null>(null);
@@ -90,7 +103,7 @@ export function ImageToTextTool() {
       x.type.startsWith("image/") || /\.(jpe?g|jfif|png|webp|bmp)$/i.test(x.name),
     );
     if (!f) {
-      toast.error("Please select a JPG, PNG, WEBP or BMP image.");
+      toast.error(t("Please select a JPG, PNG, WEBP or BMP image."));
       return;
     }
     setPreview((old) => {
@@ -101,7 +114,7 @@ export function ImageToTextTool() {
     setText(null);
     setConfidence(null);
     setSource(null);
-  }, []);
+  }, [t]);
 
   useHandoff(loadFile);
 
@@ -136,10 +149,10 @@ export function ImageToTextTool() {
     await workerRef.current?.terminate();
     workerRef.current = null;
 
-    setStatus("Loading the recognition engine…");
+    setStatus(t("Loading the recognition engine…"));
     const worker = await createWorker(lang, 1, {
       logger: (m: { status: string; progress: number }) => {
-        setStatus(humanStatus(m.status));
+        setStatus(t(humanStatus(m.status)));
         setProgress(Math.round((m.progress ?? 0) * 100));
       },
     });
@@ -167,7 +180,7 @@ export function ImageToTextTool() {
     setConfidence(null);
     setSource(null);
     setProgress(0);
-    setStatus("Uploading your image…");
+    setStatus(t("Uploading your image…"));
 
     let out: { text: string; confidence: number | null };
     let usedSource: "server" | "browser";
@@ -178,7 +191,7 @@ export function ImageToTextTool() {
       // surfacing an error: a worse answer beats no answer.
       const result = await runOcrImage(file, lang, {
         onProgress: (s) => {
-          setStatus(s === "queued" ? "Queued on the server…" : "Reading the text on our server…");
+          setStatus(s === "queued" ? t("Queued on the server…") : t("Reading the text on our server…"));
           setProgress(s === "queued" ? 20 : 60);
         },
       });
@@ -192,11 +205,11 @@ export function ImageToTextTool() {
         return;
       }
       try {
-        setStatus("Server OCR unavailable — reading on your device instead…");
+        setStatus(t("Server OCR unavailable — reading on your device instead…"));
         out = await runInBrowser();
         usedSource = "browser";
       } catch (browserErr) {
-        toast.error(browserErr instanceof Error ? browserErr.message : "Could not read this image.");
+        toast.error(translateError(browserErr, t, "Could not read this image."));
         setIsWorking(false);
         setProgress(0);
         setStatus("");
@@ -208,11 +221,12 @@ export function ImageToTextTool() {
     setConfidence(out.confidence);
     setSource(usedSource);
     if (out.text.length === 0) {
-      toast("No text found in this image", {
-        description: "Try a sharper or higher-contrast scan.",
+      toast(t("No text found in this image"), {
+        description: t("Try a sharper or higher-contrast scan."),
       });
     } else {
-      toast.success(`Extracted ${out.text.split(/\s+/).filter(Boolean).length} words`);
+      const n = out.text.split(/\s+/).filter(Boolean).length;
+      toast.success(n === 1 ? t("Extracted 1 word") : t("Extracted {n} words", { n }));
     }
     setIsWorking(false);
     setProgress(0);
@@ -223,9 +237,9 @@ export function ImageToTextTool() {
     if (!text) return;
     try {
       await navigator.clipboard.writeText(text);
-      toast.success("Text copied to clipboard");
+      toast.success(t("Text copied to clipboard"));
     } catch {
-      toast.error("Couldn't access the clipboard.");
+      toast.error(t("Couldn't access the clipboard."));
     }
   };
 
@@ -254,9 +268,9 @@ export function ImageToTextTool() {
           accent={ACCENT}
           icon="document_scanner"
           multiple={false}
-          buttonLabel="Select an image"
-          hint="or drop a JPG, PNG, WEBP or BMP here"
-          privacyNote="Read on our server for the best accuracy (falls back to your device if the server is unreachable) — files are deleted right after."
+          buttonLabel={t("Select an image")}
+          hint={t("or drop a JPG, PNG, WEBP or BMP here")}
+          privacyNote={t("Read on our server for the best accuracy (falls back to your device if the server is unreachable) — files are deleted right after.")}
         />
       </section>
     );
@@ -273,12 +287,12 @@ export function ImageToTextTool() {
         mobile={{
           ...filesHeader(file ? [file] : []),
           onBack: reset,
-          backLabel: "Clear image",
-          settingsTitle: "OCR settings",
+          backLabel: t("Clear image"),
+          settingsTitle: t("OCR settings"),
           cta: {
             icon: "document_scanner",
-            label: "Read",
-            busyLabel: "Reading…",
+            label: t("Read"),
+            busyLabel: t("Reading…"),
             busy: isWorking,
             onClick: run,
           },
@@ -298,7 +312,7 @@ export function ImageToTextTool() {
             <button
               type="button"
               onClick={reset}
-              aria-label="Remove image"
+              aria-label={t("Remove image")}
               className="grid place-items-center h-9 w-9 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors"
             >
               <Icon name="close" className="text-[20px]" />
@@ -308,7 +322,7 @@ export function ImageToTextTool() {
           {text !== null ? (
             <>
               <label htmlFor="ocr-output" className="sr-only">
-                Extracted text
+                {t("Extracted text")}
               </label>
               <textarea
                 id="ocr-output"
@@ -318,26 +332,26 @@ export function ImageToTextTool() {
                 className="w-full h-72 resize-y rounded-lg border border-outline-variant bg-surface-container-lowest p-3 text-body-sm font-mono text-primary outline-none focus:border-secondary/70"
               />
               <p className="mt-2 text-label-sm font-label-sm text-on-surface-variant">
-                {words} words
+                {words === 1 ? t("1 word") : t("{n} words", { n: words })}
                 {confidence !== null && (
                   <>
                     {" "}
                     ·{" "}
                     <span
                       className={confidence < 60 ? "text-error font-semibold" : undefined}
-                      title="The recognizer's own estimate of how confident it is in this reading — not a guarantee. Low scores usually mean small or blurry source text; worth a proofread."
+                      title={t("The recognizer's own estimate of how confident it is in this reading — not a guarantee. Low scores usually mean small or blurry source text; worth a proofread.")}
                     >
-                      {confidence}% confidence
+                      {t("{pct}% confidence", { pct: confidence })}
                     </span>
                   </>
                 )}{" "}
-                · editable before you copy or download
+                · {t("editable before you copy or download")}
                 {source === "browser" && (
                   <>
                     {" "}
                     ·{" "}
-                    <span title="Our server-side reader was unreachable or unavailable, so this ran on your device instead — usually a bit less accurate on small or dense text.">
-                      read on your device
+                    <span title={t("Our server-side reader was unreachable or unavailable, so this ran on your device instead — usually a bit less accurate on small or dense text.")}>
+                      {t("read on your device")}
                     </span>
                   </>
                 )}
@@ -360,7 +374,7 @@ export function ImageToTextTool() {
                 </>
               ) : (
                 <p className="text-body-md text-on-surface-variant">
-                  Choose a language, then press Extract text.
+                  {t("Choose a language, then press Extract text.")}
                 </p>
               )}
             </div>
@@ -370,12 +384,12 @@ export function ImageToTextTool() {
         }
         rail={
           <SettingsRail
-            title="OCR Settings"
+            title={t("OCR Settings")}
             icon="document_scanner"
             accent={ACCENT}
             footer={
-              <RailAction onClick={run} busy={isWorking} busyLabel="Reading…" icon="document_scanner">
-                {text !== null ? "Read again" : "Extract text"}
+              <RailAction onClick={run} busy={isWorking} busyLabel={t("Reading…")} icon="document_scanner">
+                {text !== null ? t("Read again") : t("Extract text")}
               </RailAction>
             }
           >
@@ -384,7 +398,7 @@ export function ImageToTextTool() {
             htmlFor="ocr-lang"
             className="block text-label-sm font-label-sm font-bold uppercase tracking-wide text-on-surface-variant mb-2"
           >
-            Language of the text
+            {t("Language of the text")}
           </label>
           <select
             id="ocr-lang"
@@ -394,11 +408,11 @@ export function ImageToTextTool() {
             className="w-full rounded-lg border border-outline-variant bg-surface-container-lowest px-3 h-11 text-body-md text-primary outline-none focus:border-secondary/70 disabled:opacity-50"
           >
             {LANGUAGES.map((l) => (
-              <option key={l.code} value={l.code}>{l.label}</option>
+              <option key={l.code} value={l.code}>{t(l.label)}</option>
             ))}
           </select>
           <p className="mt-2 text-label-sm font-label-sm text-on-surface-variant">
-            Picking the right language matters more than anything else for accuracy.
+            {t("Picking the right language matters more than anything else for accuracy.")}
           </p>
         </div>
 
@@ -409,24 +423,21 @@ export function ImageToTextTool() {
               onClick={copy}
               className="w-full inline-flex items-center justify-center gap-2 border border-secondary text-secondary font-semibold py-2.5 rounded-lg hover:bg-secondary/10 transition-colors"
             >
-              <Icon name="content_copy" className="text-[18px]" /> Copy text
+              <Icon name="content_copy" className="text-[18px]" /> {t("Copy text")}
             </button>
             <button
               type="button"
               onClick={saveTxt}
               className="w-full inline-flex items-center justify-center gap-2 border border-outline-variant text-on-surface-variant font-semibold py-2.5 rounded-lg hover:bg-surface-container transition-colors"
             >
-              <Icon name="download" className="text-[18px]" /> Download .txt
+              <Icon name="download" className="text-[18px]" /> {t("Download .txt")}
             </button>
           </div>
         )}
 
         <p className="text-label-sm font-label-sm text-on-surface-variant/80 flex items-start gap-1.5">
           <Icon name="cloud" className="text-[14px] mt-0.5 shrink-0" />
-          Read on our server for the best accuracy, over an encrypted connection
-          — the image is deleted right after. If our server can&apos;t be
-          reached, this reads the image on your own device instead, so the
-          tool still works either way.
+          {t("Read on our server for the best accuracy, over an encrypted connection — the image is deleted right after. If our server can't be reached, this reads the image on your own device instead, so the tool still works either way.")}
         </p>
           </SettingsRail>
         }

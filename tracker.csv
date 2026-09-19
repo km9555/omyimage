@@ -1,9 +1,9 @@
 sn,batch,section,id,en_url,pt_url,en_extracted,ui_sweep,pt_copy,route,gated,seo_meta,verify,browser_qa,status,notes
-1,1,Home,/,http://localhost:3002/,http://localhost:3002/pt,n/a,todo,todo,todo,todo,todo,todo,todo,todo,
-2,1,Tools,compress-image,http://localhost:3002/compress-image,http://localhost:3002/pt/comprimir-imagem,done,todo,todo,todo,todo,todo,todo,todo,todo,
-3,1,Tools,resize-image,http://localhost:3002/resize-image,http://localhost:3002/pt/redimensionar-imagem,done,todo,todo,todo,todo,todo,todo,todo,todo,
-4,1,Tools,remove-background,http://localhost:3002/remove-background,http://localhost:3002/pt/remover-fundo,done,todo,todo,todo,todo,todo,todo,todo,todo,
-5,1,Tools,image-to-text,http://localhost:3002/image-to-text,http://localhost:3002/pt/imagem-para-texto,done,todo,todo,todo,todo,todo,todo,todo,todo,
+1,1,Home,/,http://localhost:3002/,http://localhost:3002/pt,n/a,done,done,done,done,done,done,done,done,
+2,1,Tools,compress-image,http://localhost:3002/compress-image,http://localhost:3002/pt/comprimir-imagem,done,done,done,done,done,done,done,done,done,
+3,1,Tools,resize-image,http://localhost:3002/resize-image,http://localhost:3002/pt/redimensionar-imagem,done,done,done,done,done,done,done,done,done,
+4,1,Tools,remove-background,http://localhost:3002/remove-background,http://localhost:3002/pt/remover-fundo,done,done,done,done,done,done,done,done,done,backend errors verified translated (rembg not installed locally)
+5,1,Tools,image-to-text,http://localhost:3002/image-to-text,http://localhost:3002/pt/imagem-em-texto,done,done,done,done,done,done,done,done,done,"pt slug changed to imagem-em-texto (SERP: ""converter imagem em texto""); EN module still claims image is never uploaded — tool is server-first"
 6,2,Tools,crop-image,http://localhost:3002/crop-image,http://localhost:3002/pt/recortar-imagem,done,todo,todo,todo,todo,todo,todo,todo,todo,
 7,2,Tools,png-to-jpg,http://localhost:3002/png-to-jpg,http://localhost:3002/pt/png-para-jpg,done,todo,todo,todo,todo,todo,todo,todo,todo,
 8,2,Tools,jpg-to-png,http://localhost:3002/jpg-to-png,http://localhost:3002/pt/jpg-para-png,done,todo,todo,todo,todo,todo,todo,todo,todo,

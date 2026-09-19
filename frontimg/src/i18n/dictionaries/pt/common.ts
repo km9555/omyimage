@@ -302,6 +302,10 @@ export const ptCommon: Record<string, string> = {
     "Conte sua experiência no Trustpilot — isso ajuda muito.",
   "Leave a review": "Deixar uma avaliação",
 
+  // ── Toasts (sonner's own accessible names — ThemedToaster) ──────────────
+  "Notifications": "Notificações",
+  "Close toast": "Fechar notificação",
+
   // ── Tool cards, favourites ──────────────────────────────────────────────
   "Premium tool": "Ferramenta premium",
   "Premium tool — Free plan includes a limited number per day":

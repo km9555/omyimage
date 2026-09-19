@@ -16,13 +16,14 @@ import {
   rasterizeToCanvas,
   imageSize,
   downloadBlob,
-  formatBytes,
   baseName,
   mimeExt,
   type ExportMime,
 } from "@/lib/image/raster";
 import { compressPngCanvas, pngColorsForQuality } from "@/lib/image/png-compress";
 import { useHandoff } from "@/lib/tool-handoff";
+import { useFormatBytes, useT } from "@/i18n/I18nScope";
+import { translateError } from "@/i18n/errors";
 
 const ACCENT = "#4F9D69";
 const ACCEPT = "image/jpeg,image/png,image/webp";
@@ -44,6 +45,7 @@ type Item = {
   result?: { blob: Blob; size: number; name: string; outcome: Outcome; colors?: number };
 };
 
+// Labels translated at the render site (§4.2); keys in compress-image.<loc>.ts.
 const FORMATS: { label: string; value: Format }[] = [
   { label: "Same as original", value: "original" },
   { label: "JPG", value: "image/jpeg" },
@@ -61,6 +63,8 @@ function outMimeFor(file: File, fmt: Format): ExportMime {
 }
 
 export function CompressTool() {
+  const t = useT();
+  const formatBytes = useFormatBytes();
   const [items, setItems] = useState<Item[]>([]);
   const [format, setFormat] = useState<Format>("original");
   const [quality, setQuality] = useState(0.7);
@@ -74,7 +78,7 @@ export function CompressTool() {
 
   const addFiles = useCallback((incoming: FileList | File[]) => {
     const imgs = Array.from(incoming).filter((f) => f.type.startsWith("image/"));
-    if (imgs.length === 0) { toast.error("Please select image files."); return; }
+    if (imgs.length === 0) { toast.error(t("Please select image files.")); return; }
     setDone(false);
     const next = imgs.map((file) => ({ id: uid(), file, url: URL.createObjectURL(file) }));
     setItems((prev) => [...prev, ...next]);
@@ -84,7 +88,7 @@ export function CompressTool() {
         setItems((prev) => prev.map((p) => (p.id === it.id ? { ...p, w, h } : p)));
       } catch { /* ignore unreadable */ }
     });
-  }, []);
+  }, [t]);
 
   useHandoff(addFiles);
 
@@ -198,11 +202,15 @@ export function CompressTool() {
       // Auto-firing a save-as here would land a file in Downloads before the
       // visitor ever sees the completion page, making the page redundant.
       setDone(true);
-      toast.success(`Processed ${finished.length} image${finished.length === 1 ? "" : "s"}.`);
+      toast.success(
+        finished.length === 1
+          ? t("Processed 1 image.")
+          : t("Processed {n} images.", { n: finished.length }),
+      );
     } catch (err) {
       console.error(err);
       setItems((prev) => prev.map((p) => ({ ...p, processing: false })));
-      toast.error(err instanceof Error ? err.message : "Compression failed.");
+      toast.error(translateError(err, t, "Compression failed."));
     } finally {
       setIsWorking(false);
     }
@@ -219,7 +227,7 @@ export function CompressTool() {
     return (
       <section>
         <TopLoadingBar active={isWorking} />
-        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="compress" hint="or drop JPG, PNG or WEBP images here" />
+        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="compress" hint={t("or drop JPG, PNG or WEBP images here")} />
       </section>
     );
   }
@@ -240,23 +248,25 @@ export function CompressTool() {
           zipName="omyimage_compressed.zip"
           toolSlug="compress-image"
           onReset={reset}
-          title="Compression complete!"
+          title={t("Compression complete!")}
           subtitle={
             savedPct > 0
-              ? `File size reduced by ${savedPct}%`
+              ? t("File size reduced by {pct}%", { pct: savedPct })
               : keptCount > 0
-                ? `Already optimised — kept your original file${keptCount === 1 ? "" : "s"}.`
-                : "Already optimised. Try a lower quality, or WEBP, for a smaller file."
+                ? keptCount === 1
+                  ? t("Already optimised — kept your original file.")
+                  : t("Already optimised — kept your original files.")
+                : t("Already optimised. Try a lower quality, or WEBP, for a smaller file.")
           }
-          resetLabel="Compress more images"
+          resetLabel={t("Compress more images")}
         >
           <div className="grid grid-cols-2 gap-3">
             <div className="rounded-xl border border-outline-variant/40 bg-surface-container-lowest p-4 text-center">
-              <p className="text-label-sm font-label-sm uppercase tracking-wider text-on-surface-variant">Original</p>
+              <p className="text-label-sm font-label-sm uppercase tracking-wider text-on-surface-variant">{t("Original")}</p>
               <p className="mt-1 text-title-lg font-bold text-primary tabular-nums">{formatBytes(totalIn)}</p>
             </div>
             <div className="rounded-xl border border-chip-teal-border bg-chip-teal-bg p-4 text-center">
-              <p className="text-label-sm font-label-sm uppercase tracking-wider text-chip-teal-ink">Compressed</p>
+              <p className="text-label-sm font-label-sm uppercase tracking-wider text-chip-teal-ink">{t("Compressed")}</p>
               <p className="mt-1 text-title-lg font-bold text-primary tabular-nums">{formatBytes(totalOut)}</p>
             </div>
           </div>
@@ -277,17 +287,17 @@ export function CompressTool() {
           {formatBytes(it.file.size)}
           {r && <><Icon name="arrow_forward" className="text-[13px] mx-1 align-middle" /><span className="text-on-surface font-semibold">{formatBytes(r.size)}</span></>}
           {r?.outcome === "smaller" && pct !== null && pct > 0 && <span className="ml-1.5 text-[11px] rounded px-1.5 py-0.5 font-semibold" style={{ backgroundColor: `${ACCENT}1A`, color: ACCENT }}>−{pct}%</span>}
-          {r?.outcome === "kept-original" && <span className="ml-1.5 text-[11px] rounded px-1.5 py-0.5 font-semibold bg-surface-container text-on-surface-variant">already optimised — kept original</span>}
-          {r?.outcome === "no-gain" && <span className="ml-1.5 text-[11px] rounded px-1.5 py-0.5 font-semibold bg-error-container text-error">no smaller output</span>}
-          {r?.colors && <span className="ml-1.5 text-[11px] text-on-surface-variant/70">{r.colors} colors</span>}
+          {r?.outcome === "kept-original" && <span className="ml-1.5 text-[11px] rounded px-1.5 py-0.5 font-semibold bg-surface-container text-on-surface-variant">{t("already optimised — kept original")}</span>}
+          {r?.outcome === "no-gain" && <span className="ml-1.5 text-[11px] rounded px-1.5 py-0.5 font-semibold bg-error-container text-error">{t("no smaller output")}</span>}
+          {r?.colors && <span className="ml-1.5 text-[11px] text-on-surface-variant/70">{t("{n} colors", { n: r.colors })}</span>}
         </>
       ),
       action: it.processing ? (
         <TrayBusy />
       ) : r ? (
-        <TrayAction icon="download" tone="accent" label="Download" onClick={() => downloadBlob(r.blob, r.name)} />
+        <TrayAction icon="download" tone="accent" label={t("Download")} onClick={() => downloadBlob(r.blob, r.name)} />
       ) : (
-        <TrayAction icon="close" label="Remove" disabled={isWorking} onClick={() => removeItem(it.id)} />
+        <TrayAction icon="close" label={t("Remove")} disabled={isWorking} onClick={() => removeItem(it.id)} />
       ),
     };
   });
@@ -306,13 +316,13 @@ export function CompressTool() {
         mobile={{
           ...filesHeader(items.map((i) => i.file)),
           onBack: reset,
-          backLabel: "Clear files",
-          settingsLabel: "Settings",
-          settingsTitle: "Compression settings",
+          backLabel: t("Clear files"),
+          settingsLabel: t("Settings"),
+          settingsTitle: t("Compression settings"),
           cta: {
             icon: "compress",
-            label: "Compress",
-            busyLabel: "Compressing…",
+            label: t("Compress"),
+            busyLabel: t("Compressing…"),
             busy: isWorking,
             onClick: compressAll,
           },
@@ -320,7 +330,7 @@ export function CompressTool() {
         main={<FileTray entries={entries} accept={ACCEPT} onFiles={addFiles} onClear={reset} busy={isWorking} />}
         rail={
           <SettingsRail
-            title="Compression Settings"
+            title={t("Compression Settings")}
             icon="compress"
             accent={ACCENT}
             footer={
@@ -329,58 +339,58 @@ export function CompressTool() {
                     component returns the ResultScreen above instead of this
                     workspace, so there is no post-compression state to word
                     this note for. */}
-                <RailNote>WEBP usually gives the smallest files. Everything runs in your browser.</RailNote>
-                <RailAction onClick={compressAll} busy={isWorking} busyLabel="Compressing…" icon="compress">
-                  Compress {items.length > 1 ? `${items.length} images` : "& download"}
+                <RailNote>{t("WEBP usually gives the smallest files. Everything runs in your browser.")}</RailNote>
+                <RailAction onClick={compressAll} busy={isWorking} busyLabel={t("Compressing…")} icon="compress">
+                  {items.length > 1
+                    ? t("Compress {n} images", { n: items.length })
+                    : t("Compress & download")}
                 </RailAction>
               </>
             }
           >
           <div className="flex flex-col gap-1.5">
-            <label className="text-label-sm font-label-sm text-on-surface-variant">Output format</label>
+            <label className="text-label-sm font-label-sm text-on-surface-variant">{t("Output format")}</label>
             <select value={format} onChange={(e) => setFormat(e.target.value as Format)} className={fieldCls}>
-              {FORMATS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}
+              {FORMATS.map((f) => <option key={f.value} value={f.value}>{t(f.label)}</option>)}
             </select>
           </div>
           <div className="flex flex-col gap-1.5">
             <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant">
-              <span>Quality</span>
+              <span>{t("Quality")}</span>
               <span className="text-primary font-semibold">
                 {Math.round(quality * 100)}%
-                {hasPngTarget && pngColors !== null && <span className="text-on-surface-variant font-normal"> · {pngColors} colors</span>}
+                {hasPngTarget && pngColors !== null && <span className="text-on-surface-variant font-normal"> · {t("{n} colors", { n: pngColors })}</span>}
               </span>
             </label>
             <input type="range" min={0.3} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" />
             <p className="text-label-sm font-label-sm text-on-surface-variant/70">
               {hasPngTarget && !hasLossyTarget
-                ? "PNG shrinks by reducing colors. 95%+ keeps it perfectly lossless."
+                ? t("PNG shrinks by reducing colors. 95%+ keeps it perfectly lossless.")
                 : hasPngTarget
-                  ? "Lower quality = smaller file. PNGs shrink by reducing colors; 95%+ stays lossless."
-                  : "Lower quality = smaller file. 60–80% is a great balance."}
+                  ? t("Lower quality = smaller file. PNGs shrink by reducing colors; 95%+ stays lossless.")
+                  : t("Lower quality = smaller file. 60–80% is a great balance.")}
             </p>
           </div>
           <div className="flex flex-col gap-2">
             <label className="flex items-center gap-2.5 cursor-pointer">
               <input type="checkbox" checked={shrink} onChange={(e) => setShrink(e.target.checked)} className="w-4 h-4 accent-secondary" />
-              <span className="text-body-md text-on-surface">Shrink large images</span>
+              <span className="text-body-md text-on-surface">{t("Shrink large images")}</span>
             </label>
             {/* The one setting people miss. Quality only changes how the SAME
                 pixels are stored; this changes how many there are, which is
                 usually where the weight actually is. */}
             <p className="text-label-sm font-label-sm text-on-surface-variant/70">
-              Also reduce the dimensions, not just the quality. A phone photo is around 4000px wide,
-              while a web page or an email attachment rarely needs more than 2000 — and halving the
-              width quarters the pixel count, which saves far more than quality alone.
+              {t("Also reduce the dimensions, not just the quality. A phone photo is around 4000px wide, while a web page or an email attachment rarely needs more than 2000 — and halving the width quarters the pixel count, which saves far more than quality alone.")}
             </p>
             {shrink && (
               <div className="flex items-center gap-2 pl-6">
-                <span className="text-label-sm font-label-sm text-on-surface-variant">Max width/height</span>
+                <span className="text-label-sm font-label-sm text-on-surface-variant">{t("Max width/height")}</span>
                 <input type="number" min={100} max={20000} value={maxDim} onChange={(e) => setMaxDim(Math.max(100, parseInt(e.target.value || "0", 10)))} className="w-24 px-2 py-1.5 rounded-md bg-surface-container-lowest border border-surface-variant outline-none text-body-md text-primary" />
                 <span className="text-label-sm font-label-sm text-on-surface-variant">px</span>
               </div>
             )}
           </div>
-          {showBg && <BackgroundPicker value={bg} onChange={setBg} allowTransparent={false} label="JPG background" />}
+          {showBg && <BackgroundPicker value={bg} onChange={setBg} allowTransparent={false} label={t("JPG background")} />}
           </SettingsRail>
         }
       />

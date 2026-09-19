@@ -3,10 +3,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/Icon";
-import { formatBytes } from "@/lib/image/file-naming";
+
 import { stashFiles } from "@/lib/tool-handoff";
 import { applicableTools } from "@/lib/file-actions";
 import type { Tool } from "@/lib/tools";
+import { useFormatBytes, useLocale, useT } from "@/i18n/I18nScope";
+import { toolHref } from "@/lib/i18n/links";
+import { toolDescription, toolName } from "@/lib/i18n/tool-labels";
 
 /**
  * Homepage upload-first launcher: drop images → pick a tool that can process
@@ -18,10 +21,14 @@ import type { Tool } from "@/lib/tools";
 type Staged = { file: File; url: string };
 
 const ACCEPT = "image/*,.heic,.heif";
+// Format lists are not copy; "+ More" is translated at the render site.
 const CHIPS = ["JPG, PNG, WEBP", "GIF, HEIC, BMP", "+ More"];
 
 export function HomeLauncher() {
+  const t = useT();
   const router = useRouter();
+  const locale = useLocale();
+  const formatBytes = useFormatBytes();
   const [staged, setStaged] = useState<Staged[]>([]);
   const [isDropping, setIsDropping] = useState(false);
   const [query, setQuery] = useState("");
@@ -42,7 +49,7 @@ export function HomeLauncher() {
 
   // When the staged set changes, drop a chosen action that's no longer valid.
   useEffect(() => {
-    if (chosen && !applicable.some((t) => t.slug === chosen.slug)) setChosen(null);
+    if (chosen && !applicable.some((tool) => tool.slug === chosen.slug)) setChosen(null);
   }, [applicable, chosen]);
 
   // Filtered options for the dropdown.
@@ -50,12 +57,13 @@ export function HomeLauncher() {
     const q = query.trim().toLowerCase();
     if (!q) return applicable;
     return applicable.filter(
-      (t) =>
-        t.name.toLowerCase().includes(q) ||
-        t.shortDescription.toLowerCase().includes(q) ||
-        t.primaryKeyword.toLowerCase().includes(q),
+      (tool) =>
+        toolName(tool, locale).toLowerCase().includes(q) ||
+        toolDescription(tool, locale).toLowerCase().includes(q) ||
+        tool.name.toLowerCase().includes(q) ||
+        tool.primaryKeyword.toLowerCase().includes(q),
     );
-  }, [query, applicable]);
+  }, [query, applicable, locale]);
 
   // Close the dropdown on outside click / Escape.
   useEffect(() => {
@@ -96,12 +104,12 @@ export function HomeLauncher() {
     });
 
   const openPicker = () => inputRef.current?.click();
-  const pick = (t: Tool) => { setChosen(t); setQuery(t.name); setOpen(false); };
+  const pick = (tool: Tool) => { setChosen(tool); setQuery(toolName(tool, locale)); setOpen(false); };
 
   const cont = () => {
     if (!chosen || files.length === 0) return;
     stashFiles(files);
-    router.push(`/${chosen.slug}`);
+    router.push(toolHref(chosen, locale));
   };
 
   const noneApplicable = files.length > 0 && applicable.length === 0;
@@ -117,7 +125,7 @@ export function HomeLauncher() {
         <div className="text-center lg:text-left">
           <span className="inline-flex items-center gap-2 rounded-full border border-outline-variant bg-surface-container-lowest px-3 py-1 text-label-sm font-label-sm text-on-surface-variant">
             <span className="h-2 w-2 rounded-full bg-secondary" />
-            Free tools — most run right in your browser
+            {t("Free tools — most run right in your browser")}
           </span>
           {/* No hard px size/leading here any more — `text-display-lg` is a
               clamp() that interpolates from 30px to 48px across the viewport,
@@ -133,7 +141,7 @@ export function HomeLauncher() {
           <h1 className="mt-5 text-display-lg font-black tracking-tight text-primary">
             oMyImage
             <span className="mt-2 block text-headline-md font-bold text-on-surface-variant">
-              Effortless Power for Image Workflows.
+              {t("Effortless Power for Image Workflows.")}
             </span>
           </h1>
           {/*
@@ -144,10 +152,9 @@ export function HomeLauncher() {
             what lets the upload card sit on the first screen.
           */}
           <p className="mt-4 text-body-lg text-on-surface-variant max-w-md mx-auto lg:mx-0">
-            oMyImage is a free online image toolkit — compress, resize, crop, convert,
-            watermark and edit photos.{" "}
+            {t("oMyImage is a free online image toolkit — compress, resize, crop, convert, watermark and edit photos.")}{" "}
             <span className="hidden md:inline">
-              Most tools run right in your browser, so files never leave your device. No signup.
+              {t("Most tools run right in your browser, so files never leave your device. No signup.")}
             </span>
           </p>
         </div>
@@ -184,7 +191,7 @@ export function HomeLauncher() {
           {/* Step 1 — upload */}
           <div>
             <p className="text-label-sm font-label-sm font-bold uppercase tracking-wide text-on-surface-variant mb-2">
-              Step 1 · Upload your images
+              {t("Step 1 · Upload your images")}
             </p>
             <div
               onClick={openPicker}
@@ -196,7 +203,7 @@ export function HomeLauncher() {
               }`}
             >
               <span className="inline-flex items-center gap-2 bg-secondary hover:bg-secondary-container text-on-secondary text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors">
-                <Icon name="upload" className="text-[18px]" /> Add images
+                <Icon name="upload" className="text-[18px]" /> {t("Add images")}
               </span>
               <button
                 type="button"
@@ -205,13 +212,13 @@ export function HomeLauncher() {
                 onClick={(e) => { e.stopPropagation(); cameraRef.current?.click(); }}
                 className="md:hidden inline-flex items-center gap-2 rounded-lg border border-secondary px-5 py-2.5 text-sm font-semibold text-secondary transition-colors active:bg-secondary/10"
               >
-                <Icon name="photo_camera" className="text-[18px]" /> Take photo
+                <Icon name="photo_camera" className="text-[18px]" /> {t("Take photo")}
               </button>
-              <p className="text-body-sm text-on-surface-variant">Drag &amp; drop images or click to browse</p>
+              <p className="text-body-sm text-on-surface-variant">{t("Drag & drop images or click to browse")}</p>
               <div className="flex flex-wrap justify-center gap-1.5">
                 {CHIPS.map((c) => (
                   <span key={c} className="rounded-md bg-surface-container px-2 py-0.5 text-label-sm font-label-sm text-on-surface-variant">
-                    {c}
+                    {t(c)}
                   </span>
                 ))}
               </div>
@@ -237,7 +244,7 @@ export function HomeLauncher() {
                     <button
                       type="button"
                       onClick={() => removeFile(i)}
-                      aria-label={`Remove ${s.file.name}`}
+                      aria-label={t("Remove {name}", { name: s.file.name })}
                       className="shrink-0 grid place-items-center h-6 w-6 rounded-md text-on-surface-variant hover:bg-error-container hover:text-error transition-colors"
                     >
                       <Icon name="close" className="text-[15px]" />
@@ -251,7 +258,7 @@ export function HomeLauncher() {
           {/* Step 2 — choose action */}
           <div ref={comboRef} className="relative">
             <p className="text-label-sm font-label-sm font-bold uppercase tracking-wide text-on-surface-variant mb-2">
-              Step 2 · Choose an action
+              {t("Step 2 · Choose an action")}
             </p>
             <div
               className={`flex items-center gap-2 rounded-lg border px-3 h-11 transition-colors ${
@@ -267,7 +274,7 @@ export function HomeLauncher() {
                 value={query}
                 onChange={(e) => { setQuery(e.target.value); setChosen(null); setOpen(true); }}
                 onFocus={() => setOpen(true)}
-                placeholder={files.length === 0 ? "Upload an image first" : "What do you want to do? — e.g. compress, resize"}
+                placeholder={files.length === 0 ? t("Upload an image first") : t("What do you want to do? — e.g. compress, resize")}
                 role="combobox"
                 aria-expanded={open}
                 aria-controls="launcher-actions"
@@ -285,26 +292,26 @@ export function HomeLauncher() {
               >
                 {noneApplicable ? (
                   <p className="px-4 py-5 text-center text-body-sm text-on-surface-variant">
-                    We can&apos;t process this file type yet.
+                    {t("We can't process this file type yet.")}
                   </p>
                 ) : options.length > 0 ? (
-                  options.map((t) => (
+                  options.map((tool) => (
                     <button
-                      key={t.slug}
+                      key={tool.slug}
                       type="button"
                       role="option"
-                      aria-selected={chosen?.slug === t.slug}
-                      onClick={() => pick(t)}
+                      aria-selected={chosen?.slug === tool.slug}
+                      onClick={() => pick(tool)}
                       className={`w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors hover:bg-surface-container ${
-                        chosen?.slug === t.slug ? "bg-surface-container" : ""
+                        chosen?.slug === tool.slug ? "bg-surface-container" : ""
                       }`}
                     >
-                      <Icon name={t.icon} className="text-[20px] text-secondary/80 shrink-0" />
-                      <span className="min-w-0 flex-1 truncate text-body-md text-primary">{t.name}</span>
+                      <Icon name={tool.icon} className="text-[20px] text-secondary/80 shrink-0" />
+                      <span className="min-w-0 flex-1 truncate text-body-md text-primary">{toolName(tool, locale)}</span>
                     </button>
                   ))
                 ) : (
-                  <p className="px-4 py-5 text-center text-body-sm text-on-surface-variant">No matching action.</p>
+                  <p className="px-4 py-5 text-center text-body-sm text-on-surface-variant">{t("No matching action.")}</p>
                 )}
               </div>
             )}
@@ -317,7 +324,7 @@ export function HomeLauncher() {
             disabled={!chosen || files.length === 0}
             className="inline-flex items-center justify-center gap-2 rounded-lg bg-secondary text-on-secondary font-semibold px-6 py-3 shadow-md shadow-secondary/30 hover:bg-secondary-container transition-colors disabled:opacity-40 disabled:pointer-events-none"
           >
-            Continue <Icon name="arrow_forward" className="text-[19px]" />
+            {t("Continue")} <Icon name="arrow_forward" className="text-[19px]" />
           </button>
         </div>
       </div>
