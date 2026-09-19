@@ -4,11 +4,11 @@ sn,batch,section,id,en_url,pt_url,en_extracted,ui_sweep,pt_copy,route,gated,seo_
 3,1,Tools,resize-image,http://localhost:3002/resize-image,http://localhost:3002/pt/redimensionar-imagem,done,done,done,done,done,done,done,done,done,
 4,1,Tools,remove-background,http://localhost:3002/remove-background,http://localhost:3002/pt/remover-fundo,done,done,done,done,done,done,done,done,done,backend errors verified translated (rembg not installed locally)
 5,1,Tools,image-to-text,http://localhost:3002/image-to-text,http://localhost:3002/pt/imagem-em-texto,done,done,done,done,done,done,done,done,done,"pt slug changed to imagem-em-texto (SERP: ""converter imagem em texto""); EN module still claims image is never uploaded — tool is server-first"
-6,2,Tools,crop-image,http://localhost:3002/crop-image,http://localhost:3002/pt/recortar-imagem,done,todo,todo,todo,todo,todo,todo,todo,todo,
-7,2,Tools,png-to-jpg,http://localhost:3002/png-to-jpg,http://localhost:3002/pt/png-para-jpg,done,todo,todo,todo,todo,todo,todo,todo,todo,
-8,2,Tools,jpg-to-png,http://localhost:3002/jpg-to-png,http://localhost:3002/pt/jpg-para-png,done,todo,todo,todo,todo,todo,todo,todo,todo,
-9,2,Tools,convert-to-jpg,http://localhost:3002/convert-to-jpg,http://localhost:3002/pt/converter-para-jpg,done,todo,todo,todo,todo,todo,todo,todo,todo,
-10,2,Tools,image-to-pdf,http://localhost:3002/image-to-pdf,http://localhost:3002/pt/imagem-para-pdf,done,todo,todo,todo,todo,todo,todo,todo,todo,
+6,2,Tools,crop-image,http://localhost:3002/crop-image,http://localhost:3002/pt/recortar-imagem,done,done,done,done,done,done,done,done,done,
+7,2,Tools,png-to-jpg,http://localhost:3002/png-to-jpg,http://localhost:3002/pt/png-para-jpg,done,done,done,done,done,done,done,done,done,
+8,2,Tools,jpg-to-png,http://localhost:3002/jpg-to-png,http://localhost:3002/pt/jpg-para-png,done,done,done,done,done,done,done,done,done,
+9,2,Tools,convert-to-jpg,http://localhost:3002/convert-to-jpg,http://localhost:3002/pt/converter-para-jpg,done,done,done,done,done,done,done,done,done,
+10,2,Tools,image-to-pdf,http://localhost:3002/image-to-pdf,http://localhost:3002/pt/imagem-para-pdf,done,done,done,done,done,done,done,done,done,fixed Legal→Jurídico key collision (paper size) and id-derived fit labels
 11,3,Tools,upscale-image,http://localhost:3002/upscale-image,http://localhost:3002/pt/melhorar-qualidade-imagem,done,todo,todo,todo,todo,todo,todo,todo,todo,
 12,3,Tools,image-editor,http://localhost:3002/image-editor,http://localhost:3002/pt/editor-de-fotos,done,todo,todo,todo,todo,todo,todo,todo,todo,
 13,3,Tools,watermark-image,http://localhost:3002/watermark-image,http://localhost:3002/pt/marca-dagua-imagem,done,todo,todo,todo,todo,todo,todo,todo,todo,

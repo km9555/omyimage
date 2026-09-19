@@ -12,7 +12,7 @@ import { FileTray, TrayAction, type TrayEntry } from "@/components/tool/FileTray
 import { SettingsRail, RailAction, RailNote } from "@/components/tool/SettingsRail";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
 import { PagePreview } from "./PagePreview";
-import { decodeBitmap, downloadBlob, formatBytes, baseName, rasterize } from "@/lib/image/raster";
+import { decodeBitmap, downloadBlob, baseName, rasterize } from "@/lib/image/raster";
 import { readJpegOrientation } from "@/lib/image/exif-orientation";
 import {
   imagesToPdf,
@@ -25,6 +25,9 @@ import {
   type ImageInput,
 } from "@/lib/pdf/images-to-pdf";
 import { stashFiles, useHandoff } from "@/lib/tool-handoff";
+import { useFormatBytes, useLocale, useT } from "@/i18n/I18nScope";
+import { translateError } from "@/i18n/errors";
+import { toolHref } from "@/lib/i18n/links";
 
 const ACCENT = "#C55F4E";
 const ACCEPT = "image/jpeg,image/png,image/webp,image/gif,image/bmp";
@@ -45,6 +48,9 @@ type Item = {
   orientation: PerImageOrientation;
 };
 
+// PAGE_SIZES, ORIENTATIONS, PER_IMAGE and FIT_LABELS are module scope:
+// translated at the render site, keys in image-to-pdf.<loc>.ts (§4.2). Paper
+// formats (A4, Letter, Legal…) pass through t() and stay untranslated.
 const PAGE_SIZES: { v: PageSizeKey; label: string }[] = [
   { v: "fit", label: "Fit to image" },
   { v: "a4", label: "A4" },
@@ -66,6 +72,17 @@ const PER_IMAGE: { v: PerImageOrientation; icon: string; label: string }[] = [
   { v: "portrait", icon: "crop_portrait", label: "Portrait" },
   { v: "landscape", icon: "crop_landscape", label: "Landscape" },
 ];
+
+/**
+ * The fit buttons used to render the mode's ID ("contain"), capitalised by
+ * CSS — a label derived from an id, which no string scan can see (oMyPDF
+ * conversion.md §4.18). They render these English source strings instead.
+ */
+const FIT_LABELS: Record<FitMode, string> = {
+  contain: "Contain",
+  cover: "Cover",
+  stretch: "Stretch",
+};
 
 let counter = 0;
 const uid = () => `f${Date.now()}_${counter++}`;
@@ -131,7 +148,10 @@ async function normalize(file: File): Promise<ImageInput> {
 }
 
 export function ImageToPdfTool() {
+  const t = useT();
   const router = useRouter();
+  const locale = useLocale();
+  const formatBytes = useFormatBytes();
   const [items, setItems] = useState<Item[]>([]);
   const [pageSize, setPageSize] = useState<PageSizeKey>("a4");
   const [orientation, setOrientation] = useState<Orientation>("auto");
@@ -159,7 +179,7 @@ export function ImageToPdfTool() {
 
   const addFiles = useCallback((incoming: FileList | File[]) => {
     const imgs = Array.from(incoming).filter((f) => f.type.startsWith("image/"));
-    if (imgs.length === 0) { toast.error("Please select image files."); return; }
+    if (imgs.length === 0) { toast.error(t("Please select image files.")); return; }
     const added: Item[] = imgs.map((file) => ({
       id: uid(),
       file,
@@ -181,7 +201,7 @@ export function ImageToPdfTool() {
         /* Undecodable here still gets a chance to fail loudly at build time. */
       }
     });
-  }, []);
+  }, [t]);
 
   useHandoff(addFiles);
 
@@ -220,7 +240,7 @@ export function ImageToPdfTool() {
 
   const compressFirst = () => {
     stashFiles(items.map((i) => i.file));
-    router.push("/compress-image");
+    router.push(toolHref("compress-image", locale));
   };
 
   const buildPdf = async () => {
@@ -232,10 +252,10 @@ export function ImageToPdfTool() {
       const name = items.length === 1 ? `${baseName(items[0].file.name)}.pdf` : "omyimage.pdf";
       downloadBlob(new Blob([bytes as BlobPart], { type: "application/pdf" }), name);
       const pages = Math.ceil(items.length / imagesPerPage);
-      toast.success(`Created a PDF with ${pages} page${pages === 1 ? "" : "s"}.`);
+      toast.success(pages === 1 ? t("Created a PDF with 1 page.") : t("Created a PDF with {n} pages.", { n: pages }));
     } catch (err) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : "Couldn't create the PDF.");
+      toast.error(translateError(err, t, "Couldn't create the PDF."));
     } finally {
       setIsWorking(false);
     }
@@ -245,7 +265,7 @@ export function ImageToPdfTool() {
     return (
       <section>
         <TopLoadingBar active={isWorking} />
-        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="picture_as_pdf" hint="or drop JPG, PNG, WEBP or GIF images here" />
+        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="picture_as_pdf" hint={t("or drop JPG, PNG, WEBP or GIF images here")} />
       </section>
     );
   }
@@ -269,8 +289,8 @@ export function ImageToPdfTool() {
           <button
             key={o.v}
             type="button"
-            title={o.label}
-            aria-label={`${o.label} — ${it.file.name}`}
+            title={t(o.label)}
+            aria-label={t("{orientation} — {name}", { orientation: t(o.label), name: it.file.name })}
             aria-pressed={it.orientation === o.v}
             onClick={() => setItemOrientation(it.id, o.v)}
             className={`flex flex-1 items-center justify-center rounded py-0.5 transition-colors ${
@@ -284,7 +304,7 @@ export function ImageToPdfTool() {
         ))}
       </div>
     ) : undefined,
-    action: <TrayAction icon="close" label="Remove" disabled={isWorking} onClick={() => removeItem(it.id)} />,
+    action: <TrayAction icon="close" label={t("Remove")} disabled={isWorking} onClick={() => removeItem(it.id)} />,
   }));
 
   const pageCount = Math.ceil(items.length / imagesPerPage);
@@ -299,12 +319,12 @@ export function ImageToPdfTool() {
         mobile={{
           ...filesHeader(items.map((i) => i.file)),
           onBack: reset,
-          backLabel: "Clear images",
-          settingsTitle: "PDF settings",
+          backLabel: t("Clear images"),
+          settingsTitle: t("PDF settings"),
           cta: {
             icon: "picture_as_pdf",
-            label: "Build",
-            busyLabel: "Building PDF…",
+            label: t("Build"),
+            busyLabel: t("Building PDF…"),
             busy: isWorking,
             onClick: buildPdf,
           },
@@ -314,7 +334,7 @@ export function ImageToPdfTool() {
             <PagePreview plans={plans} thumbs={thumbs} background={resolveBg(bg)} accent={ACCENT} />
             <FileTray
               entries={entries}
-              title={`${items.length} image${items.length === 1 ? "" : "s"}`}
+              title={items.length === 1 ? t("1 image") : t("{n} images", { n: items.length })}
               accept={ACCEPT}
               onFiles={addFiles}
               onClear={reset}
@@ -325,16 +345,19 @@ export function ImageToPdfTool() {
         }
         rail={
           <SettingsRail
-            title="PDF Settings"
+            title={t("PDF Settings")}
             icon="picture_as_pdf"
             accent={ACCENT}
             footer={
               <>
                 <RailNote>
-                  {items.length} image{items.length === 1 ? "" : "s"} → {pageCount} page{pageCount === 1 ? "" : "s"}. Use the arrows to reorder.
+                  {items.length === 1 ? t("1 image") : t("{n} images", { n: items.length })}{" → "}
+                  {pageCount === 1 ? t("1 page") : t("{n} pages", { n: pageCount })}
+                  {". "}
+                  {t("Use the arrows to reorder.")}
                 </RailNote>
-                <RailAction onClick={buildPdf} busy={isWorking} busyLabel="Building PDF…" icon="picture_as_pdf">
-                  Create PDF
+                <RailAction onClick={buildPdf} busy={isWorking} busyLabel={t("Building PDF…")} icon="picture_as_pdf">
+                  {t("Create PDF")}
                 </RailAction>
               </>
             }
@@ -344,8 +367,7 @@ export function ImageToPdfTool() {
                 <p className="flex items-start gap-2.5 text-label-sm font-label-sm text-on-surface-variant">
                   <Icon name="info" className="mt-0.5 shrink-0 text-[18px]" style={{ color: ACCENT }} />
                   <span>
-                    That&apos;s <strong className="text-on-surface">{formatBytes(totalIn)}</strong> of images. They&apos;re embedded without
-                    recompression, so the PDF will be about that big — likely too large to email.
+                    {t("That's {size} of images. They're embedded without recompression, so the PDF will be about that big — likely too large to email.", { size: formatBytes(totalIn) })}
                   </span>
                 </p>
                 <button
@@ -354,70 +376,72 @@ export function ImageToPdfTool() {
                   disabled={isWorking}
                   className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-secondary py-2 text-label-md font-semibold text-secondary transition-colors hover:bg-secondary/10 disabled:opacity-50"
                 >
-                  <Icon name="compress" className="text-[18px]" /> Compress these first
+                  <Icon name="compress" className="text-[18px]" /> {t("Compress these first")}
                 </button>
               </div>
             )}
 
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="pdf-page-size" className="text-label-sm font-label-sm text-on-surface-variant">Page size</label>
+              <label htmlFor="pdf-page-size" className="text-label-sm font-label-sm text-on-surface-variant">{t("Page size")}</label>
               <select id="pdf-page-size" value={pageSize} onChange={(e) => setPageSize(e.target.value as PageSizeKey)} className={fieldCls}>
                 {PAGE_SIZES.map((s) => (
-                  <option key={s.v} value={s.v}>{s.label}</option>
+                  <option key={s.v} value={s.v}>{t(s.label)}</option>
                 ))}
               </select>
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="pdf-orientation" className="text-label-sm font-label-sm text-on-surface-variant">Orientation</label>
+              <label htmlFor="pdf-orientation" className="text-label-sm font-label-sm text-on-surface-variant">{t("Orientation")}</label>
               <select id="pdf-orientation" value={orientation} onChange={(e) => setOrientation(e.target.value as Orientation)} className={fieldCls} disabled={pageSize === "fit"}>
                 {ORIENTATIONS.map((o) => (
-                  <option key={o.v} value={o.v}>{o.label}</option>
+                  <option key={o.v} value={o.v}>{t(o.label)}</option>
                 ))}
               </select>
               {pageSize === "fit" ? (
-                <p className="text-label-sm font-label-sm text-on-surface-variant">Each page already takes its image&apos;s shape.</p>
+                <p className="text-label-sm font-label-sm text-on-surface-variant">{t("Each page already takes its image's shape.")}</p>
               ) : orientation === "custom" ? (
                 <p className="text-label-sm font-label-sm text-on-surface-variant">
-                  Set each image&apos;s orientation on its card{imagesPerPage > 1 ? " — the first image on a page decides that page." : "."}
+                  {imagesPerPage > 1
+                    ? t("Set each image's orientation on its card — the first image on a page decides that page.")
+                    : t("Set each image's orientation on its card.")}
                 </p>
               ) : null}
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="text-label-sm font-label-sm text-on-surface-variant">Images per page</label>
+              <label className="text-label-sm font-label-sm text-on-surface-variant">{t("Images per page")}</label>
               <div className="grid grid-cols-5 gap-1 rounded-lg bg-surface-container p-1">
                 {([1, 2, 4, 6, 9] as ImagesPerPage[]).map((n) => (
                   <button key={n} type="button" onClick={() => setImagesPerPage(n)} className={seg(imagesPerPage === n)}>{n}</button>
                 ))}
               </div>
               {imagesPerPage > 1 && pageSize === "fit" && (
-                <p className="text-label-sm font-label-sm text-on-surface-variant">Multi-up pages are laid out on A4.</p>
+                <p className="text-label-sm font-label-sm text-on-surface-variant">{t("Multi-up pages are laid out on A4.")}</p>
               )}
             </div>
 
             <div className="flex flex-col gap-1.5">
               <span className="flex items-center gap-1.5 text-label-sm font-label-sm text-on-surface-variant">
-                Fit
-                <HelpTip text="Contain keeps the whole image (may add margins). Cover fills the area (may crop). Stretch distorts to fill exactly." />
+                {t("Fit")}
+                <HelpTip text={t("Contain keeps the whole image (may add margins). Cover fills the area (may crop). Stretch distorts to fill exactly.")} />
               </span>
               <div className="grid grid-cols-3 gap-1 rounded-lg bg-surface-container p-1">
                 {(["contain", "cover", "stretch"] as FitMode[]).map((f) => (
-                  <button key={f} type="button" onClick={() => setFit(f)} className={seg(fit === f)}>{f}</button>
+                  <button key={f} type="button" onClick={() => setFit(f)} className={seg(fit === f)}>{t(FIT_LABELS[f])}</button>
                 ))}
               </div>
             </div>
 
             <div className="flex flex-col gap-1.5">
               <label htmlFor="pdf-margin" className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant">
-                <span>Margin</span>
+                <span>{t("Margin")}</span>
                 <span className="text-primary font-semibold tabular-nums">{margin} pt</span>
               </label>
               <input id="pdf-margin" type="range" min={0} max={96} step={2} value={margin} onChange={(e) => setMargin(Number(e.target.value))} className="w-full accent-secondary" />
-              <p className="text-label-sm font-label-sm text-on-surface-variant">Space around images (and between them on multi-up pages).</p>
+              <p className="text-label-sm font-label-sm text-on-surface-variant">{t("Space around images (and between them on multi-up pages).")}</p>
             </div>
 
-            <BackgroundPicker value={bg} onChange={setBg} label="Page background" />
+            <BackgroundPicker value={bg} onChange={setBg} label={t("Page background")} />
           </SettingsRail>
         }
       />

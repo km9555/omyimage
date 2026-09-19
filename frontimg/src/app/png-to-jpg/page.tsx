@@ -11,6 +11,7 @@ export const metadata = toolMetadata(content);
 export default function Page() {
   return (
     <ToolPageShell content={content}>
+      {/* i18n-raw: dropHint is an English source string that ConvertTool translates. */}
       <ConvertTool config={{ accent: toolColor(tool), accept: "image/png", targetMime: "image/jpeg", targetLabel: "JPG", flatten: true, quality: true, metadata: true, dropHint: "or drop PNG images here" }} />
     </ToolPageShell>
   );

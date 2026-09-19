@@ -26,6 +26,12 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "resize-image",
     "remove-background",
     "image-to-text",
+    // Batch 2 — crop, the three JPG/PNG converters, image to PDF.
+    "crop-image",
+    "png-to-jpg",
+    "jpg-to-png",
+    "convert-to-jpg",
+    "image-to-pdf",
   ],
 };
 

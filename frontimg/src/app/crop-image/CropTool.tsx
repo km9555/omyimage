@@ -12,13 +12,15 @@ import { FileTray, TrayAction, type TrayEntry } from "@/components/tool/FileTray
 import { SettingsRail, RailAction, RailSecondaryAction, RailNote } from "@/components/tool/SettingsRail";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
 import {
-  decodeBitmap, canvasToBlob, downloadBlob, zipAndDownload, formatBytes, baseName, mimeExt, type ExportMime,
+  decodeBitmap, canvasToBlob, downloadBlob, zipAndDownload, baseName, mimeExt, type ExportMime,
 } from "@/lib/image/raster";
 import {
   applyAspect, centeredCrop, clampCrop, outputSize, renderCrop, transformedSize,
   NO_TRANSFORM, type CropSel, type CropShape, type CropTransform, type OutputTarget,
 } from "@/lib/image/crop";
 import { useHandoff } from "@/lib/tool-handoff";
+import { useFormatBytes, useT } from "@/i18n/I18nScope";
+import { translateError } from "@/i18n/errors";
 
 const ACCENT = "#3E9A90";
 const ACCEPT = "image/jpeg,image/png,image/webp,image/gif,image/bmp";
@@ -26,6 +28,8 @@ const ACCEPT = "image/jpeg,image/png,image/webp,image/gif,image/bmp";
 type Format = "original" | ExportMime;
 type Item = { id: string; file: File; url: string; result?: { blob: Blob; size: number; name: string } };
 
+// FORMATS, SHAPES, ASPECTS ("Free") and OUTPUT_TARGETS ("Original") are module
+// scope: translated at the render site, keys in crop-image.<loc>.ts (§4.2).
 const FORMATS: { label: string; value: Format }[] = [
   { label: "Same as original", value: "original" },
   { label: "JPG", value: "image/jpeg" },
@@ -71,6 +75,8 @@ function outMimeFor(file: File, fmt: Format): ExportMime {
 }
 
 export function CropTool() {
+  const t = useT();
+  const formatBytes = useFormatBytes();
   const [items, setItems] = useState<Item[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [sel, setSel] = useState<CropSel>({ x: 0.1, y: 0.1, w: 0.8, h: 0.8 });
@@ -120,12 +126,12 @@ export function CropTool() {
           if (!alive || !itemsRef.current.some((p) => p.id === it.id)) { bmp.close(); return; }
           bmps.current.set(it.id, bmp);
         } catch {
-          toast.error(`Couldn't read ${it.file.name}.`);
+          toast.error(t("Couldn't read {name}.", { name: it.file.name }));
         }
       })
     ).then(() => { if (alive) setBmpTick((n) => n + 1); });
     return () => { alive = false; };
-  }, [items]);
+  }, [items, t]);
 
   const activeBmp = useMemo(() => {
     void bmpTick;
@@ -178,16 +184,16 @@ export function CropTool() {
   };
 
   const rotate = (dir: 1 | -1) =>
-    setTransform((t) => ({ ...t, rotate: (((t.rotate + dir * 90) % 360) + 360) % 360 as CropTransform["rotate"] }));
+    setTransform((tf) => ({ ...tf, rotate: (((tf.rotate + dir * 90) % 360) + 360) % 360 as CropTransform["rotate"] }));
 
   const addFiles = useCallback((incoming: FileList | File[]) => {
     const imgs = Array.from(incoming).filter((f) => f.type.startsWith("image/"));
-    if (imgs.length === 0) { toast.error("Please select image files."); return; }
+    if (imgs.length === 0) { toast.error(t("Please select image files.")); return; }
     setDone(false);
     const added = imgs.map((file) => ({ id: uid(), file, url: URL.createObjectURL(file) }));
     setItems((prev) => [...prev, ...added]);
     setActiveId((cur) => cur ?? added[0].id);
-  }, []);
+  }, [t]);
 
   useHandoff(addFiles);
 
@@ -233,10 +239,10 @@ export function CropTool() {
       setDone(true);
       if (outItems.length === 1 && outItems[0].result) downloadBlob(outItems[0].result.blob, outItems[0].result.name);
       else await zipAndDownload(outItems.map((o) => ({ name: o.result!.name, blob: o.result!.blob })), "omyimage_cropped.zip");
-      toast.success(`Cropped ${outItems.length} image${outItems.length === 1 ? "" : "s"}.`);
+      toast.success(outItems.length === 1 ? t("Cropped 1 image.") : t("Cropped {n} images.", { n: outItems.length }));
     } catch (err) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : "Crop failed.");
+      toast.error(translateError(err, t, "Crop failed."));
     } finally {
       setIsWorking(false);
     }
@@ -252,7 +258,7 @@ export function CropTool() {
     return (
       <section>
         <TopLoadingBar active={isWorking} />
-        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="crop" hint="or drop JPG, PNG, WEBP, GIF or BMP images here" />
+        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="crop" hint={t("or drop JPG, PNG, WEBP, GIF or BMP images here")} />
       </section>
     );
   }
@@ -265,7 +271,7 @@ export function CropTool() {
       <button
         type="button"
         onClick={() => setActiveId(it.id)}
-        aria-label={`Preview ${it.file.name}`}
+        aria-label={t("Preview {name}", { name: it.file.name })}
         aria-pressed={active?.id === it.id}
         className="grid place-items-center w-7 h-7 rounded-full shrink-0 transition-colors"
         style={{ backgroundColor: active?.id === it.id ? ACCENT : `${ACCENT}1A`, color: active?.id === it.id ? "#fff" : ACCENT }}
@@ -276,13 +282,13 @@ export function CropTool() {
     meta: (
       <>
         {formatBytes(it.file.size)}
-        {it.result && <><Icon name="check" className="text-[13px] mx-1 align-middle" style={{ color: ACCENT }} />done · {formatBytes(it.result.size)}</>}
+        {it.result && <><Icon name="check" className="text-[13px] mx-1 align-middle" style={{ color: ACCENT }} />{t("done")} · {formatBytes(it.result.size)}</>}
       </>
     ),
     action: it.result ? (
-      <TrayAction icon="download" tone="accent" label="Download" onClick={() => downloadBlob(it.result!.blob, it.result!.name)} />
+      <TrayAction icon="download" tone="accent" label={t("Download")} onClick={() => downloadBlob(it.result!.blob, it.result!.name)} />
     ) : (
-      <TrayAction icon="close" label="Remove" disabled={isWorking} onClick={() => removeItem(it.id)} />
+      <TrayAction icon="close" label={t("Remove")} disabled={isWorking} onClick={() => removeItem(it.id)} />
     ),
   }));
 
@@ -313,15 +319,15 @@ export function CropTool() {
 
   const canvasHint = (
     <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
-      Drag inside the box to move it, or a handle to resize · output {out.w} × {out.h} px
-      {items.length > 1 && <> — the same crop is applied to all {items.length} images</>}
+      {t("Drag inside the box to move it, or a handle to resize · output {w} × {h} px", { w: out.w, h: out.h })}
+      {items.length > 1 && <> {t("— the same crop is applied to all {n} images", { n: items.length })}</>}
     </p>
   );
 
   const tray = (
     <FileTray
       entries={entries}
-      title={`${items.length} image${items.length === 1 ? "" : "s"}`}
+      title={items.length === 1 ? t("1 image") : t("{n} images", { n: items.length })}
       accept={ACCEPT}
       onFiles={addFiles}
       onClear={reset}
@@ -336,7 +342,7 @@ export function CropTool() {
         mobile={{
           ...filesHeader(items.map((i) => i.file)),
           onBack: reset,
-          backLabel: "Clear images",
+          backLabel: t("Clear images"),
           body: (
             <>
               {canvasPane}
@@ -347,17 +353,17 @@ export function CropTool() {
             {
               id: "files",
               icon: "photo_library",
-              label: "Files",
+              label: t("Files"),
               badge: items.length > 1 ? items.length : undefined,
-              sheetTitle: `${items.length} image${items.length === 1 ? "" : "s"}`,
+              sheetTitle: items.length === 1 ? t("1 image") : t("{n} images", { n: items.length }),
               sheet: tray,
             },
           ],
-          settingsTitle: "Crop settings",
+          settingsTitle: t("Crop settings"),
           cta: {
             icon: "crop",
-            label: "Crop",
-            busyLabel: "Cropping…",
+            label: t("Crop|verb"),
+            busyLabel: t("Cropping…"),
             busy: isWorking,
             onClick: cropAll,
           },
@@ -371,21 +377,21 @@ export function CropTool() {
         }
         rail={
           <SettingsRail
-            title="Crop Settings"
+            title={t("Crop Settings")}
             icon="crop"
             accent={ACCENT}
             footer={
               <>
-                <RailNote>Output: {out.w} × {out.h} px — nothing is uploaded.</RailNote>
-                <RailAction onClick={cropAll} busy={isWorking} busyLabel="Cropping…" icon="crop">
-                  {items.length > 1 ? `Crop ${items.length} images` : "Crop & download"}
+                <RailNote>{t("Output: {w} × {h} px — nothing is uploaded.", { w: out.w, h: out.h })}</RailNote>
+                <RailAction onClick={cropAll} busy={isWorking} busyLabel={t("Cropping…")} icon="crop">
+                  {items.length > 1 ? t("Crop {n} images", { n: items.length }) : t("Crop & download")}
                 </RailAction>
                 {done && items.length > 1 && (
                   <RailSecondaryAction
                     icon="folder_zip"
                     onClick={() => zipAndDownload(items.filter((i) => i.result).map((i) => ({ name: i.result!.name, blob: i.result!.blob })), "omyimage_cropped.zip")}
                   >
-                    Download all (ZIP)
+                    {t("Download all (ZIP)")}
                   </RailSecondaryAction>
                 )}
               </>
@@ -393,8 +399,8 @@ export function CropTool() {
           >
             <div className="flex flex-col gap-1.5">
               <span className="flex items-center gap-1.5 text-label-sm font-label-sm text-on-surface-variant">
-                Shape
-                <HelpTip text="Circle and Ellipse cut away the corners — export as PNG or WEBP to keep them transparent. JPG has no transparency, so those corners take the background colour instead." />
+                {t("Shape")}
+                <HelpTip text={t("Circle and Ellipse cut away the corners — export as PNG or WEBP to keep them transparent. JPG has no transparency, so those corners take the background colour instead.")} />
               </span>
               <div className="grid grid-cols-5 gap-1 rounded-lg bg-surface-container p-1">
                 {SHAPES.map((s, i) => (
@@ -402,8 +408,8 @@ export function CropTool() {
                     key={s.label}
                     type="button"
                     onClick={() => pickShape(i)}
-                    title={s.label}
-                    aria-label={s.label}
+                    title={t(s.label)}
+                    aria-label={t(s.label)}
                     aria-pressed={shapeIdx === i}
                     className={`flex items-center justify-center rounded-md py-2 transition-colors ${
                       shapeIdx === i ? "bg-surface-container-lowest text-primary shadow-sm" : "text-on-surface-variant hover:text-primary"
@@ -413,61 +419,61 @@ export function CropTool() {
                   </button>
                 ))}
               </div>
-              <p className="text-label-sm font-label-sm text-on-surface-variant">{shapeDef.label}</p>
+              <p className="text-label-sm font-label-sm text-on-surface-variant">{t(shapeDef.label)}</p>
             </div>
 
             {shapeDef.shape === "rounded" && (
               <div className="flex flex-col gap-1.5">
                 <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant">
-                  <span>Corner radius</span><span className="text-primary font-semibold">{Math.round(radius * 100)}%</span>
+                  <span>{t("Corner radius")}</span><span className="text-primary font-semibold">{Math.round(radius * 100)}%</span>
                 </label>
                 <input type="range" min={0} max={50} step={1} value={Math.round(radius * 100)} onChange={(e) => setRadius(parseInt(e.target.value, 10) / 100)} className="w-full accent-secondary" />
               </div>
             )}
 
             <div className="flex flex-col gap-1.5">
-              <span className="text-label-sm font-label-sm text-on-surface-variant">Aspect ratio</span>
+              <span className="text-label-sm font-label-sm text-on-surface-variant">{t("Aspect ratio")}</span>
               <div className="grid grid-cols-3 gap-1 rounded-lg bg-surface-container p-1">
                 {ASPECTS.map((a) => (
-                  <button key={a.label} type="button" onClick={() => pickAspect(a.value)} className={seg(aspect === a.value)}>{a.label}</button>
+                  <button key={a.label} type="button" onClick={() => pickAspect(a.value)} className={seg(aspect === a.value)}>{t(a.label)}</button>
                 ))}
               </div>
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <span className="text-label-sm font-label-sm text-on-surface-variant">Rotate &amp; flip</span>
+              <span className="text-label-sm font-label-sm text-on-surface-variant">{t("Rotate & flip")}</span>
               <div className="grid grid-cols-4 gap-1">
-                <button type="button" onClick={() => rotate(-1)} title="Rotate left" aria-label="Rotate left" className="flex items-center justify-center rounded-lg border border-surface-variant py-2 text-on-surface-variant hover:text-primary transition-colors"><Icon name="rotate_90_degrees_ccw" className="text-[18px]" /></button>
-                <button type="button" onClick={() => rotate(1)} title="Rotate right" aria-label="Rotate right" className="flex items-center justify-center rounded-lg border border-surface-variant py-2 text-on-surface-variant hover:text-primary transition-colors"><Icon name="rotate_90_degrees_cw" className="text-[18px]" /></button>
-                <button type="button" onClick={() => setTransform((t) => ({ ...t, flipH: !t.flipH }))} title="Flip horizontally" aria-label="Flip horizontally" aria-pressed={transform.flipH} className={`flex items-center justify-center rounded-lg border py-2 transition-colors ${transform.flipH ? "border-secondary text-secondary" : "border-surface-variant text-on-surface-variant hover:text-primary"}`}><Icon name="flip" className="text-[18px]" /></button>
-                <button type="button" onClick={() => setTransform((t) => ({ ...t, flipV: !t.flipV }))} title="Flip vertically" aria-label="Flip vertically" aria-pressed={transform.flipV} className={`flex items-center justify-center rounded-lg border py-2 transition-colors ${transform.flipV ? "border-secondary text-secondary" : "border-surface-variant text-on-surface-variant hover:text-primary"}`}><Icon name="flip" className="text-[18px] rotate-90" /></button>
+                <button type="button" onClick={() => rotate(-1)} title={t("Rotate left")} aria-label={t("Rotate left")} className="flex items-center justify-center rounded-lg border border-surface-variant py-2 text-on-surface-variant hover:text-primary transition-colors"><Icon name="rotate_90_degrees_ccw" className="text-[18px]" /></button>
+                <button type="button" onClick={() => rotate(1)} title={t("Rotate right")} aria-label={t("Rotate right")} className="flex items-center justify-center rounded-lg border border-surface-variant py-2 text-on-surface-variant hover:text-primary transition-colors"><Icon name="rotate_90_degrees_cw" className="text-[18px]" /></button>
+                <button type="button" onClick={() => setTransform((tf) => ({ ...tf, flipH: !tf.flipH }))} title={t("Flip horizontally")} aria-label={t("Flip horizontally")} aria-pressed={transform.flipH} className={`flex items-center justify-center rounded-lg border py-2 transition-colors ${transform.flipH ? "border-secondary text-secondary" : "border-surface-variant text-on-surface-variant hover:text-primary"}`}><Icon name="flip" className="text-[18px]" /></button>
+                <button type="button" onClick={() => setTransform((tf) => ({ ...tf, flipV: !tf.flipV }))} title={t("Flip vertically")} aria-label={t("Flip vertically")} aria-pressed={transform.flipV} className={`flex items-center justify-center rounded-lg border py-2 transition-colors ${transform.flipV ? "border-secondary text-secondary" : "border-surface-variant text-on-surface-variant hover:text-primary"}`}><Icon name="flip" className="text-[18px] rotate-90" /></button>
               </div>
             </div>
 
             <div className="flex flex-col gap-1.5">
               <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant">
-                <span className="flex items-center gap-1.5">Straighten <HelpTip text="Fine rotation for levelling a horizon. The image is zoomed just enough that no empty corners appear." /></span>
+                <span className="flex items-center gap-1.5">{t("Straighten")} <HelpTip text={t("Fine rotation for levelling a horizon. The image is zoomed just enough that no empty corners appear.")} /></span>
                 <span className="text-primary font-semibold">{transform.straighten}°</span>
               </label>
-              <input type="range" min={-15} max={15} step={0.5} value={transform.straighten} onChange={(e) => setTransform((t) => ({ ...t, straighten: parseFloat(e.target.value) }))} className="w-full accent-secondary" />
+              <input type="range" min={-15} max={15} step={0.5} value={transform.straighten} onChange={(e) => setTransform((tf) => ({ ...tf, straighten: parseFloat(e.target.value) }))} className="w-full accent-secondary" />
             </div>
 
             <div className="flex flex-col gap-1.5">
               <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant">
-                <span>Zoom</span><span className="text-primary font-semibold">{zoom.toFixed(1)}x</span>
+                <span>{t("Zoom")}</span><span className="text-primary font-semibold">{zoom.toFixed(1)}x</span>
               </label>
               <input type="range" min={1} max={4} step={0.1} value={zoom} onChange={(e) => setZoom(parseFloat(e.target.value))} className="w-full accent-secondary" />
             </div>
 
             <div className="flex flex-col gap-1.5">
               <span className="flex items-center gap-1.5 text-label-sm font-label-sm text-on-surface-variant">
-                Selection (px)
-                <HelpTip text="Exact pixel position and size of the crop on the image, after any rotation." />
+                {t("Selection (px)")}
+                <HelpTip text={t("Exact pixel position and size of the crop on the image, after any rotation.")} />
               </span>
               <div className="grid grid-cols-2 gap-2">
                 {([["X","x"],["Y","y"],["Width","w"],["Height","h"]] as [string, "x"|"y"|"w"|"h"][]).map(([label, key]) => (
                   <label key={key} className="flex flex-col gap-1 text-label-sm font-label-sm text-on-surface-variant">
-                    {label}
+                    {t(label)}
                     <input
                       type="number"
                       min={0}
@@ -478,27 +484,27 @@ export function CropTool() {
                   </label>
                 ))}
               </div>
-              <RailSecondaryAction icon="select_all" onClick={selectWhole}>Select whole image</RailSecondaryAction>
+              <RailSecondaryAction icon="select_all" onClick={selectWhole}>{t("Select whole image")}</RailSecondaryAction>
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <span className="text-label-sm font-label-sm text-on-surface-variant">Output size</span>
+              <span className="text-label-sm font-label-sm text-on-surface-variant">{t("Output size")}</span>
               <div className="grid grid-cols-4 gap-1 rounded-lg bg-surface-container p-1">
                 {OUTPUT_TARGETS.map((o) => (
-                  <button key={String(o.value)} type="button" onClick={() => setTarget(o.value)} className={seg(target === o.value)}>{o.label}</button>
+                  <button key={String(o.value)} type="button" onClick={() => setTarget(o.value)} className={seg(target === o.value)}>{t(o.label)}</button>
                 ))}
               </div>
             </div>
 
             <div className="flex flex-col gap-3 border-t border-outline-variant/60 pt-5">
-              <h3 className="text-body-lg font-bold text-primary">Output</h3>
+              <h3 className="text-body-lg font-bold text-primary">{t("Output")}</h3>
               <select value={format} onChange={(e) => setFormat(e.target.value as Format)} className={fieldCls}>
-                {FORMATS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}
+                {FORMATS.map((f) => <option key={f.value} value={f.value}>{t(f.label)}</option>)}
               </select>
               {effMime !== "image/png" && (
                 <div className="flex flex-col gap-1.5">
                   <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant">
-                    <span>Quality</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span>
+                    <span>{t("Quality")}</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span>
                   </label>
                   <input type="range" min={0.5} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" />
                 </div>
@@ -508,7 +514,7 @@ export function CropTool() {
                   value={bg}
                   onChange={setBg}
                   allowTransparent={effMime !== "image/jpeg"}
-                  label={effMime === "image/jpeg" ? "Corner fill (JPG has no transparency)" : "Outside the shape"}
+                  label={effMime === "image/jpeg" ? t("Corner fill (JPG has no transparency)") : t("Outside the shape")}
                 />
               )}
             </div>

@@ -32,8 +32,13 @@ const locale = args[0] ?? null;
 const only = new Set(args.slice(1));
 const asJson = process.argv.includes("--json");
 
-/** `t("…")` but not `it("…")`, `split("…")` … — the call must stand alone. */
-const T_CALL = /(?<![\w$.])t\(\s*"((?:[^"\\]|\\.)*)"/g;
+/**
+ * `t("…")` but not `it("…")`, `split("…")` … — the call must stand alone.
+ * Also `translateError(err, t, "…")`, whose third argument is a key the helper
+ * passes to t() — invisible to the first pattern, and exactly the toast a
+ * visitor sees when something fails.
+ */
+const T_CALL = /(?<![\w$.])(?:t\(\s*|translateError\([^,]+,\s*t\s*,\s*)"((?:[^"\\]|\\.)*)"/g;
 
 /**
  * Drops comments before scanning, so JSDoc quoting `t("Ranges")` is not

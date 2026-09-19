@@ -1,6 +1,6 @@
 import { ToolPageShell } from "@/components/ToolPageShell";
 import { toolMetadata } from "@/lib/i18n/tool-meta";
-import content from "@/content/tools/convert-to-jpg.en";
+import content from "@/content/tools/convert-to-jpg.pt";
 import { getTool, toolColor } from "@/lib/tools";
 import { ConvertTool } from "@/components/ConvertTool";
 

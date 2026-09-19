@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Icon } from "@/components/Icon";
 import { topOf, type PagePlan } from "@/lib/pdf/images-to-pdf";
+import { useT } from "@/i18n/I18nScope";
 
 /**
  * Live preview of the laid-out pages.
@@ -28,6 +29,7 @@ export function PagePreview({
   background: string | null;
   accent: string;
 }) {
+  const t = useT();
   const [page, setPage] = useState(0);
   const count = plans.length;
 
@@ -45,14 +47,14 @@ export function PagePreview({
       <div className="flex items-center justify-between gap-3">
         <h2 className="flex items-center gap-2 text-body-md font-semibold text-primary">
           <Icon name="visibility" fill className="text-[18px]" style={{ color: accent }} />
-          Preview
+          {t("Preview")}
         </h2>
         <div className="flex items-center gap-1">
           <button
             type="button"
             onClick={() => setPage((p) => Math.max(0, p - 1))}
             disabled={page === 0}
-            aria-label="Previous page"
+            aria-label={t("Previous page")}
             className="flex h-8 w-8 items-center justify-center rounded-lg text-on-surface-variant transition-colors hover:bg-surface-container disabled:opacity-30"
           >
             <Icon name="chevron_left" className="text-[20px]" />
@@ -64,7 +66,7 @@ export function PagePreview({
             type="button"
             onClick={() => setPage((p) => Math.min(count - 1, p + 1))}
             disabled={page >= count - 1}
-            aria-label="Next page"
+            aria-label={t("Next page")}
             className="flex h-8 w-8 items-center justify-center rounded-lg text-on-surface-variant transition-colors hover:bg-surface-container disabled:opacity-30"
           >
             <Icon name="chevron_right" className="text-[20px]" />

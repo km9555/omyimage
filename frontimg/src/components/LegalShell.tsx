@@ -36,7 +36,7 @@ export function LegalShell({
     <div className="max-w-content mx-auto px-margin-mobile md:px-gutter py-12">
       {/* Header */}
       <div className="max-w-3xl mb-10">
-        <p className="text-label-sm font-label-sm uppercase tracking-widest text-secondary mb-3">{t("Legal")}</p>
+        <p className="text-label-sm font-label-sm uppercase tracking-widest text-secondary mb-3">{t("Legal|section")}</p>
         <h1 className="text-display-md font-black text-primary mb-3">{title}</h1>
         <p className="text-body-lg text-on-surface-variant">{subtitle}</p>
         <p className="text-label-sm font-label-sm text-on-surface-variant mt-3">

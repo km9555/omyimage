@@ -418,6 +418,43 @@ canvas-generated `File` through `DataTransfer` on the drop zone's input. Expect
 false positives on Portuguese words sharing an English stem ("Compressão"),
 on "Post"/"Stories"/"Reels" (Brazilian usage) and on the brand wordmark.
 
+### 6.2.2 Batch 2 (recortar, png-para-jpg, jpg-para-png, converter-para-jpg, imagem-para-pdf)
+
+**One English word, two meanings, one key — the collision is silent.**
+`common.ts` translated "Legal" as "Jurídico" for the LegalShell eyebrow, and the
+image-to-PDF paper-size menu then offered **"Jurídico"** as a paper format,
+because a tool's `t("Legal")` falls through to `common.ts`. No gate can see it:
+the key exists and is translated, just for the other meaning. Found by reading
+`<option>` text in the browser. Fix: the generic meaning takes a context
+(`t("Legal|section")`), so the bare key stays free for the literal one. **Any
+short English word in `common.ts` is a collision candidate** (Auto, Original,
+Free, Cover, Fit, Scale, Legal…). When a tool needs a different sense, override
+it in the tool's `ui` block — the scope wins — as image-to-pdf does for the
+orientation "Auto" → "Automática" (feminine; the background picker's is
+"Automático").
+
+**Labels derived from ids, again (oMyPDF §4.18).** Image-to-PDF's fit buttons
+rendered `{f}` — the mode id "contain" — capitalised by CSS. No string exists
+to scan for. They now render `t(FIT_LABELS[f])`. When a row of buttons has no
+visible label string in the source, look for this.
+
+**Strings passed as data to a shared component.** The three ConvertTool pages
+pass `dropHint: "or drop PNG images here"` in a config object. ConvertTool now
+translates `t(config.dropHint)` and `t(config.privacyNote)`, so the English
+page files keep English source strings (marked `i18n-raw`) and each tool's
+`ui` block carries the key by hand.
+
+**`translateError(err, t, "Fallback.")` hid its key from the extractor**, which
+only matched `t("…")`. The regex now also takes the third argument of
+`translateError(…, t, "…")`.
+
+**Parallel sessions share the working tree.** A spawned task (fixing the
+English image-to-text copy) ran `npm run build` in this same directory
+mid-batch; that killed the dev server this batch was testing against and
+rewrote `.next`. Only one session may build or serve `frontimg/` at a time;
+check `git status` before committing and stage paths explicitly so another
+session's in-progress files do not ride along.
+
 ### 6.3 Image-specific traps (watch for these in every batch)
 
 - **Text drawn INTO the image.** Meme captions, watermark defaults, the

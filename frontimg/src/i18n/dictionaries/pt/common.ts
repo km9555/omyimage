@@ -317,7 +317,9 @@ export const ptCommon: Record<string, string> = {
   "Remove {tool} from favorites": "Remover {tool} dos favoritos",
 
   // ── Legal shell ─────────────────────────────────────────────────────────
-  "Legal": "Jurídico",
+  // "|section": a bare "Legal" is also the US paper size (image-to-pdf), which
+  // must stay "Legal". The same English word, two meanings, two keys.
+  "Legal|section": "Jurídico",
   "Last updated:": "Última atualização:",
   "Contents": "Conteúdo",
   "On this page": "Nesta página",

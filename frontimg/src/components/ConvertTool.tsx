@@ -289,8 +289,10 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
           accept={accept}
           accent={accent}
           icon="sync_alt"
-          hint={config.dropHint}
-          privacyNote={config.privacyNote ?? t(DEFAULT_PRIVACY_NOTE)}
+          // The page passes English source strings; they are translated here,
+          // with the tool's ui block in scope (its keys are hand-maintained).
+          hint={t(config.dropHint)}
+          privacyNote={t(config.privacyNote ?? DEFAULT_PRIVACY_NOTE)}
         />
       </section>
     );
@@ -402,7 +404,7 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
               <Icon name="lightbulb" className="text-[18px] mt-0.5 shrink-0" style={{ color: accent }} />
               <p className="text-label-sm font-label-sm text-on-surface-variant">
                 {t("Output:")} <strong className="text-on-surface">{targetLabel}</strong>.{" "}
-                {config.privacyNote ?? t(DEFAULT_PRIVACY_NOTE)}
+                {t(config.privacyNote ?? DEFAULT_PRIVACY_NOTE)}
               </p>
             </div>
 
