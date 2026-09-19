@@ -8,6 +8,7 @@ import {
   angleFrom, snapAngle, normalizeAngle, rotateGrip,
   type Corner, type Placement,
 } from "@/lib/image/obb";
+import { useT } from "@/i18n/I18nScope";
 
 /* Hit tolerances and drawn sizes, in SCREEN pixels. Everything is converted into
    canvas units at use, because the composite may be 12000px wide shown at 700 —
@@ -69,6 +70,7 @@ export function MergeCanvas({
   accent: string;
   disabled?: boolean;
 }) {
+  const t = useT();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
   const coarse = useCoarsePointer();
@@ -400,7 +402,7 @@ export function MergeCanvas({
         onKeyDown={onKeyDown}
         tabIndex={disabled ? -1 : 0}
         role={disabled ? undefined : "application"}
-        aria-label={disabled ? undefined : "Merged image — drag to move, corners to resize, the top handle to rotate"}
+        aria-label={disabled ? undefined : t("Merged image — drag to move, corners to resize, the top handle to rotate")}
         className="max-w-full rounded outline-none"
         /* touch-action none or the browser scrolls the page instead of letting
            a finger drag an image. */

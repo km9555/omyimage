@@ -26,6 +26,7 @@ import {
   endPath,
 } from "pdf-lib";
 import { brandPdf } from "./brand-metadata";
+import { I18nError } from "@/i18n/errors";
 
 export type PageSizeKey = "fit" | "a4" | "letter" | "legal" | "a3" | "a5";
 export type Orientation = "auto" | "portrait" | "landscape" | "custom";
@@ -103,7 +104,7 @@ async function embedImage(pdf: PDFDocument, img: ImageInput) {
   const b = img.bytes;
   if (b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47) return pdf.embedPng(b);
   if (b[0] === 0xff && b[1] === 0xd8) return pdf.embedJpg(b);
-  throw new Error(`Unsupported image format: ${img.name}`);
+  throw new I18nError("Unsupported image format: {name}", { name: img.name });
 }
 
 /**

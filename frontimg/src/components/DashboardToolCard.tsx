@@ -6,6 +6,9 @@ import { toast } from "sonner";
 import { Icon } from "@/components/Icon";
 import { toolColor, toolColorTint, isPremiumTool, type Tool } from "@/lib/tools";
 import { planAllowanceLabel } from "@/lib/plan-limits";
+import { useLocale, useT } from "@/i18n/I18nScope";
+import { toolHref } from "@/lib/i18n/links";
+import { toolDescription, toolName } from "@/lib/i18n/tool-labels";
 
 /**
  * Wide tool row for the dashboard's "All tools" grid.
@@ -25,12 +28,14 @@ export function DashboardToolCard({
   /** Signed-in plan, so the premium tooltip quotes the right allowance. */
   plan?: string | null;
 }) {
+  const t = useT();
+  const locale = useLocale();
   const color = toolColor(tool);
 
   return (
     <div className="group relative">
       <Link
-        href={`/${tool.slug}`}
+        href={toolHref(tool, locale)}
         className="flex items-center gap-3 rounded-xl border border-surface-variant bg-surface-container-lowest p-4 pr-10 ambient-shadow hover:border-secondary/50 hover:-translate-y-0.5 transition-all duration-200"
       >
         <span
@@ -41,10 +46,10 @@ export function DashboardToolCard({
         </span>
         <span className="min-w-0">
           <span className="flex items-center gap-1">
-            <span className="text-body-md font-semibold text-primary truncate">{tool.name}</span>
+            <span className="text-body-md font-semibold text-primary truncate">{toolName(tool, locale)}</span>
             {isPremiumTool(tool) && (
               <span
-                title={`Runs on our server — ${planAllowanceLabel(plan)}`}
+                title={t("Runs on our server — {allowance}", { allowance: planAllowanceLabel(plan, t) })}
                 className="shrink-0 inline-flex items-center"
               >
                 <Icon name="workspace_premium" className="text-[14px] text-chip-amber-ink" />
@@ -52,7 +57,7 @@ export function DashboardToolCard({
             )}
           </span>
           <span className="block text-label-sm font-label-sm text-on-surface-variant truncate">
-            {tool.shortDescription}
+            {toolDescription(tool, locale)}
           </span>
         </span>
       </Link>
@@ -64,13 +69,17 @@ export function DashboardToolCard({
           e.preventDefault();
           e.stopPropagation();
           onToggleFavorite(tool.slug);
-          toast(favorited ? "Removed from Favorites" : "Added to Favorites", {
-            description: tool.name,
+          toast(favorited ? t("Removed from Favorites") : t("Added to Favorites"), {
+            description: toolName(tool, locale),
             icon: favorited ? "♡" : "❤️",
             duration: 2000,
           });
         }}
-        aria-label={favorited ? `Remove ${tool.name} from favorites` : `Add ${tool.name} to favorites`}
+        aria-label={
+          favorited
+            ? t("Remove {tool} from favorites", { tool: toolName(tool, locale) })
+            : t("Add {tool} to favorites", { tool: toolName(tool, locale) })
+        }
         aria-pressed={favorited}
         className="absolute top-2.5 right-2.5 grid place-items-center w-7 h-7 rounded-full hover:bg-surface-container transition-colors"
       >

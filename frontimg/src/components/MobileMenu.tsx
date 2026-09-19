@@ -12,6 +12,9 @@ import { NAV_SECTIONS, navSectionTools } from "@/lib/nav-sections";
 import { searchTools } from "@/lib/tool-search";
 import { TOOLS, toolColor, type Tool } from "@/lib/tools";
 import { NavbarAuth } from "@/components/NavbarAuth";
+import { useLocale, useT } from "@/i18n/I18nScope";
+import { localeHome, localeHref, toolHref } from "@/lib/i18n/links";
+import { toolName } from "@/lib/i18n/tool-labels";
 
 /**
  * Mobile navigation drawer, ported from oMyPDF's MobileMenu.
@@ -25,9 +28,11 @@ import { NavbarAuth } from "@/components/NavbarAuth";
 
 /** One tool row — shared by the search results and the expanded category lists. */
 function ToolRow({ tool, onNavigate }: { tool: Tool; onNavigate: () => void }) {
+  const t = useT();
+  const locale = useLocale();
   return (
     <Link
-      href={`/${tool.slug}`}
+      href={toolHref(tool, locale)}
       onClick={onNavigate}
       className="flex items-center gap-2.5 rounded-lg px-2 py-2 text-body-md text-on-surface transition-colors hover:bg-surface-container active:bg-surface-container"
     >
@@ -36,10 +41,10 @@ function ToolRow({ tool, onNavigate }: { tool: Tool; onNavigate: () => void }) {
       <span className="flex h-7 w-7 shrink-0 items-center justify-center">
         <Icon name={tool.icon} bold className="text-[17px]" style={{ color: toolColor(tool) }} />
       </span>
-      <span className="min-w-0 flex-1 truncate leading-tight">{tool.name}</span>
+      <span className="min-w-0 flex-1 truncate leading-tight">{toolName(tool, locale)}</span>
       {tool.status === "planned" && (
         <span className="shrink-0 rounded-full bg-surface-container px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-on-surface-variant/50">
-          Soon
+          {t("Soon")}
         </span>
       )}
     </Link>
@@ -52,6 +57,8 @@ export function MobileMenu() {
   const [query, setQuery] = useState("");
   const [expanded, setExpanded] = useState<string | null>(null);
   const pathname = usePathname();
+  const t = useT();
+  const locale = useLocale();
 
   // Portal target only exists on the client.
   useEffect(() => {
@@ -97,7 +104,7 @@ export function MobileMenu() {
 
   // Same ranked matcher the header search uses (name-prefix beats mid-name,
   // synonyms resolve).
-  const results = useMemo(() => (query.trim() ? searchTools(query, TOOLS).slice(0, 8) : []), [query]);
+  const results = useMemo(() => (query.trim() ? searchTools(query, TOOLS, locale).slice(0, 8) : []), [query, locale]);
   const searching = query.trim().length > 0;
 
   return (
@@ -105,7 +112,7 @@ export function MobileMenu() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label="Open menu"
+        aria-label={t("Open menu")}
         aria-expanded={open}
         className="flex h-9 w-9 items-center justify-center rounded-lg text-on-surface transition-colors hover:bg-surface-container"
       >
@@ -130,7 +137,7 @@ export function MobileMenu() {
             <div
               role="dialog"
               aria-modal="true"
-              aria-label="Site menu"
+              aria-label={t("Site menu")}
               // Any anchor anywhere in the drawer closes it. The pathname effect
               // above already handles navigation, but not a link to the page you
               // are ALREADY on — tapping "Credits" while on /pricing changes no
@@ -159,8 +166,9 @@ export function MobileMenu() {
             >
               {/* Header — brand + close */}
               <div className="flex h-14 shrink-0 items-center justify-between gap-2 border-b border-outline-variant px-4">
-                <Link href="/" onClick={close} className="flex min-w-0 items-center gap-2">
+                <Link href={localeHome(locale)} onClick={close} className="flex min-w-0 items-center gap-2">
                   <Logo className="h-7 w-7 shrink-0" />
+                  {/* i18n-raw: brand wordmark */}
                   <span className="truncate text-headline-md font-black tracking-tight">
                     <span className="text-primary">oMy</span>
                     <span className="text-secondary">Image</span>
@@ -169,7 +177,7 @@ export function MobileMenu() {
                 <button
                   type="button"
                   onClick={close}
-                  aria-label="Close menu"
+                  aria-label={t("Close menu")}
                   className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-on-surface transition-colors hover:bg-surface-container"
                 >
                   <Icon name="close" className="text-[24px]" />
@@ -185,7 +193,7 @@ export function MobileMenu() {
                 </div>
 
                 <div className="flex items-center justify-between gap-2 border-b border-outline-variant px-4 py-3">
-                  <span className="text-body-sm text-on-surface-variant">Credits</span>
+                  <span className="text-body-sm text-on-surface-variant">{t("Credits")}</span>
                   <CreditsBadge />
                 </div>
 
@@ -199,8 +207,8 @@ export function MobileMenu() {
                       type="search"
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
-                      placeholder="Search tools…"
-                      aria-label="Search tools"
+                      placeholder={t("Search tools…")}
+                      aria-label={t("Search tools")}
                       // Suppress WebKit's built-in clear affordance — we render our own.
                       className="w-full rounded-lg border border-outline-variant bg-surface-container-lowest py-2.5 pl-10 pr-9 text-body-md text-on-surface placeholder:text-on-surface-variant focus:border-secondary/60 focus:outline-none focus:ring-2 focus:ring-secondary/20 [&::-webkit-search-cancel-button]:appearance-none"
                     />
@@ -208,7 +216,7 @@ export function MobileMenu() {
                       <button
                         type="button"
                         onClick={() => setQuery("")}
-                        aria-label="Clear search"
+                        aria-label={t("Clear search")}
                         className="absolute right-2 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container"
                       >
                         <Icon name="close" className="text-[16px]" />
@@ -228,25 +236,25 @@ export function MobileMenu() {
                       </div>
                     ) : (
                       <p className="px-2 py-6 text-center text-body-md text-on-surface-variant">
-                        No tools match “{query.trim()}”.
+                        {t("No tools match “{query}”.", { query: query.trim() })}
                       </p>
                     )}
                   </div>
                 ) : (
                   <div className="px-4 py-4">
                     <p className="px-1 pb-2 text-label-sm font-semibold uppercase tracking-wide text-on-surface-variant">
-                      Browse tools
+                      {t("Browse tools")}
                     </p>
 
                     <Link
-                      href="/#tools"
+                      href={`${localeHome(locale)}#tools`}
                       onClick={close}
                       className="flex items-center gap-2.5 rounded-lg px-2 py-2.5 text-body-md font-semibold text-on-surface transition-colors hover:bg-surface-container"
                     >
                       <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-secondary/10">
                         <Icon name="apps" bold className="text-[15px] text-secondary" />
                       </span>
-                      All tools
+                      {t("All tools")}
                     </Link>
 
                     {/* Category accordions — tap to reveal that category's tools. */}
@@ -271,7 +279,7 @@ export function MobileMenu() {
                                   style={{ color: section.color }}
                                 />
                               </span>
-                              <span className="flex-1">{section.label}</span>
+                              <span className="flex-1">{t(section.label)}</span>
                               <Icon
                                 name="expand_more"
                                 className={`text-[20px] text-on-surface-variant transition-transform duration-200 ${
@@ -301,17 +309,17 @@ export function MobileMenu() {
                         <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-surface-container">
                           <Icon name="article" className="text-[15px] text-on-surface-variant" />
                         </span>
-                        Blog
+                        {t("Blog")}
                       </Link>
                       <Link
-                        href="/pricing"
+                        href={localeHref("/pricing", locale)}
                         onClick={close}
                         className="flex items-center gap-2.5 rounded-lg px-2 py-2.5 text-body-md text-on-surface transition-colors hover:bg-surface-container"
                       >
                         <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-surface-container">
                           <Icon name="sell" className="text-[15px] text-on-surface-variant" />
                         </span>
-                        Pricing
+                        {t("Pricing")}
                       </Link>
                     </div>
                   </div>
@@ -322,7 +330,7 @@ export function MobileMenu() {
                   opens upward so it is never clipped by the drawer edge. */}
               <div className="shrink-0 border-t border-outline-variant px-4 py-3">
                 <p className="px-1 pb-2 text-label-sm font-semibold uppercase tracking-wide text-on-surface-variant">
-                  Language
+                  {t("Language")}
                 </p>
                 <LanguageSwitcher fullWidth />
               </div>

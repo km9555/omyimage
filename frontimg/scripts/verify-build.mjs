@@ -16,6 +16,10 @@
  *   - canonical is correct AND unique across the whole export
  *   - SoftwareApplication / HowTo / FAQPage JSON-LD present
  *   - visible word count >= MIN_WORDS
+ * The same checks run for every LOCALIZED tool page that i18n/status.ts ships
+ * (out/pt/<slug>.html), against the content module's metaTitle and the
+ * localized canonical. oMyPDF's floor never looked at a translated page, and a
+ * thin one passed CI in silence there (its conversion.md §4.36).
  * Plus, across the set:
  *   - sitemap.xml and the emitted files agree in both directions
  *   - no two converter pages exceed MAX_SIMILARITY on their prose
@@ -86,7 +90,11 @@ const strip = (html) =>
 const words = (s) => s.split(/\s+/).filter(Boolean);
 
 function shingles(text, n = 5) {
-  const w = words(text.toLowerCase().replace(/[^a-z0-9\s]/g, ""));
+  // Accents folded first: `[^a-z0-9]` alone deletes "ã", "ç", "é" outright and
+  // would compare Portuguese pages on mangled word fragments.
+  const w = words(
+    text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9\s]/g, ""),
+  );
   const set = new Set();
   for (let i = 0; i + n <= w.length; i++) set.add(w.slice(i, i + n).join(" "));
   return set;
@@ -164,6 +172,83 @@ for (const { slug, seoTitle } of tools) {
   }
 }
 
+// ── Localized tool pages ────────────────────────────────────────────────────
+// Parsers bounded at BOTH ends (oMyPDF §4.28/§4.35: a slug-map parse anchored
+// only at its start ran on into the next locale and harvested its slugs).
+function block(src, name) {
+  const start = src.search(new RegExp(`^(export )?const ${name}\\b`, "m"));
+  if (start === -1) return "";
+  const rest = src.slice(start);
+  const ends = [rest.search(/^\};?$/m), rest.slice(1).search(/^(export )?const /m) + 1].filter((i) => i > 0);
+  return rest.slice(0, Math.min(...ends) + 2);
+}
+const srcFile = (p) => readFileSync(join(root, "src", p), "utf8");
+const localeList = [...(/export const LOCALES = \[([^\]]*)\]/.exec(srcFile("i18n/config.ts"))?.[1] ?? "").matchAll(/"([^"]+)"/g)]
+  .map((m) => m[1])
+  .filter((l) => l !== "en");
+const localized = []; // shipped localized paths, for the sitemap check
+for (const loc of localeList) {
+  const slugMap = Object.fromEntries(
+    [...block(srcFile("i18n/slugs.ts"), `${loc.toUpperCase()}_TOOL_SLUGS`).matchAll(/^\s*"([^"]+)":\s*"([^"]+)"/gm)].map((m) => [m[1], m[2]]),
+  );
+  const gate = new RegExp(`^  ${loc}: \\[([\\s\\S]*?)^  \\]`, "m").exec(block(srcFile("i18n/status.ts"), "SHIPPED_TOOLS"));
+  const shipped = [...(gate?.[1] ?? "").replace(/\/\/.*$/gm, "").matchAll(/"([^"]+)"/g)].map((m) => m[1]);
+  const locProse = new Map();
+  for (const id of shipped) {
+    const label = `${loc}/${slugMap[id]}`;
+    const file = join(out, loc, `${slugMap[id]}.html`);
+    if (!existsSync(file)) {
+      errors.push(`${label}: no out/${label}.html (status.ts ships it — sitemap will ship a 404)`);
+      continue;
+    }
+    localized.push(label);
+    const html = readFileSync(file, "utf8");
+    const h1s = html.match(/<h1[\s>]/g) || [];
+    if (h1s.length !== 1) errors.push(`${label}: expected exactly one <h1>, found ${h1s.length}`);
+
+    const modFile = join(root, "src", "content", "tools", `${id}.${loc}.ts`);
+    const want = existsSync(modFile)
+      ? /^ {2}metaTitle:\s*\n?\s*"((?:[^"\\]|\\.)*)"/m.exec(readFileSync(modFile, "utf8"))?.[1]?.replace(/\\"/g, '"')
+      : null;
+    const t = /<title>([\s\S]*?)<\/title>/.exec(html);
+    const title = t ? decode(t[1].trim()) : null;
+    if (want && title !== want) errors.push(`${label}: <title> mismatch\n     want: ${want}\n     got : ${title}`);
+    const en = tools.find((x) => x.slug === id);
+    if (en && title === en.seoTitle) errors.push(`${label}: <title> is still the English one`);
+
+    const c = /<link rel="canonical" href="([^"]+)"/.exec(html);
+    const wantCanon = `https://omyimage.com/${label}`;
+    if (!c) errors.push(`${label}: no canonical link`);
+    else {
+      if (c[1] !== wantCanon) errors.push(`${label}: canonical is ${c[1]}, expected ${wantCanon}`);
+      if (canonicals.has(c[1])) errors.push(`${label}: canonical collides with ${canonicals.get(c[1])}`);
+      canonicals.set(c[1], label);
+    }
+    if (!html.includes(`hrefLang="${loc}" href="${wantCanon}"`)) errors.push(`${label}: no self-referencing hreflang`);
+    if (!html.includes(`hrefLang="en"`) || !html.includes(`hrefLang="x-default"`)) errors.push(`${label}: hreflang cluster lacks en / x-default`);
+    for (const type of ["SoftwareApplication", "HowTo", "FAQPage"]) {
+      if (!html.includes(`"${type}"`)) errors.push(`${label}: missing ${type} JSON-LD`);
+    }
+    const questions = [...html.matchAll(/<summary[^>]*>([\s\S]*?)<\/summary>/g)].map((m) => decode(m[1].replace(/<[^>]+>/g, "").trim()));
+    const dupQ = questions.filter((q, i) => questions.indexOf(q) !== i);
+    if (dupQ.length) errors.push(`${label}: duplicate FAQ question(s): ${[...new Set(dupQ)].join(" | ")}`);
+    const wc = words(strip(html)).length;
+    if (wc < MIN_WORDS) errors.push(`${label}: only ${wc} visible words (min ${MIN_WORDS})`);
+    if (converterSlugs.has(id)) {
+      const seo = /data-seo-content[\s\S]*$/.exec(html);
+      locProse.set(label, shingles(strip(seo ? seo[0] : html)));
+    }
+  }
+  const le = [...locProse.entries()];
+  for (let i = 0; i < le.length; i++) {
+    for (let j = i + 1; j < le.length; j++) {
+      const score = jaccard(le[i][1], le[j][1]);
+      if (score > MAX_SIMILARITY) errors.push(`near-duplicate copy: ${le[i][0]} ~ ${le[j][0]} = ${score.toFixed(2)}`);
+    }
+  }
+  console.log(`Checked ${shipped.length} localized ${loc} tool page(s).`);
+}
+
 // ── Sitemap cross-check, both directions ────────────────────────────────────
 const smFile = join(out, "sitemap.xml");
 if (!existsSync(smFile)) {
@@ -182,6 +267,9 @@ if (!existsSync(smFile)) {
     if (!urls.some((u) => u.endsWith(`/${slug}`))) {
       errors.push(`${slug} is live but missing from sitemap.xml`);
     }
+  }
+  for (const path of localized) {
+    if (!urls.some((u) => u.endsWith(`/${path}`))) errors.push(`${path} is shipped but missing from sitemap.xml`);
   }
 }
 

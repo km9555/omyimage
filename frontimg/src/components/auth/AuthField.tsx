@@ -2,6 +2,7 @@
 
 import { useState, type InputHTMLAttributes } from "react";
 import { Icon } from "@/components/Icon";
+import { useT } from "@/i18n/I18nScope";
 
 interface AuthFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -15,6 +16,7 @@ const baseInput =
   "w-full px-4 py-2.5 rounded-lg bg-surface-container-lowest border outline-none text-body-md text-primary placeholder:text-on-surface-variant focus:ring-1 transition-colors";
 
 export function AuthField({ label, password, error, hint, id, ...props }: AuthFieldProps) {
+  const t = useT();
   const [show, setShow] = useState(false);
   const fieldId = id ?? props.name ?? label.toLowerCase().replace(/\s+/g, "-");
   const borderClass = error
@@ -38,7 +40,7 @@ export function AuthField({ label, password, error, hint, id, ...props }: AuthFi
           <button
             type="button"
             onClick={() => setShow((s) => !s)}
-            aria-label={show ? "Hide password" : "Show password"}
+            aria-label={show ? t("Hide password") : t("Show password")}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-primary"
           >
             <Icon name={show ? "visibility_off" : "visibility"} className="text-[20px]" />

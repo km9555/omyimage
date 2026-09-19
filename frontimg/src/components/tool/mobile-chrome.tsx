@@ -9,6 +9,7 @@ import {
   type RefObject,
 } from "react";
 import { Icon } from "@/components/Icon";
+import { useT } from "@/i18n/I18nScope";
 
 /**
  * Chrome for the full-screen mobile app shell that tools switch to below `md`.
@@ -71,6 +72,7 @@ export function MobileSheet({
   /** Extra classes for the scrolling body (e.g. to drop the default padding). */
   bodyClassName?: string;
 }) {
+  const t = useT();
   // Escape closes, matching MobileMenu. Cheap, and it makes the sheet usable
   // when a phone has a hardware keyboard attached.
   useEffect(() => {
@@ -99,7 +101,7 @@ export function MobileSheet({
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close"
+            aria-label={t("Close")}
             className="absolute right-2 top-1.5 grid h-9 w-9 place-items-center rounded-full text-on-surface-variant transition-colors active:bg-surface-container"
           >
             <Icon name="close" className="text-[20px]" />
@@ -178,6 +180,7 @@ export function MobileCta({
   disabled?: boolean;
   busy?: boolean;
 }) {
+  const t = useT();
   return (
     <button
       type="button"
@@ -193,7 +196,7 @@ export function MobileCta({
         className={`text-[20px] ${busy ? "animate-spin" : ""}`}
       />
       <span className="max-w-full truncate text-[10px] font-semibold leading-none">
-        {busy ? (busyLabel ?? "Working…") : label}
+        {busy ? (busyLabel ?? t("Working…")) : label}
       </span>
     </button>
   );
@@ -209,21 +212,22 @@ export function MobileTopBar({
   title,
   meta,
   onBack,
-  backLabel = "Back",
+  backLabel,
   action,
 }: {
-  title: string;
+  title: ReactNode;
   meta?: ReactNode;
   onBack: () => void;
   backLabel?: string;
   action?: ReactNode;
 }) {
+  const t = useT();
   return (
     <div className="flex shrink-0 items-center gap-1 border-b border-surface-variant px-2 py-1.5">
       <button
         type="button"
         onClick={onBack}
-        aria-label={backLabel}
+        aria-label={backLabel ?? t("Back")}
         className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-on-surface-variant transition-colors active:bg-surface-container"
       >
         <Icon name="arrow_back" />

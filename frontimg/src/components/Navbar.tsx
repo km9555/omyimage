@@ -1,5 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import { Icon } from "@/components/Icon";
+import { useLocale, useT } from "@/i18n/I18nScope";
+import { localeHome, localeHref } from "@/lib/i18n/links";
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { HeaderSearch } from "@/components/HeaderSearch";
@@ -16,7 +20,15 @@ const quickLinks = [
   { label: "Blog",           href: "/blog" },
 ];
 
+/*
+  A client component because it sits in the root layout, which cannot see the
+  URL: labels are translated and hrefs rewritten per locale at render, like the
+  rest of the chrome. /blog is English-only by decision, so localeHref leaves
+  it unchanged.
+*/
 export function Navbar() {
+  const t = useT();
+  const locale = useLocale();
   return (
     <header className="sticky top-0 z-50 w-full bg-background/90 backdrop-blur-md border-b border-outline-variant">
       {/* Full-width bar (edge-to-edge); page content below stays constrained
@@ -24,8 +36,9 @@ export function Navbar() {
       <div className="flex items-center gap-3 xl:gap-4 w-full px-margin-mobile md:px-gutter lg:px-8 h-16">
         {/* Brand + quick links */}
         <div className="flex items-center gap-4 lg:gap-gutter shrink-0">
-          <Link href="/" className="flex items-center gap-2">
+          <Link href={localeHome(locale)} className="flex items-center gap-2">
             <Logo className="h-8 w-8" />
+            {/* i18n-raw: brand wordmark */}
             <span className="text-headline-md font-black tracking-tight">
               <span className="text-primary">oMy</span>
               <span className="text-secondary">Image</span>
@@ -54,10 +67,10 @@ export function Navbar() {
               {quickLinks.map((link) => (
                 <Link
                   key={link.label}
-                  href={link.href}
+                  href={localeHref(link.href, locale)}
                   className="text-body-sm xl:text-body-md px-2.5 xl:px-3 py-1.5 rounded-md whitespace-nowrap text-on-surface-variant hover:bg-secondary/10 hover:text-on-secondary-fixed-variant dark:hover:text-secondary focus-visible:outline-none focus-visible:bg-secondary/10 focus-visible:text-on-secondary-fixed-variant dark:focus-visible:text-secondary transition-colors"
                 >
-                  {link.label}
+                  {t(link.label)}
                 </Link>
               ))}
             </span>

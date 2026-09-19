@@ -5,6 +5,9 @@ import { createPortal } from "react-dom";
 import Link from "next/link";
 import { Icon } from "@/components/Icon";
 import { toolColor } from "@/lib/tools";
+import { useLocale, useT } from "@/i18n/I18nScope";
+import { localeHome, toolHref } from "@/lib/i18n/links";
+import { toolName } from "@/lib/i18n/tool-labels";
 import { NAV_COLUMNS, NAV_SECTIONS_BY_ID, navSectionTools } from "@/lib/nav-sections";
 
 /**
@@ -19,6 +22,8 @@ const COLS = NAV_COLUMNS.map((ids) => ({
 }));
 
 export function NavToolsDropdown() {
+  const t = useT();
+  const locale = useLocale();
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState({ left: 0, top: 64, width: 1107 });
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -98,7 +103,7 @@ export function NavToolsDropdown() {
             : "text-on-surface-variant hover:bg-surface-container hover:text-secondary"
         }`}
       >
-        Tools
+        {t("Tools")}
         <Icon
           name="expand_more"
           className={`text-[18px] transition-transform duration-200 ${open ? "rotate-180" : ""}`}
@@ -145,7 +150,8 @@ export function NavToolsDropdown() {
                           className="text-[11px] font-bold uppercase tracking-widest"
                           style={{ color: sec.color }}
                         >
-                          {sec.label}
+                          {/* Module-scope array: translated at the render site (§4.2). */}
+                          {t(sec.label)}
                         </span>
                       </div>
 
@@ -153,7 +159,7 @@ export function NavToolsDropdown() {
                         {navSectionTools(sec).map((tool) => (
                           <li key={tool.id}>
                             <Link
-                              href={`/${tool.slug}`}
+                              href={toolHref(tool, locale)}
                               onClick={() => setOpen(false)}
                               className="group flex items-center gap-2 rounded-lg px-1.5 py-1 transition-colors hover:bg-surface-container"
                             >
@@ -170,11 +176,11 @@ export function NavToolsDropdown() {
                                 />
                               </span>
                               <span className="text-body-sm leading-tight text-on-surface transition-colors group-hover:text-secondary">
-                                {tool.name}
+                                {toolName(tool, locale)}
                               </span>
                               {tool.status === "planned" && (
                                 <span className="ml-auto shrink-0 rounded-full bg-surface-container px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-on-surface-variant/50">
-                                  Soon
+                                  {t("Soon")}
                                 </span>
                               )}
                             </Link>
@@ -189,14 +195,14 @@ export function NavToolsDropdown() {
 
             <div className="flex items-center justify-between rounded-b-2xl border-t border-outline-variant/40 bg-surface-container/40 px-5 py-3">
               <span className="text-label-sm text-on-surface-variant">
-                40 free tools — no sign-up required
+                {t("40 free tools — no sign-up required")}
               </span>
               <Link
-                href="/#tools"
+                href={`${localeHome(locale) === "/" ? "/" : localeHome(locale)}#tools`}
                 onClick={() => setOpen(false)}
                 className="flex items-center gap-1 text-label-sm font-semibold text-secondary transition-colors hover:text-secondary-container"
               >
-                Browse all tools
+                {t("Browse all tools")}
                 <Icon name="arrow_forward" className="text-[14px]" />
               </Link>
             </div>

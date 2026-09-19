@@ -11,6 +11,8 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { openDropboxPicker, preloadDropbox, IMAGE_EXTENSIONS } from "@/lib/dropbox";
+import { useT } from "@/i18n/I18nScope";
+import { translateError } from "@/i18n/errors";
 
 function DropboxIcon({ className }: { className?: string }) {
   return (
@@ -44,6 +46,7 @@ export function DropboxButton({
   variant = "chip",
   label = "Dropbox",
 }: ButtonProps) {
+  const t = useT();
   const [loading, setLoading] = useState(false);
 
   const handleClick = async () => {
@@ -52,12 +55,16 @@ export function DropboxButton({
       const files = await openDropboxPicker(extensions);
       if (files.length > 0) {
         onFiles(files);
-        toast.success(`Imported ${files.length} file${files.length > 1 ? "s" : ""} from Dropbox.`);
+        toast.success(
+          files.length === 1
+            ? t("Imported 1 file from Dropbox.")
+            : t("Imported {n} files from Dropbox.", { n: files.length }),
+        );
       }
     } catch (err) {
       // A closed popup is a deliberate cancel, not a failure worth shouting about.
       if (err instanceof Error && err.message === "cancelled") return;
-      toast.error(err instanceof Error ? err.message : "Dropbox import failed.");
+      toast.error(translateError(err, t, "Dropbox import failed."));
     } finally {
       setLoading(false);
     }
@@ -78,7 +85,7 @@ export function DropboxButton({
         className="inline-flex items-center gap-1.5 text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors disabled:opacity-50"
       >
         {loading ? <Spinner /> : <DropboxIcon className="h-3.5 w-3.5 shrink-0" />}
-        {loading ? "Connecting…" : `Add from ${label}`}
+        {loading ? t("Connecting…") : t("Add from {service}", { service: label })}
       </button>
     );
   }
@@ -90,7 +97,7 @@ export function DropboxButton({
         onClick={handleClick}
         {...warm}
         disabled={loading}
-        aria-label={`Import from ${label}`}
+        aria-label={t("Import from {service}", { service: label })}
         title={label}
         className="inline-flex items-center justify-center h-9 w-9 rounded-full border border-outline-variant bg-surface-container-lowest hover:bg-surface-container transition-all disabled:opacity-50"
       >
@@ -111,7 +118,7 @@ export function DropboxButton({
     >
       {loading ? <Spinner /> : <DropboxIcon className="h-3.5 w-3.5 shrink-0" />}
       {/* Label hidden on mobile — the icon alone is recognisable and keeps the row compact. */}
-      <span className="hidden sm:inline">{loading ? "Connecting…" : label}</span>
+      <span className="hidden sm:inline">{loading ? t("Connecting…") : label}</span>
     </button>
   );
 }

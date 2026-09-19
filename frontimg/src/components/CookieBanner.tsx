@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Icon } from "@/components/Icon";
+import { useLocale, useT } from "@/i18n/I18nScope";
+import { localeHref } from "@/lib/i18n/links";
 import {
   type CookiePrefs,
   REOPEN_EVENT,
@@ -11,6 +13,9 @@ import {
   storePrefs,
 } from "@/lib/cookie-consent";
 
+// Titles and descriptions are the English source strings, translated at the
+// render site (conversion.md §4.2 — a module-scope array is invisible to the
+// key extractor, so these keys are maintained in common.ts by hand).
 const CATEGORIES: { id: keyof CookiePrefs | "necessary"; title: string; desc: string; locked?: boolean }[] = [
   {
     id: "necessary",
@@ -46,6 +51,7 @@ function ConsentCheckbox({
   disabled?: boolean;
   onChange?: (v: boolean) => void;
 }) {
+  const t = useT();
   return (
     <span className="relative block w-5 h-5 shrink-0 mt-0.5">
       <input
@@ -54,7 +60,7 @@ function ConsentCheckbox({
         disabled={disabled}
         onChange={(e) => onChange?.(e.target.checked)}
         className="peer absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-default"
-        aria-label={disabled ? "Always on" : undefined}
+        aria-label={disabled ? t("Always on") : undefined}
       />
       <span className="pointer-events-none absolute inset-0 rounded-md border-2 border-outline-variant bg-surface-container-lowest transition-colors peer-checked:border-secondary peer-checked:bg-secondary peer-disabled:opacity-90" />
       <Icon
@@ -70,6 +76,8 @@ export function CookieBanner() {
   // contentful paint instead of popping in at hydration. Returning visitors never
   // see it: the pre-paint script in layout.tsx sets html[data-cookie-choice] from
   // localStorage and globals.css hides #cookie-banner before React loads.
+  const t = useT();
+  const locale = useLocale();
   const [visible, setVisible] = useState(true);
   const [customizing, setCustomizing] = useState(false);
   const [prefs, setPrefs] = useState<CookiePrefs>(DEFAULT_PREFS);
@@ -102,7 +110,7 @@ export function CookieBanner() {
     <div
       id="cookie-banner"
       role="dialog"
-      aria-label="Cookie consent"
+      aria-label={t("Cookie consent")}
       aria-modal="false"
       className={`fixed z-50 inset-x-0 flex justify-center px-3 sm:px-4 ${
         customizing
@@ -124,12 +132,11 @@ export function CookieBanner() {
             <Icon name="cookie" fill className="text-[20px] text-secondary" />
           </span>
           <div className="min-w-0">
-            <h2 className="text-title-md font-bold text-primary">We value your privacy</h2>
+            <h2 className="text-title-md font-bold text-primary">{t("We value your privacy")}</h2>
             <p className="mt-1.5 text-body-sm text-on-surface-variant leading-relaxed">
-              oMyImage uses necessary cookies to run the site and optional analytics only with
-              your consent. Your images are never involved.{" "}
+              {t("oMyImage uses necessary cookies to run the site and optional analytics only with your consent. Your images are never involved.")}{" "}
               <Link
-                href="/cookies"
+                href={localeHref("/cookies", locale)}
                 // Low-intent policy link that sits in the viewport on every first
                 // visit, so Next prefetched its whole RSC payload on every page
                 // load. Those requests land inside Lighthouse's LCP window and
@@ -137,7 +144,7 @@ export function CookieBanner() {
                 prefetch={false}
                 className="text-secondary font-semibold hover:underline whitespace-nowrap"
               >
-                Cookie Policy
+                {t("Cookie Policy")}
               </Link>
             </p>
           </div>
@@ -166,9 +173,9 @@ export function CookieBanner() {
                     }
                   />
                   <div className="min-w-0">
-                    <p className="text-body-md font-semibold text-primary">{cat.title}</p>
+                    <p className="text-body-md font-semibold text-primary">{t(cat.title)}</p>
                     <p className="mt-0.5 text-body-sm text-on-surface-variant leading-snug">
-                      {cat.desc}
+                      {t(cat.desc)}
                     </p>
                   </div>
                 </label>
@@ -185,21 +192,21 @@ export function CookieBanner() {
                 onClick={() => apply({ analytics: true, advertising: true, functional: true })}
                 className="px-[16px] py-[8px] rounded-lg bg-secondary hover:bg-secondary-container text-on-secondary text-body-sm font-semibold transition-colors"
               >
-                Accept All
+                {t("Accept All")}
               </button>
               <button
                 type="button"
                 onClick={() => apply(DEFAULT_PREFS)}
                 className="px-[16px] py-[8px] rounded-lg border border-surface-variant text-on-surface text-body-sm font-semibold hover:bg-surface-container transition-colors"
               >
-                Reject All
+                {t("Reject All")}
               </button>
               <button
                 type="button"
                 onClick={() => setCustomizing(true)}
                 className="px-[13px] py-[8px] rounded-lg border border-surface-variant bg-surface-container/50 text-on-surface-variant text-body-sm font-semibold hover:bg-surface-container transition-colors"
               >
-                Customize
+                {t("Customize")}
               </button>
             </>
           ) : (
@@ -209,14 +216,14 @@ export function CookieBanner() {
                 onClick={() => apply(prefs)}
                 className="px-[18px] py-[9px] rounded-lg bg-secondary hover:bg-secondary-container text-on-secondary text-body-sm font-semibold transition-colors"
               >
-                Save preferences
+                {t("Save preferences")}
               </button>
               <button
                 type="button"
                 onClick={() => setCustomizing(false)}
                 className="px-[18px] py-[9px] rounded-lg border border-surface-variant text-on-surface text-body-sm font-semibold hover:bg-surface-container transition-colors"
               >
-                Back
+                {t("Back")}
               </button>
             </>
           )}

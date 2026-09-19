@@ -8,7 +8,6 @@ import {
   rasterize,
   downloadBlob,
   zipAndDownload,
-  formatBytes,
   baseName,
   mimeExt,
   type ExportMime,
@@ -30,6 +29,8 @@ import {
 } from "@/lib/image/metadata";
 import { useHandoff } from "@/lib/tool-handoff";
 import { kindOf, type FileKind } from "@/lib/file-actions";
+import { useFormatBytes, useT } from "@/i18n/I18nScope";
+import { translateError } from "@/i18n/errors";
 
 export interface ConvertConfig {
   accent: string;
@@ -88,6 +89,7 @@ export interface ConvertConfig {
   metadata?: boolean;
 }
 
+// Translated at the render site: t(DEFAULT_PRIVACY_NOTE).
 const DEFAULT_PRIVACY_NOTE =
   "Converted in your browser — files stay on your device (very large or very high-resolution images are processed on our server).";
 
@@ -102,8 +104,10 @@ let counter = 0;
 const uid = () => `f${Date.now()}_${counter++}`;
 
 export function ConvertTool({ config }: { config: ConvertConfig }) {
+  const t = useT();
   const { accent, accept, targetMime, targetLabel, flatten, quality } = config;
   const serverFallback = config.serverFallback ?? true;
+  const formatBytes = useFormatBytes();
   const [items, setItems] = useState<Item[]>([]);
   const [quality_, setQuality] = useState(0.92);
   const [bg, setBg] = useState<BgValue>({ transparent: false, color: "#ffffff", auto: true });
@@ -141,8 +145,8 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
     if (imgs.length === 0) {
       toast.error(
         config.sourceLabel
-          ? `Please select ${config.sourceLabel} files.`
-          : "Please select image files.",
+          ? t("Please select {format} files.", { format: config.sourceLabel })
+          : t("Please select image files."),
       );
       return;
     }
@@ -249,10 +253,14 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
           `omyimage_${targetLabel.toLowerCase()}.zip`
         );
       }
-      toast.success(`Converted ${out.length} image${out.length === 1 ? "" : "s"} to ${targetLabel}.`);
+      toast.success(
+        out.length === 1
+          ? t("Converted 1 image to {format}.", { format: targetLabel })
+          : t("Converted {n} images to {format}.", { n: out.length, format: targetLabel }),
+      );
     } catch (err) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : "Conversion failed.");
+      toast.error(translateError(err, t, "Conversion failed."));
     } finally {
       setIsWorking(false);
     }
@@ -282,7 +290,7 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
           accent={accent}
           icon="sync_alt"
           hint={config.dropHint}
-          privacyNote={config.privacyNote ?? DEFAULT_PRIVACY_NOTE}
+          privacyNote={config.privacyNote ?? t(DEFAULT_PRIVACY_NOTE)}
         />
       </section>
     );
@@ -309,11 +317,11 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
       <TrayAction
         icon="download"
         tone="accent"
-        label={`Download ${it.result.name}`}
+        label={t("Download {name}", { name: it.result.name })}
         onClick={() => downloadBlob(it.result!.blob, it.result!.name)}
       />
     ) : (
-      <TrayAction icon="close" label="Remove" disabled={isWorking} onClick={() => removeItem(it.id)} />
+      <TrayAction icon="close" label={t("Remove")} disabled={isWorking} onClick={() => removeItem(it.id)} />
     ),
   }));
 
@@ -327,12 +335,12 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
         mobile={{
           ...filesHeader(items.map((i) => i.file)),
           onBack: reset,
-          backLabel: "Clear files",
-          settingsTitle: "Conversion settings",
+          backLabel: t("Clear files"),
+          settingsTitle: t("Conversion settings"),
           cta: {
             icon: "sync_alt",
-            label: "Convert",
-            busyLabel: "Converting…",
+            label: t("Convert"),
+            busyLabel: t("Converting…"),
             busy: isWorking,
             onClick: convertAll,
           },
@@ -348,25 +356,31 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
         }
         rail={
           <SettingsRail
-            title="Conversion Settings"
+            title={t("Conversion Settings")}
             icon="tune"
             accent={accent}
             footer={
               <>
                 <RailNote>
                   {done ? (
-                    <>Total: {formatBytes(totalIn)} → {formatBytes(totalOut)}</>
+                    <>{t("Total: {before} → {after}", { before: formatBytes(totalIn), after: formatBytes(totalOut) })}</>
                   ) : (
-                    <>{items.length} file{items.length === 1 ? "" : "s"} ready{items.length > 1 ? " — downloads as a ZIP" : ""}</>
+                    <>
+                      {items.length === 1
+                        ? t("1 file ready")
+                        : t("{n} files ready — downloads as a ZIP", { n: items.length })}
+                    </>
                   )}
                 </RailNote>
                 <RailAction
                   onClick={convertAll}
                   busy={isWorking}
-                  busyLabel="Converting…"
+                  busyLabel={t("Converting…")}
                   icon="sync_alt"
                 >
-                  Convert {items.length > 1 ? `${items.length} to ${targetLabel}` : `to ${targetLabel}`}
+                  {items.length > 1
+                    ? t("Convert {n} to {format}", { n: items.length, format: targetLabel })
+                    : t("Convert to {format}", { format: targetLabel })}
                 </RailAction>
                 {done && items.length > 1 && (
                   <RailSecondaryAction
@@ -378,7 +392,7 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
                       )
                     }
                   >
-                    Download all (ZIP)
+                    {t("Download all (ZIP)")}
                   </RailSecondaryAction>
                 )}
               </>
@@ -387,15 +401,15 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
             <div className="rounded-lg border border-outline-variant/40 bg-surface-bright p-3.5 flex items-start gap-2.5">
               <Icon name="lightbulb" className="text-[18px] mt-0.5 shrink-0" style={{ color: accent }} />
               <p className="text-label-sm font-label-sm text-on-surface-variant">
-                Output: <strong className="text-on-surface">{targetLabel}</strong>.{" "}
-                {config.privacyNote ?? DEFAULT_PRIVACY_NOTE}
+                {t("Output:")} <strong className="text-on-surface">{targetLabel}</strong>.{" "}
+                {config.privacyNote ?? t(DEFAULT_PRIVACY_NOTE)}
               </p>
             </div>
 
             {quality && (
               <div className="flex flex-col gap-1.5">
                 <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant">
-                  <span>Quality</span>
+                  <span>{t("Quality")}</span>
                   <span className="text-primary font-semibold">{Math.round(quality_ * 100)}%</span>
                 </label>
                 <input type="range" min={0.5} max={1} step={0.01} value={quality_} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" />
@@ -403,19 +417,19 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
             )}
 
             {flatten && (
-              <BackgroundPicker value={bg} onChange={setBg} allowTransparent={false} allowAuto label="Background (replaces transparency)" />
+              <BackgroundPicker value={bg} onChange={setBg} allowTransparent={false} allowAuto label={t("Background (replaces transparency)")} />
             )}
 
             <label className="flex items-center gap-2.5 cursor-pointer">
               <input type="checkbox" checked={autoOrient} onChange={(e) => setAutoOrient(e.target.checked)} className="w-4 h-4 accent-secondary" />
-              <span className="text-body-md text-on-surface">Auto-rotate by EXIF orientation</span>
+              <span className="text-body-md text-on-surface">{t("Auto-rotate by EXIF orientation")}</span>
             </label>
 
             {config.metadata && (
               <div className="flex flex-col gap-2">
                 <label className="flex items-center gap-2.5 cursor-pointer">
                   <input type="checkbox" checked={stripMeta} onChange={(e) => setStripMeta(e.target.checked)} className="w-4 h-4 accent-secondary" />
-                  <span className="text-body-md text-on-surface">Strip metadata</span>
+                  <span className="text-body-md text-on-surface">{t("Strip metadata")}</span>
                 </label>
                 {/* "Colour profile" is honest here: ticking the box removes the
                     sRGB profile the encoder writes. What it never does is carry
@@ -423,7 +437,7 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
                     so that profile would misdescribe them. See
                     lib/image/metadata.ts. */}
                 <p className="text-label-sm font-label-sm text-on-surface-variant">
-                  Remove EXIF, colour profile, camera and location data from the converted image to reduce size.
+                  {t("Remove EXIF, colour profile, camera and location data from the converted image to reduce size.")}
                 </p>
               </div>
             )}

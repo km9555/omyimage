@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/Icon";
+import { useLocale, useT } from "@/i18n/I18nScope";
+import { localeHome, localeHref } from "@/lib/i18n/links";
 import { useAuth } from "@/lib/auth/useAuth";
 
 /**
@@ -26,6 +28,8 @@ import { useAuth } from "@/lib/auth/useAuth";
 export function NavbarAuth() {
   const { user, loading, signOut } = useAuth();
   const router = useRouter();
+  const t = useT();
+  const locale = useLocale();
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -47,25 +51,25 @@ export function NavbarAuth() {
   if (!user) {
     return (
       <Link
-        href="/login"
+        href={localeHref("/login", locale)}
         // See CookieBanner: in-viewport but rarely clicked, so its prefetch is
         // pure cost on the initial load.
         prefetch={false}
         className="inline-flex items-center justify-center gap-2 text-body-md bg-secondary text-on-secondary font-semibold px-4 py-2 rounded-lg shadow-md shadow-secondary/30 hover:bg-secondary-container hover:shadow-lg hover:shadow-secondary/40 hover:-translate-y-px transition-all duration-200"
       >
         <Icon name="login" className="text-[19px]" />
-        Login
+        {t("Login")}
       </Link>
     );
   }
 
-  const email = user.email ?? "Account";
+  const email = user.email ?? t("Account");
   const initial = (user.name?.[0] ?? email[0] ?? "?").toUpperCase();
 
   const handleSignOut = () => {
     setOpen(false);
     signOut();
-    router.replace("/");
+    router.replace(localeHome(locale));
   };
 
   return (
@@ -75,7 +79,7 @@ export function NavbarAuth() {
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="menu"
         aria-expanded={open}
-        aria-label="Account menu"
+        aria-label={t("Account menu")}
         className="flex items-center gap-2 rounded-full hover:opacity-90 transition-opacity"
       >
         <span className="w-9 h-9 rounded-full bg-secondary text-on-secondary flex items-center justify-center text-body-md font-semibold">
@@ -90,26 +94,26 @@ export function NavbarAuth() {
           className="absolute right-0 mt-2 w-60 rounded-xl border border-surface-variant bg-surface-container-lowest ambient-shadow overflow-hidden z-50"
         >
           <div className="px-4 py-3 border-b border-surface-variant">
-            <p className="text-label-sm font-label-sm text-on-surface-variant">Signed in as</p>
+            <p className="text-label-sm font-label-sm text-on-surface-variant">{t("Signed in as")}</p>
             <p className="text-body-md font-semibold text-primary truncate">{email}</p>
           </div>
           <Link
-            href="/dashboard"
+            href={localeHref("/dashboard", locale)}
             role="menuitem"
             onClick={() => setOpen(false)}
             className="flex items-center gap-3 px-4 py-3 text-body-md text-on-surface hover:bg-surface-container transition-colors"
           >
             <Icon name="dashboard" className="text-[20px] text-on-surface-variant" />
-            Dashboard
+            {t("Dashboard")}
           </Link>
           <Link
-            href="/account"
+            href={localeHref("/account", locale)}
             role="menuitem"
             onClick={() => setOpen(false)}
             className="flex items-center gap-3 px-4 py-3 text-body-md text-on-surface hover:bg-surface-container transition-colors"
           >
             <Icon name="account_circle" className="text-[20px] text-on-surface-variant" />
-            My Account
+            {t("My Account")}
           </Link>
           <button
             type="button"
@@ -118,7 +122,7 @@ export function NavbarAuth() {
             className="w-full flex items-center gap-3 px-4 py-3 text-body-md text-on-surface hover:bg-error-container hover:text-error transition-colors"
           >
             <Icon name="logout" className="text-[20px]" />
-            Sign out
+            {t("Sign out")}
           </button>
         </div>
       )}

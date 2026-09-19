@@ -2,7 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Icon } from "@/components/Icon";
+import { isLocale, localeFromPath } from "@/i18n/config";
+import { useT } from "@/i18n/I18nScope";
+import { localeHref, swapLocale } from "@/lib/i18n/links";
 import { LANGUAGES } from "@/lib/languages";
 
 /**
@@ -10,6 +14,9 @@ import { LANGUAGES } from "@/lib/languages";
  * don't need a permanent slot in the bar. Holds Pricing + Language.
  */
 export function AppsMenu() {
+  const pathname = usePathname();
+  const t = useT();
+  const locale = localeFromPath(pathname);
   const [open, setOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -45,7 +52,7 @@ export function AppsMenu() {
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="menu"
         aria-expanded={open}
-        aria-label="More"
+        aria-label={t("More")}
         className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors ${
           open ? "bg-surface-container text-on-surface" : "text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
         }`}
@@ -59,13 +66,13 @@ export function AppsMenu() {
           className="absolute right-0 mt-2 w-56 rounded-xl border border-surface-variant bg-surface-container-lowest ambient-shadow overflow-hidden z-50"
         >
           <Link
-            href="/pricing"
+            href={localeHref("/pricing", locale)}
             role="menuitem"
             onClick={close}
             className="flex items-center gap-3 px-4 py-3 text-body-md text-on-surface hover:bg-surface-container transition-colors"
           >
             <Icon name="sell" className="text-[20px] text-on-surface-variant" />
-            Pricing
+            {t("Pricing")}
           </Link>
 
           <div className="border-t border-surface-variant" onMouseEnter={() => setLangOpen(true)}>
@@ -76,7 +83,7 @@ export function AppsMenu() {
               className="flex w-full items-center gap-3 px-4 py-3 text-body-md text-on-surface hover:bg-surface-container transition-colors"
             >
               <Icon name="language" className="text-[20px] text-on-surface-variant" />
-              <span className="flex-1 text-left">Language</span>
+              <span className="flex-1 text-left">{t("Language")}</span>
               <Icon
                 name="expand_more"
                 className={`text-[20px] text-on-surface-variant transition-transform duration-200 ${langOpen ? "rotate-180" : ""}`}
@@ -84,30 +91,37 @@ export function AppsMenu() {
             </button>
 
             {langOpen && (
-              <ul role="listbox" aria-label="Language" className="max-h-64 overflow-y-auto border-t border-surface-variant/60 py-1">
+              <ul role="listbox" aria-label={t("Language")} className="max-h-64 overflow-y-auto border-t border-surface-variant/60 py-1">
                 {LANGUAGES.map((lang) => (
                   <li key={lang.code}>
-                    <button
-                      type="button"
-                      role="option"
-                      aria-selected={lang.code === "en"}
-                      disabled={!lang.available}
-                      onClick={() => { if (lang.available) close(); }}
-                      className={`flex w-full items-center gap-2.5 pl-11 pr-4 py-2 text-left text-body-sm transition-colors ${
-                        lang.available
-                          ? "text-on-surface hover:bg-surface-container"
-                          : "cursor-not-allowed text-on-surface-variant/50"
-                      }`}
-                    >
-                      <span className="text-base leading-none">{lang.flag}</span>
-                      <span className="flex-1">{lang.label}</span>
-                      {lang.code === "en" && <Icon name="check" className="text-[16px] text-secondary" />}
-                      {!lang.available && (
+                    {lang.available && isLocale(lang.code) ? (
+                      <Link
+                        href={swapLocale(pathname ?? "/", lang.code)}
+                        hrefLang={lang.code}
+                        role="option"
+                        aria-selected={lang.code === locale}
+                        onClick={() => close()}
+                        className="flex w-full items-center gap-2.5 pl-11 pr-4 py-2 text-left text-body-sm transition-colors text-on-surface hover:bg-surface-container"
+                      >
+                        <span className="text-base leading-none">{lang.flag}</span>
+                        <span className="flex-1">{lang.label}</span>
+                        {lang.code === locale && <Icon name="check" className="text-[16px] text-secondary" />}
+                      </Link>
+                    ) : (
+                      <button
+                        type="button"
+                        role="option"
+                        aria-selected={false}
+                        disabled
+                        className="flex w-full items-center gap-2.5 pl-11 pr-4 py-2 text-left text-body-sm transition-colors cursor-not-allowed text-on-surface-variant/50"
+                      >
+                        <span className="text-base leading-none">{lang.flag}</span>
+                        <span className="flex-1">{lang.label}</span>
                         <span className="rounded-full bg-surface-container px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-on-surface-variant/50">
-                          Soon
+                          {t("Soon")}
                         </span>
-                      )}
-                    </button>
+                      </button>
+                    )}
                   </li>
                 ))}
               </ul>

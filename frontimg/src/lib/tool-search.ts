@@ -20,6 +20,9 @@
  * the alias table is image-specific.
  */
 import type { Tool } from "@/lib/tools";
+import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
+import { ptAliases } from "@/i18n/dictionaries/pt/aliases";
+import { toolDescription, toolName } from "@/lib/i18n/tool-labels";
 
 /**
  * Extra phrases users type that don't literally appear in a tool's name —
@@ -196,12 +199,20 @@ export const TOOL_ALIASES: Record<string, string[]> = {
   ],
 };
 
+/**
+ * Accent-insensitive folding. "Rotação" → "rotacao", so a Brazilian typing
+ * without accents (common on a phone) still matches, and — the part that
+ * actually broke — `[^a-z0-9]` no longer deletes the accented letters outright,
+ * which turned "câmera" into "c mera". English has no accents, so its folding
+ * is unchanged.
+ */
+const stripAccents = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 // Lowercase, replace every run of non-alphanumerics with a single space.
 // "HEIC to JPG" → "heic to jpg". Used for word-boundary aware matching.
-const spaced = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+const spaced = (s: string) => stripAccents(s).toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 // Lowercase, drop every non-alphanumeric. "PNG to JPG" → "pngtojpg".
 // Lets "png2jpg" match "png to jpg".
-const collapsed = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "");
+const collapsed = (s: string) => stripAccents(s).toLowerCase().replace(/[^a-z0-9]+/g, "");
 
 /**
  * How well `text` matches the query, ignoring separators.
@@ -222,17 +233,36 @@ function matchTier(qSpaced: string, qCollapsed: string, text: string): number {
 // match of the same tier (e.g. "png" → name-prefix "PNG to JPG" > alias hit).
 const FIELD_WEIGHT = { name: 5, keyword: 3, alias: 3, desc: 1 } as const;
 
-/** Relevance score for a tool against an already-normalized query (0 = no match). */
-export function scoreTool(tool: Tool, qSpaced: string, qCollapsed: string): number {
+/** Translated alias sets, by locale. English is TOOL_ALIASES above. */
+const LOCALE_ALIASES: Partial<Record<Locale, Record<string, string[]>>> = {
+  pt: ptAliases,
+};
+
+/**
+ * Relevance score for a tool against an already-normalized query (0 = no match).
+ *
+ * In a translated locale the tool's own language is scored first and the
+ * English name/aliases are kept as extra matches rather than replaced: format
+ * names are English anyway ("jpg", "webp", "ocr"), and a Brazilian typing
+ * "remove background" should still find Remover fundo.
+ */
+export function scoreTool(
+  tool: Tool,
+  qSpaced: string,
+  qCollapsed: string,
+  locale: Locale = DEFAULT_LOCALE,
+): number {
   let best = 0;
   const consider = (text: string, weight: number) => {
     const tier = matchTier(qSpaced, qCollapsed, text);
     if (tier > 0) best = Math.max(best, tier * weight);
   };
-  consider(tool.name, FIELD_WEIGHT.name);
+  consider(toolName(tool, locale), FIELD_WEIGHT.name);
   consider(tool.primaryKeyword, FIELD_WEIGHT.keyword);
+  for (const alias of LOCALE_ALIASES[locale]?.[tool.id] ?? []) consider(alias, FIELD_WEIGHT.alias);
+  if (locale !== DEFAULT_LOCALE) consider(tool.name, FIELD_WEIGHT.name);
   for (const alias of TOOL_ALIASES[tool.id] ?? []) consider(alias, FIELD_WEIGHT.alias);
-  consider(tool.shortDescription, FIELD_WEIGHT.desc);
+  consider(toolDescription(tool, locale), FIELD_WEIGHT.desc);
   return best;
 }
 
@@ -241,12 +271,16 @@ export function scoreTool(tool: Tool, qSpaced: string, qCollapsed: string): numb
  * (priority breaks ties). An empty query returns the whole pool by priority,
  * so callers can use this for the default "browse" ordering too.
  */
-export function searchTools(query: string, pool: readonly Tool[]): Tool[] {
+export function searchTools(
+  query: string,
+  pool: readonly Tool[],
+  locale: Locale = DEFAULT_LOCALE,
+): Tool[] {
   const qSpaced = spaced(query);
   if (!qSpaced) return [...pool].sort((a, b) => a.priority - b.priority);
   const qCollapsed = collapsed(query);
   return pool
-    .map((tool) => ({ tool, score: scoreTool(tool, qSpaced, qCollapsed) }))
+    .map((tool) => ({ tool, score: scoreTool(tool, qSpaced, qCollapsed, locale) }))
     .filter((x) => x.score > 0)
     .sort((a, b) => b.score - a.score || a.tool.priority - b.tool.priority)
     .map((x) => x.tool);

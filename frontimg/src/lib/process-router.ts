@@ -21,6 +21,7 @@
  * always run in the browser regardless of size.
  */
 import { SITE } from "@/lib/site";
+import { I18nError } from "@/i18n/errors";
 
 /**
  * Byte ceiling. No longer a capability limit — pixels decide that — just a
@@ -184,14 +185,16 @@ export async function processOnServer(
     throw new Error("Couldn't reach the processing server for this large file.");
   }
   if (!res.ok) {
-    let msg = `Server error (${res.status}).`;
+    let serverMsg: string | null = null;
     try {
       const j = (await res.json()) as { error?: string };
-      if (j?.error) msg = j.error;
+      if (j?.error) serverMsg = j.error;
     } catch {
       /* non-JSON error body */
     }
-    throw new Error(msg);
+    // The server's own sentence is English; translateError() resolves it when
+    // it is in common.ts. The generic fallback carries its status as a var.
+    throw serverMsg ? new Error(serverMsg) : new I18nError("Server error ({status}).", { status: res.status });
   }
   const blob = await res.blob();
   const cd = res.headers.get("Content-Disposition") || "";
@@ -312,14 +315,14 @@ export async function postJsonForImage(path: string, body: Record<string, unknow
     throw new Error("Couldn't reach the processing server.");
   }
   if (!res.ok) {
-    let msg = `Server error (${res.status}).`;
+    let serverMsg: string | null = null;
     try {
       const j = (await res.json()) as { error?: string };
-      if (j?.error) msg = j.error;
+      if (j?.error) serverMsg = j.error;
     } catch {
       /* non-JSON */
     }
-    throw new Error(msg);
+    throw serverMsg ? new Error(serverMsg) : new I18nError("Server error ({status}).", { status: res.status });
   }
   const blob = await res.blob();
   const cd = res.headers.get("Content-Disposition") || "";

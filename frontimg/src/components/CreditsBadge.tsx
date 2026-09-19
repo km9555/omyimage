@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { Icon } from "@/components/Icon";
 import { usePremiumUsage } from "@/lib/premium-usage";
+import { useLocale, useT } from "@/i18n/I18nScope";
+import { localeHref } from "@/lib/i18n/links";
 
 /**
  * "Credits today" pill — premium (server/AI) runs used vs the daily cap.
@@ -17,6 +19,8 @@ import { usePremiumUsage } from "@/lib/premium-usage";
 
 export function CreditsBadge({ compact = false, className = "" }: { compact?: boolean; className?: string }) {
   const { used, limit, unlimited, ready } = usePremiumUsage();
+  const t = useT();
+  const locale = useLocale();
 
   const base =
     "inline-flex items-center gap-1.5 rounded-lg border border-chip-amber-border bg-chip-amber-bg text-chip-amber-ink transition-opacity hover:opacity-90";
@@ -35,11 +39,13 @@ export function CreditsBadge({ compact = false, className = "" }: { compact?: bo
   }
 
   const value = unlimited ? "∞" : `${used}/${limit}`;
-  const label = unlimited ? "Unlimited credits" : `${used} of ${limit} premium runs used today`;
+  const label = unlimited
+    ? t("Unlimited credits")
+    : t("{used} of {limit} premium runs used today", { used, limit: limit ?? 0 });
 
   return (
     <Link
-      href="/pricing"
+      href={localeHref("/pricing", locale)}
       // Prefetching /pricing on every page load costs more than it saves.
       prefetch={false}
       aria-label={label}
@@ -52,7 +58,7 @@ export function CreditsBadge({ compact = false, className = "" }: { compact?: bo
       ) : (
         <span className="flex flex-col leading-none">
           <span className="text-[13px] font-bold">{value}</span>
-          <span className="text-[9px] font-semibold uppercase tracking-wide opacity-80">credits</span>
+          <span className="text-[9px] font-semibold uppercase tracking-wide opacity-80">{t("credits")}</span>
         </span>
       )}
     </Link>

@@ -14,6 +14,7 @@
  */
 
 import { useEffect, useState } from "react";
+import { useT } from "@/i18n/I18nScope";
 
 export function SliderField({
   label,
@@ -35,6 +36,7 @@ export function SliderField({
   suffix?: string;
   disabled?: boolean;
 }) {
+  const t = useT();
   const [text, setText] = useState(String(value));
 
   // Follow the value when it changes from elsewhere (a preset, a reset), but
@@ -83,7 +85,7 @@ export function SliderField({
               commit();
             }
           }}
-          aria-label={`${label} value`}
+          aria-label={t("{label} value", { label })}
           className="w-20 shrink-0 rounded-lg border border-surface-variant bg-surface-container-lowest px-2.5 py-2 text-center text-body-md text-primary outline-none focus:border-secondary focus:ring-1 focus:ring-secondary disabled:opacity-40"
         />
       </div>

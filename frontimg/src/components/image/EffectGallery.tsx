@@ -17,6 +17,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Icon } from "@/components/Icon";
 import { EFFECTS, renderEffect, type EffectId } from "@/lib/image/effects";
+import { useT } from "@/i18n/I18nScope";
 
 /** Longest side of the source copy the tiles are rendered from. */
 const THUMB_PX = 168;
@@ -37,6 +38,7 @@ export function EffectGallery({
   color?: string;
   accent: string;
 }) {
+  const t = useT();
   const [urls, setUrls] = useState<Record<string, string>>({});
   const scrollerRef = useRef<HTMLDivElement>(null);
   /* The URLs currently on screen. Revoking happens AFTER the replacements are
@@ -106,7 +108,7 @@ export function EffectGallery({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <span className="text-label-sm font-label-sm text-on-surface-variant">Select your effect</span>
+      <span className="text-label-sm font-label-sm text-on-surface-variant">{t("Select your effect")}</span>
 
       <div className="relative">
         <div
@@ -145,7 +147,8 @@ export function EffectGallery({
                   }`}
                   style={on ? { color: accent } : undefined}
                 >
-                  {spec.label}
+                  {/* EFFECT_SPECS lives in lib/image/effects.ts (§4.2). */}
+                  {t(spec.label)}
                 </span>
               </button>
             );
@@ -165,11 +168,12 @@ export function EffectGallery({
  * including its caption.
  */
 function ArrowButton({ side, onClick }: { side: "left" | "right"; onClick: () => void }) {
+  const t = useT();
   return (
     <button
       type="button"
       onClick={onClick}
-      aria-label={side === "left" ? "Previous effects" : "More effects"}
+      aria-label={side === "left" ? t("Previous effects") : t("More effects")}
       className={`absolute top-[38px] -translate-y-1/2 ${side === "left" ? "left-0" : "right-0"} flex h-8 w-8 items-center justify-center rounded-full border border-surface-variant bg-surface-container-lowest/95 text-on-surface-variant shadow-md backdrop-blur-sm transition-colors hover:text-primary`}
     >
       <Icon name={side === "left" ? "chevron_left" : "chevron_right"} className="text-[20px]" />

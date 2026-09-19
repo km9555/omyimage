@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Icon } from "@/components/Icon";
+import { useT } from "@/i18n/I18nScope";
 
 export interface BgValue {
   transparent: boolean;
@@ -16,6 +17,8 @@ export function resolveBg(v: BgValue): string | null {
   return v.transparent ? null : v.color;
 }
 
+// Swatch names are English source strings, translated where they are shown
+// (title/aria-label and the hover readout) — §4.2.
 const COLORS: { name: string; value: string }[] = [
   { name: "White", value: "#ffffff" },
   { name: "Black", value: "#000000" },
@@ -63,7 +66,7 @@ export function BackgroundPicker({
   onChange,
   allowTransparent = true,
   allowAuto = false,
-  label = "Background",
+  label,
 }: {
   value: BgValue;
   onChange: (v: BgValue) => void;
@@ -73,6 +76,7 @@ export function BackgroundPicker({
   allowAuto?: boolean;
   label?: string;
 }) {
+  const t = useT();
   const [hover, setHover] = useState<string | null>(null);
   const matched = COLORS.find((c) => c.value.toLowerCase() === value.color.toLowerCase());
   const isCustom = !value.transparent && !value.auto && !matched;
@@ -87,17 +91,17 @@ export function BackgroundPicker({
   return (
     <div className="flex flex-col gap-1.5">
       <div className="flex items-start justify-between gap-2">
-        <span className="flex-1 min-w-0 text-label-sm font-label-sm text-on-surface-variant">{label}</span>
+        <span className="flex-1 min-w-0 text-label-sm font-label-sm text-on-surface-variant">{label ?? t("Background")}</span>
         <span className="w-28 shrink-0 text-right text-label-sm font-label-sm font-semibold text-on-surface truncate">
-          {hover ?? activeName}
+          {t(hover ?? activeName)}
         </span>
       </div>
       <div className="flex items-center gap-2 flex-wrap">
         {allowAuto && (
           <button
             type="button"
-            title="Auto — match the image's own edges"
-            aria-label="Auto — match the image's own edges"
+            title={t("Auto — match the image's own edges")}
+            aria-label={t("Auto — match the image's own edges")}
             aria-pressed={!!value.auto}
             {...hoverProps("Auto")}
             onClick={() => onChange({ ...value, transparent: false, auto: true })}
@@ -110,8 +114,8 @@ export function BackgroundPicker({
         {allowTransparent && (
           <button
             type="button"
-            title="Transparent"
-            aria-label="Transparent"
+            title={t("Transparent")}
+            aria-label={t("Transparent")}
             aria-pressed={value.transparent}
             {...hoverProps("Transparent")}
             onClick={() => onChange({ ...value, transparent: true, auto: false })}
@@ -127,8 +131,8 @@ export function BackgroundPicker({
             <button
               key={c.name}
               type="button"
-              title={c.name}
-              aria-label={c.name}
+              title={t(c.name)}
+              aria-label={t(c.name)}
               aria-pressed={active}
               {...hoverProps(c.name)}
               onClick={() => onChange({ transparent: false, auto: false, color: c.value })}
@@ -140,8 +144,8 @@ export function BackgroundPicker({
           );
         })}
         <label
-          title="Custom color"
-          aria-label="Custom color"
+          title={t("Custom color")}
+          aria-label={t("Custom color")}
           onMouseEnter={() => setHover("Custom")}
           onMouseLeave={() => setHover(null)}
           className={`relative h-8 w-8 rounded-full border cursor-pointer grid place-items-center transition-shadow focus-within:ring-2 focus-within:ring-secondary/70 ${
@@ -156,7 +160,7 @@ export function BackgroundPicker({
             onChange={(e) => onChange({ transparent: false, auto: false, color: e.target.value })}
             onFocus={() => setHover("Custom")}
             onBlur={() => setHover(null)}
-            aria-label="Custom background color"
+            aria-label={t("Custom background color")}
             className="absolute inset-0 opacity-0 cursor-pointer"
           />
         </label>

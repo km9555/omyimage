@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Icon } from "@/components/Icon";
 import { JsonLd } from "@/components/JsonLd";
+import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
+import { getT } from "@/i18n/t";
 
 export interface HowToStep {
   title: string;
@@ -24,6 +26,8 @@ export interface SeoSection {
 }
 
 export interface SeoContentProps {
+  /** Page locale. Server component, so it cannot call useT() (§4.10). */
+  locale?: Locale;
   toolName: string;
   intro: string;
   howToTitle: string;
@@ -64,6 +68,7 @@ const STEP_GRID: Record<number, string> = {
  * `relatedLinks`) is optional, so the 29 hand-built pages render unchanged.
  */
 export function SeoContent({
+  locale = DEFAULT_LOCALE,
   toolName,
   intro,
   howToTitle,
@@ -75,6 +80,7 @@ export function SeoContent({
   sections,
   relatedLinks,
 }: SeoContentProps) {
+  const t = getT(locale);
   const proseWidth = fullWidthText ? "" : "max-w-3xl";
   const stepGrid = STEP_GRID[steps.length] ?? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3";
   const faqSchema = {
@@ -134,7 +140,7 @@ export function SeoContent({
       {/* Features */}
       <section>
         <h2 className="text-headline-md font-semibold text-primary mb-stack-md">
-          {toolName} features
+          {t("{tool} features", { tool: toolName })}
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-stack-md">
           {features.map((feature) => (
@@ -156,7 +162,7 @@ export function SeoContent({
       {security && (
         <section className="bg-on-primary-fixed text-primary-fixed-dim rounded-xl p-8">
           <h2 className="text-headline-md font-semibold text-white mb-2">
-            Security &amp; privacy
+            {t("Security & privacy")}
           </h2>
           <p className={`text-body-md text-primary-fixed-dim ${proseWidth}`}>{security}</p>
         </section>
@@ -165,7 +171,7 @@ export function SeoContent({
       {/* FAQ */}
       <section>
         <h2 className="text-headline-md font-semibold text-primary mb-stack-md">
-          Frequently asked questions
+          {t("Frequently asked questions")}
         </h2>
         <div className="flex flex-col gap-3 max-w-3xl">
           {faqs.map((item) => (

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Icon } from "@/components/Icon";
 import { MobileSheet } from "@/components/tool/mobile-chrome";
+import { useT } from "@/i18n/I18nScope";
 
 /**
  * Phone navigation for the long-form legal pages.
@@ -19,6 +20,7 @@ import { MobileSheet } from "@/components/tool/mobile-chrome";
  * there is width for it.
  */
 export function LegalMobileToc({ toc }: { toc: { id: string; title: string }[] }) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [current, setCurrent] = useState<string | null>(null);
@@ -64,7 +66,7 @@ export function LegalMobileToc({ toc }: { toc: { id: string; title: string }[] }
         >
           <Icon name="list" className="shrink-0 text-[20px] text-on-surface-variant" />
           <span className="min-w-0 flex-1 truncate text-body-md text-on-surface">
-            {currentTitle ?? "On this page"}
+            {currentTitle ?? t("On this page")}
           </span>
           <Icon name="expand_more" className="shrink-0 text-[20px] text-on-surface-variant" />
         </button>
@@ -74,7 +76,7 @@ export function LegalMobileToc({ toc }: { toc: { id: string; title: string }[] }
         <button
           type="button"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          aria-label="Back to top"
+          aria-label={t("Back to top")}
           className="fixed bottom-4 right-4 z-30 flex h-12 w-12 items-center justify-center rounded-full border border-outline-variant bg-surface-container-lowest text-on-surface-variant ambient-shadow active:bg-surface-container"
           style={{ bottom: "calc(1rem + env(safe-area-inset-bottom, 0px))" }}
         >
@@ -83,7 +85,7 @@ export function LegalMobileToc({ toc }: { toc: { id: string; title: string }[] }
       )}
 
       {open && (
-        <MobileSheet title="On this page" onClose={() => setOpen(false)}>
+        <MobileSheet title={t("On this page")} onClose={() => setOpen(false)}>
           {/*
             Real hash links rather than a scripted `scrollIntoView`: the browser
             does the scrolling (honouring the sections' `scroll-mt-24`), the URL

@@ -1,17 +1,21 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Icon } from "@/components/Icon";
-import { LANGUAGES, type Language } from "@/lib/languages";
+import { isLocale, localeFromPath } from "@/i18n/config";
+import { useT } from "@/i18n/I18nScope";
+import { swapLocale } from "@/lib/i18n/links";
+import { LANGUAGES } from "@/lib/languages";
 
 /**
  * Language picker, ported from oMyPDF's LanguageSwitcher.
  *
- * Reads `lib/languages.ts`, the same list AppsMenu already renders in the
- * desktop header — English is the only `available: true` entry, the rest show
- * a "Soon" chip and are disabled. There is no i18n routing behind this yet, so
- * picking the live locale only closes the menu; flip `available` in
- * languages.ts as each translation lands.
+ * Reads `lib/languages.ts`, the same list AppsMenu renders in the desktop
+ * header. A live language is a real link to `swapLocale(pathname, code)` —
+ * this page in that language when it has shipped there, that language's home
+ * page otherwise. Planned languages show a "Soon" chip and are disabled.
  *
  * The panel opens UPWARD (`bottom-full`) because its only caller pins it to
  * the bottom of the mobile drawer.
@@ -19,8 +23,11 @@ import { LANGUAGES, type Language } from "@/lib/languages";
  * `fullWidth` stretches the trigger to its container — used in that footer.
  */
 export function LanguageSwitcher({ fullWidth = false }: { fullWidth?: boolean } = {}) {
+  const pathname = usePathname();
+  const t = useT();
+  const locale = localeFromPath(pathname);
+  const current = LANGUAGES.find((l) => l.code === locale) ?? LANGUAGES[0];
   const [open, setOpen] = useState(false);
-  const [current] = useState<Language>(LANGUAGES[0]);
   const ref = useRef<HTMLDivElement>(null);
 
   // Close on outside click + Escape. No hover-intent here (unlike the desktop
@@ -54,7 +61,7 @@ export function LanguageSwitcher({ fullWidth = false }: { fullWidth?: boolean } 
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        aria-label="Select language"
+        aria-label={t("Select language")}
         className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-label-sm font-label-sm font-semibold transition-colors ${
           fullWidth ? "w-full" : ""
         } ${
@@ -76,14 +83,14 @@ export function LanguageSwitcher({ fullWidth = false }: { fullWidth?: boolean } 
       {open && (
         <div
           role="listbox"
-          aria-label="Language"
+          aria-label={t("Language")}
           className={`absolute bottom-full left-0 z-50 mb-2 overflow-hidden rounded-xl border border-outline-variant bg-surface-container-lowest shadow-2xl ${
             fullWidth ? "w-full" : "w-56"
           }`}
         >
           <div className="border-b border-outline-variant/50 px-3 py-2">
             <span className="text-[11px] font-bold uppercase tracking-widest text-on-surface-variant/70">
-              Language
+              {t("Language")}
             </span>
           </div>
           <ul className="max-h-72 overflow-y-auto py-1">
@@ -91,29 +98,34 @@ export function LanguageSwitcher({ fullWidth = false }: { fullWidth?: boolean } 
               const active = lang.code === current.code;
               return (
                 <li key={lang.code}>
-                  <button
-                    type="button"
-                    role="option"
-                    aria-selected={active}
-                    disabled={!lang.available}
-                    onClick={() => {
-                      if (lang.available) setOpen(false);
-                    }}
-                    className={`flex w-full items-center gap-2.5 px-3 py-2 text-left text-body-sm transition-colors ${
-                      lang.available
-                        ? "text-on-surface hover:bg-surface-container"
-                        : "cursor-not-allowed text-on-surface-variant/50"
-                    }`}
-                  >
-                    <span className="text-base leading-none">{lang.flag}</span>
-                    <span className="flex-1">{lang.label}</span>
-                    {active && <Icon name="check" className="text-[16px] text-secondary" />}
-                    {!lang.available && (
+                  {lang.available && isLocale(lang.code) ? (
+                    <Link
+                      href={swapLocale(pathname ?? "/", lang.code)}
+                      hrefLang={lang.code}
+                      role="option"
+                      aria-selected={active}
+                      onClick={() => setOpen(false)}
+                      className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-body-sm transition-colors text-on-surface hover:bg-surface-container"
+                    >
+                      <span className="text-base leading-none">{lang.flag}</span>
+                      <span className="flex-1">{lang.label}</span>
+                      {active && <Icon name="check" className="text-[16px] text-secondary" />}
+                    </Link>
+                  ) : (
+                    <button
+                      type="button"
+                      role="option"
+                      aria-selected={false}
+                      disabled
+                      className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-body-sm transition-colors cursor-not-allowed text-on-surface-variant/50"
+                    >
+                      <span className="text-base leading-none">{lang.flag}</span>
+                      <span className="flex-1">{lang.label}</span>
                       <span className="rounded-full bg-surface-container px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-on-surface-variant/50">
-                        Soon
+                        {t("Soon")}
                       </span>
-                    )}
-                  </button>
+                    </button>
+                  )}
                 </li>
               );
             })}

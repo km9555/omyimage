@@ -1,9 +1,16 @@
+"use client";
+
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import { Icon } from "@/components/Icon";
 import { toolColor, toolColorTint, type Tool } from "@/lib/tools";
+import { useLocale, useT } from "@/i18n/I18nScope";
+import { toolHref } from "@/lib/i18n/links";
+import { toolDescription, toolName } from "@/lib/i18n/tool-labels";
 
 export function ToolCard({ tool }: { tool: Tool }) {
+  const t = useT();
+  const locale = useLocale();
   const color = toolColor(tool);
 
   const inner = (
@@ -16,22 +23,22 @@ export function ToolCard({ tool }: { tool: Tool }) {
         >
           <Icon name={tool.icon} bold style={{ color, fontSize: 22 }} />
         </span>
-        <h3 className="text-body-md font-bold text-primary leading-tight">{tool.name}</h3>
+        <h3 className="text-body-md font-bold text-primary leading-tight">{toolName(tool, locale)}</h3>
       </div>
       <p className="mt-2 text-label-sm font-label-sm text-on-surface-variant leading-snug line-clamp-2 min-h-[2.5em]">
-        {tool.shortDescription}
+        {toolDescription(tool, locale)}
       </p>
       {tool.status === "planned" && (
         <span className="mt-2 inline-block self-start rounded-full bg-surface-container px-2.5 py-0.5 text-label-sm font-label-sm text-on-surface-variant">
-          Coming soon
+          {t("Coming soon")}
         </span>
       )}
       {/* Premium = icon only (no pill) in the corner, so it never changes card
           height. Hover shows the native tooltip explaining the daily limit. */}
       {tool.status !== "planned" && tool.premium && (
         <span
-          title="Premium tool — Free plan includes a limited number per day"
-          aria-label="Premium tool"
+          title={t("Premium tool — Free plan includes a limited number per day")}
+          aria-label={t("Premium tool")}
           className="absolute bottom-2.5 right-2.5 inline-flex items-center justify-center w-5 h-5 rounded-md bg-secondary/15 text-on-secondary-fixed-variant"
         >
           <Icon name="workspace_premium" fill className="text-[14px]" />
@@ -46,7 +53,7 @@ export function ToolCard({ tool }: { tool: Tool }) {
   if (tool.status === "live") {
     return (
       <Link
-        href={`/${tool.slug}`}
+        href={toolHref(tool, locale)}
         className={`${cardClass} hover-lift hover:border-secondary/50`}
       >
         {inner}

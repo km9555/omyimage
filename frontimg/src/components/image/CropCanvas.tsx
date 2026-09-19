@@ -10,6 +10,7 @@ import {
   applyAspect, clampCrop, drawTransformed, transformedSize,
   type CropSel, type CropShape, type CropTransform,
 } from "@/lib/image/crop";
+import { useT } from "@/i18n/I18nScope";
 
 /* Hit tolerance and drawn grip radius, in canvas pixels. The coarse variants
    are what a finger needs: the mouse numbers give a ~10px grip that is roughly
@@ -55,6 +56,7 @@ export function CropCanvas({
   accent: string;
   disabled?: boolean;
 }) {
+  const t = useT();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
   const [cursor, setCursor] = useState("crosshair");
@@ -292,7 +294,7 @@ export function CropCanvas({
       ref={canvasRef}
       tabIndex={0}
       role="application"
-      aria-label="Crop area. Drag inside to move, drag a handle to resize, arrow keys to nudge."
+      aria-label={t("Crop area. Drag inside to move, drag a handle to resize, arrow keys to nudge.")}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={endDrag}

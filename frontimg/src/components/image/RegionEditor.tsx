@@ -9,6 +9,7 @@ import {
 } from "@/lib/image/redact";
 import { newStrokeId, renderMasked, type BrushStroke } from "@/lib/image/mask";
 import type { EffectId } from "@/lib/image/effects";
+import { useT } from "@/i18n/I18nScope";
 
 /*
   Grip sizes, in SCREEN pixels — deliberately not image pixels.
@@ -78,6 +79,7 @@ export function RegionEditor({
    */
   brush?: { mode: "add" | "erase"; size: number; fade: number } | null;
 }) {
+  const t = useT();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [draft, setDraftState] = useState<Region | null>(null);
   const [cursor, setCursor] = useState("crosshair");
@@ -357,8 +359,8 @@ export function RegionEditor({
       role="application"
       aria-label={
         brush
-          ? "Redaction area. Drag to paint over what you want hidden."
-          : "Redaction area. Drag to draw a region, click one to select it, drag its handles to resize, Delete to remove, arrow keys to nudge."
+          ? t("Redaction area. Drag to paint over what you want hidden.")
+          : t("Redaction area. Drag to draw a region, click one to select it, drag its handles to resize, Delete to remove, arrow keys to nudge.")
       }
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}

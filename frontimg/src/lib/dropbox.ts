@@ -1,3 +1,4 @@
+import { I18nError } from "@/i18n/errors";
 /**
  * Dropbox Chooser integration.
  *
@@ -220,7 +221,7 @@ export async function openDropboxPicker(
   return Promise.all(
     chosen.map(async ({ link, name }) => {
       const resp = await fetch(link);
-      if (!resp.ok) throw new Error(`Could not download "${name}" from Dropbox.`);
+      if (!resp.ok) throw new I18nError("Could not download “{name}” from Dropbox.", { name });
       const blob = await resp.blob();
       return new File([blob], name, {
         type: mimeForName(name, blob.type),

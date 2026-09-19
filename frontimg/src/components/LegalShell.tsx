@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { LegalMobileToc } from "@/components/LegalMobileToc";
+import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
+import { getT } from "@/i18n/t";
 
 /**
  * Shared layout and prose blocks for the long-form legal pages
@@ -20,16 +22,25 @@ interface LegalShellProps {
   children: ReactNode;
 }
 
-export function LegalShell({ title, subtitle, updated, toc, children }: LegalShellProps) {
+export function LegalShell({
+  title,
+  subtitle,
+  updated,
+  toc,
+  children,
+  locale = DEFAULT_LOCALE,
+}: LegalShellProps & { locale?: Locale }) {
+  // Server component: takes the page's locale rather than calling useT().
+  const t = getT(locale);
   return (
     <div className="max-w-content mx-auto px-margin-mobile md:px-gutter py-12">
       {/* Header */}
       <div className="max-w-3xl mb-10">
-        <p className="text-label-sm font-label-sm uppercase tracking-widest text-secondary mb-3">Legal</p>
+        <p className="text-label-sm font-label-sm uppercase tracking-widest text-secondary mb-3">{t("Legal")}</p>
         <h1 className="text-display-md font-black text-primary mb-3">{title}</h1>
         <p className="text-body-lg text-on-surface-variant">{subtitle}</p>
         <p className="text-label-sm font-label-sm text-on-surface-variant mt-3">
-          Last updated: <time>{updated}</time>
+          {t("Last updated:")} <time>{updated}</time>
         </p>
       </div>
 
@@ -52,7 +63,7 @@ export function LegalShell({ title, subtitle, updated, toc, children }: LegalShe
         {/* Sticky TOC sidebar */}
         <aside className="hidden md:block lg:sticky lg:top-24 lg:w-56 shrink-0 w-full bg-surface-container-lowest border border-surface-variant rounded-xl p-5">
           <p className="text-label-sm font-label-sm uppercase tracking-widest text-on-surface-variant mb-3">
-            Contents
+            {t("Contents")}
           </p>
           <nav className="flex flex-col gap-1.5">
             {toc.map((s) => (

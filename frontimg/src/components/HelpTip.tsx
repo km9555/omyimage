@@ -2,12 +2,15 @@
 
 import { useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useT } from "@/i18n/I18nScope";
 
 const TOOLTIP_W = 240;
 
 /**
  * Small "?" help affordance. Shows `text` in a tooltip on hover or keyboard
  * focus, rendered in a portal so it is never clipped by overflow containers.
+ *
+ * `text` is rendered as given — callers pass it already translated, `t("…")`.
  */
 export function HelpTip({
   text,
@@ -18,6 +21,7 @@ export function HelpTip({
   className?: string;
   glyph?: string;
 }) {
+  const t = useT();
   const btnRef = useRef<HTMLButtonElement>(null);
   const [pos, setPos] = useState<{ top: number; left: number; above: boolean } | null>(null);
 
@@ -39,7 +43,7 @@ export function HelpTip({
       <button
         ref={btnRef}
         type="button"
-        aria-label="Help"
+        aria-label={t("Help")}
         onMouseEnter={show}
         onMouseLeave={hide}
         onFocus={show}

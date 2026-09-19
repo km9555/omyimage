@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { localeFromPath } from "@/i18n/config";
+import { localeHref } from "@/lib/i18n/links";
 import { useAuth } from "./useAuth";
 
 /**
@@ -23,7 +25,8 @@ export function useRequireAuth() {
     if (auth.loading) return;
     if (!auth.user) {
       const redirect = encodeURIComponent(pathname || "/");
-      router.replace(`/login?redirect=${redirect}`);
+      // Stay in the visitor's language: /pt/conta → /pt/entrar once that ships.
+      router.replace(localeHref(`/login?redirect=${redirect}`, localeFromPath(pathname)));
     }
   }, [auth.loading, auth.user, pathname, router]);
 

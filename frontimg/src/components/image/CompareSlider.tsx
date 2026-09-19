@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Icon } from "@/components/Icon";
+import { useT } from "@/i18n/I18nScope";
 import { useCoarsePointer } from "@/lib/use-is-mobile";
 
 /**
@@ -38,6 +39,7 @@ export function CompareSlider({
   beforeAlt?: string;
   afterAlt?: string;
 }) {
+  const t = useT();
   const [pct, setPct] = useState(50);
   const [beforeDims, setBeforeDims] = useState<Dims>(null);
   const [afterDims, setAfterDims] = useState<Dims>(null);
@@ -174,7 +176,7 @@ export function CompareSlider({
         <div
           role="slider"
           tabIndex={0}
-          aria-label="Compare original with result"
+          aria-label={t("Compare original with result")}
           aria-valuemin={0}
           aria-valuemax={100}
           aria-valuenow={Math.round(pct)}

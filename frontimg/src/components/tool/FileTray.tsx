@@ -4,6 +4,7 @@ import { useCallback, useRef, useState, type ReactNode } from "react";
 import { Icon } from "@/components/Icon";
 import { useViewMode, type ViewMode } from "@/lib/view-mode";
 import { CloudImportBar } from "@/components/CloudImportBar";
+import { useT } from "@/i18n/I18nScope";
 
 /**
  * One row/card in the tray. Tools map their own item shape onto this, which
@@ -86,6 +87,7 @@ export function FileTray({
   onReorder?: (from: number, to: number) => void;
   busy?: boolean;
 }) {
+  const t = useT();
   const [view, setView] = useViewMode();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -162,7 +164,7 @@ export function FileTray({
         : index === dragOver
           ? " ring-2 ring-secondary"
           : "";
-  const heading = title ?? `Selected files (${entries.length})`;
+  const heading = title ?? t("Selected files ({n})", { n: entries.length });
   // Single-image tools force the compact row: there is only ever one file, and
   // a card grid of one is just a large thumbnail with a toggle that does
   // nothing. Everywhere else the toggle shows from the first file onwards.
@@ -196,7 +198,7 @@ export function FileTray({
               disabled={busy}
               className="inline-flex items-center gap-1.5 text-label-md font-medium text-on-surface-variant transition-colors hover:text-error disabled:opacity-40"
             >
-              <Icon name="delete_sweep" className="text-[18px]" /> Clear
+              <Icon name="delete_sweep" className="text-[18px]" /> {t("Clear")}
             </button>
           )}
           {onFiles && (
@@ -208,8 +210,8 @@ export function FileTray({
                 type="button"
                 onClick={() => inputRef.current?.click()}
                 disabled={busy}
-                aria-label="Add more files"
-                title="Add more files"
+                aria-label={t("Add more files")}
+                title={t("Add more files")}
                 className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-on-secondary shadow-md shadow-secondary/30 transition-all hover:bg-secondary-container hover:shadow-lg hover:shadow-secondary/40 disabled:opacity-50"
               >
                 <Icon name="add" className="text-[22px]" />
@@ -416,13 +418,14 @@ function MoveButton({
   /** The grid flows left-to-right, so the arrows have to point that way too. */
   grid?: boolean;
 }) {
+  const t = useT();
   const back = dir === -1;
   return (
     <button
       type="button"
       onClick={() => onMove(index, dir)}
       disabled={busy || (back ? index === 0 : index === count - 1)}
-      aria-label={back ? "Move earlier" : "Move later"}
+      aria-label={back ? t("Move earlier") : t("Move later")}
       className="flex h-8 w-8 items-center justify-center rounded text-on-surface-variant transition-colors hover:bg-surface-container disabled:opacity-30"
     >
       <Icon
@@ -435,13 +438,15 @@ function MoveButton({
 
 /** Segmented grid/list control. */
 function ViewToggle({ value, onChange }: { value: ViewMode; onChange: (v: ViewMode) => void }) {
+  const t = useT();
   return (
     <div
       role="group"
-      aria-label="File view"
+      aria-label={t("File view")}
       className="flex rounded-lg border border-surface-variant bg-surface-container p-1"
     >
       {(
+        // i18n-raw: translated at the render site below, t(o.label).
         [
           { mode: "grid", icon: "grid_view", label: "Grid view" },
           { mode: "list", icon: "view_list", label: "List view" },
@@ -451,8 +456,8 @@ function ViewToggle({ value, onChange }: { value: ViewMode; onChange: (v: ViewMo
           key={o.mode}
           type="button"
           onClick={() => onChange(o.mode)}
-          aria-label={o.label}
-          title={o.label}
+          aria-label={t(o.label)}
+          title={t(o.label)}
           aria-pressed={value === o.mode}
           className={`flex h-8 w-9 items-center justify-center rounded-md transition-colors ${
             value === o.mode

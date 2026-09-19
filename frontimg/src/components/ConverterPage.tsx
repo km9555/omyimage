@@ -10,11 +10,15 @@
  * generated steps/features/boilerplate FAQs.
  */
 import Link from "next/link";
-import { getTool, toolColor, toolColorTint } from "@/lib/tools";
+import { getTool, toolColor } from "@/lib/tools";
 import { absoluteUrl, SITE } from "@/lib/site";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { JsonLd } from "@/components/JsonLd";
-import { Icon } from "@/components/Icon";
+import { RelatedTools } from "@/components/RelatedTools";
+import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
+import { getT } from "@/i18n/t";
+import { localeHome, toolHref } from "@/lib/i18n/links";
+import { categoryNavLabel, toolName } from "@/lib/i18n/tool-labels";
 import { SeoContent, type Faq, type SeoSection } from "@/components/SeoContent";
 import { ConvertTool } from "@/components/ConvertTool";
 import { getPair } from "@/lib/converters/pairs";
@@ -28,12 +32,15 @@ import {
   buildSteps,
 } from "@/lib/converters/copy";
 
-export function ConverterPage({ slug }: { slug: string }) {
+export function ConverterPage({ slug, locale = DEFAULT_LOCALE }: { slug: string; locale?: Locale }) {
   const pair = getPair(slug);
   const tool = getTool(slug);
   if (!tool) {
     throw new Error(`No TOOLS entry for converter "${slug}" — add it to src/lib/tools.ts.`);
   }
+
+  const t = getT(locale);
+  const home = localeHome(locale);
 
   const from = fmt(pair.from);
   const to = fmt(pair.to);
@@ -91,10 +98,11 @@ export function ConverterPage({ slug }: { slug: string }) {
       <div data-tool-shell className="max-w-content mx-auto px-margin-mobile md:px-gutter pt-stack-md flex flex-col gap-stack-lg">
         <Breadcrumbs
           items={[
-            { label: "Home", href: "/" },
-            { label: "Convert", href: "/#cat-convert" },
-            { label: tool.name },
+            { label: t("Home"), href: home },
+            { label: categoryNavLabel("convert", locale), href: `${home}#cat-convert` },
+            { label: toolName(tool, locale) },
           ]}
+          locale={locale}
         />
 
         <header className="flex flex-col gap-stack-sm mt-2">
@@ -107,7 +115,7 @@ export function ConverterPage({ slug }: { slug: string }) {
           {reverse && (
             <p data-tool-subtitle className="text-body-sm text-on-surface-variant">
               Going the other way?{" "}
-              <Link href={`/${reverse.slug}`} className="text-secondary hover:underline">
+              <Link href={toolHref(reverse.slug, locale)} className="text-secondary hover:underline">
                 Convert {reverse.name}
               </Link>
               .
@@ -132,31 +140,11 @@ export function ConverterPage({ slug }: { slug: string }) {
           }}
         />
 
-        {related.length > 0 && (
-          <section aria-label="More tools" className="mt-4">
-            <h2 className="text-headline-md font-semibold text-primary mb-stack-md">More tools</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-stack-md">
-              {related.map((r) => (
-                <Link
-                  key={r.id}
-                  href={`/${r.slug}`}
-                  className="flex items-center gap-3 rounded-lg border border-outline-variant/40 bg-surface-container-lowest p-4 hover-lift"
-                >
-                  <span
-                    className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: toolColorTint(r) }}
-                  >
-                    <Icon name={r.icon} fill className="text-2xl" style={{ color: toolColor(r) }} />
-                  </span>
-                  <span className="text-body-md font-semibold text-primary">{r.name}</span>
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
+        <RelatedTools tools={related} locale={locale} />
       </div>
 
       <SeoContent
+        locale={locale}
         toolName={pair.name}
         intro={pair.unique.intro}
         howToTitle={`How to convert ${from.label} to ${to.label}`}

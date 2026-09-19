@@ -4,12 +4,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/Icon";
-import { TOOLS, CATEGORIES } from "@/lib/tools";
+import { TOOLS } from "@/lib/tools";
 import { searchTools } from "@/lib/tool-search";
-
-const CATEGORY_LABEL: Record<string, string> = Object.fromEntries(
-  CATEGORIES.map((c) => [c.id, c.navLabel.toUpperCase()]),
-);
+import { useLocale, useT } from "@/i18n/I18nScope";
+import { toolHref } from "@/lib/i18n/links";
+import { categoryNavLabel, toolName } from "@/lib/i18n/tool-labels";
 
 /** Wraps the matched substring so users can see *why* a result came back. */
 function highlightMatch(text: string, q: string) {
@@ -31,6 +30,8 @@ function highlightMatch(text: string, q: string) {
  */
 export function HeaderSearch({ className = "" }: { className?: string }) {
   const router = useRouter();
+  const t = useT();
+  const locale = useLocale();
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -40,8 +41,8 @@ export function HeaderSearch({ className = "" }: { className?: string }) {
   const normalized = query.trim().toLowerCase();
 
   const results = useMemo(
-    () => (normalized ? searchTools(query, TOOLS).slice(0, 8) : []),
-    [query, normalized],
+    () => (normalized ? searchTools(query, TOOLS, locale).slice(0, 8) : []),
+    [query, normalized, locale],
   );
 
   // Close on outside click / Escape.
@@ -64,7 +65,7 @@ export function HeaderSearch({ className = "" }: { className?: string }) {
 
   const goToResult = (i: number) => {
     const tool = results[i] ?? results[0];
-    if (tool) { setOpen(false); setQuery(""); router.push(`/${tool.slug}`); }
+    if (tool) { setOpen(false); setQuery(""); router.push(toolHref(tool, locale)); }
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -89,8 +90,8 @@ export function HeaderSearch({ className = "" }: { className?: string }) {
           onChange={(e) => { setQuery(e.target.value); setOpen(true); }}
           onFocus={() => setOpen(true)}
           onKeyDown={onKeyDown}
-          placeholder="Search tools…"
-          aria-label="Search tools"
+          placeholder={t("Search tools…")}
+          aria-label={t("Search tools")}
           role="combobox"
           aria-expanded={open && results.length > 0}
           aria-controls="header-search-results"
@@ -102,7 +103,7 @@ export function HeaderSearch({ className = "" }: { className?: string }) {
           <button
             type="button"
             onClick={() => { setQuery(""); setOpen(false); }}
-            aria-label="Clear search"
+            aria-label={t("Clear search")}
             className="shrink-0 grid place-items-center w-7 h-7 rounded-md text-on-surface-variant hover:bg-surface-container transition-colors"
           >
             <Icon name="close" className="text-[16px]" />
@@ -125,7 +126,7 @@ export function HeaderSearch({ className = "" }: { className?: string }) {
                 key={tool.id}
                 id={`header-result-${tool.id}`}
                 ref={idx === activeIndex ? activeItemRef : undefined}
-                href={`/${tool.slug}`}
+                href={toolHref(tool, locale)}
                 role="option"
                 aria-selected={idx === activeIndex}
                 onMouseEnter={() => setActiveIndex(idx)}
@@ -134,19 +135,21 @@ export function HeaderSearch({ className = "" }: { className?: string }) {
               >
                 <span className="flex flex-1 items-center gap-3 min-w-0">
                   <Icon name={tool.icon} className="text-[20px] text-secondary/80 shrink-0" />
-                  <span className="text-body-md text-primary truncate" title={tool.name}>
-                    {highlightMatch(tool.name, query.trim())}
+                  <span className="text-body-md text-primary truncate" title={toolName(tool, locale)}>
+                    {highlightMatch(toolName(tool, locale), query.trim())}
                   </span>
                 </span>
                 {/* The chip gives way before the tool name does. */}
                 <span className="shrink min-w-0 truncate text-label-sm font-label-sm uppercase tracking-wide text-on-surface-variant/70 bg-surface-container rounded-md px-2 py-0.5">
-                  {CATEGORY_LABEL[tool.categoryId] ?? "TOOL"}
+                  {categoryNavLabel(tool.categoryId, locale).toUpperCase()}
                 </span>
               </Link>
             ))
           ) : (
             <p className="px-4 py-6 text-center text-body-sm text-on-surface-variant">
-              No tools match &quot;{query.trim()}&quot;.
+              {/* One key shared with MobileMenu — two spellings of one sentence
+                  are two unrelated keys, and only one gets translated (§4.26). */}
+              {t("No tools match “{query}”.", { query: query.trim() })}
             </p>
           )}
         </div>

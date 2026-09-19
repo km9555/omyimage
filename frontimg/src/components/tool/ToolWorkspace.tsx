@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import { AdSlot } from "@/components/tool/AdSlot";
-import { formatBytes } from "@/lib/image/file-naming";
+import { useFormatBytes, useT } from "@/i18n/I18nScope";
 import { useIsMobile, useOverlayScrollLock } from "@/lib/use-is-mobile";
 import {
   MobileBarButton,
@@ -37,7 +37,7 @@ export interface ToolMobileTab {
  */
 export interface ToolMobileShell {
   /** Top bar heading. Usually the file name. */
-  title: string;
+  title: ReactNode;
   /** Second line — count, size, processing badge. */
   meta?: ReactNode;
   /** Leaves the workspace. Usually the tool's `reset`. */
@@ -86,16 +86,29 @@ export interface ToolMobileShell {
  *
  *   mobile={{ ...filesHeader(items.map((i) => i.file)), onBack: reset, cta: {…} }}
  */
-export function filesHeader(files: File[]): { title: string; meta: ReactNode } {
-  const total = files.reduce((sum, f) => sum + f.size, 0);
+export function filesHeader(files: File[]): { title: ReactNode; meta: ReactNode } {
+  // Elements rather than strings: a plain function called from 24 tools cannot
+  // call useT(), so the counted phrases render through small components that
+  // can. Singular and plural are separate keys (conversion.md §4.4).
   return {
-    title: files.length === 1 ? files[0].name : `${files.length} images`,
+    title: files.length === 1 ? files[0].name : <FilesCount n={files.length} noun="images" />,
     meta: (
       <span className="shrink-0">
-        {files.length} file{files.length === 1 ? "" : "s"} · {formatBytes(total)}
+        <FilesCount n={files.length} noun="files" /> · <FilesSize files={files} />
       </span>
     ),
   };
+}
+
+function FilesCount({ n, noun }: { n: number; noun: "images" | "files" }) {
+  const t = useT();
+  if (noun === "images") return <>{n === 1 ? t("1 image") : t("{n} images", { n })}</>;
+  return <>{n === 1 ? t("1 file") : t("{n} files", { n })}</>;
+}
+
+function FilesSize({ files }: { files: File[] }) {
+  const formatBytes = useFormatBytes();
+  return <>{formatBytes(files.reduce((sum, f) => sum + f.size, 0))}</>;
 }
 
 /** Tailwind needs the class to exist literally, so map instead of interpolating. */
@@ -159,6 +172,7 @@ export function ToolWorkspace({
   mobile?: ToolMobileShell;
 }) {
   const isMobile = useIsMobile();
+  const t = useT();
   const [openTab, setOpenTab] = useState<string | null>(null);
 
   const shell = mobile && isMobile ? mobile : null;
@@ -190,10 +204,10 @@ export function ToolWorkspace({
   }
 
   const tabs = shell.tabs ?? [];
-  const settingsLabel = shell.settingsLabel ?? "Settings";
+  const settingsLabel = shell.settingsLabel ?? t("Settings");
   // Derived, never stored: a tab that disappears (a mode that ended, a file that
   // was removed) closes its own sheet instead of stranding it open and empty.
-  const openSheetTab = openTab === SETTINGS_TAB ? null : tabs.find((t) => t.id === openTab);
+  const openSheetTab = openTab === SETTINGS_TAB ? null : tabs.find((tab) => tab.id === openTab);
   const settingsOpen = openTab === SETTINGS_TAB;
 
   return (

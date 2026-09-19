@@ -10,8 +10,10 @@ import { Dropzone } from "@/components/image/Dropzone";
 import { CompareSlider } from "@/components/image/CompareSlider";
 import { TrayAction } from "@/components/tool/FileTray";
 import { processOnServer } from "@/lib/process-router";
-import { downloadBlob, formatBytes } from "@/lib/image/raster";
+import { downloadBlob } from "@/lib/image/raster";
 import { useHandoff } from "@/lib/tool-handoff";
+import { useFormatBytes, useT } from "@/i18n/I18nScope";
+import { translateError } from "@/i18n/errors";
 
 const CHECKER: React.CSSProperties = {
   backgroundColor: "#fff",
@@ -33,8 +35,8 @@ export function ServerImageTool({
   accept,
   endpoint,
   dropHint,
-  actionLabel = "Process",
-  processingLabel = "Processing…",
+  actionLabel: actionLabelProp,
+  processingLabel: processingLabelProp,
   resultTransparent = false,
   compare = false,
   initialOptions = {},
@@ -59,6 +61,11 @@ export function ServerImageTool({
   controls?: (o: Record<string, unknown>, set: (k: string, v: unknown) => void) => ReactNode;
   note?: ReactNode;
 }) {
+  const t = useT();
+  const formatBytes = useFormatBytes();
+  // Callers pass these translated; only the defaults are translated here.
+  const actionLabel = actionLabelProp ?? t("Process");
+  const processingLabel = processingLabelProp ?? t("Processing…");
   const [file, setFile] = useState<File | null>(null);
   const [inUrl, setInUrl] = useState<string | null>(null);
   const [opts, setOpts] = useState<Record<string, unknown>>(initialOptions);
@@ -79,14 +86,14 @@ export function ServerImageTool({
 
   const onFiles = useCallback((incoming: FileList | File[]) => {
     const f = Array.from(incoming).find((x) => x.type.startsWith("image/"));
-    if (!f) { toast.error("Please select an image."); return; }
+    if (!f) { toast.error(t("Please select an image.")); return; }
     // Created outside the updater on purpose — a StrictMode double-invoke would
     // otherwise mint two object URLs and leak one.
     const url = URL.createObjectURL(f);
     setInUrl(url);
     setResult(null);
     setFile(f);
-  }, []);
+  }, [t]);
 
   useHandoff(onFiles);
 
@@ -99,9 +106,9 @@ export function ServerImageTool({
       const r = await processOnServer(endpoint, file, opts);
       const url = URL.createObjectURL(r.blob);
       setResult({ url, blob: r.blob, name: r.filename });
-      toast.success("Done — your image is ready.");
+      toast.success(t("Done — your image is ready."));
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Processing failed.");
+      toast.error(translateError(err, t, "Processing failed."));
     } finally {
       setIsWorking(false);
     }
@@ -119,11 +126,11 @@ export function ServerImageTool({
         <TopLoadingBar active={isWorking} />
         {/* Always server-side (remove-background, upscale), so the default
             browser-local wording would contradict the panel below. */}
-        <Dropzone onFiles={onFiles} accept={accept} accent={accent} icon={icon} multiple={false} buttonLabel="Select an image" hint={dropHint} privacyNote="Processed on our server over an encrypted connection — files are deleted right after." />
+        <Dropzone onFiles={onFiles} accept={accept} accent={accent} icon={icon} multiple={false} buttonLabel={t("Select an image")} hint={dropHint} privacyNote={t("Processed on our server over an encrypted connection — files are deleted right after.")} />
         <div className="mt-4 rounded-xl border border-outline-variant/40 bg-surface-bright p-4 flex items-start gap-2.5 max-w-xl mx-auto">
           <Icon name="cloud" className="text-[18px] mt-0.5" style={{ color: accent }} />
           <p className="text-label-sm font-label-sm text-on-surface-variant">
-            This is a server-powered tool, so large images may take a few seconds.
+            {t("This is a server-powered tool, so large images may take a few seconds.")}
           </p>
         </div>
       </section>
@@ -141,8 +148,8 @@ export function ServerImageTool({
         mobile={{
           ...filesHeader(file ? [file] : []),
           onBack: reset,
-          backLabel: "Clear image",
-          settingsTitle: "Options",
+          backLabel: t("Clear image"),
+          settingsTitle: t("Options"),
           cta: {
             icon: icon,
             label: actionLabel,
@@ -158,7 +165,7 @@ export function ServerImageTool({
         ) : (
           <div className="rounded-xl border border-surface-variant p-4 flex items-center justify-center overflow-hidden" style={{ minHeight: 220, ...(result && resultTransparent ? CHECKER : { backgroundColor: "var(--color-surface-container)" }) }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={shown.url} alt={result ? "Result" : "Original"} className="max-w-full max-h-[46vh] rounded" />
+            <img src={shown.url} alt={result ? t("Result") : t("Original")} className="max-w-full max-h-[46vh] rounded" />
           </div>
         )}
         {compare && result ? (
@@ -178,7 +185,7 @@ export function ServerImageTool({
                 <span className="font-semibold text-on-surface">{formatBytes(result.blob.size)}</span>
               </p>
             </div>
-            <TrayAction icon="download" label="Download" tone="accent" onClick={() => downloadBlob(result.blob, result.name)} />
+            <TrayAction icon="download" label={t("Download")} tone="accent" onClick={() => downloadBlob(result.blob, result.name)} />
           </div>
         ) : null}
         <div className="flex items-center justify-between">
@@ -189,17 +196,17 @@ export function ServerImageTool({
           <p className="text-label-sm font-label-sm text-on-surface-variant truncate">
             {compare && result ? "" : (
               <>
-                {result ? <span className="font-semibold" style={{ color: accent }}>Result</span> : "Original"} · {file.name}
+                {result ? <span className="font-semibold" style={{ color: accent }}>{t("Result")}</span> : t("Original")} · {file.name}
               </>
             )}
           </p>
-          <button type="button" onClick={reset} className="inline-flex items-center gap-1.5 text-label-md font-medium text-on-surface-variant hover:text-error"><Icon name="close" className="text-[18px]" /> Change image</button>
+          <button type="button" onClick={reset} className="inline-flex items-center gap-1.5 text-label-md font-medium text-on-surface-variant hover:text-error"><Icon name="close" className="text-[18px]" /> {t("Change image")}</button>
         </div>
           </>
         }
         rail={
           <SettingsRail
-            title="Options"
+            title={t("Options")}
             icon="tune"
             accent={accent}
             footer={
@@ -213,7 +220,7 @@ export function ServerImageTool({
                 </RailAction>
                 {result && (
                   <RailSecondaryAction icon="download" onClick={() => downloadBlob(result.blob, result.name)}>
-                    Download ({formatBytes(result.blob.size)})
+                    {t("Download ({size})", { size: formatBytes(result.blob.size) })}
                   </RailSecondaryAction>
                 )}
               </>

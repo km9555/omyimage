@@ -50,9 +50,21 @@ export function premiumDailyLimit(plan: string | null | undefined): number | nul
 }
 
 /** Human sentence for the allowance, so the copy can't drift from the numbers. */
-export function planAllowanceLabel(plan: string | null | undefined): string {
+/**
+ * "10 AI runs per day". Takes the caller's translator (it is a plain function,
+ * so it cannot call useT() itself); English when omitted. Plan NAMES below are
+ * product names and stay untranslated (conversion.md §5).
+ */
+export function planAllowanceLabel(
+  plan: string | null | undefined,
+  t: (key: string, vars?: Record<string, string | number>) => string = englishT,
+): string {
   const limit = premiumDailyLimit(plan);
-  return limit === null ? "Unlimited AI runs" : `${limit} AI runs per day`;
+  return limit === null ? t("Unlimited AI runs") : t("{n} AI runs per day", { n: limit });
+}
+
+function englishT(key: string, vars?: Record<string, string | number>): string {
+  return key.replace(/\{(\w+)\}/g, (m, k: string) => (vars && k in vars ? String(vars[k]) : m));
 }
 
 /** Display name for a plan, defaulting to Free for anything unrecognised. */

@@ -1,8 +1,21 @@
+"use client";
+
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
+import { useLocale, useT } from "@/i18n/I18nScope";
+import type { TFunction } from "@/i18n/t";
+import { localeHome, localeHref } from "@/lib/i18n/links";
 import { CookieSettingsLink } from "@/components/CookieSettingsLink";
 import { SITE } from "@/lib/site";
 
+/*
+  Link labels are the English source strings and are translated at render
+  (t(l.label)); hrefs are English paths rewritten per locale by localeHref, so
+  a Portuguese footer links into /pt/… for every page that has shipped and to
+  English for the rest. A client component for exactly that reason: it sits in
+  the root layout, which cannot see the URL, so it reads the locale from the
+  pathname like the rest of the chrome.
+*/
 const optimize = [
   { label: "Compress Image", href: "/compress-image" },
   { label: "Resize Image", href: "/resize-image" },
@@ -39,7 +52,17 @@ const legal: { label: string; href: string; external?: boolean }[] = [
   { label: "Open-Source Licenses", href: "/THIRD-PARTY-NOTICES.txt", external: true },
 ];
 
-function FooterCol({ title, links }: { title: string; links: { label: string; href: string }[] }) {
+function FooterCol({
+  title,
+  links,
+  t,
+  locale,
+}: {
+  title: string;
+  links: { label: string; href: string }[];
+  t: TFunction;
+  locale: ReturnType<typeof useLocale>;
+}) {
   return (
     <div className="flex flex-col gap-3">
       <h3 className="text-label-sm font-label-sm font-bold text-primary uppercase tracking-wider">
@@ -49,10 +72,10 @@ function FooterCol({ title, links }: { title: string; links: { label: string; hr
         {links.map((l) => (
           <Link
             key={l.href}
-            href={l.href}
+            href={localeHref(l.href, locale)}
             className="text-body-sm text-on-surface-variant hover:text-secondary transition-colors w-fit"
           >
-            {l.label}
+            {t(l.label)}
           </Link>
         ))}
       </nav>
@@ -61,6 +84,8 @@ function FooterCol({ title, links }: { title: string; links: { label: string; hr
 }
 
 export function Footer() {
+  const t = useT();
+  const locale = useLocale();
   return (
     // `viewport-fit=cover` (layout.tsx) lets the page paint under the iOS home
     // indicator, so the last thing on the page has to reserve that strip itself
@@ -74,22 +99,23 @@ export function Footer() {
         <div className="py-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-[2fr_1fr_1fr_1fr] gap-x-8 gap-y-10">
           {/* Brand */}
           <div className="col-span-2 sm:col-span-3 lg:col-span-1 flex flex-col gap-4">
-            <Link href="/" className="flex items-center gap-2 w-fit">
+            <Link href={localeHome(locale)} className="flex items-center gap-2 w-fit">
               <Logo className="h-9 w-9" />
+              {/* i18n-raw: brand wordmark */}
               <span className="text-headline-md font-black tracking-tight">
                 <span className="text-primary">oMy</span>
                 <span className="text-secondary">Image</span>
               </span>
             </Link>
             <p className="text-body-sm text-on-surface-variant max-w-[220px] leading-relaxed">
-              Free online image tools — fast, private, and no sign-up required.
+              {t("Free online image tools — fast, private, and no sign-up required.")}
             </p>
             <Link
-              href="/pricing"
+              href={localeHref("/pricing", locale)}
               prefetch={false}
               className="text-label-sm font-label-sm font-semibold text-secondary hover:underline w-fit"
             >
-              View Pricing →
+              {t("View Pricing →")}
             </Link>
             {/* Sister site. Plain <a> + new tab: cross-domain, and the tools hold
                 in-browser file state that a same-tab navigation would discard. */}
@@ -99,19 +125,22 @@ export function Footer() {
               rel="noopener noreferrer"
               className="text-label-sm font-label-sm font-semibold text-secondary hover:underline w-fit"
             >
-              Need PDF tools? oMyPDF →
+              {t("Need PDF tools? oMyPDF →")}
             </a>
           </div>
 
-          <FooterCol title="Optimize" links={optimize} />
-          <FooterCol title="Convert" links={convert} />
-          <FooterCol title="Edit & AI" links={create} />
+          <FooterCol title={t("Optimize")} links={optimize} t={t} locale={locale} />
+          <FooterCol title={t("Convert")} links={convert} t={t} locale={locale} />
+          <FooterCol title={t("Edit & AI")} links={create} t={t} locale={locale} />
         </div>
 
         {/* Bottom bar */}
         <div className="border-t border-outline-variant/40 py-6 flex flex-col sm:flex-row flex-wrap items-center justify-between gap-4">
           <p className="text-label-sm font-label-sm text-on-surface-variant">
-            © {new Date().getFullYear()} {SITE.brand}. All rights reserved.
+            {t("© {year} {brand}. All rights reserved.", {
+              year: new Date().getFullYear(),
+              brand: SITE.brand,
+            })}
           </p>
           <nav className="flex flex-wrap justify-center gap-x-5 gap-y-2">
             {legal.map((l) => {
@@ -119,11 +148,11 @@ export function Footer() {
                 "text-label-sm font-label-sm text-on-surface-variant hover:text-secondary transition-colors";
               return l.external ? (
                 <a key={l.href} href={l.href} className={cls}>
-                  {l.label}
+                  {t(l.label)}
                 </a>
               ) : (
-                <Link key={l.href} href={l.href} className={cls}>
-                  {l.label}
+                <Link key={l.href} href={localeHref(l.href, locale)} className={cls}>
+                  {t(l.label)}
                 </Link>
               );
             })}

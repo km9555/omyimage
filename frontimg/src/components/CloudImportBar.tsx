@@ -20,6 +20,8 @@ import { toast } from "sonner";
 import { driveConfigured, openGoogleDrivePicker, IMAGE_MIME_TYPES } from "@/lib/google-drive";
 import { dropboxConfigured } from "@/lib/dropbox";
 import { DropboxButton } from "@/components/DropboxButton";
+import { useT } from "@/i18n/I18nScope";
+import { translateError } from "@/i18n/errors";
 
 function DriveIcon({ className }: { className?: string }) {
   return (
@@ -52,6 +54,7 @@ export function GoogleDriveButton({
   variant = "chip",
   label = "Google Drive",
 }: ButtonProps) {
+  const t = useT();
   const [loading, setLoading] = useState(false);
 
   const handleClick = async () => {
@@ -60,12 +63,16 @@ export function GoogleDriveButton({
       const files = await openGoogleDrivePicker(mimeTypes);
       if (files.length > 0) {
         onFiles(files);
-        toast.success(`Imported ${files.length} file${files.length > 1 ? "s" : ""} from Google Drive.`);
+        toast.success(
+          files.length === 1
+            ? t("Imported 1 file from Google Drive.")
+            : t("Imported {n} files from Google Drive.", { n: files.length }),
+        );
       }
     } catch (err) {
       // A closed popup is a deliberate cancel, not a failure worth shouting about.
       if (err instanceof Error && err.message === "cancelled") return;
-      toast.error(err instanceof Error ? err.message : "Google Drive import failed.");
+      toast.error(translateError(err, t, "Google Drive import failed."));
     } finally {
       setLoading(false);
     }
@@ -80,7 +87,7 @@ export function GoogleDriveButton({
         className="inline-flex items-center gap-1.5 text-label-sm font-label-sm text-on-surface-variant hover:text-primary transition-colors disabled:opacity-50"
       >
         {loading ? <Spinner /> : <DriveIcon className="h-3.5 w-3.5 shrink-0" />}
-        {loading ? "Connecting…" : `Add from ${label}`}
+        {loading ? t("Connecting…") : t("Add from {service}", { service: label })}
       </button>
     );
   }
@@ -91,7 +98,7 @@ export function GoogleDriveButton({
         type="button"
         onClick={handleClick}
         disabled={loading}
-        aria-label={`Import from ${label}`}
+        aria-label={t("Import from {service}", { service: label })}
         title={label}
         className="inline-flex items-center justify-center h-9 w-9 rounded-full border border-outline-variant bg-surface-container-lowest hover:bg-surface-container transition-all disabled:opacity-50"
       >
@@ -111,7 +118,7 @@ export function GoogleDriveButton({
     >
       {loading ? <Spinner /> : <DriveIcon className="h-3.5 w-3.5 shrink-0" />}
       {/* Label hidden on mobile — the icon alone is recognisable and keeps the row compact. */}
-      <span className="hidden sm:inline">{loading ? "Connecting…" : label}</span>
+      <span className="hidden sm:inline">{loading ? t("Connecting…") : label}</span>
     </button>
   );
 }
@@ -129,6 +136,7 @@ export function CloudImportBar({
   extensions?: string[];
   variant?: "chip" | "ghost" | "icon";
 }) {
+  const t = useT();
   if (!driveConfigured && !dropboxConfigured) return null;
 
   if (variant === "icon") {
@@ -156,7 +164,7 @@ export function CloudImportBar({
      * also pop the OS picker.
      */
     <div className="flex flex-col items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
-      <p className="text-label-sm font-label-sm text-on-surface-variant/60">or import from</p>
+      <p className="text-label-sm font-label-sm text-on-surface-variant/60">{t("or import from")}</p>
       <div className="flex items-center gap-2 flex-wrap justify-center">
         {driveConfigured && <GoogleDriveButton onFiles={onFiles} mimeTypes={mimeTypes} variant="chip" />}
         {dropboxConfigured && <DropboxButton onFiles={onFiles} extensions={extensions} variant="chip" />}

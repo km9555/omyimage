@@ -9,11 +9,13 @@ import {
   applyAspect, centeredCrop, clampCrop, outputSize, transformedSize,
   type CropSel, type CropTransform,
 } from "@/lib/image/crop";
+import { useT } from "@/i18n/I18nScope";
 
 /** Quarter turns. This dialog offers no flip or straighten — /crop-image does. */
 export type Quarter = 0 | 90 | 180 | 270;
 
 /** The same list /crop-image offers, so both tools crop to the same ratios. */
+// "Free" is translated at the render site; the ratios are not copy (§4.2).
 const ASPECTS: { label: string; value: number | null }[] = [
   { label: "Free", value: null },
   { label: "1:1", value: 1 },
@@ -53,6 +55,7 @@ export function CropDialog({
   onCancel: () => void;
   onApply: (sel: CropSel | null, rotate: Quarter) => void;
 }) {
+  const t = useT();
   const [bmp, setBmp] = useState<ImageBitmap | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [rotate, setRotate] = useState<Quarter>(initialRotate);
@@ -81,7 +84,7 @@ export function CropDialog({
         if (alive) setBmp(b);
         else b.close();
       })
-      .catch(() => { if (alive) setError("Couldn't read this image."); });
+      .catch(() => { if (alive) setError(t("Couldn't read this image.")); });
     return () => { alive = false; local?.close(); };
   }, [file]);
 
@@ -139,11 +142,11 @@ export function CropDialog({
       className="fixed inset-0 z-[130] flex items-center justify-center"
       role="dialog"
       aria-modal="true"
-      aria-label="Crop and rotate image"
+      aria-label={t("Crop and rotate image")}
     >
       <button
         type="button"
-        aria-label="Cancel"
+        aria-label={t("Cancel")}
         onClick={onCancel}
         className="absolute inset-0 h-full w-full cursor-default bg-black/60"
       />
@@ -151,13 +154,13 @@ export function CropDialog({
       <div className="relative flex max-h-dvh w-full max-w-[640px] flex-col overflow-hidden bg-surface-container-lowest shadow-2xl md:max-h-[92vh] md:rounded-2xl">
         <header className="flex shrink-0 items-center justify-between gap-3 border-b border-surface-variant px-4 py-3">
           <div className="min-w-0">
-            <h2 className="truncate text-title-md font-bold text-primary">Crop &amp; rotate</h2>
+            <h2 className="truncate text-title-md font-bold text-primary">{t("Crop & rotate")}</h2>
             <p className="truncate text-label-sm font-label-sm text-on-surface-variant">{file.name}</p>
           </div>
           <button
             type="button"
             onClick={onCancel}
-            aria-label="Close"
+            aria-label={t("Close")}
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-on-surface-variant transition-colors hover:bg-surface-container hover:text-primary"
           >
             <Icon name="close" className="text-[20px]" />
@@ -193,18 +196,18 @@ export function CropDialog({
                 onClick={() => pickAspect(a.value)}
                 className={chipCls(aspect === a.value)}
               >
-                {a.label}
+                {t(a.label)}
               </button>
             ))}
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <DialogButton icon="rotate_left" label="Rotate left" onClick={() => turn(-1)} />
-            <DialogButton icon="rotate_right" label="Rotate right" onClick={() => turn(1)} />
-            <DialogButton icon="select_all" label="Select whole image" onClick={selectWhole} />
-            <DialogButton icon="restart_alt" label="Reset" onClick={reset} />
+            <DialogButton icon="rotate_left" label={t("Rotate left")} onClick={() => turn(-1)} />
+            <DialogButton icon="rotate_right" label={t("Rotate right")} onClick={() => turn(1)} />
+            <DialogButton icon="select_all" label={t("Select whole image")} onClick={selectWhole} />
+            <DialogButton icon="restart_alt" label={t("Reset")} onClick={reset} />
             <span className="ml-auto text-label-sm font-label-sm text-on-surface-variant">
-              Output <span className="font-semibold text-primary">{out.w} × {out.h}</span> px
+              {t("Output")} <span className="font-semibold text-primary">{out.w} × {out.h}</span> px
             </span>
           </div>
         </div>
@@ -215,7 +218,7 @@ export function CropDialog({
             onClick={onCancel}
             className="flex-1 rounded-xl border border-surface-variant px-4 py-3 text-body-md font-semibold text-primary transition-colors hover:bg-surface-container"
           >
-            Cancel
+            {t("Cancel")}
           </button>
           <button
             type="button"
@@ -223,7 +226,7 @@ export function CropDialog({
             disabled={!bmp}
             className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-secondary px-4 py-3 text-body-md font-semibold text-on-secondary shadow-md shadow-secondary/30 transition-colors hover:bg-secondary-container disabled:opacity-50"
           >
-            <Icon name="check" className="text-[20px]" /> Apply
+            <Icon name="check" className="text-[20px]" /> {t("Apply")}
           </button>
         </footer>
       </div>

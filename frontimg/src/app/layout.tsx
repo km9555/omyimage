@@ -9,6 +9,7 @@ import { CookieBanner } from "@/components/CookieBanner";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import { ThemeProvider } from "@/lib/theme/ThemeProvider";
 import { AuthProvider } from "@/lib/auth/AuthProvider";
+import { HtmlLang } from "@/components/HtmlLang";
 import { preload } from "react-dom";
 import { ICON_FONT_URL } from "@/lib/icon-font";
 
@@ -40,7 +41,13 @@ const inter = Inter({
 // contentful paint for new visitors; this attribute is what lets globals.css
 // hide it again for everyone else BEFORE React hydrates, so returning visitors
 // never see it flash.
-const NO_FLASH_THEME = `(function(){try{if(localStorage.getItem('theme')==='dark'){document.documentElement.classList.add('dark');document.documentElement.style.colorScheme='dark';document.querySelectorAll('meta[name="theme-color"]').forEach(function(m){m.setAttribute('content','#191512')});}var c=localStorage.getItem('omyimage_cookie_consent');if(c==='accepted'||c==='declined'){document.documentElement.setAttribute('data-cookie-choice','1');}}catch(e){}})();`;
+//
+// Also stamps <html lang> from the URL's locale segment ("/pt/…" → "pt"). A
+// static export renders <html> once with lang="en", so this is what gives a
+// Portuguese page the right language before paint; HtmlLang keeps it right
+// after hydration and on client-side navigation (see that component). The map
+// must list every non-default locale in i18n/config.ts LOCALES.
+const NO_FLASH_THEME = `(function(){try{var L={pt:1},s=location.pathname.split('/')[1];if(L[s]){document.documentElement.lang=s;}}catch(e){}try{if(localStorage.getItem('theme')==='dark'){document.documentElement.classList.add('dark');document.documentElement.style.colorScheme='dark';document.querySelectorAll('meta[name="theme-color"]').forEach(function(m){m.setAttribute('content','#191512')});}var c=localStorage.getItem('omyimage_cookie_consent');if(c==='accepted'||c==='declined'){document.documentElement.setAttribute('data-cookie-choice','1');}}catch(e){}})();`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -146,6 +153,7 @@ export default function RootLayout({
           </AuthProvider>
         </ThemeProvider>
         <GoogleAnalytics />
+        <HtmlLang />
       </body>
     </html>
   );

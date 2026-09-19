@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { Icon } from "@/components/Icon";
 import { CloudImportBar } from "@/components/CloudImportBar";
 import { extensionsFromAccept } from "@/lib/dropbox";
+import { useT } from "@/i18n/I18nScope";
 
 /**
  * Shared empty-state drop zone for image tools. Click to pick or drag & drop.
@@ -20,11 +21,11 @@ export function Dropzone({
   accent,
   icon,
   multiple = true,
-  buttonLabel = "Select images",
+  buttonLabel,
   hint,
   cloudMimeTypes,
   camera,
-  privacyNote = "Processed in your browser — your images never leave your device.",
+  privacyNote,
 }: {
   onFiles: (files: FileList | File[]) => void;
   accept: string;
@@ -50,6 +51,7 @@ export function Dropzone({
    */
   privacyNote?: string;
 }) {
+  const t = useT();
   const inputRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
   const [isDropping, setIsDropping] = useState(false);
@@ -101,7 +103,7 @@ export function Dropzone({
         </div>
         <div className="flex w-full max-w-xs flex-col items-center gap-1 text-center">
           <span className="flex min-h-12 w-full items-center justify-center rounded-lg bg-secondary px-6 text-sm font-semibold text-on-secondary transition-colors hover:bg-secondary-container sm:min-h-0 sm:w-auto sm:py-2.5">
-            {buttonLabel}
+            {buttonLabel ?? t("Select images")}
           </span>
           {showCamera && (
             <button
@@ -112,7 +114,7 @@ export function Dropzone({
               className="mt-2 flex min-h-12 w-full items-center justify-center gap-2 rounded-lg border border-secondary px-6 text-sm font-semibold text-secondary transition-colors active:bg-secondary/10 md:hidden"
             >
               <Icon name="photo_camera" className="text-[20px]" />
-              Take photo
+              {t("Take photo")}
             </button>
           )}
           <p className="mt-2 text-body-md text-on-surface-variant">{hint}</p>
@@ -135,7 +137,8 @@ export function Dropzone({
         />
 
         <p className="mt-1 flex items-center gap-1.5 text-label-sm font-label-sm text-on-surface-variant/70">
-          <Icon name="lock" className="text-[14px]" /> {privacyNote}
+          <Icon name="lock" className="text-[14px]" />{" "}
+          {privacyNote ?? t("Processed in your browser — your images never leave your device.")}
         </p>
       </div>
     </>

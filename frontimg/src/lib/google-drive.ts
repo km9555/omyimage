@@ -1,3 +1,4 @@
+import { I18nError } from "@/i18n/errors";
 /**
  * Google Drive Picker integration.
  *
@@ -170,7 +171,7 @@ async function downloadDriveFile(doc: GPickerDoc, accessToken: string): Promise<
     `https://www.googleapis.com/drive/v3/files/${doc.id}?alt=media`,
     { headers: { Authorization: `Bearer ${accessToken}` } }
   );
-  if (!resp.ok) throw new Error(`Could not download "${doc.name}" from Google Drive.`);
+  if (!resp.ok) throw new I18nError("Could not download “{name}” from Google Drive.", { name: doc.name });
   const blob = await resp.blob();
   // Use the type Drive reports, NOT a hardcoded one. oMyPDF could hardcode
   // application/pdf; here every tool gates uploads on

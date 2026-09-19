@@ -5,6 +5,9 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { Icon } from "@/components/Icon";
 import { toolColor, toolColorTint, type Tool } from "@/lib/tools";
+import { useLocale, useT } from "@/i18n/I18nScope";
+import { toolHref } from "@/lib/i18n/links";
+import { toolDescription, toolName } from "@/lib/i18n/tool-labels";
 
 export function QuickAccessCard({
   tool,
@@ -15,12 +18,14 @@ export function QuickAccessCard({
   favorited: boolean;
   onToggleFavorite: (slug: string) => void;
 }) {
+  const t = useT();
+  const locale = useLocale();
   const color = toolColor(tool);
 
   return (
     <div className="group relative w-[130px] shrink-0">
       <Link
-        href={`/${tool.slug}`}
+        href={toolHref(tool, locale)}
         className="flex flex-col items-center gap-2.5 rounded-2xl border border-surface-variant bg-surface-container-lowest p-3 pt-4 pb-3.5 ambient-shadow hover:border-secondary/50 hover:-translate-y-0.5 transition-all duration-200"
       >
         <span
@@ -30,7 +35,7 @@ export function QuickAccessCard({
           <Icon name={tool.icon} bold style={{ color, fontSize: 30 }} />
         </span>
         <span className="flex items-center justify-center min-h-[2.5em] text-label-md font-medium text-primary text-center leading-tight line-clamp-2 w-full px-0.5">
-          {tool.name}
+          {toolName(tool, locale)}
         </span>
       </Link>
 
@@ -40,13 +45,17 @@ export function QuickAccessCard({
           e.preventDefault();
           e.stopPropagation();
           onToggleFavorite(tool.slug);
-          toast(favorited ? "Removed from Favorites" : "Added to Favorites", {
-            description: tool.name,
+          toast(favorited ? t("Removed from Favorites") : t("Added to Favorites"), {
+            description: toolName(tool, locale),
             icon: favorited ? "♡" : "❤️",
             duration: 2000,
           });
         }}
-        aria-label={favorited ? `Remove ${tool.name} from favorites` : `Add ${tool.name} to favorites`}
+        aria-label={
+          favorited
+            ? t("Remove {tool} from favorites", { tool: toolName(tool, locale) })
+            : t("Add {tool} to favorites", { tool: toolName(tool, locale) })
+        }
         aria-pressed={favorited}
         className="absolute top-2 right-2 grid place-items-center w-6 h-6 rounded-full hover:bg-surface-container transition-colors"
       >

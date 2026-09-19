@@ -18,6 +18,7 @@ export function AuthShell({
       <div className="w-full max-w-md flex flex-col gap-stack-md">
         <Link href="/" className="flex items-center justify-center gap-2 mb-2">
           <Logo className="h-9 w-9" />
+          {/* i18n-raw: brand wordmark */}
           <span className="text-headline-md font-black tracking-tight">
             <span className="text-primary">oMy</span>
             <span className="text-secondary">Image</span>

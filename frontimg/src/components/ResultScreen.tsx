@@ -4,10 +4,14 @@ import { useRouter } from "next/navigation";
 import { useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { Icon } from "@/components/Icon";
-import { downloadBlob, zipAndDownload, formatBytes } from "@/lib/image/raster";
+import { downloadBlob, zipAndDownload } from "@/lib/image/raster";
 import { stashFiles } from "@/lib/tool-handoff";
 import { getTool, toolColor } from "@/lib/tools";
 import { absoluteUrl } from "@/lib/site";
+import { useFormatBytes, useLocale, useT } from "@/i18n/I18nScope";
+import { toolPath } from "@/i18n/slugs";
+import { toolHref } from "@/lib/i18n/links";
+import { toolName } from "@/lib/i18n/tool-labels";
 
 /**
  * Post-processing download page, ported from oMyPDF's ResultScreen.
@@ -18,6 +22,10 @@ import { absoluteUrl } from "@/lib/site";
  * no server file storage, no analytics module — so this keeps only what
  * survives the subtraction: the completion header, file cards, the handoff
  * row, the share panel, and Trustpilot.
+ *
+ * `title`, `subtitle` and `resetLabel` are rendered as given — callers pass
+ * them translated, `t("…")` (oMyPDF conversion.md §4.13). Only the defaults
+ * are translated here.
  *
  * Blob-based rather than Uint8Array-based: every oMyImage tool already holds
  * its results as Blobs (`{ blob, size, name }`), so this avoids a conversion
@@ -115,9 +123,9 @@ export function ResultScreen({
   zipName = "omyimage_result.zip",
   toolSlug,
   onReset,
-  title = "Processing completed!",
-  subtitle = "Your image is ready for download",
-  resetLabel = "Process more images",
+  title,
+  subtitle,
+  resetLabel,
   children,
 }: {
   files: ResultFile[];
@@ -132,6 +140,9 @@ export function ResultScreen({
   children?: ReactNode;
 }) {
   const router = useRouter();
+  const t = useT();
+  const locale = useLocale();
+  const formatBytes = useFormatBytes();
   const multi = files.length > 1;
   const [zipping, setZipping] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
@@ -145,9 +156,12 @@ export function ResultScreen({
     }
   };
 
-  const shareUrl = absoluteUrl(`/${toolSlug}`);
   const tool = getTool(toolSlug);
-  const shareText = tool ? `I just used ${tool.name} on oMyImage — free, fast, no sign-up.` : "Free image tools on oMyImage.";
+  // Share the page the visitor is actually on — /pt/… for a Portuguese reader.
+  const shareUrl = absoluteUrl(tool ? toolPath(tool.id, locale) : `/${toolSlug}`);
+  const shareText = tool
+    ? t("I just used {tool} on oMyImage — free, fast, no sign-up.", { tool: toolName(tool, locale) })
+    : t("Free image tools on oMyImage.");
 
   const copyToolLink = async () => {
     try {
@@ -155,13 +169,13 @@ export function ResultScreen({
       setLinkCopied(true);
       setTimeout(() => setLinkCopied(false), 1800);
     } catch {
-      toast.error("Couldn't copy the link.");
+      toast.error(t("Couldn't copy the link."));
     }
   };
 
   const nativeShare = async () => {
     try {
-      await navigator.share({ title: tool?.name ?? "oMyImage", url: shareUrl });
+      await navigator.share({ title: tool ? toolName(tool, locale) : "oMyImage", url: shareUrl });
     } catch {
       /* user cancelled the share sheet — not an error */
     }
@@ -175,20 +189,20 @@ export function ResultScreen({
       (f, i) => new File([f.blob], f.name || `image-${i + 1}.png`, { type: f.blob.type || "image/png" }),
     );
     stashFiles(asFiles);
-    router.push(`/${slug}`);
+    router.push(toolHref(slug, locale));
   };
 
   const handoffTargets = HANDOFF_TARGETS.filter((slug) => slug !== toolSlug)
     .map((slug) => getTool(slug))
-    .filter((t): t is NonNullable<typeof t> => !!t && t.status === "live")
+    .filter((h): h is NonNullable<typeof h> => !!h && h.status === "live")
     .slice(0, 6);
 
   const socials: { id: string; label: string; href: string }[] = [
-    { id: "x", label: "Share on X", href: `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}` },
-    { id: "facebook", label: "Share on Facebook", href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}` },
-    { id: "linkedin", label: "Share on LinkedIn", href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}` },
-    { id: "whatsapp", label: "Share on WhatsApp", href: `https://wa.me/?text=${encodeURIComponent(`${shareText} ${shareUrl}`)}` },
-    { id: "telegram", label: "Share on Telegram", href: `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}` },
+    { id: "x", label: t("Share on X"), href: `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}` },
+    { id: "facebook", label: t("Share on Facebook"), href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}` },
+    { id: "linkedin", label: t("Share on LinkedIn"), href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}` },
+    { id: "whatsapp", label: t("Share on WhatsApp"), href: `https://wa.me/?text=${encodeURIComponent(`${shareText} ${shareUrl}`)}` },
+    { id: "telegram", label: t("Share on Telegram"), href: `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}` },
   ];
 
   return (
@@ -198,8 +212,8 @@ export function ResultScreen({
         <span className="mb-1 grid h-14 w-14 place-items-center rounded-full bg-chip-teal-bg">
           <Icon name="check_circle" fill className="text-[32px] text-chip-teal-ink" />
         </span>
-        <h2 className="text-headline-md font-bold text-primary">{title}</h2>
-        <p className="text-body-md text-on-surface-variant">{subtitle}</p>
+        <h2 className="text-headline-md font-bold text-primary">{title ?? t("Processing completed!")}</h2>
+        <p className="text-body-md text-on-surface-variant">{subtitle ?? t("Your image is ready for download")}</p>
       </div>
 
       {children}
@@ -207,7 +221,7 @@ export function ResultScreen({
       {/* File card(s) */}
       <div className="ambient-shadow flex flex-col gap-3 rounded-2xl border border-surface-variant bg-surface-container-lowest p-4 sm:p-5">
         <p className="text-label-sm font-label-sm uppercase tracking-wide text-on-surface-variant/70">
-          {multi ? `Your images (${files.length})` : "Your image"}
+          {multi ? t("Your images ({n})", { n: files.length }) : t("Your image")}
         </p>
         {multi && (
           <button
@@ -217,7 +231,7 @@ export function ResultScreen({
             className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-secondary py-3 font-semibold text-on-secondary transition-colors hover:bg-secondary-container disabled:opacity-60"
           >
             <Icon name={zipping ? "progress_activity" : "folder_zip"} className={`text-[20px] ${zipping ? "animate-spin" : ""}`} />
-            {zipping ? "Preparing ZIP…" : "Download all (.zip)"}
+            {zipping ? t("Preparing ZIP…") : t("Download all (.zip)")}
           </button>
         )}
         <div className="flex flex-col gap-2">
@@ -260,7 +274,7 @@ export function ResultScreen({
                     : "bg-secondary text-on-secondary hover:bg-secondary-container"
                 }`}
               >
-                <Icon name="download" className="text-[19px]" /> Download
+                <Icon name="download" className="text-[19px]" /> {t("Download")}
               </button>
             </div>
             );
@@ -273,7 +287,7 @@ export function ResultScreen({
             onClick={onReset}
             className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-surface-variant py-2.5 font-semibold text-on-surface transition-colors hover:bg-surface-container"
           >
-            <Icon name="restart_alt" className="text-[20px]" /> {resetLabel}
+            <Icon name="restart_alt" className="text-[20px]" /> {resetLabel ?? t("Process more images")}
           </button>
         </div>
       </div>
@@ -281,19 +295,19 @@ export function ResultScreen({
       {/* Continue with this file */}
       {handoffTargets.length > 0 && (
         <div className="flex flex-col gap-2.5">
-          <p className="text-label-md font-semibold text-primary">Continue with this file</p>
+          <p className="text-label-md font-semibold text-primary">{t("Continue with this file")}</p>
           <div className="flex flex-wrap gap-2">
-            {handoffTargets.map((t) => (
+            {handoffTargets.map((h) => (
               <button
-                key={t.id}
+                key={h.id}
                 type="button"
-                onClick={() => goHandoff(t.slug)}
+                onClick={() => goHandoff(h.slug)}
                 className="group inline-flex items-center gap-2 rounded-full border border-surface-variant bg-surface-container-lowest py-1.5 pl-2.5 pr-3 transition-colors hover:bg-surface-container"
               >
                 <span className="grid h-6 w-6 shrink-0 place-items-center">
-                  <Icon name={t.icon} bold className="text-[17px]" style={{ color: toolColor(t) }} />
+                  <Icon name={h.icon} bold className="text-[17px]" style={{ color: toolColor(h) }} />
                 </span>
-                <span className="text-body-sm font-semibold text-primary">{t.name}</span>
+                <span className="text-body-sm font-semibold text-primary">{toolName(h, locale)}</span>
                 <Icon name="arrow_forward" className="text-[16px] text-on-surface-variant transition-transform group-hover:translate-x-0.5" />
               </button>
             ))}
@@ -304,9 +318,9 @@ export function ResultScreen({
       {/* Share or save this tool */}
       <div className="flex flex-col gap-3 rounded-2xl border border-surface-variant bg-surface-container-lowest p-4 sm:p-5">
         <div>
-          <p className="text-label-md font-semibold text-primary">Share or save this tool</p>
+          <p className="text-label-md font-semibold text-primary">{t("Share or save this tool")}</p>
           <p className="text-label-sm font-label-sm text-on-surface-variant">
-            Copy the link, share on social media, or bookmark the page to find it later.
+            {t("Copy the link, share on social media, or bookmark the page to find it later.")}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -315,7 +329,7 @@ export function ResultScreen({
             onClick={copyToolLink}
             className="inline-flex items-center gap-1.5 rounded-lg border border-surface-variant px-3 py-2 text-label-sm font-semibold text-on-surface transition-colors hover:bg-surface-container"
           >
-            <Icon name={linkCopied ? "check" : "link"} className="text-[18px]" /> {linkCopied ? "Copied" : "Copy link"}
+            <Icon name={linkCopied ? "check" : "link"} className="text-[18px]" /> {linkCopied ? t("Copied") : t("Copy link")}
           </button>
           {typeof navigator !== "undefined" && "share" in navigator && (
             <button
@@ -323,12 +337,12 @@ export function ResultScreen({
               onClick={nativeShare}
               className="inline-flex items-center gap-1.5 rounded-lg border border-surface-variant px-3 py-2 text-label-sm font-semibold text-on-surface transition-colors hover:bg-surface-container sm:hidden"
             >
-              <Icon name="ios_share" className="text-[18px]" /> Share
+              <Icon name="ios_share" className="text-[18px]" /> {t("Share")}
             </button>
           )}
-          <span className="hidden text-label-sm font-label-sm text-on-surface-variant/70 sm:inline">(Ctrl + D to bookmark)</span>
+          <span className="hidden text-label-sm font-label-sm text-on-surface-variant/70 sm:inline">{t("(Ctrl + D to bookmark)")}</span>
           <span className="flex items-center gap-1.5 sm:ml-auto">
-            <span className="mr-0.5 text-label-sm font-label-sm text-on-surface-variant">Share:</span>
+            <span className="mr-0.5 text-label-sm font-label-sm text-on-surface-variant">{t("Share:")}</span>
             {socials.map((s) => (
               <a
                 key={s.id}
@@ -356,9 +370,9 @@ export function ResultScreen({
         <div className="flex min-w-0 flex-1 items-center gap-3">
           <TrustpilotStars />
           <div className="min-w-0">
-            <p className="text-body-md font-semibold text-primary">Enjoyed the result?</p>
+            <p className="text-body-md font-semibold text-primary">{t("Enjoyed the result?")}</p>
             <p className="text-label-sm font-label-sm text-chip-teal-ink">
-              Share your experience on Trustpilot — it helps a lot.
+              {t("Share your experience on Trustpilot — it helps a lot.")}
             </p>
           </div>
         </div>
@@ -366,7 +380,7 @@ export function ResultScreen({
           className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg px-4 py-2.5 font-semibold text-white"
           style={{ backgroundColor: "#00b67a" }}
         >
-          Leave a review <Icon name="open_in_new" className="text-[18px]" />
+          {t("Leave a review")} <Icon name="open_in_new" className="text-[18px]" />
         </span>
       </a>
 
@@ -388,7 +402,7 @@ export function ResultScreen({
             name={zipping ? "progress_activity" : multi ? "folder_zip" : "download"}
             className={`text-[20px] ${zipping ? "animate-spin" : ""}`}
           />
-          {zipping ? "Preparing ZIP…" : multi ? `Download all (${files.length})` : "Download"}
+          {zipping ? t("Preparing ZIP…") : multi ? t("Download all ({n})", { n: files.length }) : t("Download")}
         </button>
       </div>
     </div>
