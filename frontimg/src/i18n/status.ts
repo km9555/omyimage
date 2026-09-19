@@ -32,6 +32,12 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "jpg-to-png",
     "convert-to-jpg",
     "image-to-pdf",
+    // Batch 3 — upscale, editor, watermark, rotate, HEIC to JPG.
+    "upscale-image",
+    "image-editor",
+    "watermark-image",
+    "rotate-image",
+    "heic-to-jpg",
   ],
 };
 

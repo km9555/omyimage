@@ -8,7 +8,6 @@ import {
   rasterize,
   downloadBlob,
   zipAndDownload,
-  formatBytes,
   baseName,
   mimeExt,
   type ExportMime,
@@ -20,12 +19,15 @@ import { SettingsRail, RailAction, RailSecondaryAction, RailNote } from "@/compo
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
 import { shouldUseServerForFile, toServerFormat, processOnServer } from "@/lib/process-router";
 import { useHandoff } from "@/lib/tool-handoff";
+import { useFormatBytes, useT } from "@/i18n/I18nScope";
+import { translateError } from "@/i18n/errors";
 
 const ACCENT = "#8A6FC4";
 
 type Item = { id: string; file: File; url: string; result?: { blob: Blob; size: number; name: string } };
 type Format = "original" | ExportMime;
 
+// Labels translated at the render site (§4.2); keys in rotate-image.<loc>.ts.
 const FORMATS: { label: string; value: Format }[] = [
   { label: "Same as original", value: "original" },
   { label: "JPG", value: "image/jpeg" },
@@ -45,6 +47,8 @@ function outMimeFor(file: File, fmt: Format): ExportMime {
 }
 
 export function RotateTool() {
+  const t = useT();
+  const formatBytes = useFormatBytes();
   const [items, setItems] = useState<Item[]>([]);
   const [angle, setAngle] = useState(0); // clockwise degrees, normalized 0..359
   const [flipH, setFlipH] = useState(false);
@@ -59,10 +63,10 @@ export function RotateTool() {
 
   const addFiles = useCallback((incoming: FileList | File[]) => {
     const imgs = Array.from(incoming).filter((f) => f.type.startsWith("image/"));
-    if (imgs.length === 0) { toast.error("Please select image files."); return; }
+    if (imgs.length === 0) { toast.error(t("Please select image files.")); return; }
     setDone(false);
     setItems((prev) => [...prev, ...imgs.map((file) => ({ id: uid(), file, url: URL.createObjectURL(file) }))]);
-  }, []);
+  }, [t]);
 
   useHandoff(addFiles);
 
@@ -110,10 +114,10 @@ export function RotateTool() {
       setDone(true);
       if (out.length === 1 && out[0].result) downloadBlob(out[0].result.blob, out[0].result.name);
       else await zipAndDownload(out.map((o) => ({ name: o.result!.name, blob: o.result!.blob })), "omyimage_rotated.zip");
-      toast.success(`Rotated ${out.length} image${out.length === 1 ? "" : "s"}.`);
+      toast.success(out.length === 1 ? t("Rotated 1 image.") : t("Rotated {n} images.", { n: out.length }));
     } catch (err) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : "Rotation failed.");
+      toast.error(translateError(err, t, "Rotation failed."));
     } finally {
       setIsWorking(false);
     }
@@ -134,8 +138,8 @@ export function RotateTool() {
           accept="image/*"
           accent={ACCENT}
           icon="rotate_90_degrees_cw"
-          hint="or drop JPG, PNG, WEBP or GIF images here"
-          privacyNote="Rotated in your browser — your images never leave your device."
+          hint={t("or drop JPG, PNG, WEBP or GIF images here")}
+          privacyNote={t("Rotated in your browser — your images never leave your device.")}
         />
       </section>
     );
@@ -156,9 +160,9 @@ export function RotateTool() {
       </>
     ),
     action: it.result ? (
-      <TrayAction icon="download" tone="accent" label="Download" onClick={() => downloadBlob(it.result!.blob, it.result!.name)} />
+      <TrayAction icon="download" tone="accent" label={t("Download")} onClick={() => downloadBlob(it.result!.blob, it.result!.name)} />
     ) : (
-      <TrayAction icon="close" label="Remove" disabled={isWorking} onClick={() => removeItem(it.id)} />
+      <TrayAction icon="close" label={t("Remove")} disabled={isWorking} onClick={() => removeItem(it.id)} />
     ),
   }));
 
@@ -173,12 +177,12 @@ export function RotateTool() {
         mobile={{
           ...filesHeader(items.map((i) => i.file)),
           onBack: reset,
-          backLabel: "Clear files",
-          settingsTitle: "Rotate & flip",
+          backLabel: t("Clear files"),
+          settingsTitle: t("Rotate & flip"),
           cta: {
             icon: "rotate_90_degrees_cw",
-            label: "Rotate",
-            busyLabel: "Rotating…",
+            label: t("Rotate"),
+            busyLabel: t("Rotating…"),
             busy: isWorking,
             onClick: apply,
           },
@@ -190,7 +194,7 @@ export function RotateTool() {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={preview.url}
-                  alt="Rotation preview"
+                  alt={t("Rotation preview")}
                   draggable={false}
                   className="max-w-full max-h-[42vh] object-contain rounded transition-transform duration-200"
                   style={{ transform: previewTransform }}
@@ -198,29 +202,29 @@ export function RotateTool() {
               </div>
             </div>
             <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
-              Preview of <span className="font-semibold text-on-surface">{preview.file.name}</span>
-              {items.length > 1 && <> — the same transform applies to all {items.length} images.</>}
+              {t("Preview of")} <span className="font-semibold text-on-surface">{preview.file.name}</span>
+              {items.length > 1 && <> {t("— the same transform applies to all {n} images.", { n: items.length })}</>}
             </p>
             <FileTray entries={entries} accept="image/*" onFiles={addFiles} onClear={reset} busy={isWorking} />
           </>
         }
         rail={
           <SettingsRail
-            title="Transform Settings"
+            title={t("Transform Settings")}
             icon="rotate_90_degrees_cw"
             accent={ACCENT}
             footer={
               <>
-                <RailNote>90° steps straighten; the angle slider gives a custom tilt.</RailNote>
-                <RailAction onClick={apply} busy={isWorking} busyLabel="Rotating…" icon="rotate_90_degrees_cw">
-                  Rotate {items.length > 1 ? `${items.length} images` : "& download"}
+                <RailNote>{t("90° steps straighten; the angle slider gives a custom tilt.")}</RailNote>
+                <RailAction onClick={apply} busy={isWorking} busyLabel={t("Rotating…")} icon="rotate_90_degrees_cw">
+                  {items.length > 1 ? t("Rotate {n} images", { n: items.length }) : t("Rotate & download")}
                 </RailAction>
                 {done && items.length > 1 && (
                   <RailSecondaryAction
                     icon="folder_zip"
                     onClick={() => zipAndDownload(items.filter((i) => i.result).map((i) => ({ name: i.result!.name, blob: i.result!.blob })), "omyimage_rotated.zip")}
                   >
-                    Download all (ZIP)
+                    {t("Download all (ZIP)")}
                   </RailSecondaryAction>
                 )}
               </>
@@ -228,29 +232,29 @@ export function RotateTool() {
           >
         <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-body-lg font-bold text-primary">Transform</h3>
-            <button type="button" onClick={resetTransform} className="text-label-sm font-label-sm font-semibold text-secondary hover:underline">Reset</button>
+            <h3 className="text-body-lg font-bold text-primary">{t("Transform")}</h3>
+            <button type="button" onClick={resetTransform} className="text-label-sm font-label-sm font-semibold text-secondary hover:underline">{t("Reset")}</button>
           </div>
 
           <div className="grid grid-cols-4 gap-1.5">
-            <button type="button" onClick={() => rotateBy(-90)} className="flex flex-col items-center gap-1 rounded-lg border border-surface-variant py-2 text-on-surface-variant hover:text-primary hover:border-secondary/40 transition-colors" aria-label="Rotate left">
+            <button type="button" onClick={() => rotateBy(-90)} className="flex flex-col items-center gap-1 rounded-lg border border-surface-variant py-2 text-on-surface-variant hover:text-primary hover:border-secondary/40 transition-colors" aria-label={t("Rotate left")}>
               <Icon name="rotate_left" className="text-[20px]" /><span className="text-[11px]">-90°</span>
             </button>
-            <button type="button" onClick={() => rotateBy(90)} className="flex flex-col items-center gap-1 rounded-lg border border-surface-variant py-2 text-on-surface-variant hover:text-primary hover:border-secondary/40 transition-colors" aria-label="Rotate right">
+            <button type="button" onClick={() => rotateBy(90)} className="flex flex-col items-center gap-1 rounded-lg border border-surface-variant py-2 text-on-surface-variant hover:text-primary hover:border-secondary/40 transition-colors" aria-label={t("Rotate right")}>
               <Icon name="rotate_right" className="text-[20px]" /><span className="text-[11px]">+90°</span>
             </button>
-            <button type="button" onClick={() => setFlipH((v) => !v)} className={`flex flex-col items-center gap-1 rounded-lg border py-2 transition-colors ${flipH ? "border-secondary text-primary bg-secondary/10" : "border-surface-variant text-on-surface-variant hover:text-primary"}`} aria-label="Flip horizontal">
-              <Icon name="flip" className="text-[20px]" /><span className="text-[11px]">Flip H</span>
+            <button type="button" onClick={() => setFlipH((v) => !v)} className={`flex flex-col items-center gap-1 rounded-lg border py-2 transition-colors ${flipH ? "border-secondary text-primary bg-secondary/10" : "border-surface-variant text-on-surface-variant hover:text-primary"}`} aria-label={t("Flip horizontal")}>
+              <Icon name="flip" className="text-[20px]" /><span className="text-[11px]">{t("Flip H")}</span>
             </button>
-            <button type="button" onClick={() => setFlipV((v) => !v)} className={`flex flex-col items-center gap-1 rounded-lg border py-2 transition-colors ${flipV ? "border-secondary text-primary bg-secondary/10" : "border-surface-variant text-on-surface-variant hover:text-primary"}`} aria-label="Flip vertical">
-              <Icon name="flip" className="text-[20px] rotate-90" /><span className="text-[11px]">Flip V</span>
+            <button type="button" onClick={() => setFlipV((v) => !v)} className={`flex flex-col items-center gap-1 rounded-lg border py-2 transition-colors ${flipV ? "border-secondary text-primary bg-secondary/10" : "border-surface-variant text-on-surface-variant hover:text-primary"}`} aria-label={t("Flip vertical")}>
+              <Icon name="flip" className="text-[20px] rotate-90" /><span className="text-[11px]">{t("Flip V")}</span>
             </button>
           </div>
 
           {/* Fine angle */}
           <div className="flex flex-col gap-1.5">
             <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant">
-              <span>Angle</span>
+              <span>{t("Angle")}</span>
               <span className="text-primary font-semibold">{angle}°</span>
             </label>
             <input type="range" min={0} max={359} step={1} value={angle} onChange={(e) => setAngle(parseInt(e.target.value, 10))} className="w-full accent-secondary" />
@@ -259,18 +263,18 @@ export function RotateTool() {
 
         {/* Output */}
         <div className="flex flex-col gap-3 border-t border-outline-variant/60 pt-5">
-          <h3 className="text-body-lg font-bold text-primary">Output</h3>
+          <h3 className="text-body-lg font-bold text-primary">{t("Output")}</h3>
           <div className="flex flex-col gap-1.5">
-            <label className="text-label-sm font-label-sm text-on-surface-variant">Format</label>
+            <label className="text-label-sm font-label-sm text-on-surface-variant">{t("Format")}</label>
             <select value={format} onChange={(e) => setFormat(e.target.value as Format)} className={fieldCls}>
-              {FORMATS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}
+              {FORMATS.map((f) => <option key={f.value} value={f.value}>{t(f.label)}</option>)}
             </select>
           </div>
-          <BackgroundPicker value={bg} onChange={setBg} label="Background (for angled corners)" />
+          <BackgroundPicker value={bg} onChange={setBg} label={t("Background (for angled corners)")} />
           {showQuality && (
             <div className="flex flex-col gap-1.5">
               <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant">
-                <span>Quality</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span>
+                <span>{t("Quality")}</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span>
               </label>
               <input type="range" min={0.5} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" />
             </div>

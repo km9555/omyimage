@@ -1,24 +1,26 @@
 "use client";
 
 import { ServerImageTool } from "@/components/image/ServerImageTool";
+import { useT } from "@/i18n/I18nScope";
 
 const SCALES = [2, 3, 4];
 
 export function UpscaleTool() {
+  const t = useT();
   return (
     <ServerImageTool
       accent="#4C86CC"
       icon="hd"
       accept="image/jpeg,image/png,image/webp"
       endpoint="/api/image/upscale"
-      dropHint="or drop a JPG, PNG or WEBP here"
-      actionLabel="Upscale"
-      processingLabel="Upscaling…"
+      dropHint={t("or drop a JPG, PNG or WEBP here")}
+      actionLabel={t("Upscale")}
+      processingLabel={t("Upscaling…")}
       compare
       initialOptions={{ scale: 2 }}
       controls={(o, set) => (
         <div className="flex flex-col gap-1.5">
-          <label className="text-label-sm font-label-sm text-on-surface-variant">Scale factor</label>
+          <label className="text-label-sm font-label-sm text-on-surface-variant">{t("Scale factor")}</label>
           <div className="grid grid-cols-3 gap-1 rounded-lg bg-surface-container p-1">
             {SCALES.map((s) => (
               <button

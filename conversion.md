@@ -455,6 +455,38 @@ rewrote `.next`. Only one session may build or serve `frontimg/` at a time;
 check `git status` before committing and stage paths explicitly so another
 session's in-progress files do not ride along.
 
+### 6.2.3 Batch 3 (melhorar-qualidade, editor-de-fotos, colocar-marca-dagua, girar, heic-para-jpg)
+
+**Number labels are not names.** The watermark position grid (in two tools)
+announced "Position 1"…"Position 9" — translatable, and useless to a screen
+reader in any language. Both now use nine named keys ("Top left" → "Superior
+esquerda"), one per cell, since a placeholder cannot build a position phrase
+in another language (oMyPDF §4.18's `anchorLabels` pattern). English
+screen-reader output changed with it, for the better.
+
+**Default text drawn into the image follows the page.** The editor's annotate
+stamp defaulted to "Label"; it is now `t("Label")` → "Legenda", initialised
+through a `useState(() => …)` so `t` is in scope. The watermark default stays
+"© oMyImage" in every language — it is the brand, not copy.
+
+**Map variables named `t` again** in both watermark type toggles and the
+editor's ribbon (`.map((t) => …)`). Renamed to `wt` before `useT()` could be
+added. Grep every tool for `((t)` and `(t) =>` before sweeping.
+
+**English-side inaccuracies found while translating** (Portuguese follows the
+code, English still needs fixing):
+- `heic-to-jpg.en.ts` FAQ says EXIF (date, GPS) is not carried into the
+  output; `HeicTool.tsx` documents that ImageMagick copies it across and
+  offers a "Strip metadata" checkbox to remove it.
+- `image-to-text.en.ts` said the image is never uploaded (being fixed by a
+  separate task at the time of writing).
+
+**Shared tool components need their keys in every route that renders them.**
+`HeicTool` lives in `app/heic-to-jpg/` and also renders on `/heic-to-png`. Each
+route has only its own tool's `ui` in scope, so the HeicTool keys in
+`heic-to-jpg.pt.ts` must be copied into `heic-to-png.pt.ts` when it ships
+(batch 7). `i18n:keys` buckets by folder and cannot see this.
+
 ### 6.3 Image-specific traps (watch for these in every batch)
 
 - **Text drawn INTO the image.** Meme captions, watermark defaults, the

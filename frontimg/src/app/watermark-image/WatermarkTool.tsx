@@ -10,9 +10,11 @@ import { FileTray, TrayAction, type TrayEntry } from "@/components/tool/FileTray
 import { SettingsRail, RailAction, RailSecondaryAction } from "@/components/tool/SettingsRail";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
 import {
-  decodeBitmap, canvasToBlob, downloadBlob, zipAndDownload, formatBytes, baseName, mimeExt, type ExportMime,
+  decodeBitmap, canvasToBlob, downloadBlob, zipAndDownload, baseName, mimeExt, type ExportMime,
 } from "@/lib/image/raster";
 import { useHandoff } from "@/lib/tool-handoff";
+import { useFormatBytes, useT } from "@/i18n/I18nScope";
+import { translateError } from "@/i18n/errors";
 
 const ACCENT = "#8A6FC4";
 const ACCEPT = "image/jpeg,image/png,image/webp";
@@ -21,6 +23,8 @@ type WmType = "text" | "image";
 type Format = "original" | ExportMime;
 type Item = { id: string; file: File; url: string; result?: { blob: Blob; size: number; name: string } };
 
+// FONTS and FORMATS labels are translated at the render site (§4.2). Typeface
+// names inside them stay as they are; only the generic words translate.
 const FONTS = [
   { label: "Sans (Inter)", value: "Inter, Arial, sans-serif" },
   { label: "Serif (Georgia)", value: "Georgia, 'Times New Roman', serif" },
@@ -50,6 +54,18 @@ interface WmOpts {
   marginPct: number;
   pos: number; // 0..8 grid
 }
+
+/**
+ * The 3×3 position grid. It used to announce "Position 1"…"Position 9", which
+ * tells a screen-reader user nothing; each cell now has a real name, one key
+ * per position (a placeholder cannot build "top left" in another language —
+ * oMyPDF conversion.md §4.18, the anchorLabels pattern).
+ */
+const POSITION_LABELS = [
+  "Top left", "Top center", "Top right",
+  "Middle left", "Center", "Middle right",
+  "Bottom left", "Bottom center", "Bottom right",
+];
 
 let counter = 0;
 const uid = () => `f${Date.now()}_${counter++}`;
@@ -102,8 +118,13 @@ function paint(canvas: HTMLCanvasElement, bmp: ImageBitmap, o: WmOpts, logo: Ima
 }
 
 export function WatermarkTool() {
+  const t = useT();
+  const formatBytes = useFormatBytes();
   const [items, setItems] = useState<Item[]>([]);
+  // The default watermark is the brand name — not copy, the same in every
+  // language (a translatable default like "CONFIDENTIAL" would go through t()).
   const [opts, setOpts] = useState<WmOpts>({
+    // i18n-raw: brand name as the default watermark text
     type: "text", text: "© oMyImage", fontPct: 6, fontFamily: FONTS[0].value, bold: true,
     color: "#ffffff", outline: true, outlineColor: "#000000", opacity: 0.6, rotation: 0,
     scalePct: 25, marginPct: 4, pos: 8,
@@ -143,21 +164,21 @@ export function WatermarkTool() {
   useEffect(() => {
     let alive = true;
     if (logoFile) {
-      decodeBitmap(logoFile, false).then((b) => { if (alive) { logoBmp.current = b; repaint(); } }).catch(() => toast.error("Couldn't read that logo image."));
+      decodeBitmap(logoFile, false).then((b) => { if (alive) { logoBmp.current = b; repaint(); } }).catch(() => toast.error(t("Couldn't read that logo image.")));
     } else {
       logoBmp.current = null;
     }
     return () => { alive = false; };
-  }, [logoFile, repaint]);
+  }, [logoFile, repaint, t]);
 
   useEffect(() => { repaint(); }, [repaint]);
 
   const addFiles = useCallback((incoming: FileList | File[]) => {
     const imgs = Array.from(incoming).filter((f) => f.type.startsWith("image/"));
-    if (imgs.length === 0) { toast.error("Please select image files."); return; }
+    if (imgs.length === 0) { toast.error(t("Please select image files.")); return; }
     setDone(false);
     setItems((prev) => [...prev, ...imgs.map((file) => ({ id: uid(), file, url: URL.createObjectURL(file) }))]);
-  }, []);
+  }, [t]);
 
   useHandoff(addFiles);
 
@@ -166,7 +187,7 @@ export function WatermarkTool() {
 
   const applyAll = async () => {
     if (items.length === 0) return;
-    if (opts.type === "image" && !logoBmp.current) { toast.error("Upload a logo image first."); return; }
+    if (opts.type === "image" && !logoBmp.current) { toast.error(t("Upload a logo image first.")); return; }
     setIsWorking(true);
     try {
       const canvas = document.createElement("canvas");
@@ -183,10 +204,10 @@ export function WatermarkTool() {
       setDone(true);
       if (out.length === 1 && out[0].result) downloadBlob(out[0].result.blob, out[0].result.name);
       else await zipAndDownload(out.map((o) => ({ name: o.result!.name, blob: o.result!.blob })), "omyimage_watermarked.zip");
-      toast.success(`Watermarked ${out.length} image${out.length === 1 ? "" : "s"}.`);
+      toast.success(out.length === 1 ? t("Watermarked 1 image.") : t("Watermarked {n} images.", { n: out.length }));
     } catch (err) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : "Watermarking failed.");
+      toast.error(translateError(err, t, "Watermarking failed."));
     } finally {
       setIsWorking(false);
     }
@@ -198,7 +219,7 @@ export function WatermarkTool() {
     return (
       <section>
         <TopLoadingBar active={isWorking} />
-        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="branding_watermark" hint="or drop JPG, PNG or WEBP images here" />
+        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="branding_watermark" hint={t("or drop JPG, PNG or WEBP images here")} />
       </section>
     );
   }
@@ -210,13 +231,13 @@ export function WatermarkTool() {
     meta: (
       <>
         {formatBytes(it.file.size)}
-        {it.result && <><Icon name="check" className="text-[13px] mx-1 align-middle" style={{ color: ACCENT }} />done</>}
+        {it.result && <><Icon name="check" className="text-[13px] mx-1 align-middle" style={{ color: ACCENT }} />{t("done")}</>}
       </>
     ),
     action: it.result ? (
-      <TrayAction icon="download" tone="accent" label="Download" onClick={() => downloadBlob(it.result!.blob, it.result!.name)} />
+      <TrayAction icon="download" tone="accent" label={t("Download")} onClick={() => downloadBlob(it.result!.blob, it.result!.name)} />
     ) : (
-      <TrayAction icon="close" label="Remove" disabled={isWorking} onClick={() => removeItem(it.id)} />
+      <TrayAction icon="close" label={t("Remove")} disabled={isWorking} onClick={() => removeItem(it.id)} />
     ),
   }));
 
@@ -231,8 +252,8 @@ export function WatermarkTool() {
           <canvas ref={previewRef} className="max-w-full max-h-[46dvh] rounded" />
         </div>
         <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
-          Live preview of <span className="font-semibold text-on-surface">{items[0].file.name}</span>
-          {items.length > 1 && <> — the same watermark applies to all {items.length} images.</>}
+          {t("Live preview of")} <span className="font-semibold text-on-surface">{items[0].file.name}</span>
+          {items.length > 1 && <> {t("— the same watermark applies to all {n} images.", { n: items.length })}</>}
         </p>
     </>
   );
@@ -252,23 +273,23 @@ export function WatermarkTool() {
         mobile={{
           ...filesHeader(items.map((i) => i.file)),
           onBack: reset,
-          backLabel: "Clear images",
+          backLabel: t("Clear images"),
           body: canvasPane,
           tabs: [
             {
               id: "files",
               icon: "photo_library",
-              label: "Files",
+              label: t("Files"),
               badge: items.length > 1 ? items.length : undefined,
-              sheetTitle: `${items.length} image${items.length === 1 ? "" : "s"}`,
+              sheetTitle: items.length === 1 ? t("1 image") : t("{n} images", { n: items.length }),
               sheet: tray,
             },
           ],
-          settingsTitle: "Watermark settings",
+          settingsTitle: t("Watermark settings"),
           cta: {
             icon: "branding_watermark",
-            label: "Apply",
-            busyLabel: "Applying…",
+            label: t("Apply"),
+            busyLabel: t("Applying…"),
             busy: isWorking,
             onClick: applyAll,
           },
@@ -281,20 +302,20 @@ export function WatermarkTool() {
         }
         rail={
           <SettingsRail
-            title="Watermark Settings"
+            title={t("Watermark Settings")}
             icon="branding_watermark"
             accent={ACCENT}
             footer={
               <>
-                <RailAction onClick={applyAll} busy={isWorking} busyLabel="Applying…" icon="branding_watermark">
-                  Watermark {items.length > 1 ? `${items.length} images` : "& download"}
+                <RailAction onClick={applyAll} busy={isWorking} busyLabel={t("Applying…")} icon="branding_watermark">
+                  {items.length > 1 ? t("Watermark {n} images", { n: items.length }) : t("Watermark & download")}
                 </RailAction>
                 {done && items.length > 1 && (
                   <RailSecondaryAction
                     icon="folder_zip"
                     onClick={() => zipAndDownload(items.filter((i) => i.result).map((i) => ({ name: i.result!.name, blob: i.result!.blob })), "omyimage_watermarked.zip")}
                   >
-                    Download all (ZIP)
+                    {t("Download all (ZIP)")}
                   </RailSecondaryAction>
                 )}
               </>
@@ -303,45 +324,45 @@ export function WatermarkTool() {
         <div className="flex flex-col gap-4">
           {/* Type toggle */}
           <div className="grid grid-cols-2 gap-1 rounded-lg bg-surface-container p-1">
-            {(["text", "image"] as WmType[]).map((t) => (
-              <button key={t} type="button" onClick={() => set("type", t)} className={`rounded-md px-3 py-2 text-body-md font-semibold capitalize transition-colors ${opts.type === t ? "bg-surface-container-lowest text-primary shadow-sm" : "text-on-surface-variant hover:text-primary"}`}>
-                {t === "text" ? "Text" : "Logo"}
+            {(["text", "image"] as WmType[]).map((wt) => (
+              <button key={wt} type="button" onClick={() => set("type", wt)} className={`rounded-md px-3 py-2 text-body-md font-semibold capitalize transition-colors ${opts.type === wt ? "bg-surface-container-lowest text-primary shadow-sm" : "text-on-surface-variant hover:text-primary"}`}>
+                {wt === "text" ? t("Text") : t("Logo")}
               </button>
             ))}
           </div>
 
           {opts.type === "text" ? (
             <>
-              <div className="flex flex-col gap-1.5"><label className="text-label-sm font-label-sm text-on-surface-variant">Watermark text</label><input type="text" value={opts.text} onChange={(e) => set("text", e.target.value)} className={fieldCls} /></div>
+              <div className="flex flex-col gap-1.5"><label className="text-label-sm font-label-sm text-on-surface-variant">{t("Watermark text")}</label><input type="text" value={opts.text} onChange={(e) => set("text", e.target.value)} className={fieldCls} /></div>
               <div className="grid grid-cols-2 gap-3">
-                <div className="flex flex-col gap-1.5"><label className="text-label-sm font-label-sm text-on-surface-variant">Font</label><select value={opts.fontFamily} onChange={(e) => set("fontFamily", e.target.value)} className={fieldCls}>{FONTS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}</select></div>
-                <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Size</span><span className="text-primary font-semibold">{opts.fontPct}%</span></label><input type="range" min={2} max={20} step={1} value={opts.fontPct} onChange={(e) => set("fontPct", parseInt(e.target.value, 10))} className="w-full accent-secondary" /></div>
+                <div className="flex flex-col gap-1.5"><label className="text-label-sm font-label-sm text-on-surface-variant">{t("Font")}</label><select value={opts.fontFamily} onChange={(e) => set("fontFamily", e.target.value)} className={fieldCls}>{FONTS.map((f) => <option key={f.value} value={f.value}>{t(f.label)}</option>)}</select></div>
+                <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Size")}</span><span className="text-primary font-semibold">{opts.fontPct}%</span></label><input type="range" min={2} max={20} step={1} value={opts.fontPct} onChange={(e) => set("fontPct", parseInt(e.target.value, 10))} className="w-full accent-secondary" /></div>
               </div>
-              <label className="flex items-center gap-2.5 cursor-pointer"><input type="checkbox" checked={opts.bold} onChange={(e) => set("bold", e.target.checked)} className="w-4 h-4 accent-secondary" /><span className="text-body-md text-on-surface">Bold</span></label>
-              <BackgroundPicker value={{ transparent: false, color: opts.color }} onChange={(v) => set("color", v.color)} allowTransparent={false} label="Text color" />
-              <label className="flex items-center gap-2.5 cursor-pointer"><input type="checkbox" checked={opts.outline} onChange={(e) => set("outline", e.target.checked)} className="w-4 h-4 accent-secondary" /><span className="text-body-md text-on-surface">Outline (for legibility)</span></label>
-              {opts.outline && <BackgroundPicker value={{ transparent: false, color: opts.outlineColor }} onChange={(v) => set("outlineColor", v.color)} allowTransparent={false} label="Outline color" />}
+              <label className="flex items-center gap-2.5 cursor-pointer"><input type="checkbox" checked={opts.bold} onChange={(e) => set("bold", e.target.checked)} className="w-4 h-4 accent-secondary" /><span className="text-body-md text-on-surface">{t("Bold")}</span></label>
+              <BackgroundPicker value={{ transparent: false, color: opts.color }} onChange={(v) => set("color", v.color)} allowTransparent={false} label={t("Text color")} />
+              <label className="flex items-center gap-2.5 cursor-pointer"><input type="checkbox" checked={opts.outline} onChange={(e) => set("outline", e.target.checked)} className="w-4 h-4 accent-secondary" /><span className="text-body-md text-on-surface">{t("Outline (for legibility)")}</span></label>
+              {opts.outline && <BackgroundPicker value={{ transparent: false, color: opts.outlineColor }} onChange={(v) => set("outlineColor", v.color)} allowTransparent={false} label={t("Outline color")} />}
             </>
           ) : (
             <>
               <input ref={logoInput} type="file" accept="image/png,image/webp,image/svg+xml,image/jpeg" className="hidden" onChange={(e) => { if (e.target.files?.[0]) setLogoFile(e.target.files[0]); e.target.value = ""; }} />
               <button type="button" onClick={() => logoInput.current?.click()} className="inline-flex items-center justify-center gap-2 rounded-lg border border-surface-variant py-2.5 text-body-md font-semibold text-primary hover:border-secondary/50 transition-colors">
-                <Icon name="upload" className="text-[18px]" /> {logoFile ? "Change logo" : "Upload logo (PNG)"}
+                <Icon name="upload" className="text-[18px]" /> {logoFile ? t("Change logo") : t("Upload logo (PNG)")}
               </button>
               {logoFile && <p className="text-label-sm font-label-sm text-on-surface-variant truncate">{logoFile.name}</p>}
-              <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Logo size</span><span className="text-primary font-semibold">{opts.scalePct}%</span></label><input type="range" min={5} max={80} step={1} value={opts.scalePct} onChange={(e) => set("scalePct", parseInt(e.target.value, 10))} className="w-full accent-secondary" /></div>
+              <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Logo size")}</span><span className="text-primary font-semibold">{opts.scalePct}%</span></label><input type="range" min={5} max={80} step={1} value={opts.scalePct} onChange={(e) => set("scalePct", parseInt(e.target.value, 10))} className="w-full accent-secondary" /></div>
             </>
           )}
 
           {/* Shared: opacity, rotation, position, margin */}
-          <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Opacity</span><span className="text-primary font-semibold">{Math.round(opts.opacity * 100)}%</span></label><input type="range" min={0.05} max={1} step={0.01} value={opts.opacity} onChange={(e) => set("opacity", parseFloat(e.target.value))} className="w-full accent-secondary" /></div>
-          <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Rotation</span><span className="text-primary font-semibold">{opts.rotation}°</span></label><input type="range" min={-90} max={90} step={1} value={opts.rotation} onChange={(e) => set("rotation", parseInt(e.target.value, 10))} className="w-full accent-secondary" /></div>
+          <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Opacity")}</span><span className="text-primary font-semibold">{Math.round(opts.opacity * 100)}%</span></label><input type="range" min={0.05} max={1} step={0.01} value={opts.opacity} onChange={(e) => set("opacity", parseFloat(e.target.value))} className="w-full accent-secondary" /></div>
+          <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Rotation")}</span><span className="text-primary font-semibold">{opts.rotation}°</span></label><input type="range" min={-90} max={90} step={1} value={opts.rotation} onChange={(e) => set("rotation", parseInt(e.target.value, 10))} className="w-full accent-secondary" /></div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-label-sm font-label-sm text-on-surface-variant">Position</label>
+            <label className="text-label-sm font-label-sm text-on-surface-variant">{t("Position")}</label>
             <div className="grid grid-cols-3 gap-1.5 w-fit">
               {Array.from({ length: 9 }).map((_, i) => (
-                <button key={i} type="button" aria-label={`Position ${i + 1}`} onClick={() => set("pos", i)} className={`h-8 w-8 rounded-md border transition-colors grid place-items-center ${opts.pos === i ? "border-secondary bg-secondary/10" : "border-surface-variant hover:border-secondary/40"}`}>
+                <button key={i} type="button" aria-label={t(POSITION_LABELS[i])} onClick={() => set("pos", i)} className={`h-8 w-8 rounded-md border transition-colors grid place-items-center ${opts.pos === i ? "border-secondary bg-secondary/10" : "border-surface-variant hover:border-secondary/40"}`}>
                   <span className={`h-2 w-2 rounded-full ${opts.pos === i ? "bg-secondary" : "bg-outline-variant"}`} />
                 </button>
               ))}
@@ -350,12 +371,12 @@ export function WatermarkTool() {
         </div>
 
         <div className="flex flex-col gap-3 border-t border-outline-variant/60 pt-5">
-          <h3 className="text-body-lg font-bold text-primary">Output</h3>
-          <select value={format} onChange={(e) => setFormat(e.target.value as Format)} className={fieldCls}>{FORMATS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}</select>
+          <h3 className="text-body-lg font-bold text-primary">{t("Output")}</h3>
+          <select value={format} onChange={(e) => setFormat(e.target.value as Format)} className={fieldCls}>{FORMATS.map((f) => <option key={f.value} value={f.value}>{t(f.label)}</option>)}</select>
           {format !== "image/png" && (
-            <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Quality</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span></label><input type="range" min={0.5} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" /></div>
+            <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Quality")}</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span></label><input type="range" min={0.5} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" /></div>
           )}
-          {items.some((it) => outMimeFor(it.file, format) === "image/jpeg") && <BackgroundPicker value={bg} onChange={setBg} allowTransparent={false} label="JPG background" />}
+          {items.some((it) => outMimeFor(it.file, format) === "image/jpeg") && <BackgroundPicker value={bg} onChange={setBg} allowTransparent={false} label={t("JPG background")} />}
         </div>
           </SettingsRail>
         }

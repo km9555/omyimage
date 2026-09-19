@@ -8,10 +8,12 @@ import { Dropzone } from "@/components/image/Dropzone";
 import { ToolWorkspace, filesHeader } from "@/components/tool/ToolWorkspace";
 import { FileTray, TrayAction, type TrayEntry } from "@/components/tool/FileTray";
 import { SettingsRail, RailAction, RailSecondaryAction, RailNote } from "@/components/tool/SettingsRail";
-import { downloadBlob, zipAndDownload, formatBytes, baseName } from "@/lib/image/raster";
+import { downloadBlob, zipAndDownload, baseName } from "@/lib/image/raster";
 import { processOnServer } from "@/lib/process-router";
 import { stripOutputMetadata } from "@/lib/image/metadata";
 import { useHandoff } from "@/lib/tool-handoff";
+import { useFormatBytes, useT } from "@/i18n/I18nScope";
+import { translateError } from "@/i18n/errors";
 
 /**
  * HEIC conversion runs on the server, unlike every other converter here.
@@ -39,8 +41,14 @@ function isHeic(f: File): boolean {
  * `defaultTarget` lets /heic-to-png reuse this component with PNG preselected.
  * The toggle stays visible either way — the prop sets the starting point, it
  * does not lock the tool down.
+ *
+ * Shared by /heic-to-jpg and /heic-to-png: its keys live in heic-to-jpg's ui
+ * block (the folder it sits in) AND must be copied into heic-to-png's, because
+ * each route only has its own tool's ui in scope.
  */
 export function HeicTool({ defaultTarget = "image/jpeg" }: { defaultTarget?: Target } = {}) {
+  const t = useT();
+  const formatBytes = useFormatBytes();
   const [items, setItems] = useState<Item[]>([]);
   const [target, setTarget] = useState<Target>(defaultTarget);
   const [quality, setQuality] = useState(0.92);
@@ -54,10 +62,10 @@ export function HeicTool({ defaultTarget = "image/jpeg" }: { defaultTarget?: Tar
 
   const addFiles = useCallback((incoming: FileList | File[]) => {
     const heics = Array.from(incoming).filter(isHeic);
-    if (heics.length === 0) { toast.error("Please select HEIC or HEIF images."); return; }
+    if (heics.length === 0) { toast.error(t("Please select HEIC or HEIF images.")); return; }
     setDone(false);
     setItems((prev) => [...prev, ...heics.map((file) => ({ id: uid(), file }))]);
-  }, []);
+  }, [t]);
 
   useHandoff(addFiles);
 
@@ -87,12 +95,12 @@ export function HeicTool({ defaultTarget = "image/jpeg" }: { defaultTarget?: Tar
       setDone(true);
       if (out.length === 1 && out[0].result) downloadBlob(out[0].result.blob, out[0].result.name);
       else await zipAndDownload(out.map((o) => ({ name: o.result!.name, blob: o.result!.blob })), "omyimage_heic.zip");
-      toast.success(`Converted ${out.length} HEIC image${out.length === 1 ? "" : "s"}.`);
+      toast.success(out.length === 1 ? t("Converted 1 HEIC image.") : t("Converted {n} HEIC images.", { n: out.length }));
     } catch (err) {
       console.error(err);
       // processOnServer surfaces the server's own message, including the 501
       // "not enabled on this server" when ImageMagick is missing.
-      toast.error(err instanceof Error ? err.message : "Conversion failed.");
+      toast.error(translateError(err, t, "Conversion failed."));
     } finally {
       setIsWorking(false);
     }
@@ -104,7 +112,7 @@ export function HeicTool({ defaultTarget = "image/jpeg" }: { defaultTarget?: Tar
         <TopLoadingBar active={isWorking} />
         {/* Server-backed by licence necessity (LICENSE-AUDIT F1), so the
             default browser-local wording would be false here. */}
-        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="photo_camera" hint="or drop .heic / .heif photos here" privacyNote="Converted on our server over an encrypted connection — files are deleted right after." />
+        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="photo_camera" hint={t("or drop .heic / .heif photos here")} privacyNote={t("Converted on our server over an encrypted connection — files are deleted right after.")} />
       </section>
     );
   }
@@ -121,9 +129,9 @@ export function HeicTool({ defaultTarget = "image/jpeg" }: { defaultTarget?: Tar
       </>
     ),
     action: it.result ? (
-      <TrayAction icon="download" tone="accent" label="Download" onClick={() => downloadBlob(it.result!.blob, it.result!.name)} />
+      <TrayAction icon="download" tone="accent" label={t("Download")} onClick={() => downloadBlob(it.result!.blob, it.result!.name)} />
     ) : (
-      <TrayAction icon="close" label="Remove" disabled={isWorking} onClick={() => removeItem(it.id)} />
+      <TrayAction icon="close" label={t("Remove")} disabled={isWorking} onClick={() => removeItem(it.id)} />
     ),
   }));
 
@@ -137,12 +145,12 @@ export function HeicTool({ defaultTarget = "image/jpeg" }: { defaultTarget?: Tar
         mobile={{
           ...filesHeader(items.map((i) => i.file)),
           onBack: reset,
-          backLabel: "Clear files",
-          settingsTitle: "Conversion settings",
+          backLabel: t("Clear files"),
+          settingsTitle: t("Conversion settings"),
           cta: {
             icon: "sync_alt",
-            label: "Convert",
-            busyLabel: "Converting…",
+            label: t("Convert"),
+            busyLabel: t("Converting…"),
             busy: isWorking,
             onClick: convertAll,
           },
@@ -150,7 +158,7 @@ export function HeicTool({ defaultTarget = "image/jpeg" }: { defaultTarget?: Tar
         main={
           <FileTray
             entries={entries}
-            title={`${items.length} HEIC image${items.length === 1 ? "" : "s"}`}
+            title={items.length === 1 ? t("1 HEIC image") : t("{n} HEIC images", { n: items.length })}
             accept={ACCEPT}
             onFiles={addFiles}
             onClear={reset}
@@ -159,21 +167,21 @@ export function HeicTool({ defaultTarget = "image/jpeg" }: { defaultTarget?: Tar
         }
         rail={
           <SettingsRail
-            title="Conversion Settings"
+            title={t("Conversion Settings")}
             icon="sync_alt"
             accent={ACCENT}
             footer={
               <>
-                <RailNote>Conversion runs on our server; results are auto-deleted within an hour.</RailNote>
-                <RailAction onClick={convertAll} busy={isWorking} busyLabel="Converting…" icon="sync_alt">
-                  Convert {items.length > 1 ? `${items.length} images` : "& download"}
+                <RailNote>{t("Conversion runs on our server; results are auto-deleted within an hour.")}</RailNote>
+                <RailAction onClick={convertAll} busy={isWorking} busyLabel={t("Converting…")} icon="sync_alt">
+                  {items.length > 1 ? t("Convert {n} images", { n: items.length }) : t("Convert & download")}
                 </RailAction>
                 {done && items.length > 1 && (
                   <RailSecondaryAction
                     icon="folder_zip"
                     onClick={() => zipAndDownload(items.filter((i) => i.result).map((i) => ({ name: i.result!.name, blob: i.result!.blob })), "omyimage_heic.zip")}
                   >
-                    Download all (ZIP)
+                    {t("Download all (ZIP)")}
                   </RailSecondaryAction>
                 )}
               </>
@@ -185,18 +193,18 @@ export function HeicTool({ defaultTarget = "image/jpeg" }: { defaultTarget?: Tar
             ))}
           </div>
           {target === "image/jpeg" && (
-            <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Quality</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span></label><input type="range" min={0.5} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" /></div>
+            <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Quality")}</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span></label><input type="range" min={0.5} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" /></div>
           )}
 
           <div className="flex flex-col gap-2">
             <label className="flex items-center gap-2.5 cursor-pointer">
               <input type="checkbox" checked={stripMeta} onChange={(e) => setStripMeta(e.target.checked)} className="w-4 h-4 accent-secondary" />
-              <span className="text-body-md text-on-surface">Strip metadata</span>
+              <span className="text-body-md text-on-surface">{t("Strip metadata")}</span>
             </label>
             {/* Worth spelling out on this page specifically: HEIC comes from
                 phones, so the file almost always carries a capture location. */}
             <p className="text-label-sm font-label-sm text-on-surface-variant">
-              Remove EXIF, colour profile, camera and location data. Photos from a phone usually carry GPS coordinates.
+              {t("Remove EXIF, colour profile, camera and location data. Photos from a phone usually carry GPS coordinates.")}
             </p>
           </div>
           </SettingsRail>

@@ -60,7 +60,7 @@ const PT_TOOL_SLUGS: Record<string, string> = {
 
   // ── Editar e criar ───────────────────────────────────────────────────
   "image-editor": "editor-de-fotos",
-  "watermark-image": "marca-dagua-imagem",
+  "watermark-image": "colocar-marca-dagua",
   "meme-generator": "gerador-de-memes",
   "html-to-image": "html-para-imagem",
   "blur-face": "desfocar-rosto",

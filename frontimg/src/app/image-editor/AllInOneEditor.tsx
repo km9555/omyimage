@@ -18,6 +18,7 @@ import { Dropzone } from "@/components/image/Dropzone";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
 import { decodeBitmap, canvasToBlob, downloadBlob, baseName, mimeExt, type ExportMime } from "@/lib/image/raster";
 import { useHandoff } from "@/lib/tool-handoff";
+import { useT } from "@/i18n/I18nScope";
 
 const ACCENT = "#7B5CC4";
 const ACCEPT = "image/jpeg,image/png,image/webp,image/gif,image/bmp";
@@ -25,6 +26,8 @@ const HISTORY_CAP = 20;
 
 type Tool = "crop" | "transform" | "resize" | "adjust" | "grayscale" | "blur" | "border" | "circle" | "watermark" | "annotate";
 
+// RIBBON, ASPECTS, PRESETS, ADJ_SLIDERS, FONTS and SHAPE_LABELS are module
+// scope: translated at the render site, keys in image-editor.<loc>.ts (§4.2).
 const RIBBON: { tool: Tool; icon: string; label: string }[] = [
   { tool: "crop", icon: "crop", label: "Crop" },
   { tool: "transform", icon: "rotate_90_degrees_cw", label: "Rotate" },
@@ -129,6 +132,20 @@ type Op = { shape: Shape; color: string; width: number; points: { x: number; y: 
   these names can be — nothing here is keyed `icon`. Renaming the const drops
   the glyphs from the subset and the buttons draw "horizontal_rule" as text.
 */
+/**
+ * Accessible names for the annotate shapes. The buttons used to announce the
+ * shape ID ("pen", "arrow") — a label derived from an id, invisible to every
+ * string scan (oMyPDF conversion.md §4.18).
+ */
+const SHAPE_LABELS: Record<Shape, string> = {
+  pen: "Pen",
+  line: "Line",
+  arrow: "Arrow",
+  rect: "Rectangle",
+  ellipse: "Ellipse",
+  text: "Text",
+};
+
 const SHAPE_ICONS: [Shape, string][] = [
   ["pen", "draw"],
   ["line", "horizontal_rule"],
@@ -166,6 +183,13 @@ function drawOp(ctx: CanvasRenderingContext2D, op: Op) {
 }
 
 const fieldCls = "w-full px-3 py-2.5 rounded-lg bg-surface-container-lowest border border-surface-variant focus:border-secondary focus:ring-1 focus:ring-secondary outline-none text-body-md text-primary";
+/** Named 3×3 positions for the watermark grid — one key each (§4.18). */
+const POSITION_LABELS = [
+  "Top left", "Top center", "Top right",
+  "Middle left", "Center", "Middle right",
+  "Bottom left", "Bottom center", "Bottom right",
+];
+
 const CHECKER: React.CSSProperties = {
   backgroundColor: "#fff",
   backgroundImage: "linear-gradient(45deg,#e2e8f0 25%,transparent 25%),linear-gradient(-45deg,#e2e8f0 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e2e8f0 75%),linear-gradient(-45deg,transparent 75%,#e2e8f0 75%)",
@@ -173,6 +197,7 @@ const CHECKER: React.CSSProperties = {
 };
 
 export function AllInOneEditor() {
+  const t = useT();
   const [file, setFile] = useState<File | null>(null);
   const [tool, setTool] = useState<Tool>("adjust");
   const [dims, setDims] = useState<{ w: number; h: number } | null>(null); // working dims
@@ -216,7 +241,9 @@ export function AllInOneEditor() {
   const [wm, setWm] = useState<WmOpts>(WM_DEFAULT);
   const logoRef = useRef<ImageBitmap | null>(null);
   const logoInput = useRef<HTMLInputElement>(null);
-  const [annot, setAnnot] = useState<{ shape: Shape; color: string; width: number; text: string }>({ shape: "pen", color: "#ef4444", width: 6, text: "Label" });
+  // The default stamp text is drawn INTO the image, so it follows the page
+  // language (conversion.md §6.3); the user's own text never changes.
+  const [annot, setAnnot] = useState<{ shape: Shape; color: string; width: number; text: string }>(() => ({ shape: "pen", color: "#ef4444", width: 6, text: t("Label") }));
   const opsRef = useRef<Op[]>([]);
 
   // Export
@@ -340,7 +367,7 @@ export function AllInOneEditor() {
   // ── Load / reset ──
   const loadFile = useCallback(async (incoming: FileList | File[]) => {
     const f = Array.from(incoming).find((x) => x.type.startsWith("image/"));
-    if (!f) { toast.error("Please select an image file."); return; }
+    if (!f) { toast.error(t("Please select an image file.")); return; }
     setIsWorking(true);
     try {
       const src = await decodeBitmap(f);
@@ -352,11 +379,11 @@ export function AllInOneEditor() {
       setResize({ w: work.width, h: work.height, keep: true });
       rerender();
     } catch {
-      toast.error("Couldn't read that image.");
+      toast.error(t("Couldn't read that image."));
     } finally {
       setIsWorking(false);
     }
-  }, []);
+  }, [t]);
 
   useHandoff(loadFile);
 
@@ -422,9 +449,9 @@ export function AllInOneEditor() {
       if (tool === "blur") setBlur(8);
       if (tool === "crop") { setAspect(null); setCrop(centeredAspect(w.width, w.height, null)); }
       rerender();
-      toast.success("Applied.");
+      toast.success(t("Applied."));
     } catch (err) {
-      console.error(err); toast.error("Couldn't apply that edit.");
+      console.error(err); toast.error(t("Couldn't apply that edit."));
     } finally {
       setIsWorking(false);
     }
@@ -469,9 +496,9 @@ export function AllInOneEditor() {
       }
       const blob = await canvasToBlob(out, format, quality);
       downloadBlob(blob, `${baseName(file!.name)}_edited.${mimeExt(format)}`);
-      toast.success("Exported your edited image.");
+      toast.success(t("Exported your edited image."));
     } catch (err) {
-      console.error(err); toast.error("Export failed.");
+      console.error(err); toast.error(t("Export failed."));
     } finally {
       setIsWorking(false);
     }
@@ -508,7 +535,7 @@ export function AllInOneEditor() {
     if (tool !== "annotate") return;
     e.preventDefault();
     const pt = toNat(e);
-    if (annot.shape === "text") { opsRef.current.push({ shape: "text", color: annot.color, width: annot.width, points: [pt], text: annot.text || "Text" }); rerender(); return; }
+    if (annot.shape === "text") { opsRef.current.push({ shape: "text", color: annot.color, width: annot.width, points: [pt], text: annot.text || t("Text") }); rerender(); return; }
     drawing.current = { shape: annot.shape, color: annot.color, width: annot.width, points: [pt] };
     (e.target as Element).setPointerCapture?.(e.pointerId);
   };
@@ -524,7 +551,7 @@ export function AllInOneEditor() {
   const onLogo = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0]; e.target.value = "";
     if (!f) return;
-    decodeBitmap(f, false).then((b) => { logoRef.current = b; setWm((o) => ({ ...o, type: "image" })); rerender(); }).catch(() => toast.error("Couldn't read that logo."));
+    decodeBitmap(f, false).then((b) => { logoRef.current = b; setWm((o) => ({ ...o, type: "image" })); rerender(); }).catch(() => toast.error(t("Couldn't read that logo.")));
   };
 
   const activePreset = useMemo(() => PRESETS.find((p) => JSON.stringify(p.adj) === JSON.stringify(adj))?.name, [adj]);
@@ -536,7 +563,7 @@ export function AllInOneEditor() {
     return (
       <section>
         <TopLoadingBar active={isWorking} />
-        <Dropzone onFiles={loadFile} accept={ACCEPT} accent={ACCENT} multiple={false} buttonLabel="Open an image" icon="dashboard_customize" hint="or drop a JPG, PNG, WEBP or GIF to start editing" />
+        <Dropzone onFiles={loadFile} accept={ACCEPT} accent={ACCENT} multiple={false} buttonLabel={t("Open an image")} icon="dashboard_customize" hint={t("or drop a JPG, PNG, WEBP or GIF to start editing")} />
       </section>
     );
   }
@@ -569,7 +596,11 @@ export function AllInOneEditor() {
       </div>
     </div>
     <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
-      {tool === "crop" ? "Drag the box or its corners to set the crop, then Apply." : tool === "annotate" ? "Draw on the image, then Apply to bake it in." : "Live preview — adjust on the right, then Apply."}
+      {tool === "crop"
+        ? t("Drag the box or its corners to set the crop, then Apply.")
+        : tool === "annotate"
+          ? t("Draw on the image, then Apply to bake it in.")
+          : t("Live preview — adjust on the right, then Apply.")}
     </p>
     </>
   );
@@ -577,15 +608,19 @@ export function AllInOneEditor() {
   /* The options panel, shared by both layouts. On mobile it is rendered
      inside a sheet, where `MobileRailProvider` strips its aside chrome and
      hides its Export action — that action becomes the bottom bar's CTA. */
+  const toolLabel = RIBBON.find((r) => r.tool === tool)?.label;
+  // The ribbon says "Mark" to fit a 64px button; the panel has room for the word.
+  const railTitle = toolLabel === "Mark" ? t("Watermark") : toolLabel ? t(toolLabel) : t("Editor");
+
   const optionsRail = (
   <SettingsRail
-    title={RIBBON.find((r) => r.tool === tool)?.label === "Mark" ? "Watermark" : RIBBON.find((r) => r.tool === tool)?.label ?? "Editor"}
+    title={railTitle}
     icon="dashboard_customize"
     accent={ACCENT}
     className="lg:w-[380px] lg:shrink-0 xl:w-[420px]"
     footer={
-      <RailAction onClick={exportImage} busy={isWorking} busyLabel="Working…" icon="download">
-        Export image
+      <RailAction onClick={exportImage} busy={isWorking} busyLabel={t("Working…")} icon="download">
+        {t("Export image")}
       </RailAction>
     }
   >
@@ -594,7 +629,7 @@ export function AllInOneEditor() {
       {tool === "crop" && (
         <div className="grid grid-cols-4 gap-1.5">
           {ASPECTS.map((a) => (
-            <button key={a.label} type="button" onClick={() => applyAspect(a.value)} className={`rounded-md px-2 py-1.5 text-label-sm font-label-sm font-semibold transition-colors ${aspect === a.value ? "bg-secondary text-on-secondary" : "bg-surface-container text-on-surface-variant hover:text-primary"}`}>{a.label}</button>
+            <button key={a.label} type="button" onClick={() => applyAspect(a.value)} className={`rounded-md px-2 py-1.5 text-label-sm font-label-sm font-semibold transition-colors ${aspect === a.value ? "bg-secondary text-on-secondary" : "bg-surface-container text-on-surface-variant hover:text-primary"}`}>{t(a.label)}</button>
           ))}
         </div>
       )}
@@ -602,85 +637,85 @@ export function AllInOneEditor() {
       {tool === "transform" && (
         <>
           <div className="grid grid-cols-4 gap-1.5">
-            <button type="button" onClick={() => setRot((r) => ({ ...r, angle: r.angle - 90 }))} className="flex flex-col items-center gap-1 rounded-lg border border-surface-variant py-2 text-on-surface-variant hover:text-primary"><Icon name="rotate_left" className="text-[20px]" /><span className="text-[11px]">Left</span></button>
-            <button type="button" onClick={() => setRot((r) => ({ ...r, angle: r.angle + 90 }))} className="flex flex-col items-center gap-1 rounded-lg border border-surface-variant py-2 text-on-surface-variant hover:text-primary"><Icon name="rotate_right" className="text-[20px]" /><span className="text-[11px]">Right</span></button>
-            <button type="button" onClick={() => setRot((r) => ({ ...r, flipH: !r.flipH }))} className={`flex flex-col items-center gap-1 rounded-lg border py-2 ${rot.flipH ? "border-secondary text-primary bg-secondary/10" : "border-surface-variant text-on-surface-variant hover:text-primary"}`}><Icon name="flip" className="text-[20px]" /><span className="text-[11px]">Flip H</span></button>
-            <button type="button" onClick={() => setRot((r) => ({ ...r, flipV: !r.flipV }))} className={`flex flex-col items-center gap-1 rounded-lg border py-2 ${rot.flipV ? "border-secondary text-primary bg-secondary/10" : "border-surface-variant text-on-surface-variant hover:text-primary"}`}><Icon name="flip" className="text-[20px] rotate-90" /><span className="text-[11px]">Flip V</span></button>
+            <button type="button" onClick={() => setRot((r) => ({ ...r, angle: r.angle - 90 }))} className="flex flex-col items-center gap-1 rounded-lg border border-surface-variant py-2 text-on-surface-variant hover:text-primary"><Icon name="rotate_left" className="text-[20px]" /><span className="text-[11px]">{t("Left")}</span></button>
+            <button type="button" onClick={() => setRot((r) => ({ ...r, angle: r.angle + 90 }))} className="flex flex-col items-center gap-1 rounded-lg border border-surface-variant py-2 text-on-surface-variant hover:text-primary"><Icon name="rotate_right" className="text-[20px]" /><span className="text-[11px]">{t("Right")}</span></button>
+            <button type="button" onClick={() => setRot((r) => ({ ...r, flipH: !r.flipH }))} className={`flex flex-col items-center gap-1 rounded-lg border py-2 ${rot.flipH ? "border-secondary text-primary bg-secondary/10" : "border-surface-variant text-on-surface-variant hover:text-primary"}`}><Icon name="flip" className="text-[20px]" /><span className="text-[11px]">{t("Flip H")}</span></button>
+            <button type="button" onClick={() => setRot((r) => ({ ...r, flipV: !r.flipV }))} className={`flex flex-col items-center gap-1 rounded-lg border py-2 ${rot.flipV ? "border-secondary text-primary bg-secondary/10" : "border-surface-variant text-on-surface-variant hover:text-primary"}`}><Icon name="flip" className="text-[20px] rotate-90" /><span className="text-[11px]">{t("Flip V")}</span></button>
           </div>
-          <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Fine angle</span><span className="text-primary font-semibold">{rot.angle}°</span></label><input type="range" min={-180} max={180} step={1} value={((rot.angle % 360) + 360) % 360 > 180 ? (((rot.angle % 360) + 360) % 360) - 360 : ((rot.angle % 360) + 360) % 360} onChange={(e) => setRot((r) => ({ ...r, angle: parseInt(e.target.value, 10) }))} className="w-full accent-secondary" /></div>
+          <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Fine angle")}</span><span className="text-primary font-semibold">{rot.angle}°</span></label><input type="range" min={-180} max={180} step={1} value={((rot.angle % 360) + 360) % 360 > 180 ? (((rot.angle % 360) + 360) % 360) - 360 : ((rot.angle % 360) + 360) % 360} onChange={(e) => setRot((r) => ({ ...r, angle: parseInt(e.target.value, 10) }))} className="w-full accent-secondary" /></div>
         </>
       )}
 
       {tool === "resize" && (
         <div className="flex flex-col gap-3">
           <div className="grid grid-cols-2 gap-3">
-            <div className="flex flex-col gap-1.5"><label className="text-label-sm font-label-sm text-on-surface-variant">Width</label><input type="number" min={1} value={resize.w} onChange={(e) => { const w = parseInt(e.target.value || "0", 10); setResize((s) => ({ ...s, w, h: s.keep && dims ? Math.round(w * (dims.h / dims.w)) : s.h })); }} className={fieldCls} /></div>
-            <div className="flex flex-col gap-1.5"><label className="text-label-sm font-label-sm text-on-surface-variant">Height</label><input type="number" min={1} value={resize.h} onChange={(e) => { const h = parseInt(e.target.value || "0", 10); setResize((s) => ({ ...s, h, w: s.keep && dims ? Math.round(h * (dims.w / dims.h)) : s.w })); }} className={fieldCls} /></div>
+            <div className="flex flex-col gap-1.5"><label className="text-label-sm font-label-sm text-on-surface-variant">{t("Width")}</label><input type="number" min={1} value={resize.w} onChange={(e) => { const w = parseInt(e.target.value || "0", 10); setResize((s) => ({ ...s, w, h: s.keep && dims ? Math.round(w * (dims.h / dims.w)) : s.h })); }} className={fieldCls} /></div>
+            <div className="flex flex-col gap-1.5"><label className="text-label-sm font-label-sm text-on-surface-variant">{t("Height")}</label><input type="number" min={1} value={resize.h} onChange={(e) => { const h = parseInt(e.target.value || "0", 10); setResize((s) => ({ ...s, h, w: s.keep && dims ? Math.round(h * (dims.w / dims.h)) : s.w })); }} className={fieldCls} /></div>
           </div>
-          <label className="flex items-center gap-2.5 cursor-pointer"><input type="checkbox" checked={resize.keep} onChange={(e) => setResize((s) => ({ ...s, keep: e.target.checked }))} className="w-4 h-4 accent-secondary" /><span className="text-body-md text-on-surface flex items-center gap-1.5"><Icon name="link" className="text-[18px]" /> Lock aspect ratio</span></label>
+          <label className="flex items-center gap-2.5 cursor-pointer"><input type="checkbox" checked={resize.keep} onChange={(e) => setResize((s) => ({ ...s, keep: e.target.checked }))} className="w-4 h-4 accent-secondary" /><span className="text-body-md text-on-surface flex items-center gap-1.5"><Icon name="link" className="text-[18px]" /> {t("Lock aspect ratio")}</span></label>
         </div>
       )}
 
       {tool === "adjust" && (
         <>
           <div className="grid grid-cols-3 gap-1.5">
-            {PRESETS.map((p) => (<button key={p.name} type="button" onClick={() => setAdj(p.adj)} className={`rounded-md px-2 py-1.5 text-label-sm font-label-sm font-semibold border transition-colors ${activePreset === p.name ? "border-secondary text-primary bg-secondary/10" : "border-surface-variant text-on-surface-variant hover:text-primary"}`}>{p.name}</button>))}
+            {PRESETS.map((p) => (<button key={p.name} type="button" onClick={() => setAdj(p.adj)} className={`rounded-md px-2 py-1.5 text-label-sm font-label-sm font-semibold border transition-colors ${activePreset === p.name ? "border-secondary text-primary bg-secondary/10" : "border-surface-variant text-on-surface-variant hover:text-primary"}`}>{t(p.name)}</button>))}
           </div>
           {ADJ_SLIDERS.map((s) => (
-            <div key={s.key} className="flex flex-col gap-1"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{s.label}</span><span className="text-primary font-semibold">{s.fmt(adj[s.key])}</span></label><input type="range" min={s.min} max={s.max} step={s.step} value={adj[s.key]} onChange={(e) => setAdj((a) => ({ ...a, [s.key]: parseFloat(e.target.value) }))} className="w-full accent-secondary" /></div>
+            <div key={s.key} className="flex flex-col gap-1"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t(s.label)}</span><span className="text-primary font-semibold">{s.fmt(adj[s.key])}</span></label><input type="range" min={s.min} max={s.max} step={s.step} value={adj[s.key]} onChange={(e) => setAdj((a) => ({ ...a, [s.key]: parseFloat(e.target.value) }))} className="w-full accent-secondary" /></div>
           ))}
         </>
       )}
 
       {tool === "grayscale" && (
-        <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Intensity</span><span className="text-primary font-semibold">{Math.round(gray * 100)}%</span></label><input type="range" min={0} max={1} step={0.01} value={gray} onChange={(e) => setGray(parseFloat(e.target.value))} className="w-full accent-secondary" /></div>
+        <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Intensity")}</span><span className="text-primary font-semibold">{Math.round(gray * 100)}%</span></label><input type="range" min={0} max={1} step={0.01} value={gray} onChange={(e) => setGray(parseFloat(e.target.value))} className="w-full accent-secondary" /></div>
       )}
 
       {tool === "blur" && (
-        <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Blur strength</span><span className="text-primary font-semibold">{blur}px</span></label><input type="range" min={0} max={50} step={1} value={blur} onChange={(e) => setBlur(parseInt(e.target.value, 10))} className="w-full accent-secondary" /></div>
+        <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Blur strength")}</span><span className="text-primary font-semibold">{blur}px</span></label><input type="range" min={0} max={50} step={1} value={blur} onChange={(e) => setBlur(parseInt(e.target.value, 10))} className="w-full accent-secondary" /></div>
       )}
 
       {tool === "border" && (
         <>
-          <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Thickness</span><span className="text-primary font-semibold">{border.pct}%</span></label><input type="range" min={1} max={25} step={1} value={border.pct} onChange={(e) => setBorder((b) => ({ ...b, pct: parseInt(e.target.value, 10) }))} className="w-full accent-secondary" /></div>
-          <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Corner rounding</span><span className="text-primary font-semibold">{border.radius}%</span></label><input type="range" min={0} max={50} step={1} value={border.radius} onChange={(e) => setBorder((b) => ({ ...b, radius: parseInt(e.target.value, 10) }))} className="w-full accent-secondary" /></div>
-          <BackgroundPicker value={{ transparent: false, color: border.color }} onChange={(v) => setBorder((b) => ({ ...b, color: v.color }))} allowTransparent={false} label="Border color" />
+          <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Thickness")}</span><span className="text-primary font-semibold">{border.pct}%</span></label><input type="range" min={1} max={25} step={1} value={border.pct} onChange={(e) => setBorder((b) => ({ ...b, pct: parseInt(e.target.value, 10) }))} className="w-full accent-secondary" /></div>
+          <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Corner rounding")}</span><span className="text-primary font-semibold">{border.radius}%</span></label><input type="range" min={0} max={50} step={1} value={border.radius} onChange={(e) => setBorder((b) => ({ ...b, radius: parseInt(e.target.value, 10) }))} className="w-full accent-secondary" /></div>
+          <BackgroundPicker value={{ transparent: false, color: border.color }} onChange={(v) => setBorder((b) => ({ ...b, color: v.color }))} allowTransparent={false} label={t("Border color")} />
         </>
       )}
 
       {tool === "circle" && (
         <>
-          <BackgroundPicker value={circle.bg} onChange={(v) => setCircle((c) => ({ ...c, bg: v }))} allowTransparent label="Background" />
-          <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Ring thickness</span><span className="text-primary font-semibold">{circle.ring}%</span></label><input type="range" min={0} max={15} step={1} value={circle.ring} onChange={(e) => setCircle((c) => ({ ...c, ring: parseInt(e.target.value, 10) }))} className="w-full accent-secondary" /></div>
-          {circle.ring > 0 && <BackgroundPicker value={{ transparent: false, color: circle.ringColor }} onChange={(v) => setCircle((c) => ({ ...c, ringColor: v.color }))} allowTransparent={false} label="Ring color" />}
+          <BackgroundPicker value={circle.bg} onChange={(v) => setCircle((c) => ({ ...c, bg: v }))} allowTransparent label={t("Background")} />
+          <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Ring thickness")}</span><span className="text-primary font-semibold">{circle.ring}%</span></label><input type="range" min={0} max={15} step={1} value={circle.ring} onChange={(e) => setCircle((c) => ({ ...c, ring: parseInt(e.target.value, 10) }))} className="w-full accent-secondary" /></div>
+          {circle.ring > 0 && <BackgroundPicker value={{ transparent: false, color: circle.ringColor }} onChange={(v) => setCircle((c) => ({ ...c, ringColor: v.color }))} allowTransparent={false} label={t("Ring color")} />}
         </>
       )}
 
       {tool === "watermark" && (
         <>
           <div className="grid grid-cols-2 gap-1 rounded-lg bg-surface-container p-1">
-            {(["text", "image"] as const).map((t) => (<button key={t} type="button" onClick={() => setWm((o) => ({ ...o, type: t }))} className={`rounded-md px-3 py-2 text-body-md font-semibold transition-colors ${wm.type === t ? "bg-surface-container-lowest text-primary shadow-sm" : "text-on-surface-variant hover:text-primary"}`}>{t === "text" ? "Text" : "Logo"}</button>))}
+            {(["text", "image"] as const).map((wt) => (<button key={wt} type="button" onClick={() => setWm((o) => ({ ...o, type: wt }))} className={`rounded-md px-3 py-2 text-body-md font-semibold transition-colors ${wm.type === wt ? "bg-surface-container-lowest text-primary shadow-sm" : "text-on-surface-variant hover:text-primary"}`}>{wt === "text" ? t("Text") : t("Logo")}</button>))}
           </div>
           {wm.type === "text" ? (
             <>
               <input type="text" value={wm.text} onChange={(e) => setWm((o) => ({ ...o, text: e.target.value }))} className={fieldCls} />
               <div className="grid grid-cols-2 gap-3">
-                <select value={wm.fontFamily} onChange={(e) => setWm((o) => ({ ...o, fontFamily: e.target.value }))} className={fieldCls}>{FONTS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}</select>
-                <div className="flex flex-col gap-1"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Size</span><span className="text-primary font-semibold">{wm.fontPct}%</span></label><input type="range" min={2} max={20} step={1} value={wm.fontPct} onChange={(e) => setWm((o) => ({ ...o, fontPct: parseInt(e.target.value, 10) }))} className="w-full accent-secondary" /></div>
+                <select value={wm.fontFamily} onChange={(e) => setWm((o) => ({ ...o, fontFamily: e.target.value }))} className={fieldCls}>{FONTS.map((f) => <option key={f.value} value={f.value}>{t(f.label)}</option>)}</select>
+                <div className="flex flex-col gap-1"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Size")}</span><span className="text-primary font-semibold">{wm.fontPct}%</span></label><input type="range" min={2} max={20} step={1} value={wm.fontPct} onChange={(e) => setWm((o) => ({ ...o, fontPct: parseInt(e.target.value, 10) }))} className="w-full accent-secondary" /></div>
               </div>
-              <BackgroundPicker value={{ transparent: false, color: wm.color }} onChange={(v) => setWm((o) => ({ ...o, color: v.color }))} allowTransparent={false} label="Text color" />
+              <BackgroundPicker value={{ transparent: false, color: wm.color }} onChange={(v) => setWm((o) => ({ ...o, color: v.color }))} allowTransparent={false} label={t("Text color")} />
             </>
           ) : (
             <>
               <input ref={logoInput} type="file" accept="image/png,image/webp,image/svg+xml,image/jpeg" className="hidden" onChange={onLogo} />
-              <button type="button" onClick={() => logoInput.current?.click()} className="inline-flex items-center justify-center gap-2 rounded-lg border border-surface-variant py-2.5 text-body-md font-semibold text-primary hover:border-secondary/50"><Icon name="upload" className="text-[18px]" /> {logoRef.current ? "Change logo" : "Upload logo"}</button>
-              <div className="flex flex-col gap-1"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Logo size</span><span className="text-primary font-semibold">{wm.scalePct}%</span></label><input type="range" min={5} max={80} step={1} value={wm.scalePct} onChange={(e) => setWm((o) => ({ ...o, scalePct: parseInt(e.target.value, 10) }))} className="w-full accent-secondary" /></div>
+              <button type="button" onClick={() => logoInput.current?.click()} className="inline-flex items-center justify-center gap-2 rounded-lg border border-surface-variant py-2.5 text-body-md font-semibold text-primary hover:border-secondary/50"><Icon name="upload" className="text-[18px]" /> {logoRef.current ? t("Change logo") : t("Upload logo")}</button>
+              <div className="flex flex-col gap-1"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Logo size")}</span><span className="text-primary font-semibold">{wm.scalePct}%</span></label><input type="range" min={5} max={80} step={1} value={wm.scalePct} onChange={(e) => setWm((o) => ({ ...o, scalePct: parseInt(e.target.value, 10) }))} className="w-full accent-secondary" /></div>
             </>
           )}
-          <div className="flex flex-col gap-1"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Opacity</span><span className="text-primary font-semibold">{Math.round(wm.opacity * 100)}%</span></label><input type="range" min={0.05} max={1} step={0.01} value={wm.opacity} onChange={(e) => setWm((o) => ({ ...o, opacity: parseFloat(e.target.value) }))} className="w-full accent-secondary" /></div>
+          <div className="flex flex-col gap-1"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Opacity")}</span><span className="text-primary font-semibold">{Math.round(wm.opacity * 100)}%</span></label><input type="range" min={0.05} max={1} step={0.01} value={wm.opacity} onChange={(e) => setWm((o) => ({ ...o, opacity: parseFloat(e.target.value) }))} className="w-full accent-secondary" /></div>
           <div className="flex flex-col gap-1.5">
-            <label className="text-label-sm font-label-sm text-on-surface-variant">Position</label>
-            <div className="grid grid-cols-3 gap-1.5 w-fit">{Array.from({ length: 9 }).map((_, i) => (<button key={i} type="button" aria-label={`Position ${i + 1}`} onClick={() => setWm((o) => ({ ...o, pos: i }))} className={`h-8 w-8 rounded-md border grid place-items-center ${wm.pos === i ? "border-secondary bg-secondary/10" : "border-surface-variant hover:border-secondary/40"}`}><span className={`h-2 w-2 rounded-full ${wm.pos === i ? "bg-secondary" : "bg-outline-variant"}`} /></button>))}</div>
+            <label className="text-label-sm font-label-sm text-on-surface-variant">{t("Position")}</label>
+            <div className="grid grid-cols-3 gap-1.5 w-fit">{Array.from({ length: 9 }).map((_, i) => (<button key={i} type="button" aria-label={t(POSITION_LABELS[i])} onClick={() => setWm((o) => ({ ...o, pos: i }))} className={`h-8 w-8 rounded-md border grid place-items-center ${wm.pos === i ? "border-secondary bg-secondary/10" : "border-surface-variant hover:border-secondary/40"}`}><span className={`h-2 w-2 rounded-full ${wm.pos === i ? "bg-secondary" : "bg-outline-variant"}`} /></button>))}</div>
           </div>
         </>
       )}
@@ -689,48 +724,45 @@ export function AllInOneEditor() {
         <>
           <div className="grid grid-cols-6 gap-1">
             {SHAPE_ICONS.map(([s, ic]) => (
-              <button key={s} type="button" onClick={() => setAnnot((a) => ({ ...a, shape: s }))} aria-label={s} className={`flex items-center justify-center rounded-lg py-2 transition-colors ${annot.shape === s ? "bg-secondary text-on-secondary" : "bg-surface-container text-on-surface-variant hover:text-primary"}`}><Icon name={ic} className="text-[18px]" /></button>
+              <button key={s} type="button" onClick={() => setAnnot((a) => ({ ...a, shape: s }))} aria-label={t(SHAPE_LABELS[s])} className={`flex items-center justify-center rounded-lg py-2 transition-colors ${annot.shape === s ? "bg-secondary text-on-secondary" : "bg-surface-container text-on-surface-variant hover:text-primary"}`}><Icon name={ic} className="text-[18px]" /></button>
             ))}
           </div>
-          {annot.shape === "text" && <input type="text" value={annot.text} onChange={(e) => setAnnot((a) => ({ ...a, text: e.target.value }))} placeholder="Text to stamp" className={fieldCls} />}
-          <BackgroundPicker value={{ transparent: false, color: annot.color }} onChange={(v) => setAnnot((a) => ({ ...a, color: v.color }))} allowTransparent={false} label="Color" />
-          <div className="flex flex-col gap-1"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Stroke / size</span><span className="text-primary font-semibold">{annot.width}px</span></label><input type="range" min={1} max={40} step={1} value={annot.width} onChange={(e) => setAnnot((a) => ({ ...a, width: parseInt(e.target.value, 10) }))} className="w-full accent-secondary" /></div>
-          <button type="button" onClick={() => { opsRef.current = []; rerender(); }} className="self-start text-label-sm font-label-sm font-semibold text-secondary hover:underline">Clear drawing</button>
+          {annot.shape === "text" && <input type="text" value={annot.text} onChange={(e) => setAnnot((a) => ({ ...a, text: e.target.value }))} placeholder={t("Text to stamp")} className={fieldCls} />}
+          <BackgroundPicker value={{ transparent: false, color: annot.color }} onChange={(v) => setAnnot((a) => ({ ...a, color: v.color }))} allowTransparent={false} label={t("Color")} />
+          <div className="flex flex-col gap-1"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Stroke / size")}</span><span className="text-primary font-semibold">{annot.width}px</span></label><input type="range" min={1} max={40} step={1} value={annot.width} onChange={(e) => setAnnot((a) => ({ ...a, width: parseInt(e.target.value, 10) }))} className="w-full accent-secondary" /></div>
+          <button type="button" onClick={() => { opsRef.current = []; rerender(); }} className="self-start text-label-sm font-label-sm font-semibold text-secondary hover:underline">{t("Clear drawing")}</button>
         </>
       )}
 
       <div className="flex gap-2 pt-1">
-        <button type="button" onClick={apply} disabled={isWorking} className="flex-1 inline-flex items-center justify-center gap-2 bg-secondary hover:bg-secondary-container text-on-secondary font-semibold py-2.5 rounded-lg transition-colors disabled:opacity-50"><Icon name="check" className="text-[18px]" /> Apply</button>
-        <button type="button" onClick={resetDraft} className="inline-flex items-center justify-center gap-1.5 border border-surface-variant text-on-surface-variant font-semibold px-3 py-2.5 rounded-lg hover:text-primary transition-colors"><Icon name="restart_alt" className="text-[18px]" /></button>
+        <button type="button" onClick={apply} disabled={isWorking} className="flex-1 inline-flex items-center justify-center gap-2 bg-secondary hover:bg-secondary-container text-on-secondary font-semibold py-2.5 rounded-lg transition-colors disabled:opacity-50"><Icon name="check" className="text-[18px]" /> {t("Apply")}</button>
+        <button type="button" onClick={resetDraft} aria-label={t("Reset")} title={t("Reset")} className="inline-flex items-center justify-center gap-1.5 border border-surface-variant text-on-surface-variant font-semibold px-3 py-2.5 rounded-lg hover:text-primary transition-colors"><Icon name="restart_alt" className="text-[18px]" /></button>
       </div>
     </div>
 
     {/* Export */}
     <div className="flex flex-col gap-3 border-t border-outline-variant/60 pt-5">
-      <h3 className="text-body-lg font-bold text-primary">Export</h3>
+      <h3 className="text-body-lg font-bold text-primary">{t("Export")}</h3>
       <select value={format} onChange={(e) => setFormat(e.target.value as ExportMime)} className={fieldCls}>
         <option value="image/png">PNG</option>
         <option value="image/jpeg">JPG</option>
         <option value="image/webp">WEBP</option>
       </select>
-      {format !== "image/png" && (<div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Quality</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span></label><input type="range" min={0.5} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" /></div>)}
-      {format === "image/jpeg" && <BackgroundPicker value={jpgBg} onChange={setJpgBg} allowTransparent={false} label="JPG background" />}
+      {format !== "image/png" && (<div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Quality")}</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span></label><input type="range" min={0.5} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" /></div>)}
+      {format === "image/jpeg" && <BackgroundPicker value={jpgBg} onChange={setJpgBg} allowTransparent={false} label={t("JPG background")} />}
     </div>
   </SettingsRail>
   );
-
-  const toolLabel = RIBBON.find((r) => r.tool === tool)?.label;
-  const railTitle = toolLabel === "Mark" ? "Watermark" : toolLabel ?? "Editor";
 
   /* The ribbon is already a horizontal scroller below `lg`, which is exactly
      what the shell wants above its bottom bar — so it is shared verbatim. */
   const ribbon = (
     <div className="flex lg:flex-col gap-1.5 overflow-x-auto lg:overflow-visible rounded-xl border border-surface-variant bg-surface-container-lowest ambient-shadow p-1.5 lg:sticky lg:top-24 lg:self-start shrink-0">
       {RIBBON.map((r) => (
-        <button key={r.tool} type="button" onClick={() => openTool(r.tool)} aria-label={r.label} title={r.label}
+        <button key={r.tool} type="button" onClick={() => openTool(r.tool)} aria-label={t(r.label)} title={t(r.label)}
           className={`flex flex-col items-center justify-center gap-0.5 rounded-lg w-16 lg:w-16 py-2 transition-colors shrink-0 ${tool === r.tool ? "bg-secondary text-on-secondary" : "text-on-surface-variant hover:bg-surface-container hover:text-primary"}`}>
           <Icon name={r.icon} fill={tool === r.tool} className="text-[22px]" />
-          <span className="text-[10px] font-semibold">{r.label}</span>
+          <span className="text-[10px] font-semibold">{t(r.label)}</span>
         </button>
       ))}
     </div>
@@ -738,9 +770,9 @@ export function AllInOneEditor() {
 
   const historyControls = (
     <div className="flex items-center gap-1">
-      <button type="button" onClick={undo} disabled={!canUndo} aria-label="Undo" className="flex h-9 w-9 items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container disabled:opacity-30 transition-colors"><Icon name="undo" className="text-[20px]" /></button>
-      <button type="button" onClick={redo} disabled={!canRedo} aria-label="Redo" className="flex h-9 w-9 items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container disabled:opacity-30 transition-colors"><Icon name="redo" className="text-[20px]" /></button>
-      <button type="button" onClick={revertOriginal} aria-label="Revert to original" title="Revert to original" className="flex h-9 w-9 items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors"><Icon name="restart_alt" className="text-[20px]" /></button>
+      <button type="button" onClick={undo} disabled={!canUndo} aria-label={t("Undo")} className="flex h-9 w-9 items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container disabled:opacity-30 transition-colors"><Icon name="undo" className="text-[20px]" /></button>
+      <button type="button" onClick={redo} disabled={!canRedo} aria-label={t("Redo")} className="flex h-9 w-9 items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container disabled:opacity-30 transition-colors"><Icon name="redo" className="text-[20px]" /></button>
+      <button type="button" onClick={revertOriginal} aria-label={t("Revert to original")} title={t("Revert to original")} className="flex h-9 w-9 items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors"><Icon name="restart_alt" className="text-[20px]" /></button>
     </div>
   );
 
@@ -756,7 +788,7 @@ export function AllInOneEditor() {
           title={file.name}
           meta={dims && <span className="shrink-0">{dims.w} × {dims.h}</span>}
           onBack={() => setFile(null)}
-          backLabel="Change image"
+          backLabel={t("Change image")}
           action={historyControls}
         />
 
@@ -777,8 +809,8 @@ export function AllInOneEditor() {
           />
           <MobileCta
             icon="download"
-            label="Export"
-            busyLabel="Working…"
+            label={t("Export")}
+            busyLabel={t("Working…")}
             busy={isWorking}
             onClick={exportImage}
           />
@@ -814,7 +846,7 @@ export function AllInOneEditor() {
         <div className="flex items-center justify-between gap-2 rounded-xl border border-surface-variant bg-surface-container-lowest ambient-shadow px-3 py-2">
           {historyControls}
           <p className="text-label-sm font-label-sm text-on-surface-variant truncate hidden sm:block flex-1 text-center">{file.name}{dims && <> · {dims.w} × {dims.h}</>}</p>
-          <button type="button" onClick={() => setFile(null)} className="inline-flex items-center gap-1.5 text-label-md font-medium text-on-surface-variant hover:text-error shrink-0"><Icon name="close" className="text-[18px]" /> Change</button>
+          <button type="button" onClick={() => setFile(null)} className="inline-flex items-center gap-1.5 text-label-md font-medium text-on-surface-variant hover:text-error shrink-0"><Icon name="close" className="text-[18px]" /> {t("Change")}</button>
         </div>
 
         {canvasPane}

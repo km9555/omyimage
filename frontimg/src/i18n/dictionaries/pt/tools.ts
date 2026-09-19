@@ -140,7 +140,7 @@ export const ptTools: Record<string, LocalizedTool> = {
     shortDescription: "Recorte, ajuste, aplique filtros, desenhe e marque — tudo em um editor.",
   },
   "watermark-image": {
-    name: "Marca d'água em imagem",
+    name: "Colocar marca d'água em foto",
     shortDescription: "Adicione marca d'água de texto ou logo, em lote.",
   },
   "meme-generator": {

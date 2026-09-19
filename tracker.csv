@@ -9,11 +9,11 @@ sn,batch,section,id,en_url,pt_url,en_extracted,ui_sweep,pt_copy,route,gated,seo_
 8,2,Tools,jpg-to-png,http://localhost:3002/jpg-to-png,http://localhost:3002/pt/jpg-para-png,done,done,done,done,done,done,done,done,done,
 9,2,Tools,convert-to-jpg,http://localhost:3002/convert-to-jpg,http://localhost:3002/pt/converter-para-jpg,done,done,done,done,done,done,done,done,done,
 10,2,Tools,image-to-pdf,http://localhost:3002/image-to-pdf,http://localhost:3002/pt/imagem-para-pdf,done,done,done,done,done,done,done,done,done,fixed Legal→Jurídico key collision (paper size) and id-derived fit labels
-11,3,Tools,upscale-image,http://localhost:3002/upscale-image,http://localhost:3002/pt/melhorar-qualidade-imagem,done,todo,todo,todo,todo,todo,todo,todo,todo,
-12,3,Tools,image-editor,http://localhost:3002/image-editor,http://localhost:3002/pt/editor-de-fotos,done,todo,todo,todo,todo,todo,todo,todo,todo,
-13,3,Tools,watermark-image,http://localhost:3002/watermark-image,http://localhost:3002/pt/marca-dagua-imagem,done,todo,todo,todo,todo,todo,todo,todo,todo,
-14,3,Tools,rotate-image,http://localhost:3002/rotate-image,http://localhost:3002/pt/girar-imagem,done,todo,todo,todo,todo,todo,todo,todo,todo,
-15,3,Tools,heic-to-jpg,http://localhost:3002/heic-to-jpg,http://localhost:3002/pt/heic-para-jpg,done,todo,todo,todo,todo,todo,todo,todo,todo,
+11,3,Tools,upscale-image,http://localhost:3002/upscale-image,http://localhost:3002/pt/melhorar-qualidade-imagem,done,done,done,done,done,done,done,done,done,
+12,3,Tools,image-editor,http://localhost:3002/image-editor,http://localhost:3002/pt/editor-de-fotos,done,done,done,done,done,done,done,done,done,
+13,3,Tools,watermark-image,http://localhost:3002/watermark-image,http://localhost:3002/pt/colocar-marca-dagua,done,done,done,done,done,done,done,done,done,"slug changed to colocar-marca-dagua (SERP: ""colocar marca d’água em foto"")"
+14,3,Tools,rotate-image,http://localhost:3002/rotate-image,http://localhost:3002/pt/girar-imagem,done,done,done,done,done,done,done,done,done,
+15,3,Tools,heic-to-jpg,http://localhost:3002/heic-to-jpg,http://localhost:3002/pt/heic-para-jpg,done,done,done,done,done,done,done,done,done,"EN FAQ wrongly says EXIF is dropped; pt follows the code (EXIF kept, strip checkbox)"
 16,4,Tools,blur-face,http://localhost:3002/blur-face,http://localhost:3002/pt/desfocar-rosto,done,todo,todo,todo,todo,todo,todo,todo,todo,
 17,4,Tools,meme-generator,http://localhost:3002/meme-generator,http://localhost:3002/pt/gerador-de-memes,done,todo,todo,todo,todo,todo,todo,todo,todo,
 18,4,Tools,merge-images,http://localhost:3002/merge-images,http://localhost:3002/pt/juntar-imagens,done,todo,todo,todo,todo,todo,todo,todo,todo,
