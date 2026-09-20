@@ -10,9 +10,10 @@ import { FileTray, TrayAction, type TrayEntry } from "@/components/tool/FileTray
 import { SettingsRail, RailAction, RailSecondaryAction } from "@/components/tool/SettingsRail";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
 import {
-  decodeBitmap, canvasToBlob, downloadBlob, zipAndDownload, formatBytes, baseName, mimeExt, type ExportMime,
+  decodeBitmap, canvasToBlob, downloadBlob, zipAndDownload, baseName, mimeExt, type ExportMime,
 } from "@/lib/image/raster";
 import { useHandoff } from "@/lib/tool-handoff";
+import { useFormatBytes, useT } from "@/i18n/I18nScope";
 
 const ACCENT = "#6E7A8A";
 const ACCEPT = "image/jpeg,image/png,image/webp";
@@ -20,6 +21,7 @@ const ACCEPT = "image/jpeg,image/png,image/webp";
 type Format = "original" | ExportMime;
 type Item = { id: string; file: File; url: string; result?: { blob: Blob; size: number; name: string } };
 
+// Module scope: labels translated at the render site (conversion.md §4.2).
 const FORMATS: { label: string; value: Format }[] = [
   { label: "Same as original", value: "original" },
   { label: "JPG", value: "image/jpeg" },
@@ -58,6 +60,8 @@ function paint(canvas: HTMLCanvasElement, bmp: ImageBitmap, intensity: number, b
 }
 
 export function GrayscaleTool() {
+  const t = useT();
+  const formatBytes = useFormatBytes();
   const [items, setItems] = useState<Item[]>([]);
   const [intensity, setIntensity] = useState(1);
   const [format, setFormat] = useState<Format>("original");
@@ -89,10 +93,10 @@ export function GrayscaleTool() {
 
   const addFiles = useCallback((incoming: FileList | File[]) => {
     const imgs = Array.from(incoming).filter((f) => f.type.startsWith("image/"));
-    if (imgs.length === 0) { toast.error("Please select image files."); return; }
+    if (imgs.length === 0) { toast.error(t("Please select image files.")); return; }
     setDone(false);
     setItems((prev) => [...prev, ...imgs.map((file) => ({ id: uid(), file, url: URL.createObjectURL(file) }))]);
-  }, []);
+  }, [t]);
 
   useHandoff(addFiles);
 
@@ -117,10 +121,10 @@ export function GrayscaleTool() {
       setDone(true);
       if (out.length === 1 && out[0].result) downloadBlob(out[0].result.blob, out[0].result.name);
       else await zipAndDownload(out.map((o) => ({ name: o.result!.name, blob: o.result!.blob })), "omyimage_grayscale.zip");
-      toast.success(`Converted ${out.length} image${out.length === 1 ? "" : "s"} to grayscale.`);
+      toast.success(out.length === 1 ? t("Converted 1 image to grayscale.") : t("Converted {n} images to grayscale.", { n: out.length }));
     } catch (err) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : "Grayscale failed.");
+      toast.error(err instanceof Error ? err.message : t("Grayscale failed."));
     } finally {
       setIsWorking(false);
     }
@@ -132,7 +136,7 @@ export function GrayscaleTool() {
     return (
       <section>
         <TopLoadingBar active={isWorking} />
-        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="filter_b_and_w" hint="or drop JPG, PNG or WEBP images here" />
+        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="filter_b_and_w" hint={t("or drop JPG, PNG or WEBP images here")} />
       </section>
     );
   }
@@ -144,13 +148,13 @@ export function GrayscaleTool() {
     meta: (
       <>
         {formatBytes(it.file.size)}
-        {it.result && <><Icon name="check" className="text-[13px] mx-1 align-middle" style={{ color: ACCENT }} />done</>}
+        {it.result && <><Icon name="check" className="text-[13px] mx-1 align-middle" style={{ color: ACCENT }} />{t("done")}</>}
       </>
     ),
     action: it.result ? (
-      <TrayAction icon="download" tone="accent" label="Download" onClick={() => downloadBlob(it.result!.blob, it.result!.name)} />
+      <TrayAction icon="download" tone="accent" label={t("Download")} onClick={() => downloadBlob(it.result!.blob, it.result!.name)} />
     ) : (
-      <TrayAction icon="close" label="Remove" disabled={isWorking} onClick={() => removeItem(it.id)} />
+      <TrayAction icon="close" label={t("Remove")} disabled={isWorking} onClick={() => removeItem(it.id)} />
     ),
   }));
 
@@ -164,12 +168,12 @@ export function GrayscaleTool() {
         mobile={{
           ...filesHeader(items.map((i) => i.file)),
           onBack: reset,
-          backLabel: "Clear files",
-          settingsTitle: "Grayscale settings",
+          backLabel: t("Clear files"),
+          settingsTitle: t("Grayscale settings"),
           cta: {
             icon: "filter_b_and_w",
-            label: "Convert",
-            busyLabel: "Converting…",
+            label: t("Convert"),
+            busyLabel: t("Converting…"),
             busy: isWorking,
             onClick: applyAll,
           },
@@ -180,46 +184,46 @@ export function GrayscaleTool() {
               <canvas ref={previewRef} className="max-w-full max-h-[46vh] rounded" />
             </div>
             <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
-              Live preview of <span className="font-semibold text-on-surface">{items[0].file.name}</span>
-              {items.length > 1 && <> — applied to all {items.length} images.</>}
+              {t("Live preview of")} <span className="font-semibold text-on-surface">{items[0].file.name}</span>
+              {items.length > 1 && <> {t("— applied to all {n} images.", { n: items.length })}</>}
             </p>
             <FileTray entries={entries} accept={ACCEPT} onFiles={addFiles} onClear={reset} busy={isWorking} />
           </>
         }
         rail={
           <SettingsRail
-            title="Grayscale Settings"
+            title={t("Grayscale Settings")}
             icon="filter_b_and_w"
             accent={ACCENT}
             footer={
               <>
-                <RailAction onClick={applyAll} busy={isWorking} busyLabel="Converting…" icon="filter_b_and_w">
-                  Grayscale {items.length > 1 ? `${items.length} images` : "& download"}
+                <RailAction onClick={applyAll} busy={isWorking} busyLabel={t("Converting…")} icon="filter_b_and_w">
+                  {items.length > 1 ? t("Grayscale {n} images", { n: items.length }) : t("Grayscale & download")}
                 </RailAction>
                 {done && items.length > 1 && (
                   <RailSecondaryAction
                     icon="folder_zip"
                     onClick={() => zipAndDownload(items.filter((i) => i.result).map((i) => ({ name: i.result!.name, blob: i.result!.blob })), "omyimage_grayscale.zip")}
                   >
-                    Download all (ZIP)
+                    {t("Download all (ZIP)")}
                   </RailSecondaryAction>
                 )}
               </>
             }
           >
           <div className="flex flex-col gap-1.5">
-            <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Intensity</span><span className="text-primary font-semibold">{Math.round(intensity * 100)}%</span></label>
+            <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Intensity")}</span><span className="text-primary font-semibold">{Math.round(intensity * 100)}%</span></label>
             <input type="range" min={0} max={1} step={0.01} value={intensity} onChange={(e) => setIntensity(parseFloat(e.target.value))} className="w-full accent-secondary" />
-            <p className="text-label-sm font-label-sm text-on-surface-variant/70">100% = fully black & white. Lower values desaturate partially.</p>
+            <p className="text-label-sm font-label-sm text-on-surface-variant/70">{t("100% = fully black & white. Lower values desaturate partially.")}</p>
           </div>
           <div className="flex flex-col gap-1.5">
-            <label className="text-label-sm font-label-sm text-on-surface-variant">Output format</label>
-            <select value={format} onChange={(e) => setFormat(e.target.value as Format)} className={fieldCls}>{FORMATS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}</select>
+            <label className="text-label-sm font-label-sm text-on-surface-variant">{t("Output format")}</label>
+            <select value={format} onChange={(e) => setFormat(e.target.value as Format)} className={fieldCls}>{FORMATS.map((f) => <option key={f.value} value={f.value}>{t(f.label)}</option>)}</select>
           </div>
           {format !== "image/png" && (
-            <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Quality</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span></label><input type="range" min={0.5} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" /></div>
+            <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Quality")}</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span></label><input type="range" min={0.5} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" /></div>
           )}
-          {items.some((it) => outMimeFor(it.file, format) === "image/jpeg") && <BackgroundPicker value={bg} onChange={setBg} allowTransparent={false} label="JPG background" />}
+          {items.some((it) => outMimeFor(it.file, format) === "image/jpeg") && <BackgroundPicker value={bg} onChange={setBg} allowTransparent={false} label={t("JPG background")} />}
           </SettingsRail>
         }
       />

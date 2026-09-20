@@ -12,13 +12,14 @@ import { SettingsRail, RailAction, RailSecondaryAction } from "@/components/tool
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
 import { RegionEditor } from "@/components/image/RegionEditor";
 import {
-  decodeBitmap, canvasToBlob, downloadBlob, zipAndDownload, formatBytes, baseName, mimeExt, type ExportMime,
+  decodeBitmap, canvasToBlob, downloadBlob, zipAndDownload, baseName, mimeExt, type ExportMime,
 } from "@/lib/image/raster";
 import {
   legacyToEffect, renderRedacted,
   type RedactStyle, type Region, type RegionShape,
 } from "@/lib/image/redact";
 import { useHandoff } from "@/lib/tool-handoff";
+import { useFormatBytes, useT } from "@/i18n/I18nScope";
 
 const ACCENT = "#3E8CA6";
 const ACCEPT = "image/jpeg,image/png,image/webp";
@@ -27,6 +28,8 @@ type Format = "original" | ExportMime;
 type Mode = "whole" | "selective";
 type Item = { id: string; file: File; url: string; result?: { blob: Blob; size: number; name: string } };
 
+// FORMATS and STYLES are module scope: labels are translated at the render
+// site, keys in blur-image.<loc>.ts (conversion.md §4.2).
 const FORMATS: { label: string; value: Format }[] = [
   { label: "Same as original", value: "original" },
   { label: "JPG", value: "image/jpeg" },
@@ -34,8 +37,11 @@ const FORMATS: { label: string; value: Format }[] = [
   { label: "WEBP", value: "image/webp" },
 ];
 
+/* "Blur" is also the button that runs the tool, and Portuguese needs a noun
+   here ("Desfoque") and a verb there ("Desfocar") — hence the context suffix,
+   which t() strips for the English fallback (conversion.md §4.12). */
 const STYLES: { value: RedactStyle; label: string }[] = [
-  { value: "blur", label: "Blur" },
+  { value: "blur", label: "Blur|effect" },
   { value: "pixelate", label: "Pixelate" },
   { value: "solid", label: "Solid" },
 ];
@@ -56,6 +62,8 @@ function outMimeFor(file: File, fmt: Format): ExportMime {
 const WHOLE: Region[] = [{ id: "whole", shape: "rect", x: 0, y: 0, w: 1, h: 1 }];
 
 export function BlurImageTool() {
+  const t = useT();
+  const formatBytes = useFormatBytes();
   const [items, setItems] = useState<Item[]>([]);
   const [mode, setMode] = useState<Mode>("whole");
   const [style, setStyle] = useState<RedactStyle>("blur");
@@ -110,7 +118,7 @@ export function BlurImageTool() {
         firstBmp.current = b;
         setBmpTick((n) => n + 1);
       })
-      .catch(() => { if (alive) toast.error("Couldn't read that image."); });
+      .catch(() => { if (alive) toast.error(t("Couldn't read that image.")); });
     return () => { alive = false; };
   }, [first?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -129,10 +137,10 @@ export function BlurImageTool() {
 
   const addFiles = useCallback((incoming: FileList | File[]) => {
     const imgs = Array.from(incoming).filter((f) => f.type.startsWith("image/"));
-    if (imgs.length === 0) { toast.error("Please select image files."); return; }
+    if (imgs.length === 0) { toast.error(t("Please select image files.")); return; }
     setDone(false);
     setItems((prev) => [...prev, ...imgs.map((file) => ({ id: uid(), file, url: URL.createObjectURL(file) }))]);
-  }, []);
+  }, [t]);
 
   useHandoff(addFiles);
 
@@ -148,7 +156,7 @@ export function BlurImageTool() {
   const applyAll = async () => {
     if (items.length === 0) return;
     if (mode === "selective" && regions.length === 0) {
-      toast.error("Draw at least one area, or switch to Whole image.");
+      toast.error(t("Draw at least one area, or switch to Whole image."));
       return;
     }
     setIsWorking(true);
@@ -176,10 +184,10 @@ export function BlurImageTool() {
       setDone(true);
       if (out.length === 1 && out[0].result) downloadBlob(out[0].result.blob, out[0].result.name);
       else await zipAndDownload(out.map((o) => ({ name: o.result!.name, blob: o.result!.blob })), "omyimage_blurred.zip");
-      toast.success(`Blurred ${out.length} image${out.length === 1 ? "" : "s"}.`);
+      toast.success(out.length === 1 ? t("Blurred 1 image.") : t("Blurred {n} images.", { n: out.length }));
     } catch (err) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : "Blur failed.");
+      toast.error(err instanceof Error ? err.message : t("Blur failed."));
     } finally {
       setIsWorking(false);
     }
@@ -195,7 +203,7 @@ export function BlurImageTool() {
     return (
       <section>
         <TopLoadingBar active={isWorking} />
-        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="lens_blur" hint="or drop JPG, PNG or WEBP images here" />
+        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="lens_blur" hint={t("or drop JPG, PNG or WEBP images here")} />
       </section>
     );
   }
@@ -207,13 +215,13 @@ export function BlurImageTool() {
     meta: (
       <>
         {formatBytes(it.file.size)}
-        {it.result && <><Icon name="check" className="text-[13px] mx-1 align-middle" style={{ color: ACCENT }} />done · {formatBytes(it.result.size)}</>}
+        {it.result && <><Icon name="check" className="text-[13px] mx-1 align-middle" style={{ color: ACCENT }} />{t("done")} · {formatBytes(it.result.size)}</>}
       </>
     ),
     action: it.result ? (
-      <TrayAction icon="download" tone="accent" label="Download" onClick={() => downloadBlob(it.result!.blob, it.result!.name)} />
+      <TrayAction icon="download" tone="accent" label={t("Download")} onClick={() => downloadBlob(it.result!.blob, it.result!.name)} />
     ) : (
-      <TrayAction icon="close" label="Remove" disabled={isWorking} onClick={() => removeItem(it.id)} />
+      <TrayAction icon="close" label={t("Remove")} disabled={isWorking} onClick={() => removeItem(it.id)} />
     ),
   }));
 
@@ -247,9 +255,9 @@ export function BlurImageTool() {
         </div>
         <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
           {mode === "whole" ? (
-            <>Live preview of <span className="font-semibold text-on-surface">{items[0].file.name}</span>{items.length > 1 && <> — applied to all {items.length} images.</>}</>
+            <>{t("Live preview of")} <span className="font-semibold text-on-surface">{items[0].file.name}</span>{items.length > 1 && <> {t("— applied to all {n} images.", { n: items.length })}</>}</>
           ) : (
-            <>Drag to draw an area, click one to select, drag its handles to resize, Delete to remove.{regions.length > 0 && <span className="font-semibold text-on-surface"> {regions.length} area{regions.length === 1 ? "" : "s"}.</span>}</>
+            <>{t("Drag to draw an area, click one to select, drag its handles to resize, Delete to remove.")}{regions.length > 0 && <span className="font-semibold text-on-surface"> {regions.length === 1 ? t("1 area.") : t("{n} areas.", { n: regions.length })}</span>}</>
           )}
         </p>
     </>
@@ -270,23 +278,23 @@ export function BlurImageTool() {
         mobile={{
           ...filesHeader(items.map((i) => i.file)),
           onBack: reset,
-          backLabel: "Clear images",
+          backLabel: t("Clear images"),
           body: canvasPane,
           tabs: [
             {
               id: "files",
               icon: "photo_library",
-              label: "Files",
+              label: t("Files"),
               badge: items.length > 1 ? items.length : undefined,
-              sheetTitle: `${items.length} image${items.length === 1 ? "" : "s"}`,
+              sheetTitle: items.length === 1 ? t("1 image") : t("{n} images", { n: items.length }),
               sheet: tray,
             },
           ],
-          settingsTitle: "Blur settings",
+          settingsTitle: t("Blur settings"),
           cta: {
             icon: "lens_blur",
-            label: "Blur",
-            busyLabel: "Blurring…",
+            label: t("Blur"),
+            busyLabel: t("Blurring…"),
             busy: isWorking,
             onClick: applyAll,
           },
@@ -299,20 +307,20 @@ export function BlurImageTool() {
         }
         rail={
           <SettingsRail
-            title="Blur Settings"
+            title={t("Blur Settings")}
             icon="lens_blur"
             accent={ACCENT}
             footer={
               <>
-                <RailAction onClick={applyAll} busy={isWorking} busyLabel="Blurring…" icon="lens_blur">
-                  {items.length > 1 ? `Blur ${items.length} images` : "Blur & download"}
+                <RailAction onClick={applyAll} busy={isWorking} busyLabel={t("Blurring…")} icon="lens_blur">
+                  {items.length > 1 ? t("Blur {n} images", { n: items.length }) : t("Blur & download")}
                 </RailAction>
                 {done && items.length > 1 && (
                   <RailSecondaryAction
                     icon="folder_zip"
                     onClick={() => zipAndDownload(items.filter((i) => i.result).map((i) => ({ name: i.result!.name, blob: i.result!.blob })), "omyimage_blurred.zip")}
                   >
-                    Download all (ZIP)
+                    {t("Download all (ZIP)")}
                   </RailSecondaryAction>
                 )}
               </>
@@ -320,12 +328,12 @@ export function BlurImageTool() {
           >
             <div className="flex flex-col gap-1.5">
               <span className="flex items-center gap-1.5 text-label-sm font-label-sm text-on-surface-variant">
-                What to blur
-                <HelpTip text="Whole image softens everything. Selective blurs only the areas you draw — or everything except them, with Invert on." />
+                {t("What to blur")}
+                <HelpTip text={t("Whole image softens everything. Selective blurs only the areas you draw — or everything except them, with Invert on.")} />
               </span>
               <div className="grid grid-cols-2 gap-1 rounded-lg bg-surface-container p-1">
-                <button type="button" onClick={() => setMode("whole")} className={seg(mode === "whole")}>Whole image</button>
-                <button type="button" onClick={() => setMode("selective")} className={seg(mode === "selective")}>Selective</button>
+                <button type="button" onClick={() => setMode("whole")} className={seg(mode === "whole")}>{t("Whole image")}</button>
+                <button type="button" onClick={() => setMode("selective")} className={seg(mode === "selective")}>{t("Selective")}</button>
               </div>
             </div>
 
@@ -333,25 +341,27 @@ export function BlurImageTool() {
               <>
                 <label className="flex items-center gap-2.5 cursor-pointer">
                   <input type="checkbox" checked={invert} onChange={(e) => setInvert(e.target.checked)} className="w-4 h-4 accent-secondary" />
-                  <span className="text-body-md text-on-surface">Blur everything <em>except</em> these areas</span>
+                  {/* Three keys, because the emphasis sits inside the sentence and a
+                      placeholder cannot carry an element (conversion.md §4.9). */}
+                  <span className="text-body-md text-on-surface">{t("Blur everything")} <em>{t("except")}</em> {t("these areas")}</span>
                 </label>
                 <div className="flex flex-col gap-1.5">
-                  <span className="text-label-sm font-label-sm text-on-surface-variant">New area shape</span>
+                  <span className="text-label-sm font-label-sm text-on-surface-variant">{t("New area shape")}</span>
                   <div className="grid grid-cols-2 gap-1 rounded-lg bg-surface-container p-1">
                     {(["rect", "ellipse"] as RegionShape[]).map((s) => (
-                      <button key={s} type="button" onClick={() => setShape(s)} className={seg(shape === s)}>{s === "ellipse" ? "Ellipse" : "Rectangle"}</button>
+                      <button key={s} type="button" onClick={() => setShape(s)} className={seg(shape === s)}>{s === "ellipse" ? t("Ellipse") : t("Rectangle")}</button>
                     ))}
                   </div>
                 </div>
-                <RailSecondaryAction icon="delete_sweep" onClick={() => { setRegions([]); setSelectedRegion(null); }}>Clear areas</RailSecondaryAction>
+                <RailSecondaryAction icon="delete_sweep" onClick={() => { setRegions([]); setSelectedRegion(null); }}>{t("Clear areas")}</RailSecondaryAction>
               </>
             )}
 
             <div className="flex flex-col gap-1.5">
-              <span className="text-label-sm font-label-sm text-on-surface-variant">Effect</span>
+              <span className="text-label-sm font-label-sm text-on-surface-variant">{t("Effect")}</span>
               <div className="grid grid-cols-3 gap-1 rounded-lg bg-surface-container p-1">
                 {STYLES.map((s) => (
-                  <button key={s.value} type="button" onClick={() => setStyle(s.value)} className={seg(style === s.value)}>{s.label}</button>
+                  <button key={s.value} type="button" onClick={() => setStyle(s.value)} className={seg(style === s.value)}>{t(s.label)}</button>
                 ))}
               </div>
             </div>
@@ -359,7 +369,7 @@ export function BlurImageTool() {
             {style !== "solid" && (
               <div className="flex flex-col gap-1.5">
                 <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant">
-                  <span>{style === "blur" ? "Blur strength" : "Pixel size"}</span>
+                  <span>{style === "blur" ? t("Blur strength") : t("Pixel size")}</span>
                   <span className="text-primary font-semibold">{radius}px</span>
                 </label>
                 <input type="range" min={1} max={50} step={1} value={radius} onChange={(e) => setRadius(parseInt(e.target.value, 10))} className="w-full accent-secondary" />
@@ -367,16 +377,16 @@ export function BlurImageTool() {
             )}
 
             <div className="flex flex-col gap-1.5">
-              <label className="text-label-sm font-label-sm text-on-surface-variant">Output format</label>
+              <label className="text-label-sm font-label-sm text-on-surface-variant">{t("Output format")}</label>
               <select value={format} onChange={(e) => setFormat(e.target.value as Format)} className={fieldCls}>
-                {FORMATS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}
+                {FORMATS.map((f) => <option key={f.value} value={f.value}>{t(f.label)}</option>)}
               </select>
             </div>
 
             {format !== "image/png" && (
               <div className="flex flex-col gap-1.5">
                 <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant">
-                  <span>Quality</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span>
+                  <span>{t("Quality")}</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span>
                 </label>
                 <input type="range" min={0.5} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" />
               </div>
@@ -387,7 +397,7 @@ export function BlurImageTool() {
                 value={bg}
                 onChange={setBg}
                 allowTransparent={false}
-                label={style === "solid" ? "Fill colour" : "JPG background"}
+                label={style === "solid" ? t("Fill colour") : t("JPG background")}
               />
             )}
           </SettingsRail>

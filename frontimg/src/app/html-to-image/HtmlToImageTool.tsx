@@ -8,7 +8,9 @@ import { TopLoadingBar } from "@/components/TopLoadingBar";
 import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
 import { SettingsRail, RailAction, RailSecondaryAction, RailNote } from "@/components/tool/SettingsRail";
 import { postJsonForImage } from "@/lib/process-router";
-import { downloadBlob, zipAndDownload, formatBytes, baseName } from "@/lib/image/raster";
+import { downloadBlob, zipAndDownload, baseName } from "@/lib/image/raster";
+import { formatNumber } from "@/i18n/format";
+import { useFormatBytes, useLocale, useT } from "@/i18n/I18nScope";
 
 const ACCENT = "#C96A48";
 
@@ -22,6 +24,9 @@ type Page = { id: string; name: string; html: string };
 /** One rendered output, keyed back to the page that produced it. */
 type Result = { pageId: string; url: string; blob: Blob; name: string };
 
+// VIEWPORTS and FORMATS are module scope: labels are translated at the render
+// site, keys in html-to-image.<loc>.ts (conversion.md §4.2). The device names
+// and pixel sizes travel; only the words around them change.
 const VIEWPORTS: { id: string; label: string; w: number; h: number }[] = [
   { id: "desktop", label: "Desktop — 1920 × 1080", w: 1080, h: 1920 },
   { id: "laptop", label: "Laptop — 1440 × 900", w: 900, h: 1440 },
@@ -51,11 +56,17 @@ const uid = () => `p${Date.now()}_${counter++}`;
 const safeName = (s: string) => s.replace(/[^a-z0-9._-]+/gi, "_").replace(/^_+|_+$/g, "") || "page";
 
 export function HtmlToImageTool() {
+  const t = useT();
+  const locale = useLocale();
+  const formatBytes = useFormatBytes();
   const [mode, setMode] = useState<Mode>("url");
   const [url, setUrl] = useState("");
 
   // HTML mode is a batch: several documents, each rendered separately.
-  const [pages, setPages] = useState<Page[]>([{ id: uid(), name: "Page 1", html: STARTER_HTML }]);
+  /* The page name becomes the downloaded file name, so the default follows the
+     page language (conversion.md §6.3). Seeded through an initialiser so `t`
+     is in scope; whatever the user types is never touched. */
+  const [pages, setPages] = useState<Page[]>(() => [{ id: uid(), name: t("Page {n}", { n: 1 }), html: STARTER_HTML }]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const uploadRef = useRef<HTMLInputElement>(null);
 
@@ -105,7 +116,7 @@ export function HtmlToImageTool() {
 
   // ── Page management ───────────────────────────────────────────────────────
   const addPage = () => {
-    const p: Page = { id: uid(), name: `Page ${pages.length + 1}`, html: "" };
+    const p: Page = { id: uid(), name: t("Page {n}", { n: pages.length + 1 }), html: "" };
     setPages((prev) => [...prev, p]);
     setActiveId(p.id);
   };
@@ -133,7 +144,7 @@ export function HtmlToImageTool() {
   const importFiles = async (files: FileList | File[]) => {
     const list = Array.from(files).filter((f) => /\.html?$/i.test(f.name) || f.type === "text/html");
     if (list.length === 0) {
-      toast.error("Please choose .html files.");
+      toast.error(t("Please choose .html files."));
       return;
     }
     const added: Page[] = [];
@@ -146,7 +157,7 @@ export function HtmlToImageTool() {
       return starterOnly ? added : [...prev, ...added];
     });
     setActiveId(added[0].id);
-    toast.success(`Added ${added.length} page${added.length === 1 ? "" : "s"}.`);
+    toast.success(added.length === 1 ? t("Added 1 page.") : t("Added {n} pages.", { n: added.length }));
   };
 
   // ── Derived settings ──────────────────────────────────────────────────────
@@ -185,15 +196,15 @@ export function HtmlToImageTool() {
 
   const run = async () => {
     if (mode === "url" && !/^https?:\/\//i.test(url.trim())) {
-      toast.error("Enter a valid URL (https://…).");
+      toast.error(t("Enter a valid URL (https://…)."));
       return;
     }
     if (mode === "html" && renderable.length === 0) {
-      toast.error("Add some HTML to at least one page.");
+      toast.error(t("Add some HTML to at least one page."));
       return;
     }
     if (width < 100 || height < 100) {
-      toast.error("Width and height must be at least 100px.");
+      toast.error(t("Width and height must be at least 100px."));
       return;
     }
 
@@ -229,11 +240,11 @@ export function HtmlToImageTool() {
         }
       }
       setResults(out);
-      toast.success(`Rendered ${out.length} image${out.length === 1 ? "" : "s"}.`);
+      toast.success(out.length === 1 ? t("Rendered 1 image.") : t("Rendered {n} images.", { n: out.length }));
     } catch (err) {
       // Keep whatever finished — a rate limit on page 7 shouldn't bin pages 1–6.
       setResults(out);
-      toast.error(err instanceof Error ? err.message : "Rendering failed.");
+      toast.error(err instanceof Error ? err.message : t("Rendering failed."));
     } finally {
       setIsWorking(false);
     }
@@ -275,6 +286,7 @@ export function HtmlToImageTool() {
                       : "text-on-surface-variant hover:text-primary"
                   }`}
                 >
+                  {/* i18n-raw: the mode ids URL and HTML are the same in every language */}
                   {m}
                 </button>
               ))}
@@ -283,8 +295,8 @@ export function HtmlToImageTool() {
             {mode === "url" ? (
               <div className="flex flex-col gap-1.5">
                 <label className="flex items-center gap-1.5 text-label-sm font-label-sm text-on-surface-variant">
-                  Web page URL
-                  <HelpTip text="Any public http(s) address. Private and local addresses are rejected by the server." />
+                  {t("Web page URL")}
+                  <HelpTip text={t("Any public http(s) address. Private and local addresses are rejected by the server.")} />
                 </label>
                 <input
                   type="url"
@@ -299,7 +311,7 @@ export function HtmlToImageTool() {
                 {/* Page strip */}
                 <div className="flex flex-wrap items-center gap-2">
                   <h2 className="text-headline-md font-bold text-primary">
-                    {pages.length} page{pages.length === 1 ? "" : "s"}
+                    {pages.length === 1 ? t("1 page") : t("{n} pages", { n: pages.length })}
                   </h2>
                   <div className="ml-auto flex items-center gap-2">
                     <button
@@ -308,14 +320,14 @@ export function HtmlToImageTool() {
                       disabled={isWorking}
                       className="inline-flex items-center gap-1.5 text-label-md font-medium text-on-surface-variant transition-colors hover:text-secondary disabled:opacity-40"
                     >
-                      <Icon name="upload_file" className="text-[18px]" /> Import .html
+                      <Icon name="upload_file" className="text-[18px]" /> {t("Import .html")}
                     </button>
                     <button
                       type="button"
                       onClick={addPage}
                       disabled={isWorking}
-                      aria-label="Add page"
-                      title="Add page"
+                      aria-label={t("Add page")}
+                      title={t("Add page")}
                       className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-on-secondary shadow-md shadow-secondary/30 transition-all hover:bg-secondary-container disabled:opacity-50"
                     >
                       <Icon name="add" className="text-[22px]" />
@@ -344,7 +356,7 @@ export function HtmlToImageTool() {
                           <button
                             type="button"
                             onClick={() => removePage(p.id)}
-                            aria-label={`Remove ${p.name}`}
+                            aria-label={t("Remove {name}", { name: p.name })}
                             className="flex h-5 w-5 items-center justify-center rounded text-on-surface-variant transition-colors hover:bg-error-container hover:text-error"
                           >
                             <Icon name="close" className="text-[14px]" />
@@ -359,8 +371,8 @@ export function HtmlToImageTool() {
                 <div className="flex flex-col gap-1.5">
                   <div className="flex items-center gap-2">
                     <label className="flex items-center gap-1.5 text-label-sm font-label-sm text-on-surface-variant">
-                      Page name
-                      <HelpTip text="Used as the downloaded file name for this page's image." />
+                      {t("Page name")}
+                      <HelpTip text={t("Used as the downloaded file name for this page's image.")} />
                     </label>
                     <input
                       type="text"
@@ -373,12 +385,12 @@ export function HtmlToImageTool() {
                     value={active.html}
                     onChange={(e) => updateActive(e.target.value)}
                     spellCheck={false}
-                    placeholder="<!doctype html> …"
+                    placeholder={t("<!doctype html> …")}
                     rows={18}
                     className={`${fieldCls} resize-y font-label-sm leading-relaxed`}
                   />
                   <p className="text-label-sm font-label-sm text-on-surface-variant/70">
-                    {active.html.length.toLocaleString()} characters · a full document or a fragment both work.
+                    {t("{n} characters · a full document or a fragment both work.", { n: formatNumber(active.html.length, locale) })}
                   </p>
                 </div>
               </div>
@@ -395,11 +407,11 @@ export function HtmlToImageTool() {
                     <Icon name="image" className="text-[40px]" style={{ color: ACCENT }} />
                     <p className="text-body-md">
                       {isWorking
-                        ? `Rendering ${progress.done + 1} of ${progress.total}…`
-                        : "Your rendered image will appear here."}
+                        ? t("Rendering {done} of {total}…", { done: progress.done + 1, total: progress.total })
+                        : t("Your rendered image will appear here.")}
                     </p>
                     <p className="text-label-sm font-label-sm">
-                      Capturing at {width} × {height}
+                      {t("Capturing at")} {width} × {height}
                       {scale > 1 ? ` @${scale}×` : ""} · {format.toUpperCase()}
                     </p>
                   </div>
@@ -408,14 +420,14 @@ export function HtmlToImageTool() {
                 <>
                   <div className="flex items-center justify-between gap-2">
                     <h2 className="text-headline-md font-bold text-primary">
-                      {results.length} image{results.length === 1 ? "" : "s"}
+                      {results.length === 1 ? t("1 image") : t("{n} images", { n: results.length })}
                     </h2>
                     <button
                       type="button"
                       onClick={clearResults}
                       className="inline-flex items-center gap-1.5 text-label-md font-medium text-on-surface-variant transition-colors hover:text-error"
                     >
-                      <Icon name="delete_sweep" className="text-[18px]" /> Clear
+                      <Icon name="delete_sweep" className="text-[18px]" /> {t("Clear")}
                     </button>
                   </div>
                   <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -431,7 +443,7 @@ export function HtmlToImageTool() {
                             <button
                               type="button"
                               onClick={() => downloadBlob(r.blob, r.name)}
-                              aria-label={`Download ${r.name}`}
+                              aria-label={t("Download {name}", { name: r.name })}
                               className="flex h-9 w-9 items-center justify-center rounded-lg bg-surface-container-lowest/85 text-secondary backdrop-blur-sm transition-colors hover:bg-secondary/10"
                             >
                               <Icon name="download" className="text-[20px]" />
@@ -456,24 +468,24 @@ export function HtmlToImageTool() {
         }
         rail={
           <SettingsRail
-            title="Capture Settings"
+            title={t("Capture Settings")}
             icon="screenshot_monitor"
             accent={ACCENT}
             footer={
               <>
                 <RailNote>
                   {isWorking && progress.total > 1
-                    ? `Rendering ${progress.done} of ${progress.total}…`
-                    : "Rendering uses headless Chromium on our servers."}
+                    ? t("Rendering {done} of {total}…", { done: progress.done, total: progress.total })
+                    : t("Rendering uses headless Chromium on our servers.")}
                 </RailNote>
                 <RailAction
                   onClick={run}
                   busy={isWorking}
-                  busyLabel="Rendering…"
+                  busyLabel={t("Rendering…")}
                   disabled={jobCount === 0}
                   icon="screenshot_monitor"
                 >
-                  {jobCount > 1 ? `Render ${jobCount} pages` : "Render to image"}
+                  {jobCount > 1 ? t("Render {n} pages", { n: jobCount }) : t("Render to image")}
                 </RailAction>
                 {results.length > 1 && (
                   <RailSecondaryAction
@@ -485,7 +497,7 @@ export function HtmlToImageTool() {
                       )
                     }
                   >
-                    Download all (ZIP)
+                    {t("Download all (ZIP)")}
                   </RailSecondaryAction>
                 )}
               </>
@@ -495,18 +507,18 @@ export function HtmlToImageTool() {
             <div className="flex flex-col gap-3">
               <h3 className="flex items-center gap-1.5 text-body-lg font-bold text-primary">
                 <Icon name="aspect_ratio" className="text-[18px]" style={{ color: ACCENT }} />
-                Viewport
+                {t("Viewport")}
               </h3>
 
               <div className="flex flex-col gap-1.5">
                 <label className="flex items-center gap-1.5 text-label-sm font-label-sm text-on-surface-variant">
-                  Screen size
-                  <HelpTip text="The browser window the page is laid out in. Responsive sites render their tablet or mobile layout at those widths." />
+                  {t("Screen size")}
+                  <HelpTip text={t("The browser window the page is laid out in. Responsive sites render their tablet or mobile layout at those widths.")} />
                 </label>
                 <select value={preset} onChange={(e) => setPreset(e.target.value)} className={fieldCls}>
                   {VIEWPORTS.map((v) => (
                     <option key={v.id} value={v.id}>
-                      {v.label}
+                      {t(v.label)}
                     </option>
                   ))}
                 </select>
@@ -515,19 +527,19 @@ export function HtmlToImageTool() {
               {preset === "custom" ? (
                 <div className="grid grid-cols-2 gap-3">
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-label-sm font-label-sm text-on-surface-variant">Width (px)</label>
+                    <label className="text-label-sm font-label-sm text-on-surface-variant">{t("Width (px)")}</label>
                     <input type="number" min={100} max={3840} value={customW} onChange={(e) => setCustomW(toInt(e.target.value))} className={smallField} />
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-label-sm font-label-sm text-on-surface-variant">Height (px)</label>
+                    <label className="text-label-sm font-label-sm text-on-surface-variant">{t("Height (px)")}</label>
                     <input type="number" min={100} max={3840} value={customH} onChange={(e) => setCustomH(toInt(e.target.value))} className={smallField} />
                   </div>
                 </div>
               ) : (
                 <div className="flex flex-col gap-1.5">
                   <label className="flex items-center gap-1.5 text-label-sm font-label-sm text-on-surface-variant">
-                    Orientation
-                    <HelpTip text="Swaps the width and height of the chosen screen size." />
+                    {t("Orientation")}
+                    <HelpTip text={t("Swaps the width and height of the chosen screen size.")} />
                   </label>
                   <div className="grid grid-cols-2 gap-1 rounded-lg bg-surface-container p-1">
                     {(["portrait", "landscape"] as Orientation[]).map((o) => (
@@ -541,7 +553,7 @@ export function HtmlToImageTool() {
                             : "text-on-surface-variant hover:text-primary"
                         }`}
                       >
-                        {o}
+                        {o === "portrait" ? t("Portrait") : t("Landscape")}
                       </button>
                     ))}
                   </div>
@@ -550,8 +562,8 @@ export function HtmlToImageTool() {
 
               <div className="flex flex-col gap-1.5">
                 <label className="flex items-center gap-1.5 text-label-sm font-label-sm text-on-surface-variant">
-                  Resolution
-                  <HelpTip text="2× renders twice the pixels for a retina-sharp result — the same layout, a bigger file." />
+                  {t("Resolution")}
+                  <HelpTip text={t("2× renders twice the pixels for a retina-sharp result — the same layout, a bigger file.")} />
                 </label>
                 <div className="grid grid-cols-3 gap-1 rounded-lg bg-surface-container p-1">
                   {[1, 2, 3].map((s) => (
@@ -580,15 +592,15 @@ export function HtmlToImageTool() {
                   className="h-4 w-4 accent-secondary"
                 />
                 <span className="flex items-center gap-1.5 text-body-md text-on-surface">
-                  Capture full page
-                  <HelpTip text="Scrolls to the bottom and stitches the whole document instead of just the visible window." />
+                  {t("Capture full page")}
+                  <HelpTip text={t("Scrolls to the bottom and stitches the whole document instead of just the visible window.")} />
                 </span>
               </label>
 
               <div className="flex flex-col gap-1.5">
                 <label className="flex items-center gap-1.5 text-label-sm font-label-sm text-on-surface-variant">
-                  Capture one element (optional)
-                  <HelpTip text="A CSS selector, e.g. #pricing or .hero. Only that element is captured, which overrides full page." />
+                  {t("Capture one element (optional)")}
+                  <HelpTip text={t("A CSS selector, e.g. #pricing or .hero. Only that element is captured, which overrides full page.")} />
                 </label>
                 <input
                   type="text"
@@ -604,15 +616,15 @@ export function HtmlToImageTool() {
             <div className="flex flex-col gap-3 border-t border-outline-variant/60 pt-5">
               <h3 className="flex items-center gap-1.5 text-body-lg font-bold text-primary">
                 <Icon name="image" className="text-[18px]" style={{ color: ACCENT }} />
-                Output
+                {t("Output")}
               </h3>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-label-sm font-label-sm text-on-surface-variant">Format</label>
+                <label className="text-label-sm font-label-sm text-on-surface-variant">{t("Format")}</label>
                 <select value={format} onChange={(e) => setFormat(e.target.value as Format)} className={fieldCls}>
                   {FORMATS.map((f) => (
                     <option key={f.value} value={f.value}>
-                      {f.label}
+                      {t(f.label)}
                     </option>
                   ))}
                 </select>
@@ -622,14 +634,14 @@ export function HtmlToImageTool() {
                 <div className="flex flex-col gap-1.5">
                   <div className="flex items-center justify-between gap-2">
                     <label className="flex items-center gap-1.5 text-label-sm font-label-sm text-on-surface-variant">
-                      Quality
-                      <HelpTip text="Higher keeps more detail and makes a bigger file. 80–90 is the sweet spot for screenshots." />
+                      {t("Quality")}
+                      <HelpTip text={t("Higher keeps more detail and makes a bigger file. 80–90 is the sweet spot for screenshots.")} />
                     </label>
                     <div className="flex items-center gap-1">
                       <button
                         type="button"
                         onClick={() => setQuality((q) => Math.max(1, q - 1))}
-                        aria-label="Lower quality"
+                        aria-label={t("Lower quality")}
                         className="flex h-7 w-7 items-center justify-center rounded-md border border-surface-variant text-on-surface-variant transition-colors hover:text-primary"
                       >
                         <Icon name="remove" className="text-[16px]" />
@@ -638,7 +650,7 @@ export function HtmlToImageTool() {
                       <button
                         type="button"
                         onClick={() => setQuality((q) => Math.min(100, q + 1))}
-                        aria-label="Higher quality"
+                        aria-label={t("Higher quality")}
                         className="flex h-7 w-7 items-center justify-center rounded-md border border-surface-variant text-on-surface-variant transition-colors hover:text-primary"
                       >
                         <Icon name="add" className="text-[16px]" />
@@ -655,8 +667,8 @@ export function HtmlToImageTool() {
                     className="w-full accent-secondary"
                   />
                   <div className="flex justify-between text-label-sm font-label-sm text-on-surface-variant/70">
-                    <span>Smaller file</span>
-                    <span>Higher quality</span>
+                    <span>{t("Smaller file")}</span>
+                    <span>{t("Higher quality")}</span>
                   </div>
                 </div>
               )}
@@ -670,12 +682,12 @@ export function HtmlToImageTool() {
                   className="h-4 w-4 accent-secondary"
                 />
                 <span className="flex items-center gap-1.5 text-body-md text-on-surface">
-                  Transparent background
+                  {t("Transparent background")}
                   <HelpTip
                     text={
                       canBeTransparent
-                        ? "Skips the page background so the image keeps an alpha channel."
-                        : "JPG has no alpha channel — switch to PNG or WEBP for transparency."
+                        ? t("Skips the page background so the image keeps an alpha channel.")
+                        : t("JPG has no alpha channel — switch to PNG or WEBP for transparency.")
                     }
                   />
                 </span>
@@ -683,8 +695,8 @@ export function HtmlToImageTool() {
 
               <div className="flex flex-col gap-1.5">
                 <label className="flex items-center gap-1.5 text-label-sm font-label-sm text-on-surface-variant">
-                  Padding (px)
-                  <HelpTip text="Breathing room added around the page content before the shot is taken." />
+                  {t("Padding (px)")}
+                  <HelpTip text={t("Breathing room added around the page content before the shot is taken.")} />
                 </label>
                 <input type="number" min={0} max={200} value={padding} onChange={(e) => setPadding(toInt(e.target.value))} className={smallField} />
               </div>
@@ -694,13 +706,13 @@ export function HtmlToImageTool() {
             <div className="flex flex-col gap-3 border-t border-outline-variant/60 pt-5">
               <h3 className="flex items-center gap-1.5 text-body-lg font-bold text-primary">
                 <Icon name="tune" className="text-[18px]" style={{ color: ACCENT }} />
-                Advanced
+                {t("Advanced")}
               </h3>
 
               <div className="flex flex-col gap-1.5">
                 <label className="flex items-center gap-1.5 text-label-sm font-label-sm text-on-surface-variant">
-                  Wait before capture (ms)
-                  <HelpTip text="Extra settle time after the page loads — useful for animations, fonts or lazy-loaded images. Max 10000." />
+                  {t("Wait before capture (ms)")}
+                  <HelpTip text={t("Extra settle time after the page loads — useful for animations, fonts or lazy-loaded images. Max 10000.")} />
                 </label>
                 <input type="number" min={0} max={10000} step={100} value={waitMs} onChange={(e) => setWaitMs(toInt(e.target.value))} className={smallField} />
               </div>
@@ -708,8 +720,8 @@ export function HtmlToImageTool() {
               <label className="flex cursor-pointer items-center gap-2.5">
                 <input type="checkbox" checked={darkMode} onChange={(e) => setDarkMode(e.target.checked)} className="h-4 w-4 accent-secondary" />
                 <span className="flex items-center gap-1.5 text-body-md text-on-surface">
-                  Emulate dark mode
-                  <HelpTip text="Reports prefers-color-scheme: dark, so sites with a dark theme render it." />
+                  {t("Emulate dark mode")}
+                  <HelpTip text={t("Reports prefers-color-scheme: dark, so sites with a dark theme render it.")} />
                 </span>
               </label>
 
@@ -722,12 +734,12 @@ export function HtmlToImageTool() {
                   className="h-4 w-4 accent-secondary"
                 />
                 <span className="flex items-center gap-1.5 text-body-md text-on-surface">
-                  Hide cookie banners
+                  {t("Hide cookie banners")}
                   <HelpTip
                     text={
                       mode === "url"
-                        ? "Hides the common consent overlays that would otherwise cover the shot."
-                        : "Only applies when capturing a URL."
+                        ? t("Hides the common consent overlays that would otherwise cover the shot.")
+                        : t("Only applies when capturing a URL.")
                     }
                   />
                 </span>
@@ -735,8 +747,8 @@ export function HtmlToImageTool() {
 
               <div className="flex flex-col gap-1.5">
                 <label className="flex items-center gap-1.5 text-label-sm font-label-sm text-on-surface-variant">
-                  Custom CSS (optional)
-                  <HelpTip text="Injected last, so it overrides the page's own styles. Applies to every page in the batch." />
+                  {t("Custom CSS (optional)")}
+                  <HelpTip text={t("Injected last, so it overrides the page's own styles. Applies to every page in the batch.")} />
                 </label>
                 <textarea
                   value={css}

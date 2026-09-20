@@ -12,13 +12,14 @@ import { FileTray, TrayAction, type TrayEntry } from "@/components/tool/FileTray
 import { SettingsRail, RailAction, RailSecondaryAction } from "@/components/tool/SettingsRail";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
 import {
-  decodeBitmap, canvasToBlob, downloadBlob, zipAndDownload, formatBytes, baseName, mimeExt, type ExportMime,
+  decodeBitmap, canvasToBlob, downloadBlob, zipAndDownload, baseName, mimeExt, type ExportMime,
 } from "@/lib/image/raster";
 import {
   applyAspect, centeredCrop, outputSize, renderCrop, transformedSize,
   NO_TRANSFORM, type CropSel, type OutputTarget,
 } from "@/lib/image/crop";
 import { useHandoff } from "@/lib/tool-handoff";
+import { useFormatBytes, useLocale, useT } from "@/i18n/I18nScope";
 
 const ACCENT = "#3E96AE";
 const ACCEPT = "image/jpeg,image/png,image/webp";
@@ -26,6 +27,9 @@ const ACCEPT = "image/jpeg,image/png,image/webp";
 type Format = ExportMime;
 type Item = { id: string; file: File; url: string; result?: { blob: Blob; size: number; name: string } };
 
+// FORMATS and OUTPUT_TARGETS are module scope: labels are translated at the
+// render site, keys in circle-crop.<loc>.ts (conversion.md §4.2). The pixel
+// sizes ("256px") are numbers and pass through t() unchanged.
 const FORMATS: { label: string; value: Format }[] = [
   { label: "PNG (transparent)", value: "image/png" },
   { label: "WEBP (transparent)", value: "image/webp" },
@@ -51,6 +55,11 @@ const uid = () => `f${Date.now()}_${counter++}`;
  * what stops the two pages drifting apart the way earlier duplicated tools did.
  */
 export function CircleCropTool() {
+  const t = useT();
+  const locale = useLocale();
+  const formatBytes = useFormatBytes();
+  // One decimal in the page's number format — "1.5" in English, "1,5" in Portuguese.
+  const dec1 = (n: number) => new Intl.NumberFormat(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(n);
   const [items, setItems] = useState<Item[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [sel, setSel] = useState<CropSel>({ x: 0.1, y: 0.1, w: 0.8, h: 0.8 });
@@ -88,12 +97,12 @@ export function CircleCropTool() {
           if (!alive || !itemsRef.current.some((p) => p.id === it.id)) { bmp.close(); return; }
           bmps.current.set(it.id, bmp);
         } catch {
-          toast.error(`Couldn't read ${it.file.name}.`);
+          toast.error(t("Couldn't read {name}.", { name: it.file.name }));
         }
       })
     ).then(() => { if (alive) setBmpTick((n) => n + 1); });
     return () => { alive = false; };
-  }, [items]);
+  }, [items, t]);
 
   const activeBmp = useMemo(() => { void bmpTick; return active ? bmps.current.get(active.id) ?? null : null; }, [active, bmpTick]);
   const tSize = useMemo(
@@ -118,12 +127,12 @@ export function CircleCropTool() {
 
   const addFiles = useCallback((incoming: FileList | File[]) => {
     const imgs = Array.from(incoming).filter((f) => f.type.startsWith("image/"));
-    if (imgs.length === 0) { toast.error("Please select image files."); return; }
+    if (imgs.length === 0) { toast.error(t("Please select image files.")); return; }
     setDone(false);
     const added = imgs.map((file) => ({ id: uid(), file, url: URL.createObjectURL(file) }));
     setItems((prev) => [...prev, ...added]);
     setActiveId((cur) => cur ?? added[0].id);
-  }, []);
+  }, [t]);
 
   useHandoff(addFiles);
 
@@ -161,10 +170,10 @@ export function CircleCropTool() {
       setDone(true);
       if (outItems.length === 1 && outItems[0].result) downloadBlob(outItems[0].result.blob, outItems[0].result.name);
       else await zipAndDownload(outItems.map((o) => ({ name: o.result!.name, blob: o.result!.blob })), "omyimage_circle.zip");
-      toast.success(`Circle-cropped ${outItems.length} image${outItems.length === 1 ? "" : "s"}.`);
+      toast.success(outItems.length === 1 ? t("Circle-cropped 1 image.") : t("Circle-cropped {n} images.", { n: outItems.length }));
     } catch (err) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : "Circle crop failed.");
+      toast.error(err instanceof Error ? err.message : t("Circle crop failed."));
     } finally {
       setIsWorking(false);
     }
@@ -187,7 +196,7 @@ export function CircleCropTool() {
     return (
       <section>
         <TopLoadingBar active={isWorking} />
-        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="panorama_fish_eye" hint="or drop JPG, PNG or WEBP images here" />
+        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="panorama_fish_eye" hint={t("or drop JPG, PNG or WEBP images here")} />
       </section>
     );
   }
@@ -200,7 +209,7 @@ export function CircleCropTool() {
       <button
         type="button"
         onClick={() => setActiveId(it.id)}
-        aria-label={`Preview ${it.file.name}`}
+        aria-label={t("Preview {name}", { name: it.file.name })}
         aria-pressed={active?.id === it.id}
         className="grid place-items-center w-7 h-7 rounded-full shrink-0 transition-colors"
         style={{ backgroundColor: active?.id === it.id ? ACCENT : `${ACCENT}1A`, color: active?.id === it.id ? "#fff" : ACCENT }}
@@ -211,13 +220,13 @@ export function CircleCropTool() {
     meta: (
       <>
         {formatBytes(it.file.size)}
-        {it.result && <><Icon name="check" className="text-[13px] mx-1 align-middle" style={{ color: ACCENT }} />done · {formatBytes(it.result.size)}</>}
+        {it.result && <><Icon name="check" className="text-[13px] mx-1 align-middle" style={{ color: ACCENT }} />{t("done")} · {formatBytes(it.result.size)}</>}
       </>
     ),
     action: it.result ? (
-      <TrayAction icon="download" tone="accent" label="Download" onClick={() => downloadBlob(it.result!.blob, it.result!.name)} />
+      <TrayAction icon="download" tone="accent" label={t("Download")} onClick={() => downloadBlob(it.result!.blob, it.result!.name)} />
     ) : (
-      <TrayAction icon="close" label="Remove" disabled={isWorking} onClick={() => removeItem(it.id)} />
+      <TrayAction icon="close" label={t("Remove")} disabled={isWorking} onClick={() => removeItem(it.id)} />
     ),
   }));
 
@@ -246,8 +255,8 @@ export function CircleCropTool() {
           />
         </div>
         <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
-          Drag the circle to move it, or a corner handle to resize · exports at {out.w} × {out.h} px
-          {items.length > 1 && <> — applied to all {items.length} images</>}
+          {t("Drag the circle to move it, or a corner handle to resize")} · {t("exports at")} {out.w} × {out.h} px
+          {items.length > 1 && <> {t("— applied to all {n} images", { n: items.length })}</>}
         </p>
     </>
   );
@@ -256,7 +265,7 @@ export function CircleCropTool() {
     <>
         <FileTray
           entries={entries}
-          title={`${items.length} image${items.length === 1 ? "" : "s"}`}
+          title={items.length === 1 ? t("1 image") : t("{n} images", { n: items.length })}
           accept={ACCEPT}
           onFiles={addFiles}
           onClear={reset}
@@ -274,23 +283,23 @@ export function CircleCropTool() {
         mobile={{
           ...filesHeader(items.map((i) => i.file)),
           onBack: reset,
-          backLabel: "Clear images",
+          backLabel: t("Clear images"),
           body: canvasPane,
           tabs: [
             {
               id: "files",
               icon: "photo_library",
-              label: "Files",
+              label: t("Files"),
               badge: items.length > 1 ? items.length : undefined,
-              sheetTitle: `${items.length} image${items.length === 1 ? "" : "s"}`,
+              sheetTitle: items.length === 1 ? t("1 image") : t("{n} images", { n: items.length }),
               sheet: tray,
             },
           ],
-          settingsTitle: "Circle crop settings",
+          settingsTitle: t("Circle crop settings"),
           cta: {
             icon: "panorama_fish_eye",
-            label: "Crop",
-            busyLabel: "Cropping…",
+            label: t("Crop"),
+            busyLabel: t("Cropping…"),
             busy: isWorking,
             onClick: applyAll,
           },
@@ -303,20 +312,20 @@ export function CircleCropTool() {
         }
         rail={
           <SettingsRail
-            title="Circle Crop Settings"
+            title={t("Circle Crop Settings")}
             icon="panorama_fish_eye"
             accent={ACCENT}
             footer={
               <>
-                <RailAction onClick={applyAll} busy={isWorking} busyLabel="Cropping…" icon="panorama_fish_eye">
-                  {items.length > 1 ? `Circle crop ${items.length}` : "Circle crop & download"}
+                <RailAction onClick={applyAll} busy={isWorking} busyLabel={t("Cropping…")} icon="panorama_fish_eye">
+                  {items.length > 1 ? t("Circle crop {n}", { n: items.length }) : t("Circle crop & download")}
                 </RailAction>
                 {done && items.length > 1 && (
                   <RailSecondaryAction
                     icon="folder_zip"
                     onClick={() => zipAndDownload(items.filter((i) => i.result).map((i) => ({ name: i.result!.name, blob: i.result!.blob })), "omyimage_circle.zip")}
                   >
-                    Download all (ZIP)
+                    {t("Download all (ZIP)")}
                   </RailSecondaryAction>
                 )}
               </>
@@ -324,51 +333,51 @@ export function CircleCropTool() {
           >
             <div className="flex flex-col gap-1.5">
               <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant">
-                <span>Zoom</span><span className="text-primary font-semibold">{zoom.toFixed(1)}x</span>
+                <span>{t("Zoom")}</span><span className="text-primary font-semibold">{dec1(zoom)}x</span>
               </label>
               <input type="range" min={1} max={5} step={0.1} value={zoom} onChange={(e) => setZoom(parseFloat(e.target.value))} className="w-full accent-secondary" />
             </div>
 
             <div className="flex flex-col gap-1.5">
               <span className="flex items-center gap-1.5 text-label-sm font-label-sm text-on-surface-variant">
-                Output size
-                <HelpTip text="Original exports the circle at its own resolution in the source image — it never upscales. The fixed sizes suit avatars with a set slot to fill." />
+                {t("Output size")}
+                <HelpTip text={t("Original exports the circle at its own resolution in the source image — it never upscales. The fixed sizes suit avatars with a set slot to fill.")} />
               </span>
               <div className="grid grid-cols-4 gap-1 rounded-lg bg-surface-container p-1">
                 {OUTPUT_TARGETS.map((o) => (
-                  <button key={String(o.value)} type="button" onClick={() => setTarget(o.value)} className={seg(target === o.value)}>{o.label}</button>
+                  <button key={String(o.value)} type="button" onClick={() => setTarget(o.value)} className={seg(target === o.value)}>{t(o.label)}</button>
                 ))}
               </div>
             </div>
 
-            <RailSecondaryAction icon="restart_alt" onClick={recenter}>Recentre &amp; reset zoom</RailSecondaryAction>
+            <RailSecondaryAction icon="restart_alt" onClick={recenter}>{t("Recentre & reset zoom")}</RailSecondaryAction>
 
             <div className="flex flex-col gap-1.5">
-              <label className="text-label-sm font-label-sm text-on-surface-variant">Output format</label>
+              <label className="text-label-sm font-label-sm text-on-surface-variant">{t("Output format")}</label>
               <select value={format} onChange={(e) => setFormat(e.target.value as Format)} className={fieldCls}>
-                {FORMATS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}
+                {FORMATS.map((f) => <option key={f.value} value={f.value}>{t(f.label)}</option>)}
               </select>
             </div>
 
             {format !== "image/png" && (
               <div className="flex flex-col gap-1.5">
                 <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant">
-                  <span>Quality</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span>
+                  <span>{t("Quality")}</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span>
                 </label>
                 <input type="range" min={0.5} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" />
               </div>
             )}
 
-            <BackgroundPicker value={bg} onChange={setBg} allowTransparent={effMime !== "image/jpeg"} label="Background" />
+            <BackgroundPicker value={bg} onChange={setBg} allowTransparent={effMime !== "image/jpeg"} label={t("Background")} />
 
             <div className="flex flex-col gap-1.5">
               <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant">
-                <span>Ring thickness</span><span className="text-primary font-semibold">{ringPct}%</span>
+                <span>{t("Ring thickness")}</span><span className="text-primary font-semibold">{ringPct}%</span>
               </label>
               <input type="range" min={0} max={15} step={1} value={ringPct} onChange={(e) => setRingPct(parseInt(e.target.value, 10))} className="w-full accent-secondary" />
             </div>
             {ringPct > 0 && (
-              <BackgroundPicker value={{ transparent: false, color: ringColor }} onChange={(v) => setRingColor(v.color)} allowTransparent={false} label="Ring color" />
+              <BackgroundPicker value={{ transparent: false, color: ringColor }} onChange={(v) => setRingColor(v.color)} allowTransparent={false} label={t("Ring color")} />
             )}
           </SettingsRail>
         }

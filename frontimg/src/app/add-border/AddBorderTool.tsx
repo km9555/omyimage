@@ -11,13 +11,14 @@ import { SettingsRail, RailAction, RailSecondaryAction } from "@/components/tool
 import { BackgroundPicker } from "@/components/BackgroundPicker";
 import { HelpTip } from "@/components/HelpTip";
 import {
-  decodeBitmap, canvasToBlob, downloadBlob, zipAndDownload, formatBytes, baseName, mimeExt, type ExportMime,
+  decodeBitmap, canvasToBlob, downloadBlob, zipAndDownload, baseName, mimeExt, type ExportMime,
 } from "@/lib/image/raster";
 import {
   paintFrame, layoutFrame, ASPECT_PRESETS, BORDER_STYLES, FRAME_PRESETS,
   type BorderStyle, type FrameOptions, type FramePreset,
 } from "@/lib/image/frame";
 import { useHandoff } from "@/lib/tool-handoff";
+import { useFormatBytes, useLocale, useT } from "@/i18n/I18nScope";
 
 const ACCENT = "#D08048";
 const ACCEPT = "image/jpeg,image/png,image/webp";
@@ -25,6 +26,9 @@ const ACCEPT = "image/jpeg,image/png,image/webp";
 type Format = "original" | ExportMime;
 type Item = { id: string; file: File; url: string; result?: { blob: Blob; size: number; name: string } };
 
+// FORMATS here, and FRAME_PRESETS / BORDER_STYLES / ASPECT_PRESETS in
+// lib/image/frame.ts, are module scope: labels are translated at the render
+// site, keys in add-border.<loc>.ts (conversion.md §4.2).
 const FORMATS: { label: string; value: Format }[] = [
   { label: "Auto", value: "original" },
   { label: "PNG", value: "image/png" },
@@ -76,6 +80,7 @@ function PresetTile({
   transparentOutside: boolean;
   onClick: () => void;
 }) {
+  const t = useT();
   const ref = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -109,13 +114,18 @@ function PresetTile({
         <canvas ref={ref} className="max-h-full max-w-full" />
       </span>
       <span className={`text-label-sm font-label-sm ${active ? "font-semibold text-secondary" : "text-on-surface-variant"}`}>
-        {preset.label}
+        {t(preset.label)}
       </span>
     </button>
   );
 }
 
 export function AddBorderTool() {
+  const t = useT();
+  const locale = useLocale();
+  const formatBytes = useFormatBytes();
+  // Half-step sliders print "2.5%" in English and must print "2,5%" in Portuguese.
+  const num = (n: number) => new Intl.NumberFormat(locale).format(n);
   const [items, setItems] = useState<Item[]>([]);
 
   // Border.
@@ -231,12 +241,12 @@ export function AddBorderTool() {
 
   const addFiles = useCallback((incoming: FileList | File[]) => {
     const imgs = Array.from(incoming).filter((f) => f.type.startsWith("image/"));
-    if (imgs.length === 0) { toast.error("Please select image files."); return; }
+    if (imgs.length === 0) { toast.error(t("Please select image files.")); return; }
     setDone(false);
     // Prefill the caption so turning it on never shows an empty band.
     setCaptionText((cur) => (cur === "" ? baseName(imgs[0].name) : cur));
     setItems((prev) => [...prev, ...imgs.map((file) => ({ id: uid(), file, url: URL.createObjectURL(file) }))]);
-  }, []);
+  }, [t]);
 
   useHandoff(addFiles);
 
@@ -278,10 +288,10 @@ export function AddBorderTool() {
       setDone(true);
       if (out.length === 1 && out[0].result) downloadBlob(out[0].result.blob, out[0].result.name);
       else await zipAndDownload(out.map((o) => ({ name: o.result!.name, blob: o.result!.blob })), "omyimage_bordered.zip");
-      toast.success(`Added a border to ${out.length} image${out.length === 1 ? "" : "s"}.`);
+      toast.success(out.length === 1 ? t("Added a border to 1 image.") : t("Added a border to {n} images.", { n: out.length }));
     } catch (err) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : "Adding the border failed.");
+      toast.error(err instanceof Error ? err.message : t("Adding the border failed."));
     } finally {
       setIsWorking(false);
     }
@@ -298,7 +308,7 @@ export function AddBorderTool() {
     return (
       <section>
         <TopLoadingBar active={isWorking} />
-        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="crop_din" hint="or drop JPG, PNG or WEBP images here" />
+        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="crop_din" hint={t("or drop JPG, PNG or WEBP images here")} />
       </section>
     );
   }
@@ -310,13 +320,13 @@ export function AddBorderTool() {
     meta: (
       <>
         {formatBytes(it.file.size)}
-        {it.result && <><Icon name="check" className="text-[13px] mx-1 align-middle" style={{ color: ACCENT }} />done</>}
+        {it.result && <><Icon name="check" className="text-[13px] mx-1 align-middle" style={{ color: ACCENT }} />{t("done")}</>}
       </>
     ),
     action: it.result ? (
-      <TrayAction icon="download" tone="accent" label="Download" onClick={() => downloadBlob(it.result!.blob, it.result!.name)} />
+      <TrayAction icon="download" tone="accent" label={t("Download")} onClick={() => downloadBlob(it.result!.blob, it.result!.name)} />
     ) : (
-      <TrayAction icon="close" label="Remove" disabled={isWorking} onClick={() => removeItem(it.id)} />
+      <TrayAction icon="close" label={t("Remove")} disabled={isWorking} onClick={() => removeItem(it.id)} />
     ),
   }));
 
@@ -330,12 +340,12 @@ export function AddBorderTool() {
         mobile={{
           ...filesHeader(items.map((i) => i.file)),
           onBack: reset,
-          backLabel: "Clear files",
-          settingsTitle: "Border settings",
+          backLabel: t("Clear files"),
+          settingsTitle: t("Border settings"),
           cta: {
             icon: "crop_din",
-            label: "Add border",
-            busyLabel: "Adding…",
+            label: t("Add border"),
+            busyLabel: t("Adding…"),
             busy: isWorking,
             onClick: applyAll,
           },
@@ -349,8 +359,8 @@ export function AddBorderTool() {
               <canvas ref={previewRef} className="max-w-full max-h-[46vh] rounded" />
             </div>
             <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
-              Live preview of <span className="font-semibold text-on-surface">{items[0].file.name}</span>
-              {items.length > 1 && <> — applied to all {items.length} images.</>}
+              {t("Live preview of")} <span className="font-semibold text-on-surface">{items[0].file.name}</span>
+              {items.length > 1 && <> {t("— applied to all {n} images.", { n: items.length })}</>}
               {outSize && <> · {outSize.W} × {outSize.H} px</>}
             </p>
             <FileTray entries={entries} accept={ACCEPT} onFiles={addFiles} onClear={reset} busy={isWorking} />
@@ -358,27 +368,27 @@ export function AddBorderTool() {
         }
         rail={
           <SettingsRail
-            title="Border Settings"
+            title={t("Border Settings")}
             icon="crop_din"
             accent={ACCENT}
             footer={
               <>
-                <RailAction onClick={applyAll} busy={isWorking} busyLabel="Adding…" icon="crop_din">
-                  Add border {items.length > 1 ? `to ${items.length}` : "& download"}
+                <RailAction onClick={applyAll} busy={isWorking} busyLabel={t("Adding…")} icon="crop_din">
+                  {items.length > 1 ? t("Add border to {n}", { n: items.length }) : t("Add border & download")}
                 </RailAction>
                 {done && items.length > 1 && (
                   <RailSecondaryAction
                     icon="folder_zip"
                     onClick={() => zipAndDownload(items.filter((i) => i.result).map((i) => ({ name: i.result!.name, blob: i.result!.blob })), "omyimage_bordered.zip")}
                   >
-                    Download all (ZIP)
+                    {t("Download all (ZIP)")}
                   </RailSecondaryAction>
                 )}
               </>
             }
           >
           <div className="flex flex-col gap-2">
-            <span className={sectionLabel}>Presets</span>
+            <span className={sectionLabel}>{t("Presets")}</span>
             <div className="grid grid-cols-3 gap-2">
               {FRAME_PRESETS.map((p) => (
                 <PresetTile key={p.id} preset={p} thumb={thumb} active={activePreset === p.id} transparentOutside={transparentOutside} onClick={() => applyPreset(p)} />
@@ -387,7 +397,7 @@ export function AddBorderTool() {
           </div>
 
           <div className="flex flex-col gap-2">
-            <span className={sectionLabel}>Aspect ratio</span>
+            <span className={sectionLabel}>{t("Aspect ratio")}</span>
             <div className="grid grid-cols-4 gap-1.5">
               {ASPECT_PRESETS.map((a) => (
                 <button
@@ -400,54 +410,54 @@ export function AddBorderTool() {
                   }`}
                 >
                   <span className={`text-label-md font-semibold ${aspect === a.ratio ? "text-secondary" : "text-primary"}`}>{a.label}</span>
-                  {a.hint && <span className="text-[10px] leading-tight text-on-surface-variant">{a.hint}</span>}
+                  {a.hint && <span className="text-[10px] leading-tight text-on-surface-variant">{t(a.hint)}</span>}
                 </button>
               ))}
             </div>
             <p className="text-label-sm font-label-sm text-on-surface-variant/70">
-              The frame grows to reach the shape — the photo is never cropped.
+              {t("The frame grows to reach the shape — the photo is never cropped.")}
             </p>
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-label-sm font-label-sm text-on-surface-variant">Style</label>
+            <label className="text-label-sm font-label-sm text-on-surface-variant">{t("Style")}</label>
             <select value={style} onChange={(e) => setStyle(e.target.value as BorderStyle)} className={fieldCls}>
-              {BORDER_STYLES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+              {BORDER_STYLES.map((s) => <option key={s.value} value={s.value}>{t(s.label)}</option>)}
             </select>
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Thickness</span><span className="text-primary font-semibold">{thickness}%</span></label>
+            <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Thickness")}</span><span className="text-primary font-semibold">{num(thickness)}%</span></label>
             <input type="range" min={0} max={25} step={0.5} value={thickness} onChange={(e) => setThickness(parseFloat(e.target.value))} className="w-full accent-secondary" disabled={style === "none"} />
-            <p className="text-label-sm font-label-sm text-on-surface-variant/70">As a percentage of the image&apos;s shortest side, so it scales with any size.</p>
+            <p className="text-label-sm font-label-sm text-on-surface-variant/70">{t("As a percentage of the image's shortest side, so it scales with any size.")}</p>
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Corner radius</span><span className="text-primary font-semibold">{radius}%</span></label>
+            <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Corner radius")}</span><span className="text-primary font-semibold">{radius}%</span></label>
             <input type="range" min={0} max={50} step={1} value={radius} onChange={(e) => setRadius(parseInt(e.target.value, 10))} className="w-full accent-secondary" />
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Extra depth below</span><span className="text-primary font-semibold">{bottomExtra}%</span></label>
+            <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Extra depth below")}</span><span className="text-primary font-semibold">{bottomExtra}%</span></label>
             <input type="range" min={0} max={30} step={1} value={bottomExtra} onChange={(e) => setBottomExtra(parseInt(e.target.value, 10))} className="w-full accent-secondary" />
-            <p className="text-label-sm font-label-sm text-on-surface-variant/70">A deeper bottom edge, the way a Polaroid has one.</p>
+            <p className="text-label-sm font-label-sm text-on-surface-variant/70">{t("A deeper bottom edge, the way a Polaroid has one.")}</p>
           </div>
 
-          <BackgroundPicker value={{ transparent: false, color }} onChange={(v) => setColor(v.color)} allowTransparent={false} label="Border colour" />
+          <BackgroundPicker value={{ transparent: false, color }} onChange={(v) => setColor(v.color)} allowTransparent={false} label={t("Border colour")} />
 
           <div className="flex flex-col gap-2 rounded-lg border border-outline-variant/40 bg-surface-bright p-3.5">
             <label className="flex items-center gap-2.5 cursor-pointer">
               <input type="checkbox" checked={matOn} onChange={(e) => setMatOn(e.target.checked)} className="w-4 h-4 accent-secondary" />
-              <span className="text-body-md text-on-surface">Inner mat</span>
+              <span className="text-body-md text-on-surface">{t("Inner mat")}</span>
             </label>
             <p className="text-label-sm font-label-sm text-on-surface-variant/70">
-              The thin second frame between the photo and the border, as in a mounted print.
+              {t("The thin second frame between the photo and the border, as in a mounted print.")}
             </p>
             {matOn && (
               <>
-                <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Mat width</span><span className="text-primary font-semibold">{matWidth}%</span></label>
+                <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Mat width")}</span><span className="text-primary font-semibold">{num(matWidth)}%</span></label>
                 <input type="range" min={0.5} max={12} step={0.5} value={matWidth} onChange={(e) => setMatWidth(parseFloat(e.target.value))} className="w-full accent-secondary" />
-                <BackgroundPicker value={{ transparent: false, color: matColor }} onChange={(v) => setMatColor(v.color)} allowTransparent={false} label="Mat colour" />
+                <BackgroundPicker value={{ transparent: false, color: matColor }} onChange={(v) => setMatColor(v.color)} allowTransparent={false} label={t("Mat colour")} />
               </>
             )}
           </div>
@@ -455,7 +465,7 @@ export function AddBorderTool() {
           <div className="flex flex-col gap-2 rounded-lg border border-outline-variant/40 bg-surface-bright p-3.5">
             <label className="flex items-center gap-2.5 cursor-pointer">
               <input type="checkbox" checked={captionOn} onChange={(e) => setCaptionOn(e.target.checked)} className="w-4 h-4 accent-secondary" />
-              <span className="text-body-md text-on-surface">Caption</span>
+              <span className="text-body-md text-on-surface">{t("Caption")}</span>
             </label>
             {captionOn && (
               <>
@@ -463,16 +473,16 @@ export function AddBorderTool() {
                   type="text"
                   value={captionText}
                   onChange={(e) => setCaptionText(e.target.value)}
-                  placeholder="Caption text"
+                  placeholder={t("Caption text")}
                   className={fieldCls}
                   maxLength={120}
                 />
-                <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Text size</span><span className="text-primary font-semibold">{captionSize}%</span></label>
+                <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Text size")}</span><span className="text-primary font-semibold">{num(captionSize)}%</span></label>
                 <input type="range" min={1.5} max={10} step={0.5} value={captionSize} onChange={(e) => setCaptionSize(parseFloat(e.target.value))} className="w-full accent-secondary" />
                 <p className="text-label-sm font-label-sm text-on-surface-variant/70">
                   {items.length > 1 && captionText.trim() === baseName(items[0].file.name)
-                    ? "Each image is captioned with its own filename. Type something to use one caption for all of them."
-                    : "Drawn in the band below the photo, which deepens to make room."}
+                    ? t("Each image is captioned with its own filename. Type something to use one caption for all of them.")
+                    : t("Drawn in the band below the photo, which deepens to make room.")}
                 </p>
               </>
             )}
@@ -495,31 +505,29 @@ export function AddBorderTool() {
                 className="w-4 h-4 accent-secondary"
               />
               <span className="text-body-md text-on-surface flex items-center gap-1.5">
-                Transparent background
-                <HelpTip text="Leaves everything outside the frame empty instead of filled, so the framed photo can sit on any background. The corners follow the Corner radius slider, and an aspect ratio leaves empty space around the frame rather than a thicker border." />
+                {t("Transparent background")}
+                <HelpTip text={t("Leaves everything outside the frame empty instead of filled, so the framed photo can sit on any background. The corners follow the Corner radius slider, and an aspect ratio leaves empty space around the frame rather than a thicker border.")} />
               </span>
             </label>
             {transparentOutside && (
               alphaLost ? (
                 <p className="text-label-sm font-label-sm text-error">
-                  {FORMATS.find((f) => f.value === format)?.label} cannot store transparency — the empty
-                  areas will export as solid black. Choose PNG or WEBP.
+                  {t("{format} cannot store transparency — the empty areas will export as solid black. Choose PNG or WEBP.", { format: t(FORMATS.find((f) => f.value === format)?.label ?? "") })}
                 </p>
               ) : (
                 <p className="text-label-sm font-label-sm text-on-surface-variant/70">
-                  Saved as {format === "image/webp" ? "WEBP" : "PNG"}, which can store transparency.
-                  Raise Corner radius to round the frame&apos;s outer edge.
+                  {t("Saved as {format}, which can store transparency. Raise Corner radius to round the frame's outer edge.", { format: format === "image/webp" ? "WEBP" : "PNG" })}
                 </p>
               )
             )}
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <span className={sectionLabel}>Save as</span>
+            <span className={sectionLabel}>{t("Save as")}</span>
             <div className="grid grid-cols-4 gap-1 rounded-lg bg-surface-container p-1">
               {FORMATS.map((f) => (
                 <button key={f.value} type="button" onClick={() => setFormat(f.value)} className={seg(format === f.value)}>
-                  {f.label}
+                  {t(f.label)}
                 </button>
               ))}
             </div>
@@ -527,7 +535,7 @@ export function AddBorderTool() {
 
           {format !== "image/png" && (
             <div className="flex flex-col gap-1.5">
-              <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Quality</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span></label>
+              <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Quality")}</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span></label>
               <input type="range" min={0.5} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" />
             </div>
           )}

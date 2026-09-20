@@ -44,6 +44,12 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "merge-images",
     "gif-maker",
     "gif-to-images",
+    // Batch 5 — black & white, blur, borders, circle crop, HTML to image.
+    "grayscale-image",
+    "blur-image",
+    "add-border",
+    "circle-crop",
+    "html-to-image",
   ],
 };
 

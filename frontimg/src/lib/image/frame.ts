@@ -407,7 +407,10 @@ export interface FramePreset {
 export const FRAME_PRESETS: FramePreset[] = [
   {
     id: "classic",
-    label: "Classic",
+    /* "Classic" is also the 4:3 hint in ASPECT_PRESETS below, and the two need
+       different genders in Portuguese (a moldura clássica, o formato clássico).
+       t() strips the context for the English fallback (conversion.md §4.12). */
+    label: "Classic|preset",
     options: { thickness: 5, color: "#3a3a3a", style: "solid", radius: 0, mat: { width: 2.5, color: "#f4efe6" } },
   },
   {

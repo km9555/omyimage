@@ -525,6 +525,41 @@ of the noun the adjective belongs to, per tool.
 three `URL.revokeObjectURL` callbacks in GifToImagesTool. Renamed before
 `useT()` went in. The grep before every sweep is `((t)` and `(t) =>`.
 
+### 6.2.5 Batch 5 (imagem-preto-e-branco, desfocar-imagem, adicionar-borda, recortar-imagem-em-circulo, html-para-imagem)
+
+**One English word, two Portuguese words — now with a context key.** "Blur" is
+the effect in the rail (o desfoque) and the button that runs the tool
+(desfocar), and one key cannot be both. The STYLES entry became `"Blur|effect"`;
+t() strips the context so English is unchanged. Same fix for "Classic", which
+is a frame preset (a moldura clássica) and a 4:3 hint (o formato clássico) in
+the same file — `"Classic|preset"`. The §6.2.4 note about `ui` overriding
+`common` covers the easy case; when both uses live in ONE tool, only a context
+key works.
+
+**Emphasis inside a sentence needs separate keys.** "Blur everything *except*
+these areas" carries an `<em>`, and a placeholder cannot hold an element. Three
+keys, one per fragment, and Portuguese keeps the same order ("Desfocar tudo
+menos estas áreas"). This only works where both halves stand alone — a fragment
+that has to agree in gender with the other half must stay one key.
+
+**Half-step sliders print a decimal point.** `{matWidth}%` renders "2.5%" from
+plain interpolation, in every locale. A local `num()` on `Intl.NumberFormat`
+gives "2,5%" in Portuguese and the identical string in English. This is the
+§6.2.4 `toFixed` trap in its quieter form: the number never passed through a
+formatter at all, so grepping for `toFixed` alone would have missed it.
+
+**A default that becomes a filename.** HtmlToImageTool names each page "Page 1"
+and uses that name for the downloaded file, so it is `t("Page {n}")` seeded
+through a `useState(() => …)` initialiser — the same shape as the editor's stamp
+text in §6.2.3 and the meme captions in §6.2.4.
+
+**Unverified backend sentences are marked as such.** html-to-image is
+server-backed, but the backend is not in this repo and the dev server does not
+proxy `/api`, so its error sentences could not be confirmed. They are translated
+following the wording the other server-backed tools use and carry an UNVERIFIED
+comment; an unmatched sentence falls back to English rather than breaking. Open
+item: check them against the Contabo backend and correct them there.
+
 ### 6.3 Image-specific traps (watch for these in every batch)
 
 - **Text drawn INTO the image.** Meme captions, watermark defaults, the
