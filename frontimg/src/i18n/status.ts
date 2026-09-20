@@ -86,6 +86,12 @@ const SHIPPED_PAGES: Record<TranslatedLocale, string[]> = {
     "/pricing",
     "/cookies",
     "/image-converter",
+    // Batch 10 — the remaining legal twins and the auth pages.
+    "/privacy",
+    "/terms",
+    "/refunds",
+    "/login",
+    "/signup",
   ],
 };
 

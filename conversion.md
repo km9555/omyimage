@@ -661,6 +661,34 @@ lists every pair; the names and the format essays are read through `pairCopy()`
 and `formatEssay()`, so an untranslated pair shows its English name and links to
 its English page — the gate decides, not the hub.
 
+### 6.2.10 Batch 10 (privacidade, termos, reembolsos, entrar, criar-conta)
+
+**Three twins and two forms.** The legal pages follow §6.5 — written twins with
+identical section ids, because `/pt/cookies` links to `/pt/privacidade#google-drive`
+and an id renamed on one side is a dead anchor nobody notices. The auth forms
+are ordinary key translation; their dictionaries reach the client components
+through an `<I18nScope>` inside the `<Suspense>` boundary the static export
+requires.
+
+**Two sentences in the legal prose are deliberately NOT localised freely.** The
+Google API Services User Data Policy keeps its English name, and the Limited
+Use sentence is rendered close to Google's prescribed wording — that paragraph
+is audited during OAuth verification, and a loose paraphrase in any language is
+what fails a review. The all-caps disclaimer and liability sections keep their
+capitalisation for the same reason: there it is the legal convention, not a
+style choice.
+
+**What the twin approach costs, stated plainly.** An edit to `/privacy` does
+NOT reach `/pt/privacidade`. Every legal change is now a two-file change, and
+the cost grows with each locale. It is still the right trade against cutting
+legal prose into dictionary fragments, but it is a standing obligation — write
+it into whatever process reviews the legal pages.
+
+**A consent sentence with two links is three keys.** "I agree to the [Terms]
+and [Privacy Policy]" cannot be one key, and the middle fragment needs a
+context suffix (`"and|between links"`) or the bare word collides with every
+other "and" on the site.
+
 ### 6.3 Image-specific traps (watch for these in every batch)
 
 - **Text drawn INTO the image.** Meme captions, watermark defaults, the

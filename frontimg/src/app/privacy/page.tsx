@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageAlternates } from "@/lib/i18n/tool-meta";
 import Link from "next/link";
 import {
   LegalShell,
@@ -11,11 +12,13 @@ import {
 } from "@/components/LegalShell";
 import { SITE } from "@/lib/site";
 
+const languages = pageAlternates("/privacy");
+
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
     "How oMyImage handles your images and data. Most tools run entirely in your browser; server-processed files are deleted within an hour. No tracking, no ads, no account required.",
-  alternates: { canonical: "/privacy" },
+  alternates: languages ? { canonical: "/privacy", languages } : { canonical: "/privacy" },
 };
 
 const toc = [

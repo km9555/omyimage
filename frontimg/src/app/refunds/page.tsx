@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageAlternates } from "@/lib/i18n/tool-meta";
 import Link from "next/link";
 import {
   LegalShell,
@@ -9,11 +10,13 @@ import {
 } from "@/components/LegalShell";
 import { SITE } from "@/lib/site";
 
+const languages = pageAlternates("/refunds");
+
 export const metadata: Metadata = {
   title: "Refund Policy",
   description:
     "oMyImage refund policy — how refunds work for paid plans, the request window, and what is and isn't refundable.",
-  alternates: { canonical: "/refunds" },
+  alternates: languages ? { canonical: "/refunds", languages } : { canonical: "/refunds" },
 };
 
 const toc = [

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageAlternates } from "@/lib/i18n/tool-meta";
 import Link from "next/link";
 import {
   LegalShell,
@@ -10,11 +11,13 @@ import {
 } from "@/components/LegalShell";
 import { SITE } from "@/lib/site";
 
+const languages = pageAlternates("/terms");
+
 export const metadata: Metadata = {
   title: "Terms of Service",
   description:
     "The terms governing your use of oMyImage — acceptable use, file handling, disclaimers, limitation of liability and governing law.",
-  alternates: { canonical: "/terms" },
+  alternates: languages ? { canonical: "/terms", languages } : { canonical: "/terms" },
 };
 
 const toc = [

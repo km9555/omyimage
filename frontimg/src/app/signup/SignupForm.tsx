@@ -13,12 +13,16 @@ import { Icon } from "@/components/Icon";
 import { authFetch } from "@/lib/api";
 import { useAuth } from "@/lib/auth/useAuth";
 import { authErrorMessage } from "@/lib/auth/errors";
+import { localeHref } from "@/lib/i18n/links";
+import { useLocale, useT } from "@/i18n/I18nScope";
 
 export function SignupForm() {
+  const t = useT();
+  const locale = useLocale();
   const router = useRouter();
   const params = useSearchParams();
   // Home, not /dashboard — see the note in LoginForm.
-  const redirect = params.get("redirect") || "/";
+  const redirect = params.get("redirect") || localeHref("/", locale);
   const { user, loading: authLoading } = useAuth();
 
   const [name, setName] = useState("");
@@ -38,15 +42,15 @@ export function SignupForm() {
     e.preventDefault();
     setError(null);
     if (password.length < 6) {
-      setError("Password must be at least 6 characters.");
+      setError(t("Password must be at least 6 characters."));
       return;
     }
     if (password !== confirm) {
-      setError("Passwords don't match.");
+      setError(t("Passwords don't match."));
       return;
     }
     if (!agree) {
-      toast.error("Please accept the Terms and Privacy Policy.");
+      toast.error(t("Please accept the Terms and Privacy Policy."));
       return;
     }
     setLoading(true);
@@ -71,13 +75,13 @@ export function SignupForm() {
   if (sent) {
     return (
       <AuthShell
-        title="Check your inbox"
-        subtitle={`We sent a confirmation link to ${email}. Click it to activate your account.`}
+        title={t("Check your inbox")}
+        subtitle={t("We sent a confirmation link to {email}. Click it to activate your account.", { email })}
         footer={
           <>
-            Wrong email?{" "}
+            {t("Wrong email?")}{" "}
             <button onClick={() => setSent(false)} className="font-semibold text-secondary hover:underline">
-              Go back
+              {t("Go back")}
             </button>
           </>
         }
@@ -87,10 +91,10 @@ export function SignupForm() {
             <Icon name="mark_email_unread" fill className="text-[34px] text-secondary" />
           </span>
           <p className="text-body-md text-on-surface-variant">
-            Didn&apos;t get it? Check spam, or wait a minute and try signing up again.
+            {t("Didn't get it? Check spam, or wait a minute and try signing up again.")}
           </p>
-          <Link href="/login" className="font-semibold text-secondary hover:underline">
-            Back to login
+          <Link href={localeHref("/login", locale)} className="font-semibold text-secondary hover:underline">
+            {t("Back to login")}
           </Link>
         </div>
       </AuthShell>
@@ -99,53 +103,54 @@ export function SignupForm() {
 
   return (
     <AuthShell
-      title="Create your account"
-      subtitle="Create a free account — upgrade anytime."
+      title={t("Create your account")}
+      subtitle={t("Create a free account — upgrade anytime.")}
       footer={
         <>
-          Already have an account?{" "}
-          <Link href={`/login?redirect=${encodeURIComponent(redirect)}`} className="font-semibold text-secondary hover:underline">
-            Log in
+          {t("Already have an account?")}{" "}
+          <Link href={`${localeHref("/login", locale)}?redirect=${encodeURIComponent(redirect)}`} className="font-semibold text-secondary hover:underline">
+            {t("Log in")}
           </Link>
         </>
       }
     >
       <form onSubmit={handleSubmit} className="flex flex-col gap-stack-md">
         <AuthField
-          label="Name (optional)"
+          label={t("Name (optional)")}
           name="name"
           type="text"
           autoComplete="name"
-          placeholder="How should we address you?"
+          placeholder={t("How should we address you?")}
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
         <AuthField
-          label="Email"
+          label={t("Email")}
           name="email"
           type="email"
           autoComplete="email"
+          /* i18n-raw: an example address, the same in every language */
           placeholder="you@example.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
         <AuthField
-          label="Password"
+          label={t("Password")}
           name="password"
           password
           autoComplete="new-password"
-          placeholder="At least 6 characters"
+          placeholder={t("At least 6 characters")}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
         <AuthField
-          label="Confirm password"
+          label={t("Confirm password")}
           name="confirm"
           password
           autoComplete="new-password"
-          placeholder="Re-enter your password"
+          placeholder={t("Re-enter your password")}
           value={confirm}
           onChange={(e) => setConfirm(e.target.value)}
           error={error}
@@ -155,20 +160,24 @@ export function SignupForm() {
         <label className="flex items-start gap-2.5 cursor-pointer">
           <input type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)} className="mt-0.5 h-5 w-5 rounded accent-secondary" />
           <span className="text-label-sm font-label-sm text-on-surface-variant">
-            I agree to the{" "}
-            <Link href="/terms" className="text-secondary hover:underline">Terms</Link> and{" "}
-            <Link href="/privacy" className="text-secondary hover:underline">Privacy Policy</Link>.
+            {/* Three keys: the sentence carries two links, and a placeholder
+                cannot hold an element (conversion.md §4.9). Portuguese keeps
+                the same order, so the joins hold. */}
+            {t("I agree to the")}{" "}
+            <Link href={localeHref("/terms", locale)} className="text-secondary hover:underline">{t("Terms")}</Link>{" "}
+            {t("and|between links")}{" "}
+            <Link href={localeHref("/privacy", locale)} className="text-secondary hover:underline">{t("Privacy Policy")}</Link>.
           </span>
         </label>
 
-        <SubmitButton loading={loading}>Create account</SubmitButton>
+        <SubmitButton loading={loading}>{t("Create account")}</SubmitButton>
       </form>
 
       <Divider />
-      <GoogleButton redirect={redirect} label="Sign up with Google" />
+      <GoogleButton redirect={redirect} label={t("Sign up with Google")} />
 
       <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
-        The free tools stay free and will never require an account.
+        {t("The free tools stay free and will never require an account.")}
       </p>
     </AuthShell>
   );
