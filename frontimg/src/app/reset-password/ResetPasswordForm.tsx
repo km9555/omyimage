@@ -9,8 +9,12 @@ import { AuthField } from "@/components/auth/AuthField";
 import { SubmitButton } from "@/components/auth/SubmitButton";
 import { authFetch } from "@/lib/api";
 import { authErrorMessage } from "@/lib/auth/errors";
+import { localeHref } from "@/lib/i18n/links";
+import { useLocale, useT } from "@/i18n/I18nScope";
 
 export function ResetPasswordForm() {
+  const t = useT();
+  const locale = useLocale();
   const router = useRouter();
   const params = useSearchParams();
   const token = params.get("token");
@@ -23,19 +27,19 @@ export function ResetPasswordForm() {
   if (!token) {
     return (
       <AuthShell
-        title="Link expired"
-        subtitle="This password reset link is invalid or has expired."
+        title={t("Link expired")}
+        subtitle={t("This password reset link is invalid or has expired.")}
         footer={
-          <Link href="/forgot-password" className="font-semibold text-secondary hover:underline">
-            Request a new link
+          <Link href={localeHref("/forgot-password", locale)} className="font-semibold text-secondary hover:underline">
+            {t("Request a new link")}
           </Link>
         }
       >
         <Link
-          href="/forgot-password"
+          href={localeHref("/forgot-password", locale)}
           className="w-full inline-flex items-center justify-center gap-2 bg-secondary hover:bg-secondary-container text-on-secondary font-semibold py-3 rounded-lg transition-colors"
         >
-          Request a new link
+          {t("Request a new link")}
         </Link>
       </AuthShell>
     );
@@ -45,11 +49,11 @@ export function ResetPasswordForm() {
     e.preventDefault();
     setError(null);
     if (password.length < 6) {
-      setError("Password must be at least 6 characters.");
+      setError(t("Password must be at least 6 characters."));
       return;
     }
     if (password !== confirm) {
-      setError("Passwords don't match.");
+      setError(t("Passwords don't match."));
       return;
     }
     setLoading(true);
@@ -63,8 +67,8 @@ export function ResetPasswordForm() {
         toast.error(authErrorMessage(new Error(data.error ?? "Reset failed.")));
         return;
       }
-      toast.success("Password updated. Please log in.");
-      router.replace("/login");
+      toast.success(t("Password updated. Please log in."));
+      router.replace(localeHref("/login", locale));
     } catch (err) {
       toast.error(authErrorMessage(err));
     } finally {
@@ -73,30 +77,30 @@ export function ResetPasswordForm() {
   };
 
   return (
-    <AuthShell title="Set a new password" subtitle="Choose a strong password for your account.">
+    <AuthShell title={t("Set a new password")} subtitle={t("Choose a strong password for your account.")}>
       <form onSubmit={handleSubmit} className="flex flex-col gap-stack-md">
         <AuthField
-          label="New password"
+          label={t("New password")}
           name="password"
           password
           autoComplete="new-password"
-          placeholder="At least 6 characters"
+          placeholder={t("At least 6 characters")}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
         <AuthField
-          label="Confirm new password"
+          label={t("Confirm new password")}
           name="confirm"
           password
           autoComplete="new-password"
-          placeholder="Re-enter your password"
+          placeholder={t("Re-enter your password")}
           value={confirm}
           onChange={(e) => setConfirm(e.target.value)}
           error={error}
           required
         />
-        <SubmitButton loading={loading}>Update password</SubmitButton>
+        <SubmitButton loading={loading}>{t("Update password")}</SubmitButton>
       </form>
     </AuthShell>
   );

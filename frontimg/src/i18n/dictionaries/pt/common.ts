@@ -319,6 +319,9 @@ export const ptCommon: Record<string, string> = {
   // ── Legal shell ─────────────────────────────────────────────────────────
   // "|section": a bare "Legal" is also the US paper size (image-to-pdf), which
   // must stay "Legal". The same English word, two meanings, two keys.
+  // Auth chrome (components/auth) — shared by login, signup and the password flow.
+  "Continue with Google": "Continuar com o Google",
+  "or|divider": "ou",
   "Legal|section": "Jurídico",
   "Last updated:": "Última atualização:",
   "Contents": "Conteúdo",

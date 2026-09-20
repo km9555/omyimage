@@ -14,6 +14,8 @@ import { CATEGORY_PILLS as PILLS } from "@/lib/tool-categories";
 import { TOOLS } from "@/lib/tools";
 import { searchTools } from "@/lib/tool-search";
 import { planLabel, planAllowanceLabel, PLAN_MAX_UPLOAD_MB } from "@/lib/plan-limits";
+import { localeHome, localeHref } from "@/lib/i18n/links";
+import { useLocale, useT } from "@/i18n/I18nScope";
 
 /**
  * The signed-in home. Ported from oMyPDF, minus two panels it has and oMyImage
@@ -29,6 +31,8 @@ import { planLabel, planAllowanceLabel, PLAN_MAX_UPLOAD_MB } from "@/lib/plan-li
  * lib/useToolPrefs and lib/tool-search, which oMyImage already had.
  */
 export function DashboardClient() {
+  const t = useT();
+  const locale = useLocale();
   const { user, profile, loading, signOut } = useRequireAuth();
   const router = useRouter();
   const [signingOut, setSigningOut] = useState(false);
@@ -43,9 +47,9 @@ export function DashboardClient() {
   // Ranked, alias-aware search within the active pill; an empty query falls
   // back to priority order. Shared with the home page — see lib/tool-search.ts.
   const browseTools = useMemo(() => {
-    const pool = TOOLS.filter((t) => t.status === "live").filter(pill.match);
-    return searchTools(query, pool);
-  }, [pill, query]);
+    const pool = TOOLS.filter((tool) => tool.status === "live").filter(pill.match);
+    return searchTools(query, pool, locale);
+  }, [pill, query, locale]);
 
   if (loading || !user) {
     return (
@@ -56,7 +60,7 @@ export function DashboardClient() {
   }
 
   const email = user.email ?? "";
-  const firstName = (user.name?.trim() || email.split("@")[0] || "there").split(" ")[0];
+  const firstName = (user.name?.trim() || email.split("@")[0] || t("there")).split(" ")[0];
   const initial = (firstName[0] ?? email[0] ?? "?").toUpperCase();
 
   const plan = profile?.plan ?? "free";
@@ -67,8 +71,8 @@ export function DashboardClient() {
   const handleSignOut = () => {
     setSigningOut(true);
     signOut();
-    toast.success("Signed out.");
-    router.replace("/");
+    toast.success(t("Signed out."));
+    router.replace(localeHome(locale));
   };
 
   return (
@@ -80,19 +84,19 @@ export function DashboardClient() {
         </span>
         <div className="min-w-0 flex-1">
           <h1 className="text-headline-md font-semibold text-primary truncate">
-            Welcome back, {firstName}
+            {t("Welcome back, {name}", { name: firstName })}
           </h1>
           <p className="text-body-md text-on-surface-variant truncate">
-            Jump back into your image workflows.
+            {t("Jump back into your image workflows.")}
           </p>
         </div>
         <div className="flex items-center gap-2">
           <Link
-            href="/account"
+            href={localeHref("/account", locale)}
             className="inline-flex items-center gap-2 rounded-lg border border-surface-variant bg-surface-container-lowest px-4 py-2 text-body-md font-semibold text-on-surface hover:bg-surface-container transition-colors"
           >
             <Icon name="account_circle" className="text-[20px]" />
-            <span className="hidden sm:inline">Account</span>
+            <span className="hidden sm:inline">{t("Account")}</span>
           </Link>
           <button
             type="button"
@@ -101,7 +105,7 @@ export function DashboardClient() {
             className="inline-flex items-center gap-2 rounded-lg border border-surface-variant bg-surface-container-lowest px-4 py-2 text-body-md font-semibold text-on-surface hover:bg-error-container hover:text-error hover:border-error transition-colors disabled:opacity-50"
           >
             <Icon name={signingOut ? "progress_activity" : "logout"} className={`text-[20px] ${signingOut ? "animate-spin" : ""}`} />
-            <span className="hidden sm:inline">Sign out</span>
+            <span className="hidden sm:inline">{t("Sign out")}</span>
           </button>
         </div>
       </header>
@@ -113,35 +117,35 @@ export function DashboardClient() {
         </span>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <span className="text-body-lg font-bold text-primary">{label} plan</span>
+            <span className="text-body-lg font-bold text-primary">{t("{plan} plan", { plan: label })}</span>
             {isFree && (
               <span className="rounded-full bg-surface-container px-2 py-0.5 text-label-sm font-label-sm text-on-surface-variant">
-                Free
+                {t("Free")}
               </span>
             )}
           </div>
           <p className="text-body-md text-on-surface-variant">
-            {planAllowanceLabel(plan)} · files up to {maxUpload} MB on our server
+            {t("{allowance} · files up to {mb} MB on our server", { allowance: planAllowanceLabel(plan, t), mb: maxUpload })}
             {usage.ready && !usage.unlimited && usage.limit !== null && (
-              <> · <strong className="text-on-surface">{usage.used}</strong> used today</>
+              <> · <strong className="text-on-surface">{usage.used}</strong> {t("used today")}</>
             )}
           </p>
           <p className="text-label-sm font-label-sm text-on-surface-variant mt-1">
-            Everything that runs in your browser stays unlimited and uncounted.
+            {t("Everything that runs in your browser stays unlimited and uncounted.")}
           </p>
         </div>
         {isFree ? (
           <Link
-            href="/pricing"
+            href={localeHref("/pricing", locale)}
             className="inline-flex items-center gap-2 rounded-full bg-secondary text-on-secondary font-semibold px-5 py-2.5 shadow-md shadow-secondary/30 hover:shadow-lg hover:shadow-secondary/40 hover:-translate-y-px transition-all duration-200"
           >
             <Icon name="rocket_launch" className="text-[20px]" />
-            See plans
+            {t("See plans")}
           </Link>
         ) : (
           <span className="inline-flex items-center gap-2 text-body-md font-semibold text-secondary">
             <Icon name="check_circle" fill className="text-[20px]" />
-            You&apos;re on {label}
+            {t("You're on {plan}", { plan: label })}
           </span>
         )}
       </section>
@@ -149,10 +153,10 @@ export function DashboardClient() {
       {/* Favorites */}
       {favorites.length > 0 && (
         <section className="flex flex-col gap-3">
-          <h2 className="text-headline-md font-semibold text-primary">Favorites</h2>
+          <h2 className="text-headline-md font-semibold text-primary">{t("Favorites")}</h2>
           <div className="flex flex-wrap gap-3">
-            {favorites.map((t) => (
-              <QuickAccessCard key={t.id} tool={t} favorited onToggleFavorite={toggle} />
+            {favorites.map((tool) => (
+              <QuickAccessCard key={tool.id} tool={tool} favorited onToggleFavorite={toggle} />
             ))}
           </div>
         </section>
@@ -161,13 +165,13 @@ export function DashboardClient() {
       {/* Last used */}
       {recent.length > 0 && (
         <section className="flex flex-col gap-3">
-          <h2 className="text-headline-md font-semibold text-primary">Last used</h2>
+          <h2 className="text-headline-md font-semibold text-primary">{t("Last used")}</h2>
           <div className="flex gap-3 overflow-x-auto pb-1">
-            {recent.map((t) => (
+            {recent.map((tool) => (
               <QuickAccessCard
-                key={t.id}
-                tool={t}
-                favorited={favoriteSlugs.has(t.slug)}
+                key={tool.id}
+                tool={tool}
+                favorited={favoriteSlugs.has(tool.slug)}
                 onToggleFavorite={toggle}
               />
             ))}
@@ -178,15 +182,15 @@ export function DashboardClient() {
       {/* Browse all */}
       <section className="flex flex-col gap-stack-md">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="text-headline-md font-semibold text-primary">All tools</h2>
+          <h2 className="text-headline-md font-semibold text-primary">{t("All tools")}</h2>
           <div className="flex items-center gap-2 bg-surface-container-lowest border border-surface-variant rounded-full pl-4 pr-2 py-1.5 focus-within:border-secondary/70 transition-colors">
             <Icon name="search" className="text-on-surface-variant/70 text-[20px] shrink-0" />
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search tools…"
-              aria-label="Search tools"
+              placeholder={t("Search tools…")}
+              aria-label={t("Search tools")}
               className="bg-transparent outline-none text-body-md text-primary placeholder:text-on-surface-variant/60 w-40 sm:w-52"
             />
           </div>
@@ -194,7 +198,8 @@ export function DashboardClient() {
 
         {favorites.length === 0 && (
           <p className="text-label-sm font-label-sm text-on-surface-variant -mt-1">
-            Tip: tap the <Icon name="favorite" className="text-[15px] align-text-bottom" /> on any tool card to add it to Favorites.
+            {/* Two keys around the heart icon (conversion.md §4.9). */}
+            {t("Tip: tap the")} <Icon name="favorite" className="text-[15px] align-text-bottom" /> {t("on any tool card to add it to Favorites.")}
           </p>
         )}
 
@@ -212,7 +217,8 @@ export function DashboardClient() {
                     : "border border-surface-variant text-on-surface-variant hover:border-secondary/40 hover:text-primary hover:bg-surface-container"
                 }`}
               >
-                {p.label}
+                {/* CATEGORY_PILLS is module scope (lib/tool-categories.ts) — §4.2. */}
+                {t(p.label)}
               </button>
             );
           })}
@@ -220,11 +226,11 @@ export function DashboardClient() {
 
         {browseTools.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {browseTools.map((t) => (
+            {browseTools.map((tool) => (
               <DashboardToolCard
-                key={t.id}
-                tool={t}
-                favorited={favoriteSlugs.has(t.slug)}
+                key={tool.id}
+                tool={tool}
+                favorited={favoriteSlugs.has(tool.slug)}
                 onToggleFavorite={toggle}
                 plan={plan}
               />
@@ -232,7 +238,7 @@ export function DashboardClient() {
           </div>
         ) : (
           <p className="text-center text-body-md text-on-surface-variant py-10">
-            No tools match “{query}”.
+            {t("No tools match “{query}”.", { query })}
           </p>
         )}
       </section>

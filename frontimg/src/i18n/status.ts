@@ -92,6 +92,11 @@ const SHIPPED_PAGES: Record<TranslatedLocale, string[]> = {
     "/refunds",
     "/login",
     "/signup",
+    // Batch 11 — the password flow and the signed-in surfaces.
+    "/forgot-password",
+    "/reset-password",
+    "/account",
+    "/dashboard",
   ],
 };
 

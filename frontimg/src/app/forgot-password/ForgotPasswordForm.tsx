@@ -9,8 +9,12 @@ import { SubmitButton } from "@/components/auth/SubmitButton";
 import { Icon } from "@/components/Icon";
 import { authFetch } from "@/lib/api";
 import { authErrorMessage } from "@/lib/auth/errors";
+import { localeHref } from "@/lib/i18n/links";
+import { useLocale, useT } from "@/i18n/I18nScope";
 
 export function ForgotPasswordForm() {
+  const t = useT();
+  const locale = useLocale();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
@@ -42,11 +46,11 @@ export function ForgotPasswordForm() {
   if (sent) {
     return (
       <AuthShell
-        title="Check your inbox"
-        subtitle={`If an account exists for ${email}, we sent a password reset link.`}
+        title={t("Check your inbox")}
+        subtitle={t("If an account exists for {email}, we sent a password reset link.", { email })}
         footer={
-          <Link href="/login" className="font-semibold text-secondary hover:underline">
-            Back to login
+          <Link href={localeHref("/login", locale)} className="font-semibold text-secondary hover:underline">
+            {t("Back to login")}
           </Link>
         }
       >
@@ -55,7 +59,7 @@ export function ForgotPasswordForm() {
             <Icon name="lock_reset" fill className="text-[34px] text-secondary" />
           </span>
           <p className="text-body-md text-on-surface-variant">
-            The link expires in 1 hour. Didn&apos;t get it? Check spam or try again.
+            {t("The link expires in 1 hour. Didn't get it? Check spam or try again.")}
           </p>
         </div>
       </AuthShell>
@@ -64,29 +68,30 @@ export function ForgotPasswordForm() {
 
   return (
     <AuthShell
-      title="Reset your password"
-      subtitle="Enter your email and we'll send you a reset link."
+      title={t("Reset your password")}
+      subtitle={t("Enter your email and we'll send you a reset link.")}
       footer={
         <>
-          Remembered it?{" "}
-          <Link href="/login" className="font-semibold text-secondary hover:underline">
-            Log in
+          {t("Remembered it?")}{" "}
+          <Link href={localeHref("/login", locale)} className="font-semibold text-secondary hover:underline">
+            {t("Log in")}
           </Link>
         </>
       }
     >
       <form onSubmit={handleSubmit} className="flex flex-col gap-stack-md">
         <AuthField
-          label="Email"
+          label={t("Email")}
           name="email"
           type="email"
           autoComplete="email"
+          /* i18n-raw: an example address, the same in every language */
           placeholder="you@example.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-        <SubmitButton loading={loading}>Send reset link</SubmitButton>
+        <SubmitButton loading={loading}>{t("Send reset link")}</SubmitButton>
       </form>
     </AuthShell>
   );

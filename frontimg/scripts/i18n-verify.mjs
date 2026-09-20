@@ -124,7 +124,13 @@ for (const t of targets) {
     const en = await get(enPath === "/" ? "" : enPath);
     if (en.status === 200) {
       if (pick(en.html, /<title>([\s\S]*?)<\/title>/) === title) problems.push("title identical to English");
-      if (pick(en.html, /<h1[^>]*>([\s\S]*?)<\/h1>/).replace(/<[^>]+>/g, "") === h1) problems.push("H1 identical to English");
+      const enH1 = pick(en.html, /<h1[^>]*>([\s\S]*?)<\/h1>/).replace(/<[^>]+>/g, "");
+      /* An auth-gated page renders a spinner until the client knows who you
+         are, so BOTH locales ship an empty <h1> in their static HTML and
+         comparing them proves nothing. The page is still checked for title,
+         canonical, hreflang and og:locale; its body is verified in the
+         browser instead (conversion.md §6.2.11). */
+      if (enH1 === h1 && h1 !== "") problems.push("H1 identical to English");
     }
   }
   const text = visibleText(html);

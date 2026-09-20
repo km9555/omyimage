@@ -1,6 +1,7 @@
 "use client";
 
 import { AUTH_BASE, backendUrl } from "@/lib/api";
+import { useT } from "@/i18n/I18nScope";
 
 function GoogleG({ className }: { className?: string }) {
   return (
@@ -21,7 +22,12 @@ function GoogleG({ className }: { className?: string }) {
  * A full page navigation, not a fetch: the OAuth handshake is a browser
  * redirect chain, so there is nothing here for CORS or an XHR to carry.
  */
-export function GoogleButton({ redirect, label = "Continue with Google" }: { redirect?: string; label?: string }) {
+export function GoogleButton({ redirect, label }: { redirect?: string; label?: string }) {
+  const t = useT();
+  /* The default label is resolved HERE, not in the parameter list: a default
+     argument cannot call a hook, and leaving it as a plain string shipped
+     "Continue with Google" into every locale (conversion.md §6.2.11). */
+  const text = label ?? t("Continue with Google");
   const handle = () => {
     const url = new URL(`${backendUrl()}${AUTH_BASE}/google`);
     if (redirect) url.searchParams.set("redirect", redirect);
@@ -35,7 +41,7 @@ export function GoogleButton({ redirect, label = "Continue with Google" }: { red
       className="w-full inline-flex items-center justify-center gap-2.5 bg-surface-container-lowest hover:bg-surface-container border border-surface-variant text-on-surface font-semibold py-3 rounded-lg transition-colors"
     >
       <GoogleG className="h-5 w-5" />
-      {label}
+      {text}
     </button>
   );
 }

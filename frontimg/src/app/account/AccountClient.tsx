@@ -8,6 +8,9 @@ import { Icon } from "@/components/Icon";
 import { useRequireAuth } from "@/lib/auth/useRequireAuth";
 import { authFetch } from "@/lib/api";
 import { planLabel, planAllowanceLabel, PLAN_MAX_UPLOAD_MB } from "@/lib/plan-limits";
+import { formatLongDate } from "@/i18n/format";
+import { localeHome, localeHref } from "@/lib/i18n/links";
+import { useLocale, useT } from "@/i18n/I18nScope";
 
 /**
  * Account settings. Ported from oMyPDF with one section replaced.
@@ -19,6 +22,8 @@ import { planLabel, planAllowanceLabel, PLAN_MAX_UPLOAD_MB } from "@/lib/plan-li
  * and points at /pricing. Swap it for the real thing when billing lands.
  */
 export function AccountClient() {
+  const t = useT();
+  const locale = useLocale();
   const { user, profile, loading, hasPassword, signOut, refreshProfile } = useRequireAuth();
   const router = useRouter();
   const [signingOut, setSigningOut] = useState(false);
@@ -52,9 +57,9 @@ export function AccountClient() {
         method: "PATCH",
         body: JSON.stringify({ name: name.trim() }),
       });
-      if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error ?? "Could not save name.");
+      if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error ?? t("Could not save name."));
       await refreshProfile();
-      toast.success("Name updated.");
+      toast.success(t("Name updated."));
     } catch (e) {
       toast.error((e as Error).message);
     } finally {
@@ -65,11 +70,11 @@ export function AccountClient() {
   const changePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPw.length < 6) {
-      toast.error("New password must be at least 6 characters.");
+      toast.error(t("New password must be at least 6 characters."));
       return;
     }
     if (newPw !== confirmPw) {
-      toast.error("New passwords don't match.");
+      toast.error(t("New passwords don't match."));
       return;
     }
     setSavingPw(true);
@@ -78,10 +83,10 @@ export function AccountClient() {
         method: "POST",
         body: JSON.stringify({ currentPassword: currentPw, newPassword: newPw }),
       });
-      if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error ?? "Could not change password.");
+      if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error ?? t("Could not change password."));
       setCurrentPw(""); setNewPw(""); setConfirmPw("");
       await refreshProfile();
-      toast.success(hasPassword ? "Password changed." : "Password set.");
+      toast.success(hasPassword ? t("Password changed.") : t("Password set."));
     } catch (e) {
       toast.error((e as Error).message);
     } finally {
@@ -100,16 +105,16 @@ export function AccountClient() {
   const email = user.email ?? "—";
   const plan = profile?.plan ?? "free";
   const label = planLabel(plan);
-  const memberSince = profile?.created_at
-    ? new Date(profile.created_at).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })
-    : null;
+  /* The page's locale, not the browser's — the same rule as everywhere else
+     (conversion.md §4.16). */
+  const memberSince = profile?.created_at ? formatLongDate(new Date(profile.created_at), locale) : null;
   const initial = (email[0] ?? "?").toUpperCase();
 
   const handleSignOut = () => {
     setSigningOut(true);
     signOut();
-    toast.success("Signed out.");
-    router.replace("/");
+    toast.success(t("Signed out."));
+    router.replace(localeHome(locale));
   };
 
   return (
@@ -119,44 +124,44 @@ export function AccountClient() {
           {initial}
         </span>
         <div className="min-w-0">
-          <h1 className="text-headline-md font-semibold text-primary truncate">My Account</h1>
+          <h1 className="text-headline-md font-semibold text-primary truncate">{t("My Account")}</h1>
           <p className="text-body-md text-on-surface-variant truncate">{email}</p>
         </div>
       </header>
 
       <section className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow divide-y divide-surface-variant">
-        <Row icon="mail" label="Email" value={email} />
+        <Row icon="mail" label={t("Email")} value={email} />
         <Row
           icon="workspace_premium"
-          label="Plan"
+          label={t("Plan")}
           value={
             <span className="inline-flex items-center gap-2">
               {label}
               {plan === "free" && (
                 <span className="rounded-full bg-surface-container px-2 py-0.5 text-label-sm font-label-sm text-on-surface-variant">
-                  Free plan
+                  {t("Free plan")}
                 </span>
               )}
             </span>
           }
         />
-        <Row icon="bolt" label="Allowance" value={planAllowanceLabel(plan)} />
-        {memberSince && <Row icon="calendar_today" label="Member since" value={memberSince} />}
+        <Row icon="bolt" label={t("Allowance")} value={planAllowanceLabel(plan, t)} />
+        {memberSince && <Row icon="calendar_today" label={t("Member since")} value={memberSince} />}
       </section>
 
       {/* ── Display name ─────────────────────────────────────────────────── */}
       <section className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-5 flex flex-col gap-4">
         <h2 className="text-body-lg font-bold text-primary flex items-center gap-2">
           <Icon name="badge" className="text-[20px] text-secondary" />
-          Display name
+          {t("Display name")}
         </h2>
-        <p className="text-label-md text-on-surface-variant -mt-2">Optional — we&apos;ll greet you by this name.</p>
+        <p className="text-label-md text-on-surface-variant -mt-2">{t("Optional — we'll greet you by this name.")}</p>
         <div className="flex flex-col sm:flex-row gap-2">
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
             maxLength={80}
-            placeholder="Your name"
+            placeholder={t("Your name")}
             className="flex-1 px-4 py-2.5 rounded-lg bg-surface-container-lowest border border-surface-variant outline-none text-body-md text-primary placeholder:text-on-surface-variant focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors"
           />
           <button
@@ -166,7 +171,7 @@ export function AccountClient() {
             className="inline-flex items-center justify-center gap-2 rounded-lg bg-secondary text-on-secondary px-5 py-2.5 text-body-md font-semibold hover:bg-secondary-container transition-colors disabled:opacity-50"
           >
             <Icon name={savingName ? "progress_activity" : "save"} className={`text-[20px] ${savingName ? "animate-spin" : ""}`} />
-            Save
+            {t("Save")}
           </button>
         </div>
       </section>
@@ -175,11 +180,11 @@ export function AccountClient() {
       <section className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-5 flex flex-col gap-4">
         <h2 className="text-body-lg font-bold text-primary flex items-center gap-2">
           <Icon name="lock" className="text-[20px] text-secondary" />
-          {hasPassword ? "Change password" : "Set a password"}
+          {hasPassword ? t("Change password") : t("Set a password")}
         </h2>
         {!hasPassword && (
           <p className="text-label-md text-on-surface-variant -mt-2">
-            Your account uses Google sign-in. Set a password to also log in with email.
+            {t("Your account uses Google sign-in. Set a password to also log in with email.")}
           </p>
         )}
         <form onSubmit={changePassword} className="flex flex-col gap-3">
@@ -189,7 +194,7 @@ export function AccountClient() {
               autoComplete="current-password"
               value={currentPw}
               onChange={(e) => setCurrentPw(e.target.value)}
-              placeholder="Current password"
+              placeholder={t("Current password")}
               className="px-4 py-2.5 rounded-lg bg-surface-container-lowest border border-surface-variant outline-none text-body-md text-primary placeholder:text-on-surface-variant focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors"
             />
           )}
@@ -198,7 +203,7 @@ export function AccountClient() {
             autoComplete="new-password"
             value={newPw}
             onChange={(e) => setNewPw(e.target.value)}
-            placeholder="New password (at least 6 characters)"
+            placeholder={t("New password (at least 6 characters)")}
             className="px-4 py-2.5 rounded-lg bg-surface-container-lowest border border-surface-variant outline-none text-body-md text-primary placeholder:text-on-surface-variant focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors"
           />
           <input
@@ -206,7 +211,7 @@ export function AccountClient() {
             autoComplete="new-password"
             value={confirmPw}
             onChange={(e) => setConfirmPw(e.target.value)}
-            placeholder="Confirm new password"
+            placeholder={t("Confirm new password")}
             className="px-4 py-2.5 rounded-lg bg-surface-container-lowest border border-surface-variant outline-none text-body-md text-primary placeholder:text-on-surface-variant focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors"
           />
           <button
@@ -215,7 +220,7 @@ export function AccountClient() {
             className="self-start inline-flex items-center gap-2 rounded-lg bg-secondary text-on-secondary px-5 py-2.5 text-body-md font-semibold hover:bg-secondary-container transition-colors disabled:opacity-50"
           >
             <Icon name={savingPw ? "progress_activity" : "lock_reset"} className={`text-[20px] ${savingPw ? "animate-spin" : ""}`} />
-            {hasPassword ? "Update password" : "Set password"}
+            {hasPassword ? t("Update password") : t("Set password")}
           </button>
         </form>
       </section>
@@ -224,24 +229,26 @@ export function AccountClient() {
       <section className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-5 flex flex-col gap-4">
         <h2 className="text-body-lg font-bold text-primary flex items-center gap-2">
           <Icon name="receipt_long" className="text-[20px] text-secondary" />
-          Plan
+          {t("Plan")}
         </h2>
+        {/* Two keys around the plan name, which is bold: a placeholder cannot
+            carry an element (conversion.md §4.9). */}
         <p className="text-body-md text-on-surface-variant">
-          You&apos;re on the <strong className="text-primary">{label}</strong> plan:{" "}
-          {planAllowanceLabel(plan)}, and server processing for files up to{" "}
-          {PLAN_MAX_UPLOAD_MB[plan] ?? PLAN_MAX_UPLOAD_MB.free} MB. Everything that runs in your
-          browser is unlimited on every plan.
+          {t("You're on the")} <strong className="text-primary">{label}</strong>{" "}
+          {t("plan: {allowance}, and server processing for files up to {mb} MB. Everything that runs in your browser is unlimited on every plan.", {
+            allowance: planAllowanceLabel(plan, t),
+            mb: PLAN_MAX_UPLOAD_MB[plan] ?? PLAN_MAX_UPLOAD_MB.free,
+          })}
         </p>
         <p className="text-label-md text-on-surface-variant">
-          Paid plans aren&apos;t available to buy yet, so there is nothing to cancel and no payment
-          method stored.
+          {t("Paid plans aren't available to buy yet, so there is nothing to cancel and no payment method stored.")}
         </p>
         <Link
-          href="/pricing"
+          href={localeHref("/pricing", locale)}
           className="self-start inline-flex items-center gap-2 rounded-lg bg-secondary text-on-secondary px-5 py-2.5 text-body-md font-semibold shadow-md shadow-secondary/30 hover:-translate-y-px transition-all"
         >
           <Icon name="workspace_premium" className="text-[20px]" />
-          See plans
+          {t("See plans")}
         </Link>
       </section>
 
@@ -252,7 +259,7 @@ export function AccountClient() {
         className="self-start inline-flex items-center gap-2 rounded-lg border border-surface-variant bg-surface-container-lowest px-5 py-2.5 text-body-md font-semibold text-on-surface hover:bg-error-container hover:text-error hover:border-error transition-colors disabled:opacity-50"
       >
         <Icon name={signingOut ? "progress_activity" : "logout"} className={`text-[20px] ${signingOut ? "animate-spin" : ""}`} />
-        Sign out
+        {t("Sign out")}
       </button>
     </div>
   );

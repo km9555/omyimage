@@ -689,6 +689,27 @@ and [Privacy Policy]" cannot be one key, and the middle fragment needs a
 context suffix (`"and|between links"`) or the bare word collides with every
 other "and" on the site.
 
+### 6.2.11 Batch 11 (esqueci-a-senha, redefinir-senha, conta, painel)
+
+**A default argument cannot call a hook.** `GoogleButton` and `Divider`
+declared their copy as default parameter values (`label = "Continue with
+Google"`), which no string scan flags — it is a default, not a literal in
+JSX — and which shipped English into every locale. The fix is to take the
+prop as optional and resolve `label ?? t(…)` inside the component. Grep for
+`= "` in a parameter list when sweeping shared components.
+
+**An auth-gated page has no H1 in its static HTML.** `/conta` and `/painel`
+render a spinner until the client knows who you are, so both locales ship an
+empty `<h1>` and `i18n:verify`'s "H1 identical to English" check fired on
+nothing. The check now skips an empty H1 and says why; those pages are verified
+in the browser instead — which also proved the redirect: signed out,
+`/pt/painel` sends you to `/pt/entrar`, not to `/login`.
+
+**`useRequireAuth` had to learn about locales** for exactly that reason, and so
+did every `router.replace("/")` after a sign-out. A hard-coded path in a
+redirect is the same bug as a hard-coded string, and it is invisible until
+someone signs out on a translated page.
+
 ### 6.3 Image-specific traps (watch for these in every batch)
 
 - **Text drawn INTO the image.** Meme captions, watermark defaults, the
