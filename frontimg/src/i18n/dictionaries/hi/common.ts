@@ -83,7 +83,7 @@ export const hiCommon: Record<string, string> = {
 
   // Navbar quick links + footer columns (module scope, §4.2)
   "Compress Image": "इमेज कंप्रेस करें",
-  "Resize Image": "इमेज रिसाइज़ करें",
+  "Resize Image": "इमेज रीसाइज़ करें",
   "Crop Image": "इमेज क्रॉप करें",
   "Rotate Image": "इमेज घुमाएँ",
   "Convert to JPG": "JPG में बदलें",

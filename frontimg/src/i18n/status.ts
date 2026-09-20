@@ -76,7 +76,13 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
   // legal twins. The remaining 26 tools wait on Search Console data, because
   // the Hindi-script query for an image tool is informational and is currently
   // won by Hindi tutorial blogs rather than by tool pages (conversion.md §8).
-  hi: [],
+  hi: [
+    // Batch 1 — the four tools an Indian visitor is most likely to arrive on.
+    "compress-image",
+    "resize-image",
+    "crop-image",
+    "convert-to-jpg",
+  ],
 };
 
 /** English paths of the non-tool pages that are live in each locale. */
@@ -103,7 +109,12 @@ const SHIPPED_PAGES: Record<TranslatedLocale, string[]> = {
     "/account",
     "/dashboard",
   ],
-  hi: [],
+  hi: [
+    // Batch 1. The home ships first: it is where swapLocale sends a visitor
+    // whose page has no Hindi twin yet, and its presence is what flips
+    // "हिन्दी" from "जल्द" to a live link in the language menus.
+    "/",
+  ],
 };
 
 const TOOL_SETS: Record<string, ReadonlySet<string>> = Object.fromEntries(

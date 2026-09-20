@@ -39,7 +39,7 @@ export const hiTools: Record<string, LocalizedTool> = {
     shortDescription: "JPG, PNG और WEBP का साइज़ कम करें — क्वालिटी आप तय करें।",
   },
   "resize-image": {
-    name: "इमेज रिसाइज़ करें",
+    name: "इमेज रीसाइज़ करें",
     shortDescription: "पिक्सल या प्रतिशत में साइज़ बदलें, अनुपात वैसा ही रहेगा।",
   },
   "crop-image": {
