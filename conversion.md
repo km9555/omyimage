@@ -801,14 +801,51 @@ Two consequences to keep in step:
 
 ## 8. Still open
 
-- **Legal pages will be translated, not reviewed** (oMyPDF §9). Keep the
-  English jurisdiction and the "nothing here limits your non-waivable consumer
-  rights" callout; do not write Brazilian statutes (CDC art. 49, LGPD) in as new
-  clauses — the callout covers them, and a translation has no standing to make
-  a legal claim. No operator-identity block exists in any language yet.
-- **Converter copy layer** (batch 7): Portuguese `unique` blocks per pair,
-  a Portuguese `copy.ts`, Portuguese format essays, pt stubs from
-  `gen-converters.mjs`.
-- **`formatBytes` → `useFormatBytes`** in each tool as it is swept (~25 files).
-- **Language menus list id/ru/ja/hi/es/fr/de as "Em breve"** — they flip on by
-  themselves when each locale's home ships.
+Portuguese is complete: 40 tools and 14 pages, every row in `tracker.csv` done,
+`npm run build` + `verify:build` green and the English snapshot diff clean
+apart from the four entries below. What remains is either a decision for later
+or a small debt this rollout created.
+
+**The English snapshot diff, explained.** Four differences against the
+pre-i18n baseline, all understood:
+
+| File | What changed | Why it is fine |
+|---|---|---|
+| `pt.html` | new file | the Portuguese home |
+| `pricing.html` | DOM text `monthly` → `Monthly` | the label used to be an id rendered through CSS `capitalize`; it is now a real word. Identical on screen. |
+| `html-to-image.html` | DOM text `portrait` → `Portrait` | same shape, same reasoning |
+| `image-to-text.html` | OCR copy and its JSON-LD | NOT this work — the separate task that corrected the English page's claim that recognition runs in the browser. It runs on the server. |
+
+Everything else is `hreflang-only`: the English pages now advertise their
+Portuguese twins, which is the point.
+
+**Debt this rollout created.**
+
+- **The four legal twins are copies.** An edit to `/privacy`, `/terms`,
+  `/refunds` or `/cookies` does not reach `/pt/…`. See §6.5 — this is a
+  standing obligation, not a one-off.
+- **html-to-image's backend sentences are UNVERIFIED.** The backend is not in
+  this repo and the dev server does not proxy `/api`, so the four error strings
+  in `html-to-image.pt.ts` follow the wording the other server-backed tools use.
+  An unmatched sentence falls back to English. Check them against the Contabo
+  backend.
+- **An English-side inaccuracy is still open.** `heic-to-jpg.en.ts` says EXIF
+  (date, GPS) is not carried into the output; `HeicTool.tsx` documents that
+  ImageMagick copies it across and offers a "Remove metadata" checkbox. The
+  Portuguese page follows the CODE. Fix the English page, then re-check the pt
+  FAQ still matches.
+
+**Decisions deliberately deferred.**
+
+- **Download filenames stay ASCII English** (`_compressed`, `_grayscale`,
+  `omyimage_merged.png`). Revisit if Brazilian users ask — §6.3.
+- **The blog stays English-only**, by decision on 2026-09-19.
+- **`/admin/*` and `/auth/callback` are not translated**; the OAuth redirect
+  target has no user-visible copy worth the risk.
+
+**Next language.** §2 is the checklist. Indonesia (9.1%), Russia (6.2%) and
+Japan (5.8%) are the next three by audience. Two things Portuguese did not
+exercise: Russian needs Inter's `cyrillic` subset and Japanese needs a CJK
+face, so decide the font before the first page (§2.11); and both languages
+pluralise differently from English, so the "1 x / {n} x" key pairs used
+throughout will need a third form.
