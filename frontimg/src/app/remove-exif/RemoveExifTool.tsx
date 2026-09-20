@@ -13,6 +13,7 @@ import {
   rasterize, downloadBlob, zipAndDownload, formatBytes, baseName, mimeExt, type ExportMime,
 } from "@/lib/image/raster";
 import { useHandoff } from "@/lib/tool-handoff";
+import { useFormatBytes, useT } from "@/i18n/I18nScope";
 
 const ACCENT = "#C55A52";
 const ACCEPT = "image/jpeg,image/png,image/webp";
@@ -20,6 +21,7 @@ const ACCEPT = "image/jpeg,image/png,image/webp";
 type Format = "original" | ExportMime;
 type Item = { id: string; file: File; url: string; result?: { blob: Blob; size: number; name: string } };
 
+// Module scope: labels translated at the render site (conversion.md §4.2).
 const FORMATS: { label: string; value: Format }[] = [
   { label: "Same as original", value: "original" },
   { label: "JPG", value: "image/jpeg" },
@@ -37,6 +39,8 @@ function outMimeFor(file: File, fmt: Format): ExportMime {
 }
 
 export function RemoveExifTool() {
+  const t = useT();
+  const formatBytes = useFormatBytes();
   const [items, setItems] = useState<Item[]>([]);
   const [format, setFormat] = useState<Format>("original");
   const [quality, setQuality] = useState(0.95);
@@ -48,10 +52,10 @@ export function RemoveExifTool() {
 
   const addFiles = useCallback((incoming: FileList | File[]) => {
     const imgs = Array.from(incoming).filter((f) => f.type.startsWith("image/"));
-    if (imgs.length === 0) { toast.error("Please select image files."); return; }
+    if (imgs.length === 0) { toast.error(t("Please select image files.")); return; }
     setDone(false);
     setItems((prev) => [...prev, ...imgs.map((file) => ({ id: uid(), file, url: URL.createObjectURL(file) }))]);
-  }, []);
+  }, [t]);
 
   useHandoff(addFiles);
 
@@ -76,10 +80,10 @@ export function RemoveExifTool() {
       setDone(true);
       if (out.length === 1 && out[0].result) downloadBlob(out[0].result.blob, out[0].result.name);
       else await zipAndDownload(out.map((o) => ({ name: o.result!.name, blob: o.result!.blob })), "omyimage_clean.zip");
-      toast.success(`Removed metadata from ${out.length} image${out.length === 1 ? "" : "s"}.`);
+      toast.success(out.length === 1 ? t("Removed metadata from 1 image.") : t("Removed metadata from {n} images.", { n: out.length }));
     } catch (err) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : "Couldn't process the images.");
+      toast.error(err instanceof Error ? err.message : t("Couldn't process the images."));
     } finally {
       setIsWorking(false);
     }
@@ -91,7 +95,7 @@ export function RemoveExifTool() {
     return (
       <section>
         <TopLoadingBar active={isWorking} />
-        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="privacy_tip" hint="or drop JPG, PNG or WEBP images here" />
+        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="privacy_tip" hint={t("or drop JPG, PNG or WEBP images here")} />
       </section>
     );
   }
@@ -103,13 +107,13 @@ export function RemoveExifTool() {
     meta: (
       <>
         {formatBytes(it.file.size)}
-        {it.result && <><Icon name="check" className="text-[13px] mx-1 align-middle" style={{ color: ACCENT }} /><span className="text-on-surface font-semibold">metadata removed</span></>}
+        {it.result && <><Icon name="check" className="text-[13px] mx-1 align-middle" style={{ color: ACCENT }} /><span className="text-on-surface font-semibold">{t("metadata removed")}</span></>}
       </>
     ),
     action: it.result ? (
-      <TrayAction icon="download" tone="accent" label="Download" onClick={() => downloadBlob(it.result!.blob, it.result!.name)} />
+      <TrayAction icon="download" tone="accent" label={t("Download")} onClick={() => downloadBlob(it.result!.blob, it.result!.name)} />
     ) : (
-      <TrayAction icon="close" label="Remove" disabled={isWorking} onClick={() => removeItem(it.id)} />
+      <TrayAction icon="close" label={t("Remove")} disabled={isWorking} onClick={() => removeItem(it.id)} />
     ),
   }));
 
@@ -123,12 +127,12 @@ export function RemoveExifTool() {
         mobile={{
           ...filesHeader(items.map((i) => i.file)),
           onBack: reset,
-          backLabel: "Clear files",
-          settingsTitle: "Metadata settings",
+          backLabel: t("Clear files"),
+          settingsTitle: t("Metadata settings"),
           cta: {
             icon: "privacy_tip",
-            label: "Clean",
-            busyLabel: "Cleaning…",
+            label: t("Clean"),
+            busyLabel: t("Cleaning…"),
             busy: isWorking,
             onClick: cleanAll,
           },
@@ -136,34 +140,34 @@ export function RemoveExifTool() {
         main={<FileTray entries={entries} accept={ACCEPT} onFiles={addFiles} onClear={reset} busy={isWorking} />}
         rail={
           <SettingsRail
-            title="Output Settings"
+            title={t("Output Settings")}
             icon="privacy_tip"
             accent={ACCENT}
             footer={
               <>
-                <RailNote>Strips EXIF, GPS location and camera data by re-encoding the pixels — all in your browser.</RailNote>
-                <RailAction onClick={cleanAll} busy={isWorking} busyLabel="Cleaning…" icon="privacy_tip">
-                  Remove metadata {items.length > 1 ? `from ${items.length}` : "& download"}
+                <RailNote>{t("Strips EXIF, GPS location and camera data by re-encoding the pixels — all in your browser.")}</RailNote>
+                <RailAction onClick={cleanAll} busy={isWorking} busyLabel={t("Cleaning…")} icon="privacy_tip">
+                  {items.length > 1 ? t("Remove metadata from {n}", { n: items.length }) : t("Remove metadata & download")}
                 </RailAction>
                 {done && items.length > 1 && (
                   <RailSecondaryAction
                     icon="folder_zip"
                     onClick={() => zipAndDownload(items.filter((i) => i.result).map((i) => ({ name: i.result!.name, blob: i.result!.blob })), "omyimage_clean.zip")}
                   >
-                    Download all (ZIP)
+                    {t("Download all (ZIP)")}
                   </RailSecondaryAction>
                 )}
               </>
             }
           >
           <div className="flex flex-col gap-1.5">
-            <label className="text-label-sm font-label-sm text-on-surface-variant">Format</label>
-            <select value={format} onChange={(e) => setFormat(e.target.value as Format)} className={fieldCls}>{FORMATS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}</select>
+            <label className="text-label-sm font-label-sm text-on-surface-variant">{t("Format")}</label>
+            <select value={format} onChange={(e) => setFormat(e.target.value as Format)} className={fieldCls}>{FORMATS.map((f) => <option key={f.value} value={f.value}>{t(f.label)}</option>)}</select>
           </div>
           {showQuality && (
-            <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Quality</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span></label><input type="range" min={0.6} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" /></div>
+            <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Quality")}</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span></label><input type="range" min={0.6} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" /></div>
           )}
-          {showBg && <BackgroundPicker value={bg} onChange={setBg} allowTransparent={false} label="JPG background" />}
+          {showBg && <BackgroundPicker value={bg} onChange={setBg} allowTransparent={false} label={t("JPG background")} />}
           </SettingsRail>
         }
       />

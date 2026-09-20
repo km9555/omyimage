@@ -50,6 +50,12 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "add-border",
     "circle-crop",
     "html-to-image",
+    // Batch 6 — colour picker, the Base64 pair, metadata and EXIF.
+    "image-color-picker",
+    "image-to-base64",
+    "base64-to-image",
+    "image-metadata",
+    "remove-exif",
   ],
 };
 

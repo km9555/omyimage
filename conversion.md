@@ -560,6 +560,38 @@ following the wording the other server-backed tools use and carry an UNVERIFIED
 comment; an unmatched sentence falls back to English rather than breaking. Open
 item: check them against the Contabo backend and correct them there.
 
+### 6.2.6 Batch 6 (seletor-de-cores, imagem-para-base64, base64-para-imagem, ver-metadados-imagem, remover-exif)
+
+**A table of labels is a table of keys.** MetadataTool builds ~50 rows in a
+plain function with no `t` in scope. Rather than passing the translator down to
+every `push()`, the builder keeps the ENGLISH label as the key and the render
+site does `t(r.label)` — which also lets the TXT export and the clipboard copy
+reuse the same strings. The catch: `i18n:keys` cannot see a key that arrives
+through a variable, so every label and section title had to be written into the
+pt `ui` block by hand, from the source. Grep the builder, do not trust the
+script, whenever a tool renders `{something.label}`.
+
+**Translate a VALUE only from a closed set.** `format-info.ts` returns rows
+whose values are mostly technical ("Progressive DCT, Huffman coding",
+"YCbCr4:2:0") but occasionally words ("None", "inches", "Yes (Adam7)"). Sending
+every value through t() would eventually translate a user's own metadata — an
+Artist field reading "No" would come back "Não". A `TRANSLATABLE_VALUES` set
+names the five that are words; everything else passes through untouched.
+
+**Which export follows the page language.** The metadata TXT download is read
+by a person, so its headings and labels are translated. The JSON download is
+read by a machine, so its keys stay English. Deciding this per export, and
+writing the reason in the code, stops the next person "fixing" the JSON.
+
+**`toLocaleString()` on a Date, again.** MetadataTool printed capture dates
+through the browser's locale (§4.16). They now go through `formatDateTime(v,
+locale)`, which is why a Brazilian page shows 20/09/2026 and an English one
+9/20/26 — from the same file.
+
+**A percentage drawn into a downloaded PNG.** The colour picker's `sharePct()`
+is used both in the rail and in the palette swatch sheet it renders, so the
+decimal separator follows the page in the exported image too (§6.3).
+
 ### 6.3 Image-specific traps (watch for these in every batch)
 
 - **Text drawn INTO the image.** Meme captions, watermark defaults, the

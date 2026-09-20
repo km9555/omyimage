@@ -7,15 +7,28 @@ import { TopLoadingBar } from "@/components/TopLoadingBar";
 import { ToolWorkspace, filesHeader } from "@/components/tool/ToolWorkspace";
 import { SettingsRail } from "@/components/tool/SettingsRail";
 import { Dropzone } from "@/components/image/Dropzone";
-import { downloadBlob, formatBytes, baseName } from "@/lib/image/raster";
+import { downloadBlob, baseName } from "@/lib/image/raster";
+import { formatNumber, formatDateTime } from "@/i18n/format";
+import type { Locale } from "@/i18n/config";
 import { md5Hex, sha256Hex, hexHeader } from "@/lib/image/file-hash";
 import { readFormatInfo } from "@/lib/image/format-info";
 import { useHandoff } from "@/lib/tool-handoff";
+import { useFormatBytes, useLocale, useT } from "@/i18n/I18nScope";
 
 const ACCENT = "#5388C9";
 const ACCEPT = "image/jpeg,image/png,image/webp,image/tiff,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.tif,.tiff,.heic,.heif";
 
 type Row = { label: string; value: string };
+/** The translator, as handed to the plain builders below. */
+type T = (key: string, vars?: Record<string, string | number>) => string;
+
+/**
+ * Values produced by `lib/image/format-info.ts` that are words rather than
+ * data. Everything else it returns is a format name ("Progressive DCT,
+ * Huffman coding") or a number, and must NOT pass through t() — a closed set
+ * is the only safe way to translate a value (conversion.md §6.2.6).
+ */
+const TRANSLATABLE_VALUES = new Set(["None", "inches", "cm", "Yes (Adam7)", "No"]);
 type Section = { title: string; icon: string; rows: Row[] };
 type Meta = Record<string, unknown>;
 
@@ -27,10 +40,12 @@ function fmtExposure(v: unknown): string | null {
   return n < 1 ? `1/${Math.round(1 / n)} s` : `${n} s`;
 }
 
-const push = (rows: Row[], label: string, value: unknown, suffix = "") => {
+const push = (rows: Row[], label: string, value: unknown, suffix = "", locale: Locale = "en") => {
   if (value === undefined || value === null || value === "") return;
   let s: string;
-  if (value instanceof Date) s = value.toLocaleString();
+  // `toLocaleString()` with no argument follows the BROWSER's locale, not the
+  // page's (conversion.md §4.16).
+  if (value instanceof Date) s = formatDateTime(value, locale);
   else if (Array.isArray(value)) s = value.join(", ");
   else s = String(value);
   if (s.trim()) rows.push({ label, value: s + suffix });
@@ -50,15 +65,23 @@ function buildSections(
   m: Meta,
   hashes: { md5?: string; sha256?: string },
   fmtRows: Row[],
-  decoded: { w: number; h: number } | null
+  decoded: { w: number; h: number } | null,
+  t: T,
+  locale: Locale,
+  fmtBytes: (n: number) => string
 ): Section[] {
+  /* Labels and section titles stay in English here — they are KEYS, translated
+     at the render site, which keeps this builder free of JSX concerns and lets
+     the exports reuse the same strings (conversion.md §6.2.6). */
+  const dec = (n: number, places: number) =>
+    new Intl.NumberFormat(locale, { minimumFractionDigits: places, maximumFractionDigits: places }).format(n);
   const fileRows: Row[] = [];
   push(fileRows, "File name", file.name);
-  push(fileRows, "File size", `${formatBytes(file.size)} (${file.size.toLocaleString()} bytes)`);
-  push(fileRows, "File type", (file.type || "").split("/")[1]?.toUpperCase() || "Unknown");
+  push(fileRows, "File size", `${fmtBytes(file.size)} (${formatNumber(file.size, locale)} ${t("bytes")})`);
+  push(fileRows, "File type", (file.type || "").split("/")[1]?.toUpperCase() || t("Unknown"));
   push(fileRows, "Extension", file.name.includes(".") ? file.name.split(".").pop()!.toLowerCase() : "");
-  push(fileRows, "MIME type", file.type || "unknown");
-  push(fileRows, "Last modified", file.lastModified ? new Date(file.lastModified) : null);
+  push(fileRows, "MIME type", file.type || t("unknown"));
+  push(fileRows, "Last modified", file.lastModified ? new Date(file.lastModified) : null, "", locale);
   push(fileRows, "MD5", hashes.md5);
   push(fileRows, "SHA-256", hashes.sha256);
 
@@ -67,11 +90,11 @@ function buildSections(
   const h = num(m.ExifImageHeight) ?? num(m.ImageHeight) ?? decoded?.h ?? null;
   if (w != null && h != null) {
     push(image, "Dimensions", `${w} × ${h} px`);
-    push(image, "Megapixels", ((w * h) / 1_000_000).toFixed(1));
-    push(image, "Aspect ratio", aspectRatio(w, h));
+    push(image, "Megapixels", dec((w * h) / 1_000_000, 1));
+    push(image, "Aspect ratio", aspectRatio(w, h, locale));
   }
   // Container-declared facts (encoding process, subsampling, bit depth …).
-  fmtRows.forEach((r) => push(image, r.label, r.value));
+  fmtRows.forEach((r) => push(image, r.label, TRANSLATABLE_VALUES.has(r.value) ? t(r.value) : r.value));
   push(image, "Orientation", m.Orientation);
   push(image, "Color space", m.ColorSpace);
   if (!fmtRows.some((r) => r.label === "X resolution")) {
@@ -98,18 +121,23 @@ function buildSections(
   push(exposure, "White balance", m.WhiteBalance);
 
   const when: Row[] = [];
-  push(when, "Taken", m.DateTimeOriginal);
-  push(when, "Digitized", m.DateTimeDigitized ?? m.CreateDate);
-  push(when, "Modified", m.ModifyDate);
+  push(when, "Taken", m.DateTimeOriginal, "", locale);
+  push(when, "Digitized", m.DateTimeDigitized ?? m.CreateDate, "", locale);
+  push(when, "Modified", m.ModifyDate, "", locale);
 
   const author: Row[] = [];
   push(author, "Artist", m.Artist);
   push(author, "Copyright", m.Copyright);
   push(author, "Description", m.ImageDescription ?? m.description);
 
+  /* i18n-raw: these titles are KEYS — the render site and the exports pass
+     each one through t(), and `onlyFileFacts` compares against the English
+     spelling, so translating them here would break that check. */
   return [
     { title: "File", icon: "description", rows: fileRows },
+    // i18n-raw: a key, as above.
     { title: "Image", icon: "image", rows: image },
+    // i18n-raw: keys, as above.
     { title: "Camera", icon: "photo_camera", rows: camera },
     { title: "Exposure", icon: "shutter_speed", rows: exposure },
     { title: "Date & time", icon: "calendar_today", rows: when },
@@ -117,17 +145,22 @@ function buildSections(
   ].filter((s) => s.rows.length > 0);
 }
 
-function aspectRatio(w: number, h: number): string {
+function aspectRatio(w: number, h: number, locale: Locale): string {
   const gcd = (a: number, b: number): number => (b ? gcd(b, a % b) : a);
   const g = gcd(w, h) || 1;
   const rw = w / g;
   const rh = h / g;
   // Past ~32 the "exact" ratio stops being recognisable (1129:2048), so fall
   // back to a decimal that still tells you the shape.
-  return rw <= 32 && rh <= 32 ? `${rw}:${rh}` : `${(w / h).toFixed(2)}:1`;
+  return rw <= 32 && rh <= 32
+    ? `${rw}:${rh}`
+    : `${new Intl.NumberFormat(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(w / h)}:1`;
 }
 
 export function MetadataTool() {
+  const t = useT();
+  const locale = useLocale();
+  const formatBytes = useFormatBytes();
   const [file, setFile] = useState<File | null>(null);
   const [url, setUrl] = useState<string | null>(null);
   const [meta, setMeta] = useState<Meta | null>(null);
@@ -145,7 +178,7 @@ export function MetadataTool() {
 
   const loadFile = useCallback(async (incoming: FileList | File[]) => {
     const f = Array.from(incoming).find((x) => x.type.startsWith("image/") || /\.(jpe?g|png|webp|tiff?|heic|heif|gif|bmp)$/i.test(x.name));
-    if (!f) { toast.error("Please select an image file."); return; }
+    if (!f) { toast.error(t("Please select an image file.")); return; }
     setIsWorking(true);
     setUrl((prev) => { if (prev) URL.revokeObjectURL(prev); return URL.createObjectURL(f); });
     setFile(f);
@@ -190,7 +223,7 @@ export function MetadataTool() {
       setParsed(true);
       setIsWorking(false);
     }
-  }, []);
+  }, [t]);
 
   useHandoff(loadFile);
 
@@ -202,8 +235,8 @@ export function MetadataTool() {
   };
 
   const sections = useMemo(
-    () => (file && meta ? buildSections(file, meta, hashes, fmtRows, decoded) : []),
-    [file, meta, hashes, fmtRows, decoded]
+    () => (file && meta ? buildSections(file, meta, hashes, fmtRows, decoded, t, locale, formatBytes) : []),
+    [file, meta, hashes, fmtRows, decoded, t, locale, formatBytes]
   );
 
   const rawEntries = useMemo(
@@ -213,34 +246,39 @@ export function MetadataTool() {
 
   const exportTxt = () => {
     if (!file) return;
+    /* The TXT export is for a person to read, so it follows the page language.
+       The JSON export below keeps its English keys — that one is for a machine
+       (conversion.md §6.2.6). */
     const lines: string[] = [
-      `Metadata of ${file.name}`,
+      t("Metadata of {name}", { name: file.name }),
       "",
-      "Extracted automatically in your browser. It may be neither complete nor",
-      "accurate — metadata can be edited or removed at any point in a file's life.",
+      t("Extracted automatically in your browser. It may be neither complete nor"),
+      t("accurate — metadata can be edited or removed at any point in a file's life."),
       "",
     ];
     for (const s of sections) {
-      lines.push(`── ${s.title} ──`);
-      const pad = Math.max(...s.rows.map((r) => r.label.length));
-      for (const r of s.rows) lines.push(`  ${r.label.padEnd(pad)}  ${r.value}`);
+      const title = t(s.title);
+      lines.push(`── ${title} ──`);
+      const labels = s.rows.map((r) => t(r.label));
+      const pad = Math.max(...labels.map((l) => l.length));
+      s.rows.forEach((r, i) => lines.push(`  ${labels[i].padEnd(pad)}  ${r.value}`));
       lines.push("");
     }
     if (gps) {
-      lines.push("── Location ──", `  Latitude   ${gps.latitude}`, `  Longitude  ${gps.longitude}`, "");
+      lines.push(`── ${t("Location")} ──`, `  ${t("Latitude")}   ${gps.latitude}`, `  ${t("Longitude")}  ${gps.longitude}`, "");
     }
     if (rawEntries.length) {
-      lines.push(`── All metadata (${rawEntries.length}) ──`);
+      lines.push(`── ${t("All metadata ({n})", { n: rawEntries.length })} ──`);
       const pad = Math.max(...rawEntries.map(([k]) => k.length));
       for (const [k, v] of rawEntries) {
         lines.push(`  ${k.padEnd(pad)}  ${v instanceof Date ? v.toISOString() : String(v)}`);
       }
       lines.push("");
     }
-    if (header) lines.push("── Raw header (first 128 bytes) ──", `  ${header}`, "");
-    lines.push(`Generated by oMyImage — ${new Date().toLocaleString()}`);
+    if (header) lines.push(`── ${t("Raw header (first 128 bytes)")} ──`, `  ${header}`, "");
+    lines.push(`${t("Generated by oMyImage")} — ${formatDateTime(new Date(), locale)}`);
     downloadBlob(new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" }), `${baseName(file.name)}-metadata.txt`);
-    toast.success("Downloaded metadata as TXT.");
+    toast.success(t("Downloaded metadata as TXT."));
   };
 
   const exportJson = () => {
@@ -270,18 +308,18 @@ export function MetadataTool() {
       new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" }),
       `${baseName(file.name)}-metadata.json`
     );
-    toast.success("Downloaded metadata as JSON.");
+    toast.success(t("Downloaded metadata as JSON."));
   };
 
   const copyAll = async () => {
     const text = sections
-      .map((s) => `${s.title}\n${s.rows.map((r) => `  ${r.label}: ${r.value}`).join("\n")}`)
+      .map((s) => `${t(s.title)}\n${s.rows.map((r) => `  ${t(r.label)}: ${r.value}`).join("\n")}`)
       .join("\n\n");
     try {
       await navigator.clipboard.writeText(text);
-      toast.success("Copied to clipboard.");
+      toast.success(t("Copied to clipboard."));
     } catch {
-      toast.error("Couldn't copy to the clipboard.");
+      toast.error(t("Couldn't copy to the clipboard."));
     }
   };
 
@@ -289,7 +327,7 @@ export function MetadataTool() {
     return (
       <section>
         <TopLoadingBar active={isWorking} />
-        <Dropzone onFiles={loadFile} accept={ACCEPT} accent={ACCENT} icon="info" multiple={false} buttonLabel="Select an image" hint="or drop a JPG, PNG, TIFF or HEIC photo here" />
+        <Dropzone onFiles={loadFile} accept={ACCEPT} accent={ACCENT} icon="info" multiple={false} buttonLabel={t("Select an image")} hint={t("or drop a JPG, PNG, TIFF or HEIC photo here")} />
       </section>
     );
   }
@@ -305,11 +343,11 @@ export function MetadataTool() {
         mobile={{
           ...filesHeader(file ? [file] : []),
           onBack: reset,
-          backLabel: "Clear image",
-          settingsTitle: "Metadata options",
+          backLabel: t("Clear image"),
+          settingsTitle: t("Metadata options"),
           cta: {
             icon: "content_copy",
-            label: "Copy",
+            label: t("Copy"),
             busy: isWorking,
             onClick: copyAll,
           },
@@ -321,20 +359,21 @@ export function MetadataTool() {
               <img src={url} alt={file.name} className="max-w-full max-h-[46vh] rounded" />
             </div>
             <p className="text-center text-label-sm font-label-sm text-on-surface-variant truncate">
-              <span className="font-semibold text-on-surface">{file.name}</span> · {formatBytes(file.size)} · {file.type || "image"}
+              <span className="font-semibold text-on-surface">{file.name}</span> · {formatBytes(file.size)} · {file.type || t("image")}
             </p>
-            <button type="button" onClick={reset} className="self-center inline-flex items-center gap-1.5 text-label-md font-medium text-on-surface-variant hover:text-error"><Icon name="close" className="text-[18px]" /> Change image</button>
+            <button type="button" onClick={reset} className="self-center inline-flex items-center gap-1.5 text-label-md font-medium text-on-surface-variant hover:text-error"><Icon name="close" className="text-[18px]" /> {t("Change image")}</button>
           </>
         }
         rail={
           <SettingsRail
-            title="Metadata"
+            title={t("Metadata")}
             icon="info"
             accent={ACCENT}
             footer={
               <div className="flex flex-col gap-2">
                 <div className="grid grid-cols-2 gap-2">
                   <button type="button" onClick={exportTxt} className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-secondary py-2.5 text-label-md font-semibold text-on-secondary transition-colors hover:bg-secondary-container">
+                    {/* i18n-raw: TXT and JSON are file-format names */}
                     <Icon name="description" className="text-[18px]" /> TXT
                   </button>
                   <button type="button" onClick={exportJson} className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-secondary py-2.5 text-label-md font-semibold text-on-secondary transition-colors hover:bg-secondary-container">
@@ -342,7 +381,7 @@ export function MetadataTool() {
                   </button>
                 </div>
                 <button type="button" onClick={copyAll} className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-secondary py-2 text-label-md font-semibold text-secondary transition-colors hover:bg-secondary/10">
-                  <Icon name="content_copy" className="text-[18px]" /> Copy all
+                  <Icon name="content_copy" className="text-[18px]" /> {t("Copy all")}
                 </button>
               </div>
             }
@@ -351,27 +390,26 @@ export function MetadataTool() {
               <div className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-5 flex items-start gap-2.5">
                 <Icon name="info" className="text-[20px] mt-0.5 shrink-0" style={{ color: ACCENT }} />
                 <p className="text-body-md text-on-surface-variant">
-                  No EXIF block in this file — messaging apps and social networks usually strip it. The file and image
-                  details below are read from the image itself, so they are still accurate.
+                  {t("No EXIF block in this file — messaging apps and social networks usually strip it. The file and image details below are read from the image itself, so they are still accurate.")}
                 </p>
               </div>
             )}
 
             {gps && (
               <div className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-5 flex flex-col gap-3">
-                <h2 className="flex items-center gap-2 text-headline-md font-bold text-primary"><Icon name="location_on" style={{ color: ACCENT }} /> Location</h2>
+                <h2 className="flex items-center gap-2 text-headline-md font-bold text-primary"><Icon name="location_on" style={{ color: ACCENT }} /> {t("Location")}</h2>
                 <p className="text-body-md text-on-surface font-label-sm">{gps.latitude.toFixed(6)}, {gps.longitude.toFixed(6)}</p>
-                <a href={`https://www.openstreetmap.org/?mlat=${gps.latitude}&mlon=${gps.longitude}#map=15/${gps.latitude}/${gps.longitude}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-label-md font-semibold text-secondary hover:underline"><Icon name="map" className="text-[18px]" /> View on map</a>
+                <a href={`https://www.openstreetmap.org/?mlat=${gps.latitude}&mlon=${gps.longitude}#map=15/${gps.latitude}/${gps.longitude}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-label-md font-semibold text-secondary hover:underline"><Icon name="map" className="text-[18px]" /> {t("View on map")}</a>
               </div>
             )}
 
             {sections.map((s) => (
               <div key={s.title} className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-5 flex flex-col gap-3">
-                <h2 className="flex items-center gap-2 text-headline-md font-bold text-primary"><Icon name={s.icon} style={{ color: ACCENT }} /> {s.title}</h2>
+                <h2 className="flex items-center gap-2 text-headline-md font-bold text-primary"><Icon name={s.icon} style={{ color: ACCENT }} /> {t(s.title)}</h2>
                 <dl className="flex flex-col gap-1.5">
                   {s.rows.map((r) => (
                     <div key={r.label} className="flex items-start justify-between gap-3 text-body-md">
-                      <dt className="shrink-0 text-on-surface-variant">{r.label}</dt>
+                      <dt className="shrink-0 text-on-surface-variant">{t(r.label)}</dt>
                       <dd className="text-primary font-semibold text-right break-all">{r.value}</dd>
                     </div>
                   ))}
@@ -382,15 +420,16 @@ export function MetadataTool() {
             {rawEntries.length > 0 && (
               <div className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-5 flex flex-col gap-3">
                 <button type="button" onClick={() => setShowRaw((v) => !v)} className="flex items-center justify-between text-headline-md font-bold text-primary">
-                  <span className="flex items-center gap-2"><Icon name="data_object" style={{ color: ACCENT }} /> All metadata ({rawEntries.length})</span>
+                  <span className="flex items-center gap-2"><Icon name="data_object" style={{ color: ACCENT }} /> {t("All metadata ({n})", { n: rawEntries.length })}</span>
                   <Icon name={showRaw ? "expand_less" : "expand_more"} />
                 </button>
                 {showRaw && (
                   <dl className="flex flex-col gap-1.5 max-h-[40vh] overflow-y-auto pr-1">
                     {rawEntries.map(([k, v]) => (
                       <div key={k} className="flex items-start justify-between gap-3 text-label-md">
+                        {/* i18n-raw: raw EXIF tag names and their values, as the file stores them */}
                         <dt className="shrink-0 text-on-surface-variant font-label-sm">{k}</dt>
-                        <dd className="text-primary font-semibold text-right break-all font-label-sm">{v instanceof Date ? v.toLocaleString() : String(v)}</dd>
+                        <dd className="text-primary font-semibold text-right break-all font-label-sm">{v instanceof Date ? formatDateTime(v, locale) : String(v)}</dd>
                       </div>
                     ))}
                   </dl>
@@ -401,7 +440,7 @@ export function MetadataTool() {
             {header && (
               <div className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-5 flex flex-col gap-3">
                 <button type="button" onClick={() => setShowHeader((v) => !v)} className="flex items-center justify-between text-headline-md font-bold text-primary">
-                  <span className="flex items-center gap-2"><Icon name="terminal" style={{ color: ACCENT }} /> Raw header</span>
+                  <span className="flex items-center gap-2"><Icon name="terminal" style={{ color: ACCENT }} /> {t("Raw header")}</span>
                   <Icon name={showHeader ? "expand_less" : "expand_more"} />
                 </button>
                 {showHeader && (

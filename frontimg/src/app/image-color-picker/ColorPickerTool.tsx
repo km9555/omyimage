@@ -20,6 +20,8 @@ import {
   type Swatch,
 } from "@/lib/image/palette";
 import { useHandoff } from "@/lib/tool-handoff";
+import type { Locale } from "@/i18n/config";
+import { useLocale, useT } from "@/i18n/I18nScope";
 
 const ACCENT = "#3F9E7C";
 const ACCEPT = "image/jpeg,image/png,image/webp,image/gif,image/bmp";
@@ -40,10 +42,16 @@ function hslStr([r, g, b]: RGB): string {
 }
 
 const luminance = ([r, g, b]: RGB) => 0.299 * r + 0.587 * g + 0.114 * b;
-const sharePct = (share: number) =>
-  share >= 0.01 ? `${Math.round(share * 100)}%` : `${(share * 100).toFixed(1)}%`;
+/* The decimal separator follows the page, not the browser — and this string is
+   also drawn INTO the downloaded palette PNG (conversion.md §4.16, §6.3). */
+const sharePct = (share: number, locale: Locale) =>
+  share >= 0.01
+    ? `${Math.round(share * 100)}%`
+    : `${new Intl.NumberFormat(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(share * 100)}%`;
 
 export function ColorPickerTool() {
+  const t = useT();
+  const locale = useLocale();
   const [file, setFile] = useState<File | null>(null);
   const [nat, setNat] = useState<{ w: number; h: number } | null>(null);
   const [picked, setPicked] = useState<RGB | null>(null);
@@ -67,7 +75,7 @@ export function ColorPickerTool() {
 
   const loadFile = useCallback(async (incoming: FileList | File[]) => {
     const f = Array.from(incoming).find((x) => x.type.startsWith("image/"));
-    if (!f) { toast.error("Please select an image file."); return; }
+    if (!f) { toast.error(t("Please select an image file.")); return; }
     setIsWorking(true);
     try {
       const bmp = await decodeBitmap(f);
@@ -86,16 +94,16 @@ export function ColorPickerTool() {
       } else {
         rankedRef.current = null;
         setPalette([]);
-        setPaletteNote("This image is fully transparent — there are no colors to extract.");
+        setPaletteNote(t("This image is fully transparent — there are no colors to extract."));
       }
 
       setFile(f); setNat({ w: bmp.width, h: bmp.height }); setPicked(null); setHistory([]);
     } catch {
-      toast.error("Couldn't read that image.");
+      toast.error(t("Couldn't read that image."));
     } finally {
       setIsWorking(false);
     }
-  }, []);
+  }, [t]);
 
   useHandoff(loadFile);
 
@@ -170,7 +178,7 @@ export function ColorPickerTool() {
     if (s && ranked) setPalette(takePalette(s, ranked, n));
   };
 
-  const copy = (text: string) => { navigator.clipboard?.writeText(text).then(() => toast.success(`Copied ${text}`)).catch(() => toast.error("Copy failed.")); };
+  const copy = (text: string) => { navigator.clipboard?.writeText(text).then(() => toast.success(t("Copied {value}", { value: text }))).catch(() => toast.error(t("Copy failed."))); };
   const copyAll = () => copy(palette.map((s) => hexOf(s.color)).join("\n"));
 
   const downloadPalette = async () => {
@@ -188,7 +196,7 @@ export function ColorPickerTool() {
       ctx.font = "bold 22px Inter, Arial, sans-serif"; ctx.textAlign = "center";
       ctx.fillText(hexOf(s.color), x + sw / 2, sw - 44);
       ctx.font = "16px Inter, Arial, sans-serif";
-      ctx.fillText(sharePct(s.share), x + sw / 2, sw - 18);
+      ctx.fillText(sharePct(s.share, locale), x + sw / 2, sw - 18);
       ctx.fillStyle = "#444"; ctx.font = "16px Inter, Arial, sans-serif";
       ctx.fillText(rgbCss(s.color), x + sw / 2, sw + 34);
     });
@@ -202,7 +210,7 @@ export function ColorPickerTool() {
     return (
       <section>
         <TopLoadingBar active={isWorking} />
-        <Dropzone onFiles={loadFile} accept={ACCEPT} accent={ACCENT} icon="colorize" multiple={false} buttonLabel="Select an image" hint="or drop a JPG, PNG, WEBP or GIF here" />
+        <Dropzone onFiles={loadFile} accept={ACCEPT} accent={ACCENT} icon="colorize" multiple={false} buttonLabel={t("Select an image")} hint={t("or drop a JPG, PNG, WEBP or GIF here")} />
       </section>
     );
   }
@@ -210,10 +218,11 @@ export function ColorPickerTool() {
   const ColorRow = ({ label, value }: { label: string; value: string }) => (
     <div className="flex items-center justify-between gap-3 rounded-lg bg-surface-container px-3 py-2">
       <div className="min-w-0">
+        {/* i18n-raw: HEX, RGB and HSL are colour-notation names */}
         <p className="text-label-sm font-label-sm text-on-surface-variant">{label}</p>
         <p className="truncate text-body-md font-semibold text-primary font-label-sm">{value}</p>
       </div>
-      <button type="button" onClick={() => copy(value)} aria-label={`Copy ${label}`} className="flex h-8 w-8 items-center justify-center rounded-lg text-secondary hover:bg-secondary/10 transition-colors shrink-0"><Icon name="content_copy" className="text-[18px]" /></button>
+      <button type="button" onClick={() => copy(value)} aria-label={t("Copy {value}", { value: label })} className="flex h-8 w-8 items-center justify-center rounded-lg text-secondary hover:bg-secondary/10 transition-colors shrink-0"><Icon name="content_copy" className="text-[18px]" /></button>
     </div>
   );
 
@@ -226,11 +235,11 @@ export function ColorPickerTool() {
         mobile={{
           ...filesHeader(file ? [file] : []),
           onBack: reset,
-          backLabel: "Clear image",
-          settingsTitle: "Palette options",
+          backLabel: t("Clear image"),
+          settingsTitle: t("Palette options"),
           cta: {
             icon: "content_copy",
-            label: "Copy all",
+            label: t("Copy all"),
             busy: isWorking,
             onClick: copyAll,
           },
@@ -257,27 +266,27 @@ export function ColorPickerTool() {
                 key={hexOf(s.color)}
                 type="button"
                 onClick={() => pick(s.color)}
-                title={`${hexOf(s.color)} — ${sharePct(s.share)}`}
-                aria-label={`Pick ${hexOf(s.color)}`}
+                title={`${hexOf(s.color)} — ${sharePct(s.share, locale)}`}
+                aria-label={t("Pick {value}", { value: hexOf(s.color) })}
                 style={{ backgroundColor: hexOf(s.color), flex: Math.max(s.share, 0.02) }}
               />
             ))}
           </div>
         )}
         <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
-          Click anywhere on <span className="font-semibold text-on-surface">{file.name}</span> to pick a color.
+          {t("Click anywhere on")} <span className="font-semibold text-on-surface">{file.name}</span> {t("to pick a color.")}
         </p>
-        <button type="button" onClick={reset} className="self-center inline-flex items-center gap-1.5 text-label-md font-medium text-on-surface-variant hover:text-error"><Icon name="close" className="text-[18px]" /> Change image</button>
+        <button type="button" onClick={reset} className="self-center inline-flex items-center gap-1.5 text-label-md font-medium text-on-surface-variant hover:text-error"><Icon name="close" className="text-[18px]" /> {t("Change image")}</button>
           </>
         }
         rail={
           <SettingsRail
-            title="Colors"
+            title={t("Colors")}
             icon="colorize"
             accent={ACCENT}
           >
         <div className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-5 flex flex-col gap-4">
-          <h2 className="text-headline-md font-bold text-primary">Picked color</h2>
+          <h2 className="text-headline-md font-bold text-primary">{t("Picked color")}</h2>
           <div className="h-24 w-full rounded-lg border border-surface-variant" style={{ backgroundColor: picked ? hexOf(picked) : "transparent" }} />
           {picked ? (
             <div className="flex flex-col gap-2">
@@ -286,16 +295,16 @@ export function ColorPickerTool() {
               <ColorRow label="HSL" value={hslStr(picked)} />
             </div>
           ) : (
-            <p className="text-body-md text-on-surface-variant">Click the image — or any palette swatch below — to sample a color.</p>
+            <p className="text-body-md text-on-surface-variant">{t("Click the image — or any palette swatch below — to sample a color.")}</p>
           )}
         </div>
 
         {history.length > 0 && (
           <div className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-5 flex flex-col gap-3">
-            <h2 className="text-headline-md font-bold text-primary">Recent</h2>
+            <h2 className="text-headline-md font-bold text-primary">{t("Recent")}</h2>
             <div className="flex flex-wrap gap-2">
               {history.map((c, i) => (
-                <button key={`${hexOf(c)}-${i}`} type="button" onClick={() => copy(hexOf(c))} title={hexOf(c)} className="w-9 h-9 rounded-lg border border-surface-variant hover:scale-110 transition-transform" style={{ backgroundColor: hexOf(c) }} aria-label={`Copy ${hexOf(c)}`} />
+                <button key={`${hexOf(c)}-${i}`} type="button" onClick={() => copy(hexOf(c))} title={hexOf(c)} className="w-9 h-9 rounded-lg border border-surface-variant hover:scale-110 transition-transform" style={{ backgroundColor: hexOf(c) }} aria-label={t("Copy {value}", { value: hexOf(c) })} />
               ))}
             </div>
           </div>
@@ -303,9 +312,9 @@ export function ColorPickerTool() {
 
         <div className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-5 flex flex-col gap-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-headline-md font-bold text-primary">Palette</h2>
+            <h2 className="text-headline-md font-bold text-primary">{t("Palette")}</h2>
             {palette.length > 0 && (
-              <button type="button" onClick={copyAll} className="inline-flex items-center gap-1.5 text-label-md font-semibold text-secondary hover:underline"><Icon name="content_copy" className="text-[18px]" /> Copy all</button>
+              <button type="button" onClick={copyAll} className="inline-flex items-center gap-1.5 text-label-md font-semibold text-secondary hover:underline"><Icon name="content_copy" className="text-[18px]" /> {t("Copy all")}</button>
             )}
           </div>
 
@@ -314,13 +323,15 @@ export function ColorPickerTool() {
           ) : (
             <>
               <div className="flex flex-col gap-1.5">
-                <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Colors</span><span className="text-primary font-semibold">{count}</span></label>
-                <input type="range" min={2} max={16} step={1} value={count} onChange={(e) => onCount(parseInt(e.target.value, 10))} className="w-full accent-secondary" aria-label="Number of palette colors" />
+                <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Colors")}</span><span className="text-primary font-semibold">{count}</span></label>
+                <input type="range" min={2} max={16} step={1} value={count} onChange={(e) => onCount(parseInt(e.target.value, 10))} className="w-full accent-secondary" aria-label={t("Number of palette colors")} />
               </div>
 
               {palette.length > 0 && palette.length < count && (
                 <p className="text-label-sm font-label-sm text-on-surface-variant">
-                  This image only has {palette.length} visually distinct {palette.length === 1 ? "color" : "colors"} — showing all of them rather than repeating near-identical shades.
+                  {palette.length === 1
+                    ? t("This image only has 1 visually distinct color — showing it rather than repeating near-identical shades.")
+                    : t("This image only has {n} visually distinct colors — showing all of them rather than repeating near-identical shades.", { n: palette.length })}
                 </p>
               )}
 
@@ -330,7 +341,7 @@ export function ColorPickerTool() {
                     <button
                       type="button"
                       onClick={() => pick(s.color)}
-                      aria-label={`Pick ${hexOf(s.color)}`}
+                      aria-label={t("Pick {value}", { value: hexOf(s.color) })}
                       className="flex min-w-0 flex-1 items-center gap-3 rounded-lg px-3 py-2 text-left"
                     >
                       <span className="w-9 h-9 rounded-lg border border-surface-variant shrink-0" style={{ backgroundColor: hexOf(s.color) }} />
@@ -340,19 +351,19 @@ export function ColorPickerTool() {
                       </span>
                       <span
                         className="text-label-sm font-label-sm text-on-surface-variant shrink-0 tabular-nums"
-                        title={`${sharePct(s.share)} of pixels are closest to this color`}
+                        title={t("{share} of pixels are closest to this color", { share: sharePct(s.share, locale) })}
                       >
-                        {sharePct(s.share)}
+                        {sharePct(s.share, locale)}
                       </span>
                     </button>
-                    <button type="button" onClick={() => copy(hexOf(s.color))} aria-label={`Copy ${hexOf(s.color)}`} className="flex h-8 w-8 items-center justify-center rounded-lg text-secondary hover:bg-secondary/10 transition-colors shrink-0"><Icon name="content_copy" className="text-[18px]" /></button>
+                    <button type="button" onClick={() => copy(hexOf(s.color))} aria-label={t("Copy {value}", { value: hexOf(s.color) })} className="flex h-8 w-8 items-center justify-center rounded-lg text-secondary hover:bg-secondary/10 transition-colors shrink-0"><Icon name="content_copy" className="text-[18px]" /></button>
                   </li>
                 ))}
               </ul>
 
               {palette.length > 0 && (
                 <button type="button" onClick={downloadPalette} className="w-full inline-flex items-center justify-center gap-2 bg-secondary hover:bg-secondary-container text-on-secondary font-semibold py-3.5 rounded-lg transition-colors">
-                  <Icon name="download" className="text-[20px]" /> Download palette (PNG)
+                  <Icon name="download" className="text-[20px]" /> {t("Download palette (PNG)")}
                 </button>
               )}
             </>
@@ -361,7 +372,7 @@ export function ColorPickerTool() {
 
         <div className="rounded-xl border border-outline-variant/40 bg-surface-bright p-4 flex items-start gap-2.5">
           <Icon name="lightbulb" className="text-[18px] mt-0.5" style={{ color: ACCENT }} />
-          <p className="text-label-sm font-label-sm text-on-surface-variant"><strong className="text-on-surface">Tip:</strong> hover to preview with the magnifier and click to lock a color, or tap a palette swatch to load it. Copy buttons put the value straight on your clipboard, and everything runs in your browser.</p>
+          <p className="text-label-sm font-label-sm text-on-surface-variant"><strong className="text-on-surface">{t("Tip:")}</strong> {t("hover to preview with the magnifier and click to lock a color, or tap a palette swatch to load it. Copy buttons put the value straight on your clipboard, and everything runs in your browser.")}</p>
         </div>
           </SettingsRail>
         }

@@ -7,6 +7,7 @@ import { TopLoadingBar } from "@/components/TopLoadingBar";
 import { ToolWorkspace } from "@/components/tool/ToolWorkspace";
 import { SettingsRail, RailAction, RailSecondaryAction } from "@/components/tool/SettingsRail";
 import { downloadBlob, canvasToBlob, mimeExt, type ExportMime } from "@/lib/image/raster";
+import { useT } from "@/i18n/I18nScope";
 
 const ACCENT = "#8064C6";
 
@@ -36,6 +37,7 @@ const FORMATS: { label: string; value: ExportMime }[] = [
 ];
 
 export function Base64ToImageTool() {
+  const t = useT();
   const [input, setInput] = useState("");
   const [dataUri, setDataUri] = useState("");
   const [dims, setDims] = useState<{ w: number; h: number } | null>(null);
@@ -53,9 +55,9 @@ export function Base64ToImageTool() {
     if (!uri) { setError(null); return; }
     const img = new window.Image();
     img.onload = () => { setDims({ w: img.naturalWidth, h: img.naturalHeight }); setError(null); };
-    img.onerror = () => { setError("That doesn't look like a valid Base64 image string."); };
+    img.onerror = () => { setError(t("That doesn't look like a valid Base64 image string.")); };
     img.src = uri;
-  }, [input]);
+  }, [input, t]);
 
   const valid = !!dims && !error;
 
@@ -66,9 +68,9 @@ export function Base64ToImageTool() {
       const blob = await (await fetch(dataUri)).blob();
       const ext = (blob.type.split("/")[1] || "png").replace("jpeg", "jpg").replace("svg+xml", "svg");
       downloadBlob(blob, `omyimage_decoded.${ext}`);
-      toast.success("Image downloaded.");
+      toast.success(t("Image downloaded."));
     } catch {
-      toast.error("Couldn't decode that string.");
+      toast.error(t("Couldn't decode that string."));
     } finally {
       setIsWorking(false);
     }
@@ -84,14 +86,14 @@ export function Base64ToImageTool() {
       const canvas = document.createElement("canvas");
       canvas.width = dims.w; canvas.height = dims.h;
       const ctx = canvas.getContext("2d");
-      if (!ctx) throw new Error("Canvas not supported.");
+      if (!ctx) throw new Error(t("Canvas not supported."));
       if (format === "image/jpeg") { ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, dims.w, dims.h); }
       ctx.drawImage(img, 0, 0);
       const blob = await canvasToBlob(canvas, format, quality);
       downloadBlob(blob, `omyimage_decoded.${mimeExt(format)}`);
-      toast.success(`Downloaded as ${mimeExt(format).toUpperCase()}.`);
+      toast.success(t("Downloaded as {format}.", { format: mimeExt(format).toUpperCase() }));
     } catch {
-      toast.error("Conversion failed.");
+      toast.error(t("Conversion failed."));
     } finally {
       setIsWorking(false);
     }
@@ -114,18 +116,18 @@ export function Base64ToImageTool() {
         mobile={
           valid
             ? {
-                title: "Decoded image",
+                title: t("Decoded image"),
                 meta: dims && (
                   <span className="shrink-0">
                     {dims.w} × {dims.h} · {format.replace("image/", "").toUpperCase()}
                   </span>
                 ),
                 onBack: () => setInput(""),
-                backLabel: "Clear input",
-                settingsTitle: "Output settings",
+                backLabel: t("Clear input"),
+                settingsTitle: t("Output settings"),
                 cta: {
                   icon: "download",
-                  label: "Download",
+                  label: t("Download"),
                   busy: isWorking,
                   onClick: downloadNative,
                 },
@@ -137,45 +139,45 @@ export function Base64ToImageTool() {
         <div className="bg-surface-container rounded-xl border border-surface-variant p-4 flex items-center justify-center overflow-hidden" style={{ minHeight: 220 }}>
           {valid ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img ref={imgRef} src={dataUri} alt="Decoded" className="max-w-full max-h-[calc(100dvh-12rem)] rounded shadow" />
+            <img ref={imgRef} src={dataUri} alt={t("Decoded")} className="max-w-full max-h-[calc(100dvh-12rem)] rounded shadow" />
           ) : (
             <div className="flex flex-col items-center gap-2 text-on-surface-variant text-center px-4">
               <Icon name={error ? "error" : "image"} className="text-[40px]" style={{ color: error ? "#EF4444" : ACCENT }} />
-              <p className="text-body-md">{error ?? "Paste a Base64 string to preview the image here."}</p>
+              <p className="text-body-md">{error ?? t("Paste a Base64 string to preview the image here.")}</p>
             </div>
           )}
         </div>
         {valid && dims && (
-          <p className="text-center text-label-sm font-label-sm text-on-surface-variant">{dims.w} × {dims.h} px · decoded preview</p>
+          <p className="text-center text-label-sm font-label-sm text-on-surface-variant">{dims.w} × {dims.h} px · {t("decoded preview")}</p>
         )}
           </>
         }
         rail={
           <SettingsRail
-            title="Base64 Input"
+            title={t("Base64 Input")}
             icon="image"
             accent={ACCENT}
             footer={
               <>
                 <RailAction onClick={downloadNative} disabled={!valid || isWorking} icon="download">
-                  Download image
+                  {t("Download image")}
                 </RailAction>
                 <RailSecondaryAction icon="sync_alt" onClick={downloadConverted}>
-                  Download as {mimeExt(format).toUpperCase()}
+                  {t("Download as {format}", { format: mimeExt(format).toUpperCase() })}
                 </RailSecondaryAction>
               </>
             }
           >
         <div className="flex flex-col gap-4">
-          <textarea value={input} onChange={(e) => setInput(e.target.value)} rows={7} placeholder="Paste a data URI (data:image/png;base64,…) or raw Base64" className={`${fieldCls} font-label-sm resize-y break-all`} style={{ wordBreak: "break-all" }} />
-          {input && (error ? <p className="text-label-sm font-label-sm text-error flex items-center gap-1"><Icon name="error" className="text-[16px]" /> {error}</p> : valid ? <p className="text-label-sm font-label-sm text-on-surface-variant flex items-center gap-1"><Icon name="check_circle" className="text-[16px]" style={{ color: ACCENT }} /> Valid image detected.</p> : null)}
+          <textarea value={input} onChange={(e) => setInput(e.target.value)} rows={7} placeholder={t("Paste a data URI (data:image/png;base64,…) or raw Base64")} className={`${fieldCls} font-label-sm resize-y break-all`} style={{ wordBreak: "break-all" }} />
+          {input && (error ? <p className="text-label-sm font-label-sm text-error flex items-center gap-1"><Icon name="error" className="text-[16px]" /> {error}</p> : valid ? <p className="text-label-sm font-label-sm text-on-surface-variant flex items-center gap-1"><Icon name="check_circle" className="text-[16px]" style={{ color: ACCENT }} /> {t("Valid image detected.")}</p> : null)}
         </div>
 
         <div className="flex flex-col gap-3 border-t border-outline-variant/60 pt-5">
-          <h3 className="text-body-lg font-bold text-primary">Convert &amp; download</h3>
-          <select value={format} onChange={(e) => setFormat(e.target.value as ExportMime)} className={fieldCls}>{FORMATS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}</select>
+          <h3 className="text-body-lg font-bold text-primary">{t("Convert & download")}</h3>
+          <select value={format} onChange={(e) => setFormat(e.target.value as ExportMime)} className={fieldCls}>{FORMATS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}{/* i18n-raw: PNG, JPG and WEBP are format names */}</select>
           {format !== "image/png" && (
-            <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Quality</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span></label><input type="range" min={0.5} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" /></div>
+            <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Quality")}</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span></label><input type="range" min={0.5} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" /></div>
           )}
         </div>
           </SettingsRail>
