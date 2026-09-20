@@ -11,7 +11,7 @@ import { SettingsRail, RailAction, RailSecondaryAction, RailNote } from "@/compo
 import { Dropzone } from "@/components/image/Dropzone";
 import { RegionEditor } from "@/components/image/RegionEditor";
 import {
-  decodeBitmap, canvasToBlob, downloadBlob, zipAndDownload, formatBytes, baseName, mimeExt, type ExportMime,
+  decodeBitmap, canvasToBlob, downloadBlob, zipAndDownload, baseName, mimeExt, type ExportMime,
 } from "@/lib/image/raster";
 import { type Region, type RegionShape } from "@/lib/image/redact";
 import { renderMasked, type BrushStroke } from "@/lib/image/mask";
@@ -25,6 +25,7 @@ import {
   type TextGranularity, type TextSensitivity,
 } from "@/lib/image/text-detect";
 import { useHandoff } from "@/lib/tool-handoff";
+import { useFormatBytes, useT } from "@/i18n/I18nScope";
 
 const ACCENT = "#5D7091";
 const ACCEPT = "image/jpeg,image/png,image/webp";
@@ -42,6 +43,8 @@ type Item = {
 /** Rail tabs. `text` arrives with OCR detection; it is not rendered yet. */
 type Tab = "brush" | "shape" | "text" | "face";
 
+// TABS, SENSITIVITY_LABELS and TEXT_SENSITIVITY_LABELS are module scope:
+// translated at the render site, keys in blur-face.<loc>.ts (conversion.md §4.2).
 const TABS: { value: Tab; label: string; icon: string }[] = [
   { value: "brush", label: "Brush", icon: "brush" },
   { value: "shape", label: "Shape", icon: "crop_square" },
@@ -55,6 +58,8 @@ const uid = () => `f${Date.now()}_${counter++}`;
 
 
 export function BlurTool() {
+  const t = useT();
+  const formatBytes = useFormatBytes();
   const [items, setItems] = useState<Item[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
@@ -111,12 +116,12 @@ export function BlurTool() {
           if (!alive || !itemsRef.current.some((p) => p.id === it.id)) { bmp.close(); return; }
           bmps.current.set(it.id, bmp);
         } catch {
-          toast.error(`Couldn't read ${it.file.name}.`);
+          toast.error(t("Couldn't read {name}.", { name: it.file.name }));
         }
       })
     ).then(() => { if (alive) setBmpTick((n) => n + 1); });
     return () => { alive = false; };
-  }, [items]);
+  }, [items, t]);
 
   const active = useMemo(
     () => items.find((i) => i.id === activeId) ?? items[0] ?? null,
@@ -145,14 +150,14 @@ export function BlurTool() {
 
   const addFiles = useCallback((incoming: FileList | File[]) => {
     const imgs = Array.from(incoming).filter((f) => f.type.startsWith("image/"));
-    if (imgs.length === 0) { toast.error("Please select image files."); return; }
+    if (imgs.length === 0) { toast.error(t("Please select image files.")); return; }
     const added = imgs.map((file) => ({
       id: uid(), file, url: URL.createObjectURL(file),
       regions: [] as Region[], strokes: [] as BrushStroke[],
     }));
     setItems((prev) => [...prev, ...added]);
     setActiveId((cur) => cur ?? added[0].id);
-  }, []);
+  }, [t]);
 
   useHandoff(addFiles);
 
@@ -190,12 +195,12 @@ export function BlurTool() {
       );
       toast[found > 0 ? "success" : "error"](
         found > 0
-          ? `Found ${found} face${found === 1 ? "" : "s"} in ${targets.length} image${targets.length === 1 ? "" : "s"}.`
-          : "No faces detected — try a higher sensitivity, or draw the areas by hand."
+          ? `${found === 1 ? t("Found 1 face") : t("Found {n} faces", { n: found })} ${targets.length === 1 ? t("in 1 image.") : t("in {n} images.", { n: targets.length })}`
+          : t("No faces detected — try a higher sensitivity, or draw the areas by hand.")
       );
     } catch (err) {
       console.error(err);
-      toast.error("Face detection couldn't start. You can still draw areas by hand.");
+      toast.error(t("Face detection couldn't start. You can still draw areas by hand."));
     } finally {
       setIsDetecting(false);
     }
@@ -225,12 +230,12 @@ export function BlurTool() {
       );
       toast[found > 0 ? "success" : "error"](
         found > 0
-          ? `Found ${found} piece${found === 1 ? "" : "s"} of text in ${targets.length} image${targets.length === 1 ? "" : "s"}.`
-          : "No text detected — try a higher sensitivity, or draw the areas by hand."
+          ? `${found === 1 ? t("Found 1 piece of text") : t("Found {n} pieces of text", { n: found })} ${targets.length === 1 ? t("in 1 image.") : t("in {n} images.", { n: targets.length })}`
+          : t("No text detected — try a higher sensitivity, or draw the areas by hand.")
       );
     } catch (err) {
       console.error(err);
-      toast.error("Text detection couldn't start. You can still draw areas by hand.");
+      toast.error(t("Text detection couldn't start. You can still draw areas by hand."));
     } finally {
       setIsDetecting(false);
       setOcrStatus(null);
@@ -247,19 +252,19 @@ export function BlurTool() {
       ...active.regions.map((r) => ({
         id: r.id,
         kind: "region" as const,
-        label: r.source === "face" ? "Face" : r.source === "text" ? "Text" : r.shape === "ellipse" ? "Ellipse" : "Rectangle",
+        label: r.source === "face" ? t("Face") : r.source === "text" ? t("Text") : r.shape === "ellipse" ? t("Ellipse") : t("Rectangle"),
         icon: r.source === "face" ? "face" : r.source === "text" ? "text_fields" : r.shape === "ellipse" ? "circle" : "crop_square",
         hidden: !!r.hidden,
       })),
       ...active.strokes.map((st) => ({
         id: st.id,
         kind: "stroke" as const,
-        label: `${st.mode === "erase" ? "Erase" : "Brush"} ${++brush}`,
+        label: st.mode === "erase" ? t("Erase {n}", { n: ++brush }) : t("Brush {n}", { n: ++brush }),
         icon: st.mode === "erase" ? "ink_eraser" : "brush",
         hidden: !!st.hidden,
       })),
     ];
-  }, [active]);
+  }, [active, t]);
 
   const toggleMask = (id: string, kind: "region" | "stroke") => {
     if (!active) return;
@@ -287,8 +292,8 @@ export function BlurTool() {
 
   const exportAll = async () => {
     if (items.length === 0) return;
-    if (totalMasks === 0) { toast.error("Add at least one area to censor."); return; }
-    if (effect === "none") { toast.error("Pick an effect — \"No blur\" leaves the image unchanged."); return; }
+    if (totalMasks === 0) { toast.error(t("Add at least one area to censor.")); return; }
+    if (effect === "none") { toast.error(t("Pick an effect — \"No blur\" leaves the image unchanged.")); return; }
     setIsWorking(true);
     try {
       const canvas = document.createElement("canvas");
@@ -309,10 +314,10 @@ export function BlurTool() {
       setItems(out);
       if (out.length === 1 && out[0].result) downloadBlob(out[0].result.blob, out[0].result.name);
       else await zipAndDownload(out.map((o) => ({ name: o.result!.name, blob: o.result!.blob })), "omyimage_censored.zip");
-      toast.success(`Exported ${out.length} image${out.length === 1 ? "" : "s"}.`);
+      toast.success(out.length === 1 ? t("Exported 1 image.") : t("Exported {n} images.", { n: out.length }));
     } catch (err) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : "Export failed.");
+      toast.error(err instanceof Error ? err.message : t("Export failed."));
     } finally {
       setIsWorking(false);
     }
@@ -328,7 +333,7 @@ export function BlurTool() {
     return (
       <section>
         <TopLoadingBar active={isWorking} />
-        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="blur_on" hint="or drop JPG, PNG or WEBP images here" />
+        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="blur_on" hint={t("or drop JPG, PNG or WEBP images here")} />
       </section>
     );
   }
@@ -341,7 +346,7 @@ export function BlurTool() {
       <button
         type="button"
         onClick={() => { setActiveId(it.id); setSelectedRegion(null); }}
-        aria-label={`Edit ${it.file.name}`}
+        aria-label={t("Edit {name}", { name: it.file.name })}
         aria-pressed={active?.id === it.id}
         className={`grid place-items-center w-7 h-7 rounded-full text-label-sm font-bold shrink-0 transition-colors ${
           active?.id === it.id ? "text-on-secondary" : "text-on-surface-variant"
@@ -354,14 +359,14 @@ export function BlurTool() {
     meta: (
       <>
         {formatBytes(it.file.size)}
-        {it.regions.length > 0 && <span className="ml-1 text-on-surface font-semibold">· {it.regions.length} area{it.regions.length === 1 ? "" : "s"}</span>}
-        {it.result && <><Icon name="check" className="text-[13px] mx-1 align-middle" style={{ color: ACCENT }} />done</>}
+        {it.regions.length > 0 && <span className="ml-1 text-on-surface font-semibold">· {it.regions.length === 1 ? t("1 area") : t("{n} areas", { n: it.regions.length })}</span>}
+        {it.result && <><Icon name="check" className="text-[13px] mx-1 align-middle" style={{ color: ACCENT }} />{t("done")}</>}
       </>
     ),
     action: it.result ? (
-      <TrayAction icon="download" tone="accent" label="Download" onClick={() => downloadBlob(it.result!.blob, it.result!.name)} />
+      <TrayAction icon="download" tone="accent" label={t("Download")} onClick={() => downloadBlob(it.result!.blob, it.result!.name)} />
     ) : (
-      <TrayAction icon="close" label="Remove" disabled={isWorking} onClick={() => removeItem(it.id)} />
+      <TrayAction icon="close" label={t("Remove")} disabled={isWorking} onClick={() => removeItem(it.id)} />
     ),
   }));
 
@@ -394,9 +399,9 @@ export function BlurTool() {
           />
         </div>
         <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
-          Drag to draw an area, click one to select, drag its handles to resize, Delete to remove.
+          {t("Drag to draw an area, click one to select, drag its handles to resize, Delete to remove.")}
           {active && active.regions.length > 0 && (
-            <span className="font-semibold text-on-surface"> {active.regions.length} area{active.regions.length === 1 ? "" : "s"} on this image.</span>
+            <span className="font-semibold text-on-surface"> {active.regions.length === 1 ? t("1 area on this image.") : t("{n} areas on this image.", { n: active.regions.length })}</span>
           )}
         </p>
     </>
@@ -406,7 +411,7 @@ export function BlurTool() {
     <>
         <FileTray
           entries={entries}
-          title={`${items.length} image${items.length === 1 ? "" : "s"}`}
+          title={items.length === 1 ? t("1 image") : t("{n} images", { n: items.length })}
           accept={ACCEPT}
           onFiles={addFiles}
           onClear={reset}
@@ -424,23 +429,23 @@ export function BlurTool() {
         mobile={{
           ...filesHeader(items.map((i) => i.file)),
           onBack: reset,
-          backLabel: "Clear images",
+          backLabel: t("Clear images"),
           body: canvasPane,
           tabs: [
             {
               id: "files",
               icon: "photo_library",
-              label: "Files",
+              label: t("Files"),
               badge: items.length > 1 ? items.length : undefined,
-              sheetTitle: `${items.length} image${items.length === 1 ? "" : "s"}`,
+              sheetTitle: items.length === 1 ? t("1 image") : t("{n} images", { n: items.length }),
               sheet: tray,
             },
           ],
-          settingsTitle: "Blur settings",
+          settingsTitle: t("Blur settings"),
           cta: {
             icon: "download",
-            label: "Export",
-            busyLabel: "Exporting…",
+            label: t("Export"),
+            busyLabel: t("Exporting…"),
             busy: isWorking,
             onClick: exportAll,
           },
@@ -453,14 +458,14 @@ export function BlurTool() {
         }
         rail={
           <SettingsRail
-            title="Censor Settings"
+            title={t("Censor Settings")}
             icon="blur_on"
             accent={ACCENT}
             footer={
               <>
-                <RailNote>Censoring is baked into the exported file — all in your browser.</RailNote>
-                <RailAction onClick={exportAll} busy={isWorking} busyLabel="Exporting…" icon="download">
-                  {items.length > 1 ? `Export ${items.length} images` : "Export image"}
+                <RailNote>{t("Censoring is baked into the exported file — all in your browser.")}</RailNote>
+                <RailAction onClick={exportAll} busy={isWorking} busyLabel={t("Exporting…")} icon="download">
+                  {items.length > 1 ? t("Export {n} images", { n: items.length }) : t("Export image")}
                 </RailAction>
               </>
             }
@@ -468,38 +473,38 @@ export function BlurTool() {
             {/* Brush / Shape / Face — how the area to censor gets chosen.
                 Face is the automatic one; the other two are by hand. */}
             <div className="grid grid-cols-4 gap-1 rounded-lg bg-surface-container p-1">
-              {TABS.map((t) => (
+              {TABS.map((tb) => (
                 <button
-                  key={t.value}
+                  key={tb.value}
                   type="button"
-                  onClick={() => { setTab(t.value); if (t.value === "brush") setSelectedRegion(null); }}
-                  className={`flex items-center justify-center gap-1 px-1 ${seg(tab === t.value)}`}
+                  onClick={() => { setTab(tb.value); if (tb.value === "brush") setSelectedRegion(null); }}
+                  className={`flex items-center justify-center gap-1 px-1 ${seg(tab === tb.value)}`}
                 >
-                  <Icon name={t.icon} className="text-[16px]" />
-                  {t.label}
+                  <Icon name={tb.icon} className="text-[16px]" />
+                  {t(tb.label)}
                 </button>
               ))}
             </div>
 
             {tab === "brush" && (
               <div className="flex flex-col gap-3">
-                <span className="text-label-sm font-label-sm text-on-surface-variant">Draw on the image to edit</span>
+                <span className="text-label-sm font-label-sm text-on-surface-variant">{t("Draw on the image to edit")}</span>
                 <div className="grid grid-cols-2 gap-1 rounded-lg bg-surface-container p-1">
                   <button type="button" onClick={() => setBrushMode("add")} className={`flex items-center justify-center gap-1.5 ${seg(brushMode === "add")}`}>
-                    <Icon name="brush" className="text-[17px]" /> Add blur
+                    <Icon name="brush" className="text-[17px]" /> {t("Add blur")}
                   </button>
                   <button type="button" onClick={() => setBrushMode("erase")} className={`flex items-center justify-center gap-1.5 ${seg(brushMode === "erase")}`}>
-                    <Icon name="ink_eraser" className="text-[17px]" /> Remove
+                    <Icon name="ink_eraser" className="text-[17px]" /> {t("Remove")}
                   </button>
                 </div>
-                <SliderField label="Brush size" value={brushSize} onChange={setBrushSize} min={5} max={200} />
-                <SliderField label="Brush fade" value={brushFade} onChange={setBrushFade} min={0} max={100} />
+                <SliderField label={t("Brush size")} value={brushSize} onChange={setBrushSize} min={5} max={200} />
+                <SliderField label={t("Brush fade")} value={brushFade} onChange={setBrushFade} min={0} max={100} />
                 <div className="grid grid-cols-2 gap-2">
-                  <RailSecondaryAction icon="undo" onClick={undoStroke}>Undo stroke</RailSecondaryAction>
-                  <RailSecondaryAction icon="delete_sweep" onClick={clearRegions}>Clear all</RailSecondaryAction>
+                  <RailSecondaryAction icon="undo" onClick={undoStroke}>{t("Undo stroke")}</RailSecondaryAction>
+                  <RailSecondaryAction icon="delete_sweep" onClick={clearRegions}>{t("Clear all")}</RailSecondaryAction>
                 </div>
                 <p className="text-label-sm font-label-sm text-on-surface-variant">
-                  Remove erases from anything on the image, including a detected face — they share one mask.
+                  {t("Remove erases from anything on the image, including a detected face — they share one mask.")}
                 </p>
               </div>
             )}
@@ -507,20 +512,20 @@ export function BlurTool() {
             {tab === "shape" && (
               <div className="flex flex-col gap-3">
                 <span className="flex items-center gap-1.5 text-label-sm font-label-sm text-on-surface-variant">
-                  New area shape
-                  <HelpTip text="Ellipse follows the shape of a head more closely and looks less like a redaction box. Rectangle is better for signs, plates and documents." />
+                  {t("New area shape")}
+                  <HelpTip text={t("Ellipse follows the shape of a head more closely and looks less like a redaction box. Rectangle is better for signs, plates and documents.")} />
                 </span>
                 <div className="grid grid-cols-2 gap-1 rounded-lg bg-surface-container p-1">
                   {(["ellipse", "rect"] as RegionShape[]).map((sh) => (
-                    <button key={sh} type="button" onClick={() => setShape(sh)} className={seg(shape === sh)}>{sh === "ellipse" ? "Ellipse" : "Rectangle"}</button>
+                    <button key={sh} type="button" onClick={() => setShape(sh)} className={seg(shape === sh)}>{sh === "ellipse" ? t("Ellipse") : t("Rectangle")}</button>
                   ))}
                 </div>
                 <div className="grid grid-cols-2 gap-2">
-                  <RailSecondaryAction icon="backspace" onClick={deleteSelected}>Delete area</RailSecondaryAction>
-                  <RailSecondaryAction icon="delete_sweep" onClick={clearRegions}>Clear all</RailSecondaryAction>
+                  <RailSecondaryAction icon="backspace" onClick={deleteSelected}>{t("Delete area")}</RailSecondaryAction>
+                  <RailSecondaryAction icon="delete_sweep" onClick={clearRegions}>{t("Clear all")}</RailSecondaryAction>
                 </div>
                 <p className="text-label-sm font-label-sm text-on-surface-variant">
-                  Drag on the image to draw an area, then move or resize it by its handles.
+                  {t("Drag on the image to draw an area, then move or resize it by its handles.")}
                 </p>
               </div>
             )}
@@ -529,31 +534,34 @@ export function BlurTool() {
               <div className="flex flex-col gap-2 rounded-lg border border-outline-variant/40 bg-surface-bright p-3.5">
                 <span className="flex items-center gap-1.5 text-label-sm font-label-sm font-semibold text-on-surface">
                   <Icon name="text_fields" className="text-[18px]" style={{ color: ACCENT }} />
-                  Automatic text detection
-                  <HelpTip text="Reads the image on your device to find writing - a licence plate, a door number, an address. Your photo is never uploaded, though the recognition engine itself downloads from a CDN the first time you use it." />
+                  {t("Automatic text detection")}
+                  <HelpTip text={t("Reads the image on your device to find writing - a licence plate, a door number, an address. Your photo is never uploaded, though the recognition engine itself downloads from a CDN the first time you use it.")} />
                 </span>
                 <select value={textSensitivity} onChange={(e) => setTextSensitivity(e.target.value as TextSensitivity)} className={fieldCls} disabled={isDetecting}>
-                  {TEXT_SENSITIVITY_LABELS.map((sv) => <option key={sv.value} value={sv.value}>{sv.label} - {sv.hint}</option>)}
+                  {TEXT_SENSITIVITY_LABELS.map((sv) => <option key={sv.value} value={sv.value}>{t(sv.label)} - {t(sv.hint)}</option>)}
                 </select>
                 <div className="grid grid-cols-2 gap-1 rounded-lg bg-surface-container p-1">
                   {(["line", "word"] as TextGranularity[]).map((gr) => (
                     <button key={gr} type="button" onClick={() => setGranularity(gr)} className={seg(granularity === gr)}>
-                      {gr === "line" ? "Whole lines" : "Single words"}
+                      {gr === "line" ? t("Whole lines") : t("Single words")}
                     </button>
                   ))}
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <RailSecondaryAction icon="search" onClick={() => detectText(false)}>
-                    {isDetecting ? "Reading..." : "This image"}
+                    {isDetecting ? t("Reading...") : t("This image")}
                   </RailSecondaryAction>
                   <RailSecondaryAction icon="groups" onClick={() => detectText(true)}>
-                    All {items.length}
+                    {t("All {n}", { n: items.length })}
                   </RailSecondaryAction>
                 </div>
                 <p className="text-label-sm font-label-sm text-on-surface-variant">
                   {ocrStatus
-                    ? `${ocrStatus[0].toUpperCase()}${ocrStatus.slice(1)}...`
-                    : "The first run downloads the engine, so it takes a few seconds. Lines suits an address, words suits one field on a form. Pale text on a dark background is often missed — draw over that with Shape or Brush."}
+                    /* Tesseract's own status strings ("recognizing text"), capitalised.
+                       The known ones are keys in blur-face.<loc>.ts; an unknown one
+                       falls back to the English it arrived as. */
+                    ? `${t(`${ocrStatus[0].toUpperCase()}${ocrStatus.slice(1)}`)}...`
+                    : t("The first run downloads the engine, so it takes a few seconds. Lines suits an address, words suits one field on a form. Pale text on a dark background is often missed — draw over that with Shape or Brush.")}
                 </p>
               </div>
             )}
@@ -562,22 +570,22 @@ export function BlurTool() {
               <div className="flex flex-col gap-2 rounded-lg border border-outline-variant/40 bg-surface-bright p-3.5">
                 <span className="flex items-center gap-1.5 text-label-sm font-label-sm font-semibold text-on-surface">
                   <Icon name="face_retouching_natural" className="text-[18px]" style={{ color: ACCENT }} />
-                  Automatic face detection
-                  <HelpTip text="Runs a face-detection model downloaded to your browser. Your photo is never uploaded — detection happens on your device." />
+                  {t("Automatic face detection")}
+                  <HelpTip text={t("Runs a face-detection model downloaded to your browser. Your photo is never uploaded — detection happens on your device.")} />
                 </span>
                 <select value={sensitivity} onChange={(e) => setSensitivity(e.target.value as Sensitivity)} className={fieldCls} disabled={isDetecting}>
-                  {SENSITIVITY_LABELS.map((sv) => <option key={sv.value} value={sv.value}>{sv.label} — {sv.hint}</option>)}
+                  {SENSITIVITY_LABELS.map((sv) => <option key={sv.value} value={sv.value}>{t(sv.label)} — {t(sv.hint)}</option>)}
                 </select>
                 <div className="grid grid-cols-2 gap-2">
                   <RailSecondaryAction icon="person_search" onClick={() => detect(false)}>
-                    {isDetecting ? "Detecting…" : "This image"}
+                    {isDetecting ? t("Detecting…") : t("This image")}
                   </RailSecondaryAction>
                   <RailSecondaryAction icon="groups" onClick={() => detect(true)}>
-                    All {items.length}
+                    {t("All {n}", { n: items.length })}
                   </RailSecondaryAction>
                 </div>
                 <p className="text-label-sm font-label-sm text-on-surface-variant">
-                  Detected faces become normal areas — nudge, resize or delete any of them.
+                  {t("Detected faces become normal areas — nudge, resize or delete any of them.")}
                 </p>
               </div>
             )}
@@ -591,7 +599,7 @@ export function BlurTool() {
                 >
                   <span className="flex items-center gap-2">
                     <Icon name="layers" className="text-[18px]" />
-                    Edit blur masks
+                    {t("Edit blur masks")}
                     <span className="text-label-sm font-label-sm font-normal text-on-surface-variant">({maskList.length})</span>
                   </span>
                   <Icon name={showMasks ? "expand_less" : "expand_more"} className="text-[20px]" />
@@ -622,8 +630,8 @@ export function BlurTool() {
                         <button
                           type="button"
                           onClick={() => toggleMask(m.id, m.kind)}
-                          aria-label={m.hidden ? `Show ${m.label}` : `Hide ${m.label}`}
-                          title={m.hidden ? "Show" : "Hide"}
+                          aria-label={m.hidden ? t("Show {name}", { name: m.label }) : t("Hide {name}", { name: m.label })}
+                          title={m.hidden ? t("Show") : t("Hide")}
                           className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-on-surface-variant transition-colors hover:bg-surface-container hover:text-primary"
                         >
                           <Icon name={m.hidden ? "visibility_off" : "visibility"} className="text-[17px]" />
@@ -631,8 +639,8 @@ export function BlurTool() {
                         <button
                           type="button"
                           onClick={() => removeMask(m.id, m.kind)}
-                          aria-label={`Delete ${m.label}`}
-                          title="Delete"
+                          aria-label={t("Delete {name}", { name: m.label })}
+                          title={t("Delete")}
                           className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-on-surface-variant transition-colors hover:bg-error-container hover:text-error"
                         >
                           <Icon name="close" className="text-[17px]" />
@@ -654,11 +662,11 @@ export function BlurTool() {
             />
 
             {effectSpec(effect).hasIntensity && (
-              <SliderField label="Intensity" value={intensity} onChange={setIntensity} min={0} max={100} />
+              <SliderField label={t("Intensity")} value={intensity} onChange={setIntensity} min={0} max={100} />
             )}
 
             {effectSpec(effect).needsColor && (
-              <BackgroundPicker value={fill} onChange={setFill} allowTransparent={false} label="Block colour" />
+              <BackgroundPicker value={fill} onChange={setFill} allowTransparent={false} label={t("Block colour")} />
             )}
 
             {!effectSpec(effect).strongRedaction && effect !== "none" && (
@@ -666,12 +674,12 @@ export function BlurTool() {
                  look like redaction without being it. */
               <p className="flex items-start gap-1.5 rounded-lg bg-surface-container px-3 py-2.5 text-label-sm font-label-sm text-on-surface-variant">
                 <Icon name="info" className="mt-0.5 shrink-0 text-[16px]" />
-                <span>{effectSpec(effect).label} keeps some of the original detail. For a face you want kept private, use Gaussian at a high intensity or Colour.</span>
+                <span>{t("{effect} keeps some of the original detail. For a face you want kept private, use Gaussian at a high intensity or Colour.", { effect: t(effectSpec(effect).label) })}</span>
               </p>
             )}
 
             <div className="flex flex-col gap-3 border-t border-outline-variant/60 pt-5">
-              <h3 className="text-body-lg font-bold text-primary">Export</h3>
+              <h3 className="text-body-lg font-bold text-primary">{t("Export")}</h3>
               <select value={format} onChange={(e) => setFormat(e.target.value as ExportMime)} className={fieldCls}>
                 <option value="image/jpeg">JPG</option>
                 <option value="image/png">PNG</option>
@@ -680,7 +688,7 @@ export function BlurTool() {
               {format !== "image/png" && (
                 <div className="flex flex-col gap-1.5">
                   <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant">
-                    <span>Quality</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span>
+                    <span>{t("Quality")}</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span>
                   </label>
                   <input type="range" min={0.5} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" />
                 </div>

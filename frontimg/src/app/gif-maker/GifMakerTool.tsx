@@ -10,10 +10,11 @@ import { BackgroundPicker, resolveBg, type BgValue } from "@/components/Backgrou
 import { ToolWorkspace, filesHeader } from "@/components/tool/ToolWorkspace";
 import { FileTray, TrayAction, type TrayEntry } from "@/components/tool/FileTray";
 import { SettingsRail, RailAction, RailSecondaryAction, RailNote } from "@/components/tool/SettingsRail";
-import { decodeBitmap, downloadBlob, formatBytes, canvasToBlob } from "@/lib/image/raster";
+import { decodeBitmap, downloadBlob, canvasToBlob } from "@/lib/image/raster";
 import { encodeGif, fitBox, type FitMode } from "@/lib/image/gif-encode";
 import { decodeGifFrames } from "@/lib/image/gif-decode";
 import { useHandoff } from "@/lib/tool-handoff";
+import { useFormatBytes, useLocale, useT } from "@/i18n/I18nScope";
 
 const ACCENT = "#C56A9A";
 const ACCEPT = "image/jpeg,image/png,image/webp,image/gif,image/bmp";
@@ -30,6 +31,17 @@ type Item = {
 
 const SIZE_PRESETS = [240, 360, 480, 640, 800];
 type LoopMode = "forever" | "once" | "count";
+
+/**
+ * Names for the fit buttons. They used to print the mode id and lean on CSS
+ * `capitalize` — a label derived from an id, invisible to every string scan
+ * (oMyPDF conversion.md §4.18). Translated at the render site.
+ */
+const FIT_LABELS: Record<FitMode, string> = {
+  contain: "Contain",
+  cover: "Cover",
+  stretch: "Stretch",
+};
 
 let counter = 0;
 const uid = () => `f${Date.now()}_${counter++}`;
@@ -62,6 +74,11 @@ const fieldCls =
   "w-full px-3 py-2.5 rounded-lg bg-surface-container-lowest border border-surface-variant focus:border-secondary focus:ring-1 focus:ring-secondary outline-none text-body-md text-primary";
 
 export function GifMakerTool() {
+  const t = useT();
+  const locale = useLocale();
+  const formatBytes = useFormatBytes();
+  // One decimal in the page's number format — "1.2" in English, "1,2" in Portuguese.
+  const dec1 = (n: number) => new Intl.NumberFormat(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(n);
   const [items, setItems] = useState<Item[]>([]);
   const [delay, setDelay] = useState(300);
   const [maxSize, setMaxSize] = useState(480);
@@ -133,12 +150,14 @@ export function GifMakerTool() {
         // Previously swallowed, so a broken image sat in the tray with a
         // thumbnail and silently vanished from the GIF.
         setItems((prev) => prev.map((p) => (failures.includes(p.id) ? { ...p, failed: true } : p)));
-        toast.error(`Couldn't read ${failures.length} image${failures.length === 1 ? "" : "s"}. They're marked and will be skipped.`);
+        toast.error(failures.length === 1
+          ? t("Couldn't read 1 image. It's marked and will be skipped.")
+          : t("Couldn't read {n} images. They're marked and will be skipped.", { n: failures.length }));
       }
       setDecodeTick((n) => n + 1);
     });
     return () => { alive = false; };
-  }, [items]);
+  }, [items, t]);
 
   /** Frames in order, decoded and usable. Derived from state, not read mid-render. */
   const ordered = useMemo(() => {
@@ -199,7 +218,7 @@ export function GifMakerTool() {
 
   const addFiles = useCallback(async (incoming: FileList | File[]) => {
     const all = Array.from(incoming).filter((f) => f.type.startsWith("image/") || /\.(jpe?g|png|webp|gif|bmp)$/i.test(f.name));
-    if (all.length === 0) { toast.error("Please select image files."); return; }
+    if (all.length === 0) { toast.error(t("Please select image files.")); return; }
     clearResult();
 
     const next: Item[] = [];
@@ -219,14 +238,16 @@ export function GifMakerTool() {
           const png = new File([blob], `${base}-${String(i + 1).padStart(3, "0")}.png`, { type: "image/png" });
           next.push({ id: uid(), file: png, url: URL.createObjectURL(png), delayMs: frames[i].delayMs });
         }
-        toast.success(`Imported ${frames.length} frames from ${file.name}.`);
+        toast.success(frames.length === 1
+          ? t("Imported 1 frame from {name}.", { name: file.name })
+          : t("Imported {n} frames from {name}.", { n: frames.length, name: file.name }));
       } catch (err) {
         console.error(err);
-        toast.error(`Couldn't read ${file.name}.`);
+        toast.error(t("Couldn't read {name}.", { name: file.name }));
       }
     }
     if (next.length) setItems((prev) => [...prev, ...next]);
-  }, [clearResult]);
+  }, [clearResult, t]);
 
   useHandoff(addFiles);
 
@@ -266,7 +287,7 @@ export function GifMakerTool() {
 
   const createGif = async () => {
     const frames = ordered;
-    if (frames.length < 2) { toast.error("Add at least two images to make an animation."); return; }
+    if (frames.length < 2) { toast.error(t("Add at least two images to make an animation.")); return; }
     setIsWorking(true);
     setProgress({ done: 0, total: frames.length });
     clearResult();
@@ -275,7 +296,7 @@ export function GifMakerTool() {
       off.width = outW;
       off.height = outH;
       const ctx = off.getContext("2d", { willReadFrequently: true });
-      if (!ctx) throw new Error("Canvas is not supported in this browser.");
+      if (!ctx) throw new Error(t("Canvas is not supported in this browser."));
 
       const repeat = loopMode === "forever" ? 0 : loopMode === "once" ? -1 : Math.max(1, loopCount);
       const bytes = await encodeGif(
@@ -301,10 +322,10 @@ export function GifMakerTool() {
       const url = URL.createObjectURL(blob);
       resultUrlRef.current = url;
       setResult({ url, size: blob.size });
-      toast.success(`Created a GIF from ${frames.length} frames (${formatBytes(blob.size)}).`);
+      toast.success(t("Created a GIF from {n} frames ({size}).", { n: frames.length, size: formatBytes(blob.size) }));
     } catch (err) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : "Couldn't create the GIF.");
+      toast.error(err instanceof Error ? err.message : t("Couldn't create the GIF."));
     } finally {
       setIsWorking(false);
       setProgress(null);
@@ -321,7 +342,7 @@ export function GifMakerTool() {
     return (
       <section>
         <TopLoadingBar active={isWorking} />
-        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="gif_box" hint="or drop two or more JPG, PNG or WEBP images here — or a GIF to re-edit" />
+        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="gif_box" hint={t("or drop two or more JPG, PNG or WEBP images here — or a GIF to re-edit")} />
       </section>
     );
   }
@@ -334,7 +355,7 @@ export function GifMakerTool() {
       <span className="grid place-items-center w-7 h-7 rounded-full text-label-sm font-bold shrink-0" style={{ backgroundColor: `${ACCENT}1A`, color: ACCENT }}>{i + 1}</span>
     ),
     meta: it.failed ? (
-      <span className="text-error font-semibold">Unreadable — skipped</span>
+      <span className="text-error font-semibold">{t("Unreadable — skipped")}</span>
     ) : (
       <>
         {formatBytes(it.file.size)}
@@ -343,7 +364,7 @@ export function GifMakerTool() {
     ),
     controls: it.failed ? undefined : (
       <label className="flex items-center gap-1.5 text-label-sm font-label-sm text-on-surface-variant">
-        <span className="shrink-0">Delay</span>
+        <span className="shrink-0">{t("Delay")}</span>
         <input
           type="number"
           min={20}
@@ -352,13 +373,13 @@ export function GifMakerTool() {
           value={it.delayMs ?? ""}
           placeholder={String(delay)}
           onChange={(e) => setItemDelay(it.id, e.target.value === "" ? undefined : Math.max(20, parseInt(e.target.value, 10) || 0))}
-          aria-label={`Frame delay for ${it.file.name}, in milliseconds`}
+          aria-label={t("Frame delay for {name}, in milliseconds", { name: it.file.name })}
           className="w-20 rounded border border-surface-variant bg-surface-container-lowest px-1.5 py-0.5 text-label-sm text-primary outline-none focus:border-secondary"
         />
         <span className="shrink-0">ms</span>
       </label>
     ),
-    action: <TrayAction icon="close" label="Remove" disabled={isWorking} onClick={() => removeItem(it.id)} />,
+    action: <TrayAction icon="close" label={t("Remove")} disabled={isWorking} onClick={() => removeItem(it.id)} />,
   }));
 
   return (
@@ -371,12 +392,12 @@ export function GifMakerTool() {
         mobile={{
           ...filesHeader(items.map((i) => i.file)),
           onBack: reset,
-          backLabel: "Clear frames",
-          settingsTitle: "GIF settings",
+          backLabel: t("Clear frames"),
+          settingsTitle: t("GIF settings"),
           cta: {
             icon: "gif_box",
-            label: "Create",
-            busyLabel: "Building GIF…",
+            label: t("Create"),
+            busyLabel: t("Building GIF…"),
             busy: isWorking,
             disabled: ordered.length < 2,
             onClick: createGif,
@@ -388,26 +409,26 @@ export function GifMakerTool() {
               <canvas ref={previewRef} className="max-w-full max-h-[46vh] rounded" />
             </div>
             <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
-              Live preview · {outW} × {outH} px · {ordered.length} frame{ordered.length === 1 ? "" : "s"} · {(totalMs / 1000).toFixed(1)}s per loop
+              {t("Live preview")} · {outW} × {outH} px · {ordered.length === 1 ? t("1 frame") : t("{n} frames", { n: ordered.length })} · {t("{s}s per loop", { s: dec1(totalMs / 1000) })}
             </p>
 
             {result && (
               <div className="flex flex-col items-center gap-3 rounded-xl border border-surface-variant bg-surface-container-lowest ambient-shadow p-4">
                 <h2 className="flex items-center gap-2 text-body-md font-semibold text-primary">
-                  <Icon name="check_circle" fill className="text-[18px]" style={{ color: ACCENT }} /> Your GIF
+                  <Icon name="check_circle" fill className="text-[18px]" style={{ color: ACCENT }} /> {t("Your GIF")}
                 </h2>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={result.url} alt="Finished GIF" className="max-w-full max-h-[40vh] rounded" />
+                <img src={result.url} alt={t("Finished GIF")} className="max-w-full max-h-[40vh] rounded" />
                 <p className="text-label-sm font-label-sm text-on-surface-variant">{formatBytes(result.size)}</p>
                 <button type="button" onClick={downloadResult} className="inline-flex items-center gap-2 rounded-lg bg-secondary px-5 py-2.5 text-label-md font-semibold text-on-secondary transition-colors hover:bg-secondary-container">
-                  <Icon name="download" className="text-[18px]" /> Download GIF
+                  <Icon name="download" className="text-[18px]" /> {t("Download GIF")}
                 </button>
               </div>
             )}
 
             <FileTray
               entries={entries}
-              title={`${items.length} frame${items.length === 1 ? "" : "s"}`}
+              title={items.length === 1 ? t("1 frame") : t("{n} frames", { n: items.length })}
               accept={ACCEPT}
               onFiles={addFiles}
               onClear={reset}
@@ -418,88 +439,89 @@ export function GifMakerTool() {
         }
         rail={
           <SettingsRail
-            title="Animation Settings"
+            title={t("Animation Settings")}
             icon="gif_box"
             accent={ACCENT}
             footer={
               <>
                 <RailNote>
                   {progress
-                    ? `Encoding frame ${progress.done} of ${progress.total}…`
-                    : "Set the order with the arrows. The preview plays at your chosen speed."}
+                    ? t("Encoding frame {done} of {total}…", { done: progress.done, total: progress.total })
+                    : t("Set the order with the arrows. The preview plays at your chosen speed.")}
                 </RailNote>
                 {progress && (
                   <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-container" role="progressbar" aria-valuenow={progress.done} aria-valuemin={0} aria-valuemax={progress.total}>
                     <div className="h-full rounded-full transition-[width] duration-150" style={{ width: `${(progress.done / progress.total) * 100}%`, backgroundColor: ACCENT }} />
                   </div>
                 )}
-                <RailAction onClick={createGif} disabled={ordered.length < 2} busy={isWorking} busyLabel="Building GIF…" icon="gif_box">
-                  Create GIF
+                <RailAction onClick={createGif} disabled={ordered.length < 2} busy={isWorking} busyLabel={t("Building GIF…")} icon="gif_box">
+                  {t("Create GIF")}
                 </RailAction>
               </>
             }
           >
             <div className="flex flex-col gap-1.5">
               <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant">
-                <span>Frame delay</span>
-                <span className="text-primary font-semibold">{delay}ms ({(1000 / delay).toFixed(1)} fps)</span>
+                <span>{t("Frame delay")}</span>
+                {/* i18n-raw: "ms" and "fps" are unit symbols, the same in every locale */}
+                <span className="text-primary font-semibold">{delay}ms ({dec1(1000 / delay)} fps)</span>
               </label>
               <input type="range" min={20} max={2000} step={10} value={delay} onChange={(e) => setDelay(parseInt(e.target.value, 10))} className="w-full accent-secondary" />
-              <p className="text-label-sm font-label-sm text-on-surface-variant">Applies to frames without their own delay.</p>
+              <p className="text-label-sm font-label-sm text-on-surface-variant">{t("Applies to frames without their own delay.")}</p>
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <span className="text-label-sm font-label-sm text-on-surface-variant">Playback</span>
+              <span className="text-label-sm font-label-sm text-on-surface-variant">{t("Playback")}</span>
               <div className="grid grid-cols-2 gap-2">
-                <RailSecondaryAction icon="swap_vert" onClick={reverse}>Reverse</RailSecondaryAction>
-                <RailSecondaryAction icon="sync_alt" onClick={boomerang}>Boomerang</RailSecondaryAction>
+                <RailSecondaryAction icon="swap_vert" onClick={reverse}>{t("Reverse")}</RailSecondaryAction>
+                <RailSecondaryAction icon="sync_alt" onClick={boomerang}>{t("Boomerang")}</RailSecondaryAction>
               </div>
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="gif-loop" className="text-label-sm font-label-sm text-on-surface-variant">Looping</label>
+              <label htmlFor="gif-loop" className="text-label-sm font-label-sm text-on-surface-variant">{t("Looping")}</label>
               <select id="gif-loop" value={loopMode} onChange={(e) => setLoopMode(e.target.value as LoopMode)} className={fieldCls}>
-                <option value="forever">Loop forever</option>
-                <option value="once">Play once</option>
-                <option value="count">Repeat a set number of times</option>
+                <option value="forever">{t("Loop forever")}</option>
+                <option value="once">{t("Play once")}</option>
+                <option value="count">{t("Repeat a set number of times")}</option>
               </select>
               {loopMode === "count" && (
-                <input type="number" min={1} max={255} value={loopCount} onChange={(e) => setLoopCount(Math.max(1, Math.min(255, parseInt(e.target.value, 10) || 1)))} aria-label="Number of repeats" className={fieldCls} />
+                <input type="number" min={1} max={255} value={loopCount} onChange={(e) => setLoopCount(Math.max(1, Math.min(255, parseInt(e.target.value, 10) || 1)))} aria-label={t("Number of repeats")} className={fieldCls} />
               )}
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="gif-size" className="text-label-sm font-label-sm text-on-surface-variant">Max size (longest side)</label>
+              <label htmlFor="gif-size" className="text-label-sm font-label-sm text-on-surface-variant">{t("Max size (longest side)")}</label>
               <div className="flex gap-2">
                 <select id="gif-size" value={SIZE_PRESETS.includes(maxSize) ? maxSize : "custom"} onChange={(e) => { if (e.target.value !== "custom") setMaxSize(parseInt(e.target.value, 10)); }} className={fieldCls}>
                   {SIZE_PRESETS.map((s) => <option key={s} value={s}>{s}px</option>)}
-                  <option value="custom">Custom</option>
+                  <option value="custom">{t("Custom")}</option>
                 </select>
-                <input type="number" min={32} max={2000} step={10} value={maxSize} onChange={(e) => setMaxSize(Math.max(32, Math.min(2000, parseInt(e.target.value, 10) || 32)))} aria-label="Custom max size in pixels" className={`${fieldCls} w-28`} />
+                <input type="number" min={32} max={2000} step={10} value={maxSize} onChange={(e) => setMaxSize(Math.max(32, Math.min(2000, parseInt(e.target.value, 10) || 32)))} aria-label={t("Custom max size in pixels")} className={`${fieldCls} w-28`} />
               </div>
             </div>
 
             <div className="flex flex-col gap-1.5">
               <span className="flex items-center gap-1.5 text-label-sm font-label-sm text-on-surface-variant">
-                Fit
-                <HelpTip text="Contain keeps the whole frame (may add margins). Cover fills the canvas (may crop). Stretch distorts to fill exactly." />
+                {t("Fit")}
+                <HelpTip text={t("Contain keeps the whole frame (may add margins). Cover fills the canvas (may crop). Stretch distorts to fill exactly.")} />
               </span>
               <div className="grid grid-cols-3 gap-1 rounded-lg bg-surface-container p-1">
                 {(["contain", "cover", "stretch"] as FitMode[]).map((f) => (
-                  <button key={f} type="button" onClick={() => setFit(f)} className={seg(fit === f)}>{f}</button>
+                  <button key={f} type="button" onClick={() => setFit(f)} className={seg(fit === f)}>{t(FIT_LABELS[f])}</button>
                 ))}
               </div>
             </div>
 
             <div className="flex flex-col gap-1.5">
               <label htmlFor="gif-colors" className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant">
-                <span className="flex items-center gap-1.5">Colours <HelpTip text="GIF stores at most 256 colours. Lowering this shrinks the file; flat graphics survive it far better than photos." /></span>
+                <span className="flex items-center gap-1.5">{t("Colours")} <HelpTip text={t("GIF stores at most 256 colours. Lowering this shrinks the file; flat graphics survive it far better than photos.")} /></span>
                 <span className="text-primary font-semibold">{colors}</span>
               </label>
               <input id="gif-colors" type="range" min={2} max={256} step={1} value={colors} onChange={(e) => setColors(parseInt(e.target.value, 10))} className="w-full accent-secondary" />
             </div>
 
-            <BackgroundPicker value={bg} onChange={setBg} label="Background (behind transparent areas)" />
+            <BackgroundPicker value={bg} onChange={setBg} label={t("Background (behind transparent areas)")} />
           </SettingsRail>
         }
       />

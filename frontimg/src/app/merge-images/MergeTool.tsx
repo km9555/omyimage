@@ -12,7 +12,7 @@ import { FileTray, TrayAction, type TrayEntry } from "@/components/tool/FileTray
 import { SettingsRail, RailAction, RailNote } from "@/components/tool/SettingsRail";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
 import {
-  decodeBitmap, canvasToBlob, downloadBlob, formatBytes, mimeExt, type ExportMime,
+  decodeBitmap, canvasToBlob, downloadBlob, mimeExt, type ExportMime,
 } from "@/lib/image/raster";
 import {
   layoutAuto, paintMerge, CELL_FITS, type CellFit, type MergeLayout, type MergePlacement,
@@ -20,6 +20,7 @@ import {
 import { boundsOf, translateAll } from "@/lib/image/obb";
 import { ASPECT_PRESETS } from "@/lib/image/frame";
 import { useHandoff } from "@/lib/tool-handoff";
+import { useFormatBytes, useT } from "@/i18n/I18nScope";
 
 const ACCENT = "#C99B47";
 const ACCEPT = "image/jpeg,image/png,image/webp";
@@ -32,6 +33,8 @@ const FORMATS: { label: string; value: ExportMime }[] = [
   { label: "WEBP", value: "image/webp" },
 ];
 
+// LAYOUTS, CELL_FITS and ASPECT_PRESETS are module scope: labels and hints are
+// translated at the render site, keys in merge-images.<loc>.ts (conversion.md §4.2).
 const LAYOUTS: { value: MergeLayout; label: string; icon: string; hint: string }[] = [
   { value: "horizontal", label: "Side by side", icon: "view_column", hint: "One row, left to right" },
   { value: "vertical", label: "Stacked", icon: "view_stream", hint: "One column, top to bottom" },
@@ -68,6 +71,8 @@ function LayoutGlyph({ kind, on }: { kind: MergeLayout; on: boolean }) {
 }
 
 export function MergeTool() {
+  const t = useT();
+  const formatBytes = useFormatBytes();
   const [items, setItems] = useState<Item[]>([]);
   const [layout, setLayout] = useState<MergeLayout>("horizontal");
   /* The arrangement Custom was seeded from, so Re-arrange tidies back into the
@@ -180,12 +185,12 @@ export function MergeTool() {
 
   const addFiles = useCallback((incoming: FileList | File[]) => {
     const imgs = Array.from(incoming).filter((f) => f.type.startsWith("image/"));
-    if (imgs.length === 0) { toast.error("Please select image files."); return; }
+    if (imgs.length === 0) { toast.error(t("Please select image files.")); return; }
     setItems((prev) => [...prev, ...imgs.map((file) => ({ id: uid(), file, url: URL.createObjectURL(file) }))]);
     // A new image has no place in an existing hand-made arrangement, so the
     // custom seed is dropped rather than leaving the newcomer invisible.
     setCustom(null);
-  }, []);
+  }, [t]);
 
   useHandoff(addFiles);
 
@@ -233,7 +238,7 @@ export function MergeTool() {
     setIsWorking(true);
     try {
       if (!scene.W || !scene.H || scene.placements.length === 0) {
-        throw new Error("Images are still loading — try again in a moment.");
+        throw new Error(t("Images are still loading — try again in a moment."));
       }
       const canvas = document.createElement("canvas");
       // The same painter the preview uses, at full size — so the download is
@@ -241,10 +246,10 @@ export function MergeTool() {
       paintMerge(canvas, bmps.current as Map<string, CanvasImageSource>, scene.W, scene.H, scene.placements, bgFill);
       const blob = await canvasToBlob(canvas, format, quality);
       downloadBlob(blob, `omyimage_merged.${mimeExt(format)}`);
-      toast.success(`Merged ${scene.placements.length} images.`);
+      toast.success(scene.placements.length === 1 ? t("Merged 1 image.") : t("Merged {n} images.", { n: scene.placements.length }));
     } catch (err) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : "Merge failed.");
+      toast.error(err instanceof Error ? err.message : t("Merge failed."));
     } finally {
       setIsWorking(false);
     }
@@ -257,7 +262,7 @@ export function MergeTool() {
     return (
       <section>
         <TopLoadingBar active={isWorking} />
-        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="grid_view" hint="or drop two or more JPG, PNG or WEBP images here" />
+        <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="grid_view" hint={t("or drop two or more JPG, PNG or WEBP images here")} />
       </section>
     );
   }
@@ -270,7 +275,7 @@ export function MergeTool() {
       <span className="grid place-items-center w-7 h-7 rounded-full text-label-sm font-bold shrink-0" style={{ backgroundColor: `${ACCENT}1A`, color: ACCENT }}>{i + 1}</span>
     ),
     meta: <>{it.w && it.h ? `${it.w} × ${it.h} · ` : ""}{formatBytes(it.file.size)}</>,
-    action: <TrayAction icon="close" label="Remove" disabled={isWorking} onClick={() => removeItem(it.id)} />,
+    action: <TrayAction icon="close" label={t("Remove")} disabled={isWorking} onClick={() => removeItem(it.id)} />,
   }));
 
   const canvasPane = (
@@ -294,8 +299,8 @@ export function MergeTool() {
       </div>
       <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
         {layout === "custom"
-          ? "Drag to move, corners to resize, the top handle to rotate. Shift snaps the angle, Alt turns off snapping."
-          : "Live preview of the merged image."}
+          ? t("Drag to move, corners to resize, the top handle to rotate. Shift snaps the angle, Alt turns off snapping.")
+          : t("Live preview of the merged image.")}
         {scene.W > 0 && <> · <span className="font-semibold text-on-surface">{scene.W} × {scene.H} px</span></>}
       </p>
     </>
@@ -324,21 +329,21 @@ export function MergeTool() {
         mobile={{
           ...filesHeader(items.map((i) => i.file)),
           onBack: reset,
-          backLabel: "Clear images",
+          backLabel: t("Clear images"),
           body: canvasPane,
           tabs: [{
             id: "files",
             icon: "photo_library",
-            label: "Files",
+            label: t("Files"),
             badge: items.length > 1 ? items.length : undefined,
-            sheetTitle: `${items.length} image${items.length === 1 ? "" : "s"}`,
+            sheetTitle: items.length === 1 ? t("1 image") : t("{n} images", { n: items.length }),
             sheet: tray,
           }],
-          settingsTitle: "Merge settings",
+          settingsTitle: t("Merge settings"),
           cta: {
             icon: "grid_view",
-            label: "Merge",
-            busyLabel: "Merging…",
+            label: t("Merge"),
+            busyLabel: t("Merging…"),
             busy: isWorking,
             onClick: exportMerged,
           },
@@ -346,24 +351,24 @@ export function MergeTool() {
         main={<>{canvasPane}{tray}</>}
         rail={
           <SettingsRail
-            title="Merge Settings"
+            title={t("Merge Settings")}
             icon="grid_view"
             accent={ACCENT}
             footer={
               <>
                 <RailNote>
                   {layout === "custom"
-                    ? "Images keep their stacking order — use the layer arrows to change which sits on top."
-                    : "Drag a thumbnail to reorder. A transparent PNG background keeps the gaps see-through."}
+                    ? t("Images keep their stacking order — use the layer arrows to change which sits on top.")
+                    : t("Drag a thumbnail to reorder. A transparent PNG background keeps the gaps see-through.")}
                 </RailNote>
-                <RailAction onClick={exportMerged} busy={isWorking} busyLabel="Merging…" icon="grid_view">
-                  Merge &amp; download
+                <RailAction onClick={exportMerged} busy={isWorking} busyLabel={t("Merging…")} icon="grid_view">
+                  {t("Merge & download")}
                 </RailAction>
               </>
             }
           >
           <div className="flex flex-col gap-2">
-            <span className={sectionLabel}>Layout</span>
+            <span className={sectionLabel}>{t("Layout")}</span>
             <div className="grid grid-cols-2 gap-2">
               {LAYOUTS.map((l) => (
                 <button
@@ -371,7 +376,7 @@ export function MergeTool() {
                   type="button"
                   onClick={() => chooseLayout(l.value)}
                   aria-pressed={layout === l.value}
-                  title={l.hint}
+                  title={t(l.hint)}
                   className={`flex flex-col items-center gap-1 rounded-lg border p-2.5 transition-colors ${
                     layout === l.value
                       ? "border-secondary bg-secondary/10"
@@ -382,7 +387,7 @@ export function MergeTool() {
                     <LayoutGlyph kind={l.value} on={layout === l.value} />
                   </span>
                   <span className={`text-label-sm font-label-sm ${layout === l.value ? "font-semibold text-secondary" : "text-on-surface-variant"}`}>
-                    {l.label}
+                    {t(l.label)}
                   </span>
                 </button>
               ))}
@@ -392,7 +397,7 @@ export function MergeTool() {
           {layout === "custom" ? (
             <>
               <div className="flex flex-col gap-2">
-                <span className={sectionLabel}>Canvas</span>
+                <span className={sectionLabel}>{t("Canvas")}</span>
                 <div className="grid grid-cols-4 gap-1.5">
                   {ASPECT_PRESETS.map((a) => (
                     <button
@@ -405,38 +410,38 @@ export function MergeTool() {
                       }`}
                     >
                       <span className={`text-label-md font-semibold ${ratio === a.ratio ? "text-secondary" : "text-primary"}`}>
-                        {a.label === "Original" ? "Auto" : a.label}
+                        {a.label === "Original" ? t("Auto") : a.label}
                       </span>
-                      {a.hint && <span className="text-[10px] leading-tight text-on-surface-variant">{a.hint}</span>}
+                      {a.hint && <span className="text-[10px] leading-tight text-on-surface-variant">{t(a.hint)}</span>}
                     </button>
                   ))}
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <button type="button" onClick={fitToContent} className="flex items-center justify-center gap-1.5 rounded-lg border border-surface-variant px-3 py-2.5 text-label-md font-semibold text-primary transition-colors hover:bg-surface-container">
-                    <Icon name="crop_free" className="text-[18px]" /> Fit to content
+                    <Icon name="crop_free" className="text-[18px]" /> {t("Fit to content")}
                   </button>
                   <button type="button" onClick={reseedCustom} className="flex items-center justify-center gap-1.5 rounded-lg border border-surface-variant px-3 py-2.5 text-label-md font-semibold text-primary transition-colors hover:bg-surface-container">
-                    <Icon name="restart_alt" className="text-[18px]" /> Re-arrange
+                    <Icon name="restart_alt" className="text-[18px]" /> {t("Re-arrange")}
                   </button>
                 </div>
               </div>
 
               <div className="flex flex-col gap-2">
                 <span className="flex items-center gap-1.5 text-label-sm font-label-sm text-on-surface-variant">
-                  Selected image
-                  <HelpTip text="Click an image on the canvas to select it. Drag to move, use the corner handles to resize, and the handle above the top edge to rotate. Arrow keys nudge, Shift makes them move further." />
+                  {t("Selected image")}
+                  <HelpTip text={t("Click an image on the canvas to select it. Drag to move, use the corner handles to resize, and the handle above the top edge to rotate. Arrow keys nudge, Shift makes them move further.")} />
                 </span>
                 <div className="grid grid-cols-2 gap-2">
                   <button type="button" disabled={!selectedId} onClick={() => restack(1)} className="flex items-center justify-center gap-1.5 rounded-lg border border-surface-variant px-3 py-2.5 text-label-md font-semibold text-primary transition-colors hover:bg-surface-container disabled:opacity-40">
-                    <Icon name="flip_to_front" className="text-[18px]" /> Bring forward
+                    <Icon name="flip_to_front" className="text-[18px]" /> {t("Bring forward")}
                   </button>
                   <button type="button" disabled={!selectedId} onClick={() => restack(-1)} className="flex items-center justify-center gap-1.5 rounded-lg border border-surface-variant px-3 py-2.5 text-label-md font-semibold text-primary transition-colors hover:bg-surface-container disabled:opacity-40">
-                    <Icon name="flip_to_back" className="text-[18px]" /> Send back
+                    <Icon name="flip_to_back" className="text-[18px]" /> {t("Send back")}
                   </button>
                 </div>
                 {!selectedId && (
                   <p className="text-label-sm font-label-sm text-on-surface-variant/70">
-                    Nothing selected — click an image on the canvas.
+                    {t("Nothing selected — click an image on the canvas.")}
                   </p>
                 )}
               </div>
@@ -446,44 +451,44 @@ export function MergeTool() {
               {layout === "grid" && (
                 <div className="flex flex-col gap-1.5">
                   <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant">
-                    <span>Columns</span>
-                    <span className="text-primary font-semibold">{cols ?? "Auto"}</span>
+                    <span>{t("Columns")}</span>
+                    <span className="text-primary font-semibold">{cols ?? t("Auto")}</span>
                   </label>
                   <input type="range" min={0} max={6} step={1} value={cols ?? 0} onChange={(e) => { const v = parseInt(e.target.value, 10); setCols(v === 0 ? null : v); }} className="w-full accent-secondary" />
-                  <p className="text-label-sm font-label-sm text-on-surface-variant/70">Auto squares the grid off for you.</p>
+                  <p className="text-label-sm font-label-sm text-on-surface-variant/70">{t("Auto squares the grid off for you.")}</p>
                 </div>
               )}
 
               <div className="flex flex-col gap-1.5">
-                <span className="text-label-sm font-label-sm text-on-surface-variant">Image sizes</span>
+                <span className="text-label-sm font-label-sm text-on-surface-variant">{t("Image sizes")}</span>
                 <div className="grid grid-cols-3 gap-1 rounded-lg bg-surface-container p-1">
                   {CELL_FITS.map((f) => (
-                    <button key={f.value} type="button" onClick={() => setFit(f.value)} title={f.hint}
+                    <button key={f.value} type="button" onClick={() => setFit(f.value)} title={t(f.hint)}
                       className={`rounded-md px-2 py-2 text-label-md font-semibold transition-colors ${fit === f.value ? "bg-surface-container-lowest text-primary shadow-sm" : "text-on-surface-variant hover:text-primary"}`}>
-                      {f.label}
+                      {t(f.label)}
                     </button>
                   ))}
                 </div>
                 <p className="text-label-sm font-label-sm text-on-surface-variant/70">
-                  {CELL_FITS.find((f) => f.value === fit)?.hint}.
+                  {t(CELL_FITS.find((f) => f.value === fit)?.hint ?? "")}.
                 </p>
               </div>
             </>
           )}
 
           <div className="flex flex-col gap-1.5">
-            <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Spacing</span><span className="text-primary font-semibold">{gap}px</span></label>
+            <label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Spacing")}</span><span className="text-primary font-semibold">{gap}px</span></label>
             <input type="range" min={0} max={100} step={1} value={gap} onChange={(e) => setGap(parseInt(e.target.value, 10))} className="w-full accent-secondary" disabled={layout === "custom"} />
           </div>
 
-          <BackgroundPicker value={bg} onChange={setBg} allowTransparent label="Background" />
+          <BackgroundPicker value={bg} onChange={setBg} allowTransparent label={t("Background")} />
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-label-sm font-label-sm text-on-surface-variant">Output format</label>
+            <label className="text-label-sm font-label-sm text-on-surface-variant">{t("Output format")}</label>
             <select value={format} onChange={(e) => setFormat(e.target.value as ExportMime)} className={fieldCls}>{FORMATS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}</select>
           </div>
           {format !== "image/png" && (
-            <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Quality</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span></label><input type="range" min={0.5} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" /></div>
+            <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Quality")}</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span></label><input type="range" min={0.5} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" /></div>
           )}
           </SettingsRail>
         }

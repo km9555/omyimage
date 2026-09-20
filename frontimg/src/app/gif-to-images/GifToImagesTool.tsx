@@ -10,6 +10,7 @@ import { Dropzone } from "@/components/image/Dropzone";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
 import { canvasToBlob, downloadBlob, zipAndDownload, baseName, mimeExt, type ExportMime } from "@/lib/image/raster";
 import { useHandoff } from "@/lib/tool-handoff";
+import { useT } from "@/i18n/I18nScope";
 
 const ACCENT = "#B85C8C";
 const ACCEPT = "image/gif,.gif";
@@ -23,6 +24,7 @@ const FORMATS: { label: string; value: Format }[] = [
 ];
 
 export function GifToImagesTool() {
+  const t = useT();
   const [file, setFile] = useState<File | null>(null);
   const [thumbs, setThumbs] = useState<string[]>([]);
   const [count, setCount] = useState(0);
@@ -34,18 +36,18 @@ export function GifToImagesTool() {
 
   const framesRef = useRef<HTMLCanvasElement[]>([]);
 
-  useEffect(() => () => { thumbs.forEach((t) => URL.revokeObjectURL(t)); }, [thumbs]);
+  useEffect(() => () => { thumbs.forEach((u) => URL.revokeObjectURL(u)); }, [thumbs]);
 
   const loadFile = useCallback(async (incoming: FileList | File[]) => {
     const f = Array.from(incoming).find((x) => x.type === "image/gif" || /\.gif$/i.test(x.name));
-    if (!f) { toast.error("Please select a GIF file."); return; }
+    if (!f) { toast.error(t("Please select a GIF file.")); return; }
     setIsWorking(true);
     try {
       const { parseGIF, decompressFrames } = await import("gifuct-js");
       const buffer = await f.arrayBuffer();
       const gif = parseGIF(buffer);
       const frames = decompressFrames(gif, true);
-      if (!frames.length) throw new Error("No frames found in this GIF.");
+      if (!frames.length) throw new Error(t("No frames found in this GIF."));
       const gifW = gif.lsd.width, gifH = gif.lsd.height;
 
       const full = document.createElement("canvas");
@@ -82,22 +84,22 @@ export function GifToImagesTool() {
       }
 
       framesRef.current = out;
-      setThumbs((prev) => { prev.forEach((t) => URL.revokeObjectURL(t)); return thumbUrls; });
+      setThumbs((prev) => { prev.forEach((u) => URL.revokeObjectURL(u)); return thumbUrls; });
       setCount(out.length);
       setDims({ w: gifW, h: gifH });
       setFile(f);
-      toast.success(`Extracted ${out.length} frames.`);
+      toast.success(out.length === 1 ? t("Extracted 1 frame.") : t("Extracted {n} frames.", { n: out.length }));
     } catch (err) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : "Couldn't read that GIF.");
+      toast.error(err instanceof Error ? err.message : t("Couldn't read that GIF."));
     } finally {
       setIsWorking(false);
     }
-  }, []);
+  }, [t]);
 
   useHandoff(loadFile);
 
-  const reset = () => { thumbs.forEach((t) => URL.revokeObjectURL(t)); setThumbs([]); framesRef.current = []; setFile(null); setCount(0); setDims(null); };
+  const reset = () => { thumbs.forEach((u) => URL.revokeObjectURL(u)); setThumbs([]); framesRef.current = []; setFile(null); setCount(0); setDims(null); };
 
   const encodeFrame = async (canvas: HTMLCanvasElement): Promise<Blob> => {
     if (format === "image/jpeg") {
@@ -122,10 +124,10 @@ export function GifToImagesTool() {
         blob: await encodeFrame(c),
       })));
       await zipAndDownload(files, `${baseName(file?.name ?? "gif")}_frames.zip`);
-      toast.success(`Downloaded ${files.length} frames as a ZIP.`);
+      toast.success(files.length === 1 ? t("Downloaded 1 frame as a ZIP.") : t("Downloaded {n} frames as a ZIP.", { n: files.length }));
     } catch (err) {
       console.error(err);
-      toast.error("Couldn't build the ZIP.");
+      toast.error(t("Couldn't build the ZIP."));
     } finally {
       setIsWorking(false);
     }
@@ -144,7 +146,7 @@ export function GifToImagesTool() {
     return (
       <section>
         <TopLoadingBar active={isWorking} />
-        <Dropzone onFiles={loadFile} accept={ACCEPT} accent={ACCENT} icon="burst_mode" multiple={false} buttonLabel="Select a GIF" hint="or drop an animated .gif here" />
+        <Dropzone onFiles={loadFile} accept={ACCEPT} accent={ACCENT} icon="burst_mode" multiple={false} buttonLabel={t("Select a GIF")} hint={t("or drop an animated .gif here")} />
       </section>
     );
   }
@@ -160,17 +162,17 @@ export function GifToImagesTool() {
           title: file?.name ?? "GIF",
           meta: (
             <span className="shrink-0">
-              {count} frame{count === 1 ? "" : "s"}
+              {count === 1 ? t("1 frame") : t("{n} frames", { n: count })}
               {dims && ` · ${dims.w} × ${dims.h}`}
             </span>
           ),
           onBack: reset,
-          backLabel: "Clear GIF",
-          settingsTitle: "Frame settings",
+          backLabel: t("Clear GIF"),
+          settingsTitle: t("Frame settings"),
           cta: {
             icon: "folder_zip",
-            label: "Download",
-            busyLabel: "Working…",
+            label: t("Download"),
+            busyLabel: t("Working…"),
             busy: isWorking,
             onClick: downloadAll,
           },
@@ -179,46 +181,46 @@ export function GifToImagesTool() {
           <>
         <div className="bg-surface-container rounded-xl border border-surface-variant p-3 overflow-hidden" style={{ minHeight: 220 }}>
           <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 max-h-[46vh] overflow-y-auto pr-1">
-            {thumbs.map((t, i) => (
-              <button key={i} type="button" onClick={() => downloadOne(i)} title={`Download frame ${i + 1}`} className="relative group rounded-lg overflow-hidden border border-surface-variant bg-surface-container-lowest aspect-square">
+            {thumbs.map((src, i) => (
+              <button key={i} type="button" onClick={() => downloadOne(i)} title={t("Download frame {n}", { n: i + 1 })} className="relative group rounded-lg overflow-hidden border border-surface-variant bg-surface-container-lowest aspect-square">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={t} alt={`Frame ${i + 1}`} className="w-full h-full object-contain" />
+                <img src={src} alt={t("Frame {n}", { n: i + 1 })} className="w-full h-full object-contain" />
                 <span className="absolute bottom-0 inset-x-0 text-[10px] text-center bg-black/50 text-white py-0.5">{i + 1}</span>
               </button>
             ))}
           </div>
         </div>
         <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
-          <span className="font-semibold text-on-surface">{count}</span> frames{dims && <> · {dims.w} × {dims.h} px</>}
-          {count > MAX_THUMBS && <> · showing first {MAX_THUMBS}, all included in the ZIP</>}
+          <span className="font-semibold text-on-surface">{count}</span> {count === 1 ? t("frame") : t("frames")}{dims && <> · {dims.w} × {dims.h} px</>}
+          {count > MAX_THUMBS && <> · {t("showing first {n}, all included in the ZIP", { n: MAX_THUMBS })}</>}
         </p>
-        <button type="button" onClick={reset} className="self-center inline-flex items-center gap-1.5 text-label-md font-medium text-on-surface-variant hover:text-error"><Icon name="close" className="text-[18px]" /> Change GIF</button>
+        <button type="button" onClick={reset} className="self-center inline-flex items-center gap-1.5 text-label-md font-medium text-on-surface-variant hover:text-error"><Icon name="close" className="text-[18px]" /> {t("Change GIF")}</button>
           </>
         }
         rail={
           <SettingsRail
-            title="Frame Settings"
+            title={t("Frame Settings")}
             icon="burst_mode"
             accent={ACCENT}
             footer={
               <>
-                <RailNote>Click any frame to download it on its own.</RailNote>
-                <RailAction onClick={downloadAll} busy={isWorking} busyLabel="Working…" icon="folder_zip">
-                  Download all {count} frames (ZIP)
+                <RailNote>{t("Click any frame to download it on its own.")}</RailNote>
+                <RailAction onClick={downloadAll} busy={isWorking} busyLabel={t("Working…")} icon="folder_zip">
+                  {count === 1 ? t("Download 1 frame (ZIP)") : t("Download all {n} frames (ZIP)", { n: count })}
                 </RailAction>
               </>
             }
           >
         <div className="flex flex-col gap-4">
-          <h2 className="text-headline-md font-bold text-primary">Output</h2>
+          <h2 className="text-headline-md font-bold text-primary">{t("Output")}</h2>
           <div className="flex flex-col gap-1.5">
-            <label className="text-label-sm font-label-sm text-on-surface-variant">Format</label>
+            <label className="text-label-sm font-label-sm text-on-surface-variant">{t("Format")}</label>
             <select value={format} onChange={(e) => setFormat(e.target.value as Format)} className={fieldCls}>{FORMATS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}</select>
           </div>
           {format !== "image/png" && (
-            <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Quality</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span></label><input type="range" min={0.5} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" /></div>
+            <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Quality")}</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span></label><input type="range" min={0.5} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" /></div>
           )}
-          {format === "image/jpeg" && <BackgroundPicker value={bg} onChange={setBg} allowTransparent={false} label="JPG background" />}
+          {format === "image/jpeg" && <BackgroundPicker value={bg} onChange={setBg} allowTransparent={false} label={t("JPG background")} />}
         </div>
 
           </SettingsRail>

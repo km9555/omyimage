@@ -14,11 +14,11 @@ sn,batch,section,id,en_url,pt_url,en_extracted,ui_sweep,pt_copy,route,gated,seo_
 13,3,Tools,watermark-image,http://localhost:3002/watermark-image,http://localhost:3002/pt/colocar-marca-dagua,done,done,done,done,done,done,done,done,done,"slug changed to colocar-marca-dagua (SERP: ""colocar marca d’água em foto"")"
 14,3,Tools,rotate-image,http://localhost:3002/rotate-image,http://localhost:3002/pt/girar-imagem,done,done,done,done,done,done,done,done,done,
 15,3,Tools,heic-to-jpg,http://localhost:3002/heic-to-jpg,http://localhost:3002/pt/heic-para-jpg,done,done,done,done,done,done,done,done,done,"EN FAQ wrongly says EXIF is dropped; pt follows the code (EXIF kept, strip checkbox)"
-16,4,Tools,blur-face,http://localhost:3002/blur-face,http://localhost:3002/pt/desfocar-rosto,done,todo,todo,todo,todo,todo,todo,todo,todo,
-17,4,Tools,meme-generator,http://localhost:3002/meme-generator,http://localhost:3002/pt/gerador-de-memes,done,todo,todo,todo,todo,todo,todo,todo,todo,
-18,4,Tools,merge-images,http://localhost:3002/merge-images,http://localhost:3002/pt/juntar-imagens,done,todo,todo,todo,todo,todo,todo,todo,todo,
-19,4,Tools,gif-maker,http://localhost:3002/gif-maker,http://localhost:3002/pt/criar-gif,done,todo,todo,todo,todo,todo,todo,todo,todo,
-20,4,Tools,gif-to-images,http://localhost:3002/gif-to-images,http://localhost:3002/pt/gif-para-imagens,done,todo,todo,todo,todo,todo,todo,todo,todo,
+16,4,Tools,blur-face,http://localhost:3002/blur-face,http://localhost:3002/pt/desfocar-rosto,done,done,done,done,done,done,done,done,done,
+17,4,Tools,meme-generator,http://localhost:3002/meme-generator,http://localhost:3002/pt/gerador-de-memes,done,done,done,done,done,done,done,done,done,
+18,4,Tools,merge-images,http://localhost:3002/merge-images,http://localhost:3002/pt/juntar-imagens,done,done,done,done,done,done,done,done,done,
+19,4,Tools,gif-maker,http://localhost:3002/gif-maker,http://localhost:3002/pt/criar-gif,done,done,done,done,done,done,done,done,done,
+20,4,Tools,gif-to-images,http://localhost:3002/gif-to-images,http://localhost:3002/pt/gif-para-imagens,done,done,done,done,done,done,done,done,done,
 21,5,Tools,grayscale-image,http://localhost:3002/grayscale-image,http://localhost:3002/pt/imagem-preto-e-branco,done,todo,todo,todo,todo,todo,todo,todo,todo,
 22,5,Tools,blur-image,http://localhost:3002/blur-image,http://localhost:3002/pt/desfocar-imagem,done,todo,todo,todo,todo,todo,todo,todo,todo,
 23,5,Tools,add-border,http://localhost:3002/add-border,http://localhost:3002/pt/adicionar-borda,done,todo,todo,todo,todo,todo,todo,todo,todo,

@@ -487,6 +487,44 @@ route has only its own tool's `ui` in scope, so the HeicTool keys in
 `heic-to-jpg.pt.ts` must be copied into `heic-to-png.pt.ts` when it ships
 (batch 7). `i18n:keys` buckets by folder and cannot see this.
 
+### 6.2.4 Batch 4 (desfocar-rosto, gerador-de-memes, juntar-imagens, criar-gif, gif-para-imagens)
+
+**A third-party library's own status strings are UI.** The text-detection tab
+prints tesseract's raw `status` ("recognizing text"), capitalised. They are now
+keys in `blur-face.pt.ts` ("Recognizing text" → "Procurando texto"), spelled
+exactly as tesseract emits them — confirmed against
+`node_modules/tesseract.js/src`, not guessed. An unknown status falls back to
+the English it arrived as, so English output is unchanged either way. The same
+shape will appear in any library that reports progress through a callback.
+
+**Numbers in a sentence need the page's number format.** The GIF maker prints
+`0.6s per loop` and `3.3 fps` from `toFixed(1)`, which is an English decimal
+point in every locale. A local `dec1()` using `Intl.NumberFormat(locale)` gives
+"0,6 s por ciclo" in Portuguese and the identical string in English. Grep every
+tool for `toFixed` before sweeping — it is `toLocaleString()` (§4.16) wearing a
+different hat.
+
+**Two plurals in one sentence.** "Found 3 faces in 2 images." varies on both
+counts, so it is built from two keys ("Found {n} faces" + "in {n} images.")
+rather than four combined ones. Composing two clauses is safe here because both
+halves are independent phrases in Portuguese too; do not extend the trick to a
+sentence whose second half has to agree in gender with the first.
+
+**`capitalize` in CSS is a label derived from an id.** The GIF fit buttons
+rendered the mode id (`contain`) and relied on `text-transform`. Now a
+`FIT_LABELS` map, like image-to-pdf's in §6.2.2. Any `className` containing
+`capitalize` is worth opening.
+
+**One English word can be two Portuguese words.** "Custom" is `Personalizada`
+in `common.ts` (a disposição, in merge), but the GIF maker's size dropdown
+needs `Personalizado` (o tamanho). The tool's `ui` block overrides `common` for
+exactly this, the same fix as image-to-pdf's "Auto" in §6.2.2. Check the gender
+of the noun the adjective belongs to, per tool.
+
+**Map variables named `t`, third time.** `TABS.map((t) => …)` in BlurTool and
+three `URL.revokeObjectURL` callbacks in GifToImagesTool. Renamed before
+`useT()` went in. The grep before every sweep is `((t)` and `(t) =>`.
+
 ### 6.3 Image-specific traps (watch for these in every batch)
 
 - **Text drawn INTO the image.** Meme captions, watermark defaults, the

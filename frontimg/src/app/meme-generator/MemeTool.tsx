@@ -10,10 +10,12 @@ import { Dropzone } from "@/components/image/Dropzone";
 import { BackgroundPicker } from "@/components/BackgroundPicker";
 import { decodeBitmap, canvasToBlob, downloadBlob, baseName, mimeExt, type ExportMime } from "@/lib/image/raster";
 import { useHandoff } from "@/lib/tool-handoff";
+import { useT } from "@/i18n/I18nScope";
 
 const ACCENT = "#C98B3E";
 const ACCEPT = "image/jpeg,image/png,image/webp,image/gif";
 
+// Module scope: labels translated at the render site (conversion.md §4.2).
 const FONTS = [
   { label: "Impact (classic)", value: "Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif" },
   { label: "Anton / Sans", value: "Anton, Inter, Arial, sans-serif" },
@@ -85,11 +87,14 @@ function paintMeme(canvas: HTMLCanvasElement, bmp: ImageBitmap, o: MemeOpts) {
 }
 
 export function MemeTool() {
+  const t = useT();
   const [file, setFile] = useState<File | null>(null);
-  const [opts, setOpts] = useState<MemeOpts>({
-    top: "TOP TEXT", bottom: "BOTTOM TEXT", fontPct: 9, fontFamily: FONTS[0].value,
+  // The default captions are drawn INTO the exported image, so they follow the
+  // page language (conversion.md §6.3); whatever the user types never changes.
+  const [opts, setOpts] = useState<MemeOpts>(() => ({
+    top: t("TOP TEXT"), bottom: t("BOTTOM TEXT"), fontPct: 9, fontFamily: FONTS[0].value,
     color: "#ffffff", outlineColor: "#000000", outlinePct: 8, uppercase: true,
-  });
+  }));
   const [format, setFormat] = useState<ExportMime>("image/png");
   const [quality, setQuality] = useState(0.92);
   const [isWorking, setIsWorking] = useState(false);
@@ -105,18 +110,18 @@ export function MemeTool() {
 
   useEffect(() => {
     let alive = true;
-    if (file) decodeBitmap(file).then((b) => { if (alive) { bmpRef.current = b; repaint(); } }).catch(() => toast.error("Couldn't read that image."));
+    if (file) decodeBitmap(file).then((b) => { if (alive) { bmpRef.current = b; repaint(); } }).catch(() => toast.error(t("Couldn't read that image.")));
     else bmpRef.current = null;
     return () => { alive = false; };
-  }, [file, repaint]);
+  }, [file, repaint, t]);
 
   useEffect(() => { repaint(); }, [repaint]);
 
   const onFiles = useCallback((incoming: FileList | File[]) => {
     const f = Array.from(incoming).find((x) => x.type.startsWith("image/"));
-    if (!f) { toast.error("Please select an image file."); return; }
+    if (!f) { toast.error(t("Please select an image file.")); return; }
     setFile(f);
-  }, []);
+  }, [t]);
 
   useHandoff(onFiles);
 
@@ -128,10 +133,10 @@ export function MemeTool() {
       paintMeme(canvas, bmpRef.current, opts);
       const blob = await canvasToBlob(canvas, format, quality);
       downloadBlob(blob, `${baseName(file.name)}_meme.${mimeExt(format)}`);
-      toast.success("Meme exported — download started.");
+      toast.success(t("Meme exported — download started."));
     } catch (err) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : "Export failed.");
+      toast.error(err instanceof Error ? err.message : t("Export failed."));
     } finally {
       setIsWorking(false);
     }
@@ -144,7 +149,7 @@ export function MemeTool() {
     return (
       <section>
         <TopLoadingBar active={isWorking} />
-        <Dropzone onFiles={onFiles} accept={ACCEPT} accent={ACCENT} icon="sentiment_very_satisfied" multiple={false} buttonLabel="Select an image" hint="or drop a JPG, PNG, WEBP or GIF here" />
+        <Dropzone onFiles={onFiles} accept={ACCEPT} accent={ACCENT} icon="sentiment_very_satisfied" multiple={false} buttonLabel={t("Select an image")} hint={t("or drop a JPG, PNG, WEBP or GIF here")} />
       </section>
     );
   }
@@ -158,12 +163,12 @@ export function MemeTool() {
         mobile={{
           ...filesHeader([file]),
           onBack: () => setFile(null),
-          backLabel: "Change image",
-          settingsTitle: "Meme settings",
+          backLabel: t("Change image"),
+          settingsTitle: t("Meme settings"),
           cta: {
             icon: "download",
-            label: "Export",
-            busyLabel: "Exporting…",
+            label: t("Export"),
+            busyLabel: t("Exporting…"),
             busy: isWorking,
             onClick: exportMeme,
           },
@@ -175,51 +180,51 @@ export function MemeTool() {
             </div>
             <div className="flex items-center justify-between">
               <p className="text-label-sm font-label-sm text-on-surface-variant truncate">{file.name}</p>
-              <button type="button" onClick={() => setFile(null)} className="inline-flex items-center gap-1.5 text-label-md font-medium text-on-surface-variant hover:text-error"><Icon name="close" className="text-[18px]" /> Change image</button>
+              <button type="button" onClick={() => setFile(null)} className="inline-flex items-center gap-1.5 text-label-md font-medium text-on-surface-variant hover:text-error"><Icon name="close" className="text-[18px]" /> {t("Change image")}</button>
             </div>
           </>
         }
         rail={
           <SettingsRail
-            title="Meme Settings"
+            title={t("Meme Settings")}
             icon="sentiment_very_satisfied"
             accent={ACCENT}
             footer={
               <>
-                <RailNote>Long captions wrap automatically. Everything runs in your browser.</RailNote>
-                <RailAction onClick={exportMeme} busy={isWorking} busyLabel="Exporting…" icon="download">
-                  Export meme
+                <RailNote>{t("Long captions wrap automatically. Everything runs in your browser.")}</RailNote>
+                <RailAction onClick={exportMeme} busy={isWorking} busyLabel={t("Exporting…")} icon="download">
+                  {t("Export meme")}
                 </RailAction>
               </>
             }
           >
         <div className="flex flex-col gap-4">
-          <h3 className="text-body-lg font-bold text-primary">Caption</h3>
-          <div className="flex flex-col gap-1.5"><label className="text-label-sm font-label-sm text-on-surface-variant">Top text</label><input type="text" value={opts.top} onChange={(e) => set("top", e.target.value)} placeholder="Top text" className={fieldCls} /></div>
-          <div className="flex flex-col gap-1.5"><label className="text-label-sm font-label-sm text-on-surface-variant">Bottom text</label><input type="text" value={opts.bottom} onChange={(e) => set("bottom", e.target.value)} placeholder="Bottom text" className={fieldCls} /></div>
+          <h3 className="text-body-lg font-bold text-primary">{t("Caption")}</h3>
+          <div className="flex flex-col gap-1.5"><label className="text-label-sm font-label-sm text-on-surface-variant">{t("Top text")}</label><input type="text" value={opts.top} onChange={(e) => set("top", e.target.value)} placeholder={t("Top text")} className={fieldCls} /></div>
+          <div className="flex flex-col gap-1.5"><label className="text-label-sm font-label-sm text-on-surface-variant">{t("Bottom text")}</label><input type="text" value={opts.bottom} onChange={(e) => set("bottom", e.target.value)} placeholder={t("Bottom text")} className={fieldCls} /></div>
           <div className="grid grid-cols-2 gap-3">
-            <div className="flex flex-col gap-1.5"><label className="text-label-sm font-label-sm text-on-surface-variant">Font</label><select value={opts.fontFamily} onChange={(e) => set("fontFamily", e.target.value)} className={fieldCls}>{FONTS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}</select></div>
-            <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Size</span><span className="text-primary font-semibold">{opts.fontPct}%</span></label><input type="range" min={4} max={18} step={1} value={opts.fontPct} onChange={(e) => set("fontPct", parseInt(e.target.value, 10))} className="w-full accent-secondary" /></div>
+            <div className="flex flex-col gap-1.5"><label className="text-label-sm font-label-sm text-on-surface-variant">{t("Font")}</label><select value={opts.fontFamily} onChange={(e) => set("fontFamily", e.target.value)} className={fieldCls}>{FONTS.map((f) => <option key={f.value} value={f.value}>{t(f.label)}</option>)}</select></div>
+            <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Size")}</span><span className="text-primary font-semibold">{opts.fontPct}%</span></label><input type="range" min={4} max={18} step={1} value={opts.fontPct} onChange={(e) => set("fontPct", parseInt(e.target.value, 10))} className="w-full accent-secondary" /></div>
           </div>
-          <label className="flex items-center gap-2.5 cursor-pointer"><input type="checkbox" checked={opts.uppercase} onChange={(e) => set("uppercase", e.target.checked)} className="w-4 h-4 accent-secondary" /><span className="text-body-md text-on-surface">UPPERCASE</span></label>
+          <label className="flex items-center gap-2.5 cursor-pointer"><input type="checkbox" checked={opts.uppercase} onChange={(e) => set("uppercase", e.target.checked)} className="w-4 h-4 accent-secondary" /><span className="text-body-md text-on-surface">{t("UPPERCASE")}</span></label>
         </div>
 
         <div className="flex flex-col gap-4 border-t border-outline-variant/60 pt-5">
-          <h3 className="text-body-lg font-bold text-primary">Style</h3>
-          <BackgroundPicker value={{ transparent: false, color: opts.color }} onChange={(v) => set("color", v.color)} allowTransparent={false} label="Text color" />
-          <BackgroundPicker value={{ transparent: false, color: opts.outlineColor }} onChange={(v) => set("outlineColor", v.color)} allowTransparent={false} label="Outline color" />
-          <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Outline thickness</span><span className="text-primary font-semibold">{opts.outlinePct}%</span></label><input type="range" min={0} max={16} step={1} value={opts.outlinePct} onChange={(e) => set("outlinePct", parseInt(e.target.value, 10))} className="w-full accent-secondary" /></div>
+          <h3 className="text-body-lg font-bold text-primary">{t("Style")}</h3>
+          <BackgroundPicker value={{ transparent: false, color: opts.color }} onChange={(v) => set("color", v.color)} allowTransparent={false} label={t("Text color")} />
+          <BackgroundPicker value={{ transparent: false, color: opts.outlineColor }} onChange={(v) => set("outlineColor", v.color)} allowTransparent={false} label={t("Outline color")} />
+          <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Outline thickness")}</span><span className="text-primary font-semibold">{opts.outlinePct}%</span></label><input type="range" min={0} max={16} step={1} value={opts.outlinePct} onChange={(e) => set("outlinePct", parseInt(e.target.value, 10))} className="w-full accent-secondary" /></div>
         </div>
 
         <div className="flex flex-col gap-3 border-t border-outline-variant/60 pt-5">
-          <h3 className="text-body-lg font-bold text-primary">Export</h3>
+          <h3 className="text-body-lg font-bold text-primary">{t("Export")}</h3>
           <select value={format} onChange={(e) => setFormat(e.target.value as ExportMime)} className={fieldCls}>
-            <option value="image/png">PNG (lossless)</option>
-            <option value="image/jpeg">JPG (smaller)</option>
+            <option value="image/png">{t("PNG (lossless)")}</option>
+            <option value="image/jpeg">{t("JPG (smaller)")}</option>
             <option value="image/webp">WEBP</option>
           </select>
           {format !== "image/png" && (
-            <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>Quality</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span></label><input type="range" min={0.5} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" /></div>
+            <div className="flex flex-col gap-1.5"><label className="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant"><span>{t("Quality")}</span><span className="text-primary font-semibold">{Math.round(quality * 100)}%</span></label><input type="range" min={0.5} max={1} step={0.01} value={quality} onChange={(e) => setQuality(parseFloat(e.target.value))} className="w-full accent-secondary" /></div>
           )}
         </div>
           </SettingsRail>

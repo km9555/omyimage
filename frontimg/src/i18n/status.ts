@@ -38,6 +38,12 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "watermark-image",
     "rotate-image",
     "heic-to-jpg",
+    // Batch 4 — blur/censor, memes, merge, GIF in and out.
+    "blur-face",
+    "meme-generator",
+    "merge-images",
+    "gif-maker",
+    "gif-to-images",
   ],
 };
 
