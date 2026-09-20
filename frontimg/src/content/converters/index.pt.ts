@@ -3,6 +3,11 @@ import webpToPng from "./webp-to-png.pt";
 import webpToJpg from "./webp-to-jpg.pt";
 import jpgToWebp from "./jpg-to-webp.pt";
 import pngToWebp from "./png-to-webp.pt";
+import jfifToJpg from "./jfif-to-jpg.pt";
+import gifToPng from "./gif-to-png.pt";
+import gifToJpg from "./gif-to-jpg.pt";
+import bmpToJpg from "./bmp-to-jpg.pt";
+import avifToJpg from "./avif-to-jpg.pt";
 
 /**
  * Portuguese converter pairs, keyed by the ENGLISH slug (the pair id).
@@ -17,4 +22,9 @@ export const PT_PAIR_COPY: Record<string, LocalizedPairCopy> = {
   "webp-to-jpg": webpToJpg,
   "jpg-to-webp": jpgToWebp,
   "png-to-webp": pngToWebp,
+  "jfif-to-jpg": jfifToJpg,
+  "gif-to-png": gifToPng,
+  "gif-to-jpg": gifToJpg,
+  "bmp-to-jpg": bmpToJpg,
+  "avif-to-jpg": avifToJpg,
 };

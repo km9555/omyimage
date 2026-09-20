@@ -63,6 +63,12 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "webp-to-jpg",
     "jpg-to-webp",
     "png-to-webp",
+    // Batch 8 — the JFIF, GIF, BMP and AVIF converters.
+    "jfif-to-jpg",
+    "gif-to-png",
+    "gif-to-jpg",
+    "bmp-to-jpg",
+    "avif-to-jpg",
   ],
 };
 

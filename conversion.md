@@ -622,6 +622,22 @@ pair is added. It now emits translated stubs too, for any pair that is both in
 in the scanner's PENDING list; that list is empty, so every component and every
 shipped tool folder is held to the rule.
 
+### 6.2.8 Batch 8 (jfif-para-jpg, gif-para-png, gif-para-jpg, bmp-para-jpg, avif-para-jpg)
+
+**The layer paid for itself.** Five converter pages took one content module
+each plus four format essays — no component work, no new keys, no sweep. That
+is the point of §6.4, and it is the shape every later converter batch should
+have. If a batch needs more than that, something has leaked out of the data
+layer and into the component.
+
+**The engine data still drives the privacy claim, in both languages.**
+bmp-para-jpg carries `serverFallback: false`, and its Portuguese page says
+"suas imagens nunca saem do seu aparelho" with no server caveat, while its
+neighbours say the opposite — because both sentences come from the same engine
+flags through `buildPrivacyNote`. A translated page cannot drift from what the
+code does unless someone hand-writes the sentence, which is exactly what §6.4
+forbids.
+
 ### 6.3 Image-specific traps (watch for these in every batch)
 
 - **Text drawn INTO the image.** Meme captions, watermark defaults, the
