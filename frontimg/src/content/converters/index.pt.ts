@@ -8,6 +8,7 @@ import gifToPng from "./gif-to-png.pt";
 import gifToJpg from "./gif-to-jpg.pt";
 import bmpToJpg from "./bmp-to-jpg.pt";
 import avifToJpg from "./avif-to-jpg.pt";
+import avifToPng from "./avif-to-png.pt";
 
 /**
  * Portuguese converter pairs, keyed by the ENGLISH slug (the pair id).
@@ -27,4 +28,5 @@ export const PT_PAIR_COPY: Record<string, LocalizedPairCopy> = {
   "gif-to-jpg": gifToJpg,
   "bmp-to-jpg": bmpToJpg,
   "avif-to-jpg": avifToJpg,
+  "avif-to-png": avifToPng,
 };

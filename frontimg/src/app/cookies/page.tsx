@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { absoluteUrl } from "@/lib/site";
+import { pageAlternates } from "@/lib/i18n/tool-meta";
 import {
   LegalShell,
   LegalSection,
@@ -11,11 +12,15 @@ import {
   LegalTable,
 } from "@/components/LegalShell";
 
+const languages = pageAlternates("/cookies");
+
 export const metadata: Metadata = {
   title: "Cookie Policy",
   description:
     "What oMyImage stores in your browser, why, and how to control it. Necessary storage only by default — analytics stays off until you allow it.",
-  alternates: { canonical: absoluteUrl("/cookies") },
+  alternates: languages
+    ? { canonical: absoluteUrl("/cookies"), languages }
+    : { canonical: absoluteUrl("/cookies") },
   robots: { index: true, follow: true },
 };
 

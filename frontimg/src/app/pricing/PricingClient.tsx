@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Icon } from "@/components/Icon";
 import { getRegionPrices, type PriceBook } from "@/lib/billing";
+import type { Locale } from "@/i18n/config";
+import { localeHome } from "@/lib/i18n/links";
+import { useLocale, useT } from "@/i18n/I18nScope";
 
 /**
  * Pricing page. Prices mirror oMyPDF's.
@@ -41,7 +44,7 @@ const FALLBACK_BOOK: PriceBook = {
  * would only ever approximate. `decimals` comes from the server so whole-unit
  * currencies read ₹199 and ¥479 rather than ₹199.00.
  */
-function formatMoney(amount: number, book: PriceBook): string {
+function formatMoney(amount: number, book: PriceBook, locale: Locale): string {
   const opts: Intl.NumberFormatOptions = {
     style: "currency",
     currency: book.currency,
@@ -51,10 +54,10 @@ function formatMoney(amount: number, book: PriceBook): string {
   try {
     // narrowSymbol keeps it "$2.99" rather than "US$2.99"; unsupported on older
     // Safari, where the plain symbol is the right thing to fall back to.
-    return new Intl.NumberFormat(undefined, { ...opts, currencyDisplay: "narrowSymbol" }).format(amount);
+    return new Intl.NumberFormat(locale, { ...opts, currencyDisplay: "narrowSymbol" }).format(amount);
   } catch {
     try {
-      return new Intl.NumberFormat(undefined, opts).format(amount);
+      return new Intl.NumberFormat(locale, opts).format(amount);
     } catch {
       return `${book.currency} ${amount.toFixed(book.decimals)}`;
     }
@@ -76,6 +79,12 @@ interface Plan {
   comingSoon?: boolean;
   features: string[];
 }
+
+/* PLANS, FAQS and the trust tiles are module scope: every string is a key,
+   translated at the render site (conversion.md §4.2). The billing period is
+   rendered from its id through CSS `capitalize`, which is a label derived from
+   an id — it gets a map of its own (§6.2.5). */
+const BILLING_LABELS: Record<Billing, string> = { monthly: "Monthly", yearly: "Yearly" };
 
 const PLANS: Plan[] = [
   {
@@ -171,6 +180,8 @@ const FAQS = [
 ];
 
 export function PricingClient() {
+  const t = useT();
+  const locale = useLocale();
   const [billing, setBilling] = useState<Billing>("yearly");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
@@ -217,14 +228,13 @@ export function PricingClient() {
         <div className="relative z-10 max-w-2xl mx-auto">
           <span className="inline-flex items-center gap-2 rounded-full border border-outline-variant bg-surface-container-lowest px-3 py-1 text-label-sm font-label-sm text-on-surface-variant">
             <span className="h-2 w-2 rounded-full bg-secondary" />
-            Every tool is free today — no account needed
+            {t("Every tool is free today — no account needed")}
           </span>
           <h1 className="mt-5 text-display-lg-mobile md:text-display-lg font-black tracking-tight text-primary">
-            Simple, honest pricing.
+            {t("Simple, honest pricing.")}
           </h1>
           <p className="mt-4 text-body-lg text-on-surface-variant">
-            Start free and stay free for everyday work. Paid plans are on the way for people who need
-            bigger files and more AI runs.
+            {t("Start free and stay free for everyday work. Paid plans are on the way for people who need bigger files and more AI runs.")}
           </p>
         </div>
       </section>
@@ -239,16 +249,16 @@ export function PricingClient() {
                 key={b}
                 type="button"
                 onClick={() => setBilling(b)}
-                className={`rounded-md px-4 py-2 text-body-md font-semibold capitalize transition-colors ${
+                className={`rounded-md px-4 py-2 text-body-md font-semibold transition-colors ${
                   billing === b
                     ? "bg-surface-container-lowest text-primary shadow-sm"
                     : "text-on-surface-variant hover:text-primary"
                 }`}
               >
-                {b}
+                {t(BILLING_LABELS[b])}
                 {b === "yearly" && (
                   <span className="ml-1.5 rounded-full bg-secondary/20 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-on-secondary-fixed-variant">
-                    Save {maxSavePct}%
+                    {t("Save {n}%", { n: maxSavePct })}
                   </span>
                 )}
               </button>
@@ -259,15 +269,15 @@ export function PricingClient() {
               statement of fact. It follows the region, so it needs no control. */}
           <span
             className="inline-flex items-center gap-2 rounded-full border border-surface-variant bg-surface-container-lowest px-4 py-2.5 text-label-md font-medium text-on-surface-variant"
-            title="Prices are shown in the currency of your region."
+            title={t("Prices are shown in the currency of your region.")}
           >
             <Icon name="payments" className="text-[18px]" />
-            {priced ? `Prices in ${prices.currency}` : "Loading prices…"}
+            {priced ? t("Prices in {currency}", { currency: prices.currency }) : t("Loading prices…")}
           </span>
         </div>
         {billing === "yearly" && (
           <p className="mt-3 text-center text-label-sm font-label-sm text-on-surface-variant">
-            Yearly prices are shown per month, billed annually.
+            {t("Yearly prices are shown per month, billed annually.")}
           </p>
         )}
       </section>
@@ -294,29 +304,29 @@ export function PricingClient() {
                         : "bg-surface-container text-on-surface-variant"
                     }`}
                   >
-                    {plan.badge}
+                    {t(plan.badge)}
                   </span>
                 )}
 
-                <h2 className="text-headline-md font-bold text-primary mt-2">{plan.name}</h2>
-                <p className="mt-1 text-body-sm text-on-surface-variant min-h-[2.5em]">{plan.tagline}</p>
+                <h2 className="text-headline-md font-bold text-primary mt-2">{t(plan.name)}</h2>
+                <p className="mt-1 text-body-sm text-on-surface-variant min-h-[2.5em]">{t(plan.tagline)}</p>
 
                 <div className="mt-5 flex items-baseline gap-1.5">
                   <span className="text-display-md font-black text-primary">
-                    {formatMoney(price, prices)}
+                    {formatMoney(price, prices, locale)}
                   </span>
                   {!isFree && (
-                    <span className="text-body-sm text-on-surface-variant">/ month</span>
+                    <span className="text-body-sm text-on-surface-variant">{t("/ month")}</span>
                   )}
                 </div>
                 <p className="mt-1 text-label-sm font-label-sm text-on-surface-variant">
                   {isFree
-                    ? "Free forever"
+                    ? t("Free forever")
                     : billing === "yearly"
                       /* The server's own annual figure, not price × 12 — the two
                          disagree in rounded currencies (₹99 × 12 ≠ ₹1,188). */
-                      ? `Billed annually — ${formatMoney(quote!.yearlyTotal, prices)} / year`
-                      : "Billed monthly"}
+                      ? t("Billed annually — {total} / year", { total: formatMoney(quote!.yearlyTotal, prices, locale) })
+                      : t("Billed monthly")}
                 </p>
 
                 {plan.comingSoon ? (
@@ -324,17 +334,17 @@ export function PricingClient() {
                     type="button"
                     disabled
                     aria-disabled="true"
-                    title="Paid plans aren't available yet"
+                    title={t("Paid plans aren't available yet")}
                     className="mt-6 w-full rounded-lg bg-surface-container px-6 py-3 text-body-md font-semibold text-on-surface-variant cursor-not-allowed"
                   >
-                    {plan.cta}
+                    {t(plan.cta)}
                   </button>
                 ) : (
                   <Link
                     href={plan.ctaHref}
                     className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-lg bg-secondary px-6 py-3 text-body-md font-semibold text-on-secondary shadow-md shadow-secondary/30 hover:bg-secondary-container transition-colors"
                   >
-                    {plan.cta} <Icon name="arrow_forward" className="text-[19px]" />
+                    {t(plan.cta)} <Icon name="arrow_forward" className="text-[19px]" />
                   </Link>
                 )}
 
@@ -346,7 +356,7 @@ export function PricingClient() {
                         fill
                         className="text-[18px] text-secondary shrink-0 mt-0.5"
                       />
-                      <span>{f}</span>
+                      <span>{t(f)}</span>
                     </li>
                   ))}
                 </ul>
@@ -356,12 +366,12 @@ export function PricingClient() {
         </div>
 
         <p className="mt-8 text-center text-body-sm text-on-surface-variant">
-          Paid plans aren&apos;t available to purchase yet — the prices above are what we intend to
-          charge when they launch. Everything on{" "}
-          <Link href="/" className="text-secondary hover:underline">
+          {t("Paid plans aren't available to purchase yet — the prices above are what we intend to charge when they launch. Everything on")}{" "}
+          <Link href={localeHome(locale)} className="text-secondary hover:underline">
+            {/* i18n-raw: the brand name */}
             oMyImage
           </Link>{" "}
-          is free to use in the meantime.
+          {t("is free to use in the meantime.")}
         </p>
       </section>
 
@@ -371,29 +381,32 @@ export function PricingClient() {
           {[
             {
               icon: "lock",
+              // i18n-raw: a key — translated at the render site below.
               title: "Private by default",
               body: "Most tools run entirely in your browser — your images never leave your device.",
             },
             {
               icon: "bolt",
+              // i18n-raw: a key — translated at the render site below.
               title: "No account needed",
               body: "Open a tool and go. Sign-up has never been required to use oMyImage.",
             },
             {
               icon: "auto_delete",
+              // i18n-raw: a key — translated at the render site below.
               title: "Deleted automatically",
               // Worded to stay true once Plus/Pro ship: Free stores nothing at
               // all, and the paid tiers' 24-hour / 7-day figures ARE the
               // retention. "Within the hour" would contradict them on launch.
               body: "On Free nothing is stored at all — results download straight to you. Where a plan offers download links, that window is the retention, and nothing is ever reused.",
             },
-          ].map((t) => (
-            <div key={t.title} className="flex flex-col items-center gap-2">
+          ].map((tile) => (
+            <div key={tile.title} className="flex flex-col items-center gap-2">
               <span className="grid place-items-center w-12 h-12 rounded-full bg-secondary/15">
-                <Icon name={t.icon} className="text-[24px] text-secondary" />
+                <Icon name={tile.icon} className="text-[24px] text-secondary" />
               </span>
-              <h3 className="text-body-lg font-bold text-primary">{t.title}</h3>
-              <p className="text-body-sm text-on-surface-variant max-w-xs">{t.body}</p>
+              <h3 className="text-body-lg font-bold text-primary">{t(tile.title)}</h3>
+              <p className="text-body-sm text-on-surface-variant max-w-xs">{t(tile.body)}</p>
             </div>
           ))}
         </div>
@@ -402,7 +415,7 @@ export function PricingClient() {
       {/* ── FAQ ──────────────────────────────────────────────────────────── */}
       <section className="max-w-[760px] mx-auto px-margin-mobile md:px-gutter py-16 w-full">
         <h2 className="text-headline-md md:text-display-lg-mobile font-bold text-primary text-center mb-8">
-          Questions
+          {t("Questions")}
         </h2>
         <div className="flex flex-col gap-2.5">
           {FAQS.map((faq, i) => {
@@ -418,7 +431,7 @@ export function PricingClient() {
                   aria-expanded={open}
                   className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left hover:bg-surface-container transition-colors"
                 >
-                  <span className="text-body-md font-semibold text-primary">{faq.q}</span>
+                  <span className="text-body-md font-semibold text-primary">{t(faq.q)}</span>
                   <Icon
                     name="expand_more"
                     className={`text-[22px] text-on-surface-variant shrink-0 transition-transform duration-200 ${
@@ -428,7 +441,7 @@ export function PricingClient() {
                 </button>
                 {open && (
                   <p className="px-5 pb-4 text-body-md text-on-surface-variant leading-relaxed">
-                    {faq.a}
+                    {t(faq.a)}
                   </p>
                 )}
               </div>
@@ -441,16 +454,16 @@ export function PricingClient() {
       <section className="bg-surface-container-low border-t border-surface-variant py-16">
         <div className="max-w-content mx-auto px-margin-mobile md:px-gutter text-center">
           <h2 className="text-headline-md md:text-display-lg-mobile font-bold text-primary">
-            Start now — no card, no account.
+            {t("Start now — no card, no account.")}
           </h2>
           <p className="mt-3 text-body-lg text-on-surface-variant max-w-xl mx-auto">
-            All 30 tools are free to use today. Paid plans will add headroom, not gatekeeping.
+            {t("All 30 tools are free to use today. Paid plans will add headroom, not gatekeeping.")}
           </p>
           <Link
-            href="/"
+            href={localeHome(locale)}
             className="mt-6 inline-flex items-center justify-center gap-2 rounded-lg bg-secondary px-7 py-3.5 text-body-md font-semibold text-on-secondary shadow-md shadow-secondary/30 hover:bg-secondary-container transition-colors"
           >
-            Browse all tools <Icon name="arrow_forward" className="text-[19px]" />
+            {t("Browse all tools")} <Icon name="arrow_forward" className="text-[19px]" />
           </Link>
         </div>
       </section>

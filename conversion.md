@@ -638,6 +638,29 @@ flags through `buildPrivacyNote`. A translated page cannot drift from what the
 code does unless someone hand-writes the sentence, which is exactly what §6.4
 forbids.
 
+### 6.2.9 Batch 9 (avif-para-png, conversor-de-imagens, contato, precos, cookies)
+
+**The first static pages, and they split into two kinds.** A page whose copy is
+short and structural (contact, pricing, the converter hub) becomes a shared
+BODY component plus a dictionary. A legal page does not — see §6.5. Deciding
+which kind a page is, before translating a word of it, is the whole job.
+
+**A page file exists to export `metadata`.** That is why the body moves out
+rather than the page being copied: `/contact` and `/pt/contato` render the same
+`ContactBody`, and only the metadata differs. English metadata was left exactly
+as it was, with the hreflang cluster added conditionally — `pageMetadata()`
+would have added `og:locale` and a Twitter card the English page never had.
+
+**Money is formatted by the page, not the browser.** `PricingClient` called
+`Intl.NumberFormat(undefined, …)`, so a Brazilian reading the Portuguese page
+in an English browser saw "$2.99" inside Portuguese prose. It now passes the
+page locale, which is the §4.16 rule applied to currency.
+
+**The hub's JSON-LD names come from the converter layer.** `/pt/conversor-de-imagens`
+lists every pair; the names and the format essays are read through `pairCopy()`
+and `formatEssay()`, so an untranslated pair shows its English name and links to
+its English page — the gate decides, not the hub.
+
 ### 6.3 Image-specific traps (watch for these in every batch)
 
 - **Text drawn INTO the image.** Meme captions, watermark defaults, the
@@ -682,6 +705,34 @@ Rules that fall out of this:
 - **`gen-converters.mjs` writes the `/pt` stubs too.** Never hand-write one.
 - **English output must not move.** The builders return the identical strings
   for `en` (t() falls through to the key), which the snapshot diff checks.
+
+### 6.5 Static pages: shared body, or a written twin?
+
+Two shapes, and the wrong one is expensive either way.
+
+**Shared body + dictionary** — contact, pricing, the converter hub, the home
+page. The markup moves into a component that takes `locale` and an optional
+`dict`; the English route renders it with neither (keys fall through), the
+translated route with both. Use this when the copy is short, structural, or
+shared with a client component — `PricingClient` gets its dictionary through an
+`<I18nScope>` because it cannot take a server prop.
+
+**A written twin** — the legal pages (cookies, privacy, terms, refunds). Each
+gets its own `src/app/pt/<slug>/page.tsx` with the prose written in Portuguese
+against the same components and, critically, **the same section ids**: those
+ids are TOC anchors and inbound links, and renaming one on a single side breaks
+a link that looks fine locally. oMyPDF reached this conclusion across four
+locales and it holds here: legal prose is dense with inline `<code>` and
+`<strong>`, and cutting it into dictionary fragments either loses the markup or
+forces Portuguese into English word order.
+
+Two consequences to keep in step:
+
+- `scripts/i18n-hardcoded.mjs` skips the English legal pages
+  (`TWIN_TRANSLATED`) — their literals are correct. What would actually break
+  is a MISSING twin, and `i18n:audit` catches that against `status.ts`.
+- A twin is a copy, so an edit to the English legal page does NOT reach it.
+  Anything changed in `/privacy` has to be carried across by hand, every time.
 
 ---
 

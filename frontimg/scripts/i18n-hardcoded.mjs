@@ -117,6 +117,24 @@ function walkFiles(p, out = []) {
 const PENDING = new Set([]);
 
 /**
+ * Pages translated by a whole-page TWIN rather than by keys.
+ *
+ * The legal pages are dense with inline `<code>` and `<strong>` and their
+ * sentences do not survive being cut into dictionary fragments, so each one
+ * has a hand-written `src/app/pt/<slug>/page.tsx` with the same section ids
+ * instead — the approach oMyPDF settled on for four locales
+ * (conversion.md §6.5). Their English literals are therefore correct, and the
+ * thing that would actually break is a MISSING twin, which `i18n:audit`
+ * checks against `status.ts`.
+ */
+const TWIN_TRANSLATED = new Set([
+  "src/app/cookies/page.tsx",
+  "src/app/privacy/page.tsx",
+  "src/app/terms/page.tsx",
+  "src/app/refunds/page.tsx",
+]);
+
+/**
  * With no paths, gate mode: every shared component, plus the app/ folder of
  * every tool and page some locale SHIPS (i18n/status.ts). An unshipped tool is
  * expected to still hold English literals — it is swept in its own batch —
@@ -143,6 +161,7 @@ function gateTargets() {
 const targets = (paths.length ? paths : gateTargets()).map((p) => join(root, p));
 const files = targets.flatMap((t) => walkFiles(t)).filter((f) => {
   const rel = relative(root, f).replace(/\\/g, "/");
+  if (TWIN_TRANSLATED.has(rel)) return false;
   return !SKIP_DIR.test(rel) && (paths.length || !PENDING.has(rel));
 });
 

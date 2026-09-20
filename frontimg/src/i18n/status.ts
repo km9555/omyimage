@@ -69,6 +69,8 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "gif-to-jpg",
     "bmp-to-jpg",
     "avif-to-jpg",
+    // Batch 9 — the last converter pair.
+    "avif-to-png",
   ],
 };
 
@@ -79,6 +81,11 @@ const SHIPPED_PAGES: Record<TranslatedLocale, string[]> = {
     // whose page has no Portuguese twin yet, and its presence is what flips
     // "Português" from "Em breve" to a live link in the language menus.
     "/",
+    // Batch 9 — the first static pages: contact, pricing and the cookie policy.
+    "/contact",
+    "/pricing",
+    "/cookies",
+    "/image-converter",
   ],
 };
 

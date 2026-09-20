@@ -90,9 +90,22 @@ const PAGE_OWNED = {
   "components/ToolDirectory.tsx": "home",
 };
 
+/**
+ * Files whose keys live in the converter dictionary rather than in common.ts.
+ *
+ * ConverterPage and the copy builders render on the ten `x-to-y` routes only,
+ * and their strings are loaded with those routes (conversion.md §6.4) — so
+ * reporting them as missing from `common.ts` would send them to the wrong file.
+ */
+const CONVERTER_OWNED = new Set([
+  "components/ConverterPage.tsx",
+  "lib/converters/copy.ts",
+]);
+
 /** Which bucket a file's keys belong to. */
 function bucketOf(file) {
   const rel = relative(SRC, file).replace(/\\/g, "/");
+  if (CONVERTER_OWNED.has(rel)) return "converters";
   if (PAGE_OWNED[rel]) return PAGE_OWNED[rel];
   const m = /^app\/([^/]+)\//.exec(rel);
   if (m) {
@@ -133,6 +146,10 @@ function coverage(loc) {
   const shared = readKeys(join(SRC, "i18n", "dictionaries", loc, "common.ts"), 2);
   return (bucket) => {
     if (bucket === "shared") return { have: shared, where: `dictionaries/${loc}/common.ts` };
+    if (bucket === "converters") {
+      const dict = join(SRC, "i18n", "dictionaries", loc, "converters.ts");
+      return { have: new Set([...shared, ...readKeys(dict, 2)]), where: `dictionaries/${loc}/converters.ts` };
+    }
     const id = SLUG_TO_ID.get(bucket);
     if (id) {
       const mod = join(SRC, "content", "tools", `${id}.${loc}.ts`);
