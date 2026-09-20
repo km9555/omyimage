@@ -318,6 +318,35 @@ body {
 }
 
 /*
+  Hindi. Inter carries no Devanagari, so without this the script falls back to
+  whatever the OS happens to ship — readable, but off-weight and different on
+  every machine.
+
+  Scoped to :lang(hi), which the pre-paint script in layout.tsx stamps onto
+  <html> before the first frame and HtmlLang re-stamps after hydration, so an
+  English or Portuguese page never downloads the face. That coupling is worth
+  knowing: if the lang attribute is ever wiped, the webfont goes with it.
+
+  Inter stays FIRST in the stack. Hindi copy is full of Latin runs — JPG, WEBP,
+  HEIC, 100 MB, oMyImage — and those keep the same shapes as everywhere else on
+  the site; only Devanagari codepoints fall through to Noto.
+
+  Desktop only, matching the mobile rule above: phones already ship a Devanagari
+  face (Android bundles Noto, iOS has Devanagari Sangam MN), so loading a
+  webfont there would spend ~50 KB of the mobile critical path to change very
+  little.
+*/
+@media (min-width: 48rem) {
+  :lang(hi) body,
+  :lang(hi) button,
+  :lang(hi) input,
+  :lang(hi) textarea,
+  :lang(hi) select {
+    font-family: var(--font-inter), var(--font-devanagari), Arial, Helvetica, sans-serif;
+  }
+}
+
+/*
   Material Symbols variants. The base rules (font-family, size, `liga`) come
   from the generated material-symbols.css imported at the top of this file.
 

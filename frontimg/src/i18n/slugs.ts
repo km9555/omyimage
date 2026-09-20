@@ -18,6 +18,28 @@
  *     iLoveIMG /pt uses rodar-imagem and desfocar-cara, and mixes "ficheiro"
  *     into Brazilian copy; that inconsistency is a thing to beat, not copy.
  *
+ * ── Slug conventions (Hindi) ───────────────────────────────────────────────
+ * Hindi keeps the **English** slug: `/hi/compress-image`, not
+ * `/hi/image-compress-karen`.
+ *
+ * Both localized competitors do this — iLoveIMG ships `/hi/compress-image`,
+ * `/hi/resize-image` and `/hi/remove-background` (verified live 2026-09-20),
+ * and Smallpdf `/hi/compress-pdf`. Indian searches for these tools are
+ * overwhelmingly typed in English or Hinglish, so a transliterated slug would
+ * carry a phrase nobody searches while permanently owning the URL. The Hindi
+ * page still competes for Hindi-script queries — through its COPY, which is
+ * where "फोटो का साइज कम करें" belongs.
+ *
+ * It is also the only form the codebase allows: the audit requires ASCII-only
+ * slugs so URLs never percent-encode, and Devanagari cannot be expressed in
+ * `[a-z0-9-]`.
+ *
+ * The map below is therefore 40 identical pairs. That is deliberate and it is
+ * NOT to be replaced with `Object.fromEntries(TOOLS.map(…))`: a derived map has
+ * no literal `"key": "value"` pairs and no closing `};` of its own, which broke
+ * two of oMyPDF's regex parsers (its conversion.md §4.28) — ours read this file
+ * the same way (i18n-verify, i18n-audit, gen-converters, verify-build).
+ *
  * A slug is FOREVER once shipped (listed in status.ts) — changing one orphans
  * its rankings. Until then it can still be corrected at the start of its batch.
  */
@@ -79,8 +101,60 @@ const PT_TOOL_SLUGS: Record<string, string> = {
   "upscale-image": "melhorar-qualidade-imagem",
 };
 
+/** Hindi keeps the English slug — see the header. Authored, never derived. */
+const HI_TOOL_SLUGS: Record<string, string> = {
+  // ── ऑप्टिमाइज़ ─────────────────────────────────────────────────────────
+  "compress-image": "compress-image",
+  "resize-image": "resize-image",
+  "crop-image": "crop-image",
+  "rotate-image": "rotate-image",
+
+  // ── कन्वर्ट ──────────────────────────────────────────────────────────
+  "convert-to-jpg": "convert-to-jpg",
+  "png-to-jpg": "png-to-jpg",
+  "jpg-to-png": "jpg-to-png",
+  "webp-to-png": "webp-to-png",
+  "heic-to-png": "heic-to-png",
+  "image-to-text": "image-to-text",
+  "webp-to-jpg": "webp-to-jpg",
+  "jpg-to-webp": "jpg-to-webp",
+  "png-to-webp": "png-to-webp",
+  "jfif-to-jpg": "jfif-to-jpg",
+  "gif-to-png": "gif-to-png",
+  "gif-to-jpg": "gif-to-jpg",
+  "bmp-to-jpg": "bmp-to-jpg",
+  "avif-to-jpg": "avif-to-jpg",
+  "avif-to-png": "avif-to-png",
+  "heic-to-jpg": "heic-to-jpg",
+  "image-to-pdf": "image-to-pdf",
+  "image-to-base64": "image-to-base64",
+  "base64-to-image": "base64-to-image",
+  "gif-to-images": "gif-to-images",
+
+  // ── एडिट और क्रिएट ───────────────────────────────────────────────────
+  "image-editor": "image-editor",
+  "watermark-image": "watermark-image",
+  "meme-generator": "meme-generator",
+  "html-to-image": "html-to-image",
+  "blur-face": "blur-face",
+  "grayscale-image": "grayscale-image",
+  "blur-image": "blur-image",
+  "add-border": "add-border",
+  "circle-crop": "circle-crop",
+  "merge-images": "merge-images",
+  "image-color-picker": "image-color-picker",
+  "image-metadata": "image-metadata",
+  "remove-exif": "remove-exif",
+  "gif-maker": "gif-maker",
+
+  // ── AI ───────────────────────────────────────────────────────────────
+  "remove-background": "remove-background",
+  "upscale-image": "upscale-image",
+};
+
 const TOOL_SLUGS: Record<TranslatedLocale, Record<string, string>> = {
   pt: PT_TOOL_SLUGS,
+  hi: HI_TOOL_SLUGS,
 };
 
 /** The slug a tool uses in `locale` (no prefix). English → the registry slug. */

@@ -95,7 +95,12 @@ for (const { slug, locale, dir } of targets) {
   const file = join(dir, "page.tsx");
   const rel = relative(root, file).replace(/\\/g, "/");
   const want = stub(slug, locale);
-  const have = existsSync(file) ? readFileSync(file, "utf8") : null;
+  // Normalize CRLF before comparing. Git is configured with
+  // `core.autocrlf=true` on this machine, so a stub committed with LF comes
+  // BACK from a checkout with CRLF — which made `--check` report all ten
+  // Portuguese routes stale on a clean tree, with byte-identical content.
+  // The generator still writes LF; only the comparison is line-ending blind.
+  const have = existsSync(file) ? readFileSync(file, "utf8").replace(/\r\n/g, "\n") : null;
   if (have === want) continue;
 
   if (check) {

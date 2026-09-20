@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Noto_Sans_Devanagari } from "next/font/google";
 import "./globals.css";
 import { SITE } from "@/lib/site";
 import { Navbar } from "@/components/Navbar";
@@ -32,6 +32,18 @@ const inter = Inter({
   preload: false,
 });
 
+// Devanagari for /hi. Declared here because next/font must be called at module
+// scope — this root layout wraps every locale — but globals.css only APPLIES it
+// under `:lang(hi)`, so an English or Portuguese page never downloads it.
+// `preload: false` for the same reason: preloading here would put both Noto
+// files on the wire for every page in every language.
+const notoDevanagari = Noto_Sans_Devanagari({
+  variable: "--font-devanagari",
+  subsets: ["devanagari", "latin"],
+  display: "optional",
+  preload: false,
+});
+
 // Runs before first paint to apply a previously-chosen dark theme with no flash.
 // Default is light: dark only applies when the visitor explicitly opted in.
 // Also repoints <meta name="theme-color"> so the mobile browser toolbar matches
@@ -47,7 +59,7 @@ const inter = Inter({
 // Portuguese page the right language before paint; HtmlLang keeps it right
 // after hydration and on client-side navigation (see that component). The map
 // must list every non-default locale in i18n/config.ts LOCALES.
-const NO_FLASH_THEME = `(function(){try{var L={pt:1},s=location.pathname.split('/')[1];if(L[s]){document.documentElement.lang=s;}}catch(e){}try{if(localStorage.getItem('theme')==='dark'){document.documentElement.classList.add('dark');document.documentElement.style.colorScheme='dark';document.querySelectorAll('meta[name="theme-color"]').forEach(function(m){m.setAttribute('content','#191512')});}var c=localStorage.getItem('omyimage_cookie_consent');if(c==='accepted'||c==='declined'){document.documentElement.setAttribute('data-cookie-choice','1');}}catch(e){}})();`;
+const NO_FLASH_THEME = `(function(){try{var L={pt:1,hi:1},s=location.pathname.split('/')[1];if(L[s]){document.documentElement.lang=s;}}catch(e){}try{if(localStorage.getItem('theme')==='dark'){document.documentElement.classList.add('dark');document.documentElement.style.colorScheme='dark';document.querySelectorAll('meta[name="theme-color"]').forEach(function(m){m.setAttribute('content','#191512')});}var c=localStorage.getItem('omyimage_cookie_consent');if(c==='accepted'||c==='declined'){document.documentElement.setAttribute('data-cookie-choice','1');}}catch(e){}})();`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -131,7 +143,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} h-full`}
+      className={`${inter.variable} ${notoDevanagari.variable} h-full`}
       suppressHydrationWarning
     >
       <head>

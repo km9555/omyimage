@@ -1,21 +1,26 @@
 #!/usr/bin/env node
 /**
- * Regenerates ../tracker.csv — one row per page, every URL, and the rollout
- * state of each — without losing the hand-set columns.
+ * Regenerates a locale's tracker CSV — one row per page, every URL, and the
+ * rollout state of each — without losing the hand-set columns.
  *
- *   npm run i18n:list            # rewrite tracker.csv
- *   npm run i18n:list -- --check # exit 1 if tracker.csv is stale
+ *   npm run i18n:list                   # rewrite tracker.csv      (pt, default)
+ *   npm run i18n:list -- hi             # rewrite tracker-hi.csv
+ *   npm run i18n:list -- hi --check     # exit 1 if it is stale
  *
- * Columns and who owns them:
+ * ONE FILE PER LOCALE, not one wide file with a column per language: the rows
+ * differ (a locale ships its own batch order and, for a pilot, its own subset),
+ * and a shared file would make every Hindi edit touch the Portuguese record.
  *
- *   sn, batch, section, id, en_url, pt_url ........ DERIVED (registry, slugs,
+ * Columns and who owns them (`<loc>` is the locale being tracked):
+ *
+ *   sn, batch, section, id, en_url, <loc>_url ..... DERIVED (registry, slugs,
  *                                                     static paths, BATCHES)
  *   en_extracted .................................. DERIVED — English copy lives
  *                                                     in a content module (or the
  *                                                     converter layer)
- *   route ......................................... DERIVED — src/app/pt/<slug>/page.tsx
+ *   route ......................................... DERIVED — src/app/<loc>/<slug>/page.tsx
  *   gated ......................................... DERIVED — listed in status.ts
- *   ui_sweep, pt_copy, seo_meta, verify,
+ *   ui_sweep, <loc>_copy, seo_meta, verify,
  *   browser_qa, status, notes ..................... HAND-SET per batch, preserved
  *
  * Values are todo / done / n/a / blocked. A row is `status=done` only when every
@@ -27,17 +32,20 @@
  * has one file to update.
  */
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { join, dirname, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const SRC = join(root, "src");
-const FILE = join(root, "..", "tracker.csv");
 const HOST = "http://localhost:3002";
-const LOC = "pt";
+
+// First non-flag argument is the locale; Portuguese stays the default so the
+// existing `npm run i18n:list` keeps writing tracker.csv untouched.
+const LOC = process.argv.slice(2).find((a) => !a.startsWith("--")) ?? "pt";
+const FILE = join(root, "..", LOC === "pt" ? "tracker.csv" : `tracker-${LOC}.csv`);
 
 /** Batches of five, in Brazilian search-value order. The plan of record. */
-const BATCHES = [
+const PT_BATCHES = [
   ["/", "compress-image", "resize-image", "remove-background", "image-to-text"],
   ["crop-image", "png-to-jpg", "jpg-to-png", "convert-to-jpg", "image-to-pdf"],
   ["upscale-image", "image-editor", "watermark-image", "rotate-image", "heic-to-jpg"],
@@ -50,8 +58,31 @@ const BATCHES = [
   ["/privacy", "/terms", "/refunds", "/login", "/signup"],
   ["/forgot-password", "/reset-password", "/account", "/dashboard"],
 ];
-const HAND = ["ui_sweep", "pt_copy", "seo_meta", "verify", "browser_qa", "status", "notes"];
-const COLS = ["sn", "batch", "section", "id", "en_url", "pt_url", "en_extracted", "ui_sweep", "pt_copy", "route", "gated", "seo_meta", "verify", "browser_qa", "status", "notes"];
+
+/**
+ * Hindi ships as a PILOT: home, the 14 highest-value tools and the four legal
+ * twins — 19 pages, then a measurement gate (see conversion.md §9 and the
+ * Hindi plan). The remaining 26 tools and the contact / pricing / hub / auth
+ * pages are deliberately ABSENT from this list rather than listed as `todo`:
+ * a tracker row is a commitment to ship, and whether those pages get written
+ * at all depends on what Search Console says about these nineteen.
+ *
+ * Order within the pilot follows Indian search value, not the Brazilian order
+ * above: convert-to-jpg and crop-image rank higher here, image-to-text lower
+ * (Hindi OCR queries are mostly informational).
+ */
+const HI_BATCHES = [
+  ["/", "compress-image", "resize-image", "crop-image", "convert-to-jpg"],
+  ["png-to-jpg", "jpg-to-png", "remove-background", "image-to-text", "image-to-pdf"],
+  ["upscale-image", "image-editor", "watermark-image", "rotate-image", "heic-to-jpg"],
+  ["/privacy", "/terms", "/refunds", "/cookies"],
+];
+
+const BATCHES = LOC === "hi" ? HI_BATCHES : PT_BATCHES;
+const COPY_COL = `${LOC}_copy`;
+const URL_COL = `${LOC}_url`;
+const HAND = ["ui_sweep", COPY_COL, "seo_meta", "verify", "browser_qa", "status", "notes"];
+const COLS = ["sn", "batch", "section", "id", "en_url", URL_COL, "en_extracted", "ui_sweep", COPY_COL, "route", "gated", "seo_meta", "verify", "browser_qa", "status", "notes"];
 
 const read = (p) => readFileSync(join(SRC, p), "utf8");
 function block(src, name) {
@@ -140,7 +171,7 @@ BATCHES.forEach((keys, bi) => {
     const id = key;
     const enPath = isTool ? `/${key}` : key;
     const localSeg = isTool ? `/${slugMap[key] ?? "?"}` : pathMap[key];
-    const ptPath = `/${LOC}${localSeg ?? "?"}`.replace(/\/$/, "");
+    const locPath = `/${LOC}${localSeg ?? "?"}`.replace(/\/$/, "");
     const routeFile = join(SRC, "app", LOC, (localSeg ?? "").replace(/^\//, ""), "page.tsx");
     const enExtracted = isTool
       ? converters.has(key) ? "n/a" : existsSync(join(SRC, "content", "tools", `${key}.en.ts`)) ? "done" : "todo"
@@ -152,14 +183,14 @@ BATCHES.forEach((keys, bi) => {
       section: SECTION(key),
       id,
       en_url: `${HOST}${enPath}`,
-      pt_url: `${HOST}${ptPath}`,
+      [URL_COL]: `${HOST}${locPath}`,
       en_extracted: enExtracted,
       route: existsSync(routeFile) ? "done" : "todo",
       gated: (isTool ? shippedTools.has(key) : shippedPages.has(key)) ? "done" : "todo",
     };
     for (const h of HAND) row[h] = p[h] || (h === "notes" ? "" : "todo");
     // A row cannot claim done while any stage is not.
-    const stages = ["en_extracted", "ui_sweep", "pt_copy", "route", "gated", "seo_meta", "verify", "browser_qa"];
+    const stages = ["en_extracted", "ui_sweep", COPY_COL, "route", "gated", "seo_meta", "verify", "browser_qa"];
     if (row.status === "done" && stages.some((s) => !["done", "n/a"].includes(row[s]))) row.status = "in_progress";
     rows.push(row);
   }
@@ -171,12 +202,12 @@ const csv = [COLS.join(","), ...rows.map((r) => COLS.map((c) => esc(r[c] ?? ""))
 if (process.argv.includes("--check")) {
   const cur = existsSync(FILE) ? readFileSync(FILE, "utf8").replace(/\r\n/g, "\n") : "";
   if (cur !== csv) {
-    console.error("tracker.csv is stale — run `npm run i18n:list`.");
+    console.error(`${basename(FILE)} is stale — run \`npm run i18n:list -- ${LOC}\`.`);
     process.exit(1);
   }
-  console.log("tracker.csv is current.");
+  console.log(`${basename(FILE)} is current.`);
 } else {
   writeFileSync(FILE, csv);
   const done = rows.filter((r) => r.status === "done").length;
-  console.log(`tracker.csv: ${rows.length} pages, ${done} done, ${rows.length - done} to go.`);
+  console.log(`${basename(FILE)}: ${rows.length} pages, ${done} done, ${rows.length - done} to go.`);
 }

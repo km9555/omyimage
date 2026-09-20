@@ -39,8 +39,28 @@ const PT_PATHS: PathMap = {
   "/account": "/conta",
 };
 
+/**
+ * Hindi keeps the English path segments, for the same reason its tool slugs do
+ * (see slugs.ts): iLoveIMG ships `/hi/pricing` and `/hi/login`, a
+ * transliteration like `/mulya` carries a phrase nobody searches, and a path is
+ * permanent once indexed.
+ *
+ * Unlike the tool map this one still has to be authored rather than derived: it
+ * is the list of which non-tool routes the locale has AT ALL, so every entry is
+ * a promise that `src/app/hi/<path>/page.tsx` exists. Entries are added as
+ * their pages ship.
+ */
+const HI_PATHS: PathMap = {
+  "/": "",
+  "/privacy": "/privacy",
+  "/terms": "/terms",
+  "/cookies": "/cookies",
+  "/refunds": "/refunds",
+};
+
 const STATIC_PATHS: Record<TranslatedLocale, PathMap> = {
   pt: PT_PATHS,
+  hi: HI_PATHS,
 };
 
 /** Does `locale` define a counterpart for this English path? */

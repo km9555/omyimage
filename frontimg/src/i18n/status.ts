@@ -72,6 +72,11 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     // Batch 9 — the last converter pair.
     "avif-to-png",
   ],
+  // Hindi — a PILOT: the home page, the 14 highest-value tools and the four
+  // legal twins. The remaining 26 tools wait on Search Console data, because
+  // the Hindi-script query for an image tool is informational and is currently
+  // won by Hindi tutorial blogs rather than by tool pages (conversion.md §8).
+  hi: [],
 };
 
 /** English paths of the non-tool pages that are live in each locale. */
@@ -98,6 +103,7 @@ const SHIPPED_PAGES: Record<TranslatedLocale, string[]> = {
     "/account",
     "/dashboard",
   ],
+  hi: [],
 };
 
 const TOOL_SETS: Record<string, ReadonlySet<string>> = Object.fromEntries(

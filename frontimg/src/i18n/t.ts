@@ -14,6 +14,7 @@
  */
 import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
 import { ptCommon } from "@/i18n/dictionaries/pt/common";
+import { hiCommon } from "@/i18n/dictionaries/hi/common";
 
 export type Dict = Record<string, string>;
 
@@ -22,6 +23,7 @@ export type TFunction = (key: string, vars?: Record<string, string | number>) =>
 const COMMON: Record<Locale, Dict> = {
   en: {},
   pt: ptCommon,
+  hi: hiCommon,
 };
 
 /**

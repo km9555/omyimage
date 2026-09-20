@@ -22,6 +22,7 @@
 import type { Tool } from "@/lib/tools";
 import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
 import { ptAliases } from "@/i18n/dictionaries/pt/aliases";
+import { hiAliases } from "@/i18n/dictionaries/hi/aliases";
 import { toolDescription, toolName } from "@/lib/i18n/tool-labels";
 
 /**
@@ -202,17 +203,35 @@ export const TOOL_ALIASES: Record<string, string[]> = {
 /**
  * Accent-insensitive folding. "Rotação" → "rotacao", so a Brazilian typing
  * without accents (common on a phone) still matches, and — the part that
- * actually broke — `[^a-z0-9]` no longer deletes the accented letters outright,
- * which turned "câmera" into "c mera". English has no accents, so its folding
- * is unchanged.
+ * actually broke — the word class below no longer deletes the accented letters
+ * outright, which turned "câmera" into "c mera". English has no accents, so its
+ * folding is unchanged.
+ *
+ * The nukta (U+093C) folds for the same reason the combining marks do: Hindi
+ * has spelling splits where a reader sees one word and a matcher sees two —
+ * फ़ाइल / फाइल, ज़िप / जिप. Folding it here means aliases.ts does not have to
+ * carry both spellings of every word.
  */
-const stripAccents = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-// Lowercase, replace every run of non-alphanumerics with a single space.
+const stripAccents = (s: string) =>
+  s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\u093c/g, "");
+
+/**
+ * The word class — and the reason Devanagari is named in it explicitly.
+ *
+ * `[^a-z0-9]` does not merely damage a Hindi query, it ERASES it: "इमेज कंप्रेस"
+ * normalises to "" and matches nothing at all, with no error and nothing on
+ * screen to hint at why. Latin letters outside a-z are handled by the NFD fold
+ * above, but Devanagari has no such decomposition, so its block
+ * (U+0900–U+097F) has to be kept here.
+ */
+const NON_WORD = /[^a-z0-9\u0900-\u097f]+/g;
+
+// Lowercase, replace every run of non-word characters with a single space.
 // "HEIC to JPG" → "heic to jpg". Used for word-boundary aware matching.
-const spaced = (s: string) => stripAccents(s).toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
-// Lowercase, drop every non-alphanumeric. "PNG to JPG" → "pngtojpg".
+const spaced = (s: string) => stripAccents(s).toLowerCase().replace(NON_WORD, " ").trim();
+// Lowercase, drop every non-word character. "PNG to JPG" → "pngtojpg".
 // Lets "png2jpg" match "png to jpg".
-const collapsed = (s: string) => stripAccents(s).toLowerCase().replace(/[^a-z0-9]+/g, "");
+const collapsed = (s: string) => stripAccents(s).toLowerCase().replace(NON_WORD, "");
 
 /**
  * How well `text` matches the query, ignoring separators.
@@ -236,6 +255,7 @@ const FIELD_WEIGHT = { name: 5, keyword: 3, alias: 3, desc: 1 } as const;
 /** Translated alias sets, by locale. English is TOOL_ALIASES above. */
 const LOCALE_ALIASES: Partial<Record<Locale, Record<string, string[]>>> = {
   pt: ptAliases,
+  hi: hiAliases,
 };
 
 /**

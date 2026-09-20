@@ -12,14 +12,17 @@
  */
 import type { Locale } from "@/i18n/config";
 import { ptCategories, ptTools, type LocalizedTool } from "@/i18n/dictionaries/pt/tools";
+import { hiCategories, hiTools } from "@/i18n/dictionaries/hi/tools";
 import { CATEGORIES, type Tool } from "@/lib/tools";
 
 const DICTS: Partial<Record<Locale, Record<string, LocalizedTool>>> = {
   pt: ptTools,
+  hi: hiTools,
 };
 
 const CATEGORY_DICTS: Partial<Record<Locale, Record<string, { title: string; navLabel: string }>>> = {
   pt: ptCategories,
+  hi: hiCategories,
 };
 
 export function toolName(tool: Tool, locale: Locale): string {

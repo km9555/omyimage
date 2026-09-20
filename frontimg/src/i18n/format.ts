@@ -27,11 +27,25 @@ export function formatNumber(value: number, locale: Locale): string {
 
 const dateCache = new Map<string, Intl.DateTimeFormat>();
 
+/**
+ * Locales whose short date ICU gets ORDERED right and FORMED wrong.
+ *
+ * `dateStyle: "short"` for `hi` gives "4/8/26": day first, which is correct for
+ * India, and Latin digits (ICU does not use Devanagari numerals for a bare
+ * `hi`, which is also correct) — but a form no Indian document, invoice or bank
+ * statement uses. India writes dd/mm/yyyy, zero-padded, four-digit year.
+ *
+ * Portuguese needs no entry: ICU already gives it "04/09/2026".
+ */
+const SHORT_DATE_OVERRIDE: Partial<Record<Locale, Intl.DateTimeFormatOptions>> = {
+  hi: { day: "2-digit", month: "2-digit", year: "numeric" },
+};
+
 /** Short numeric date in the page's locale — "9/4/26" in English, "04/09/2026" in Portuguese. */
 export function formatDate(value: Date | number, locale: Locale): string {
   let fmt = dateCache.get(locale);
   if (!fmt) {
-    fmt = new Intl.DateTimeFormat(locale, { dateStyle: "short" });
+    fmt = new Intl.DateTimeFormat(locale, SHORT_DATE_OVERRIDE[locale] ?? { dateStyle: "short" });
     dateCache.set(locale, fmt);
   }
   return fmt.format(value);
@@ -43,7 +57,13 @@ const dateTimeCache = new Map<string, Intl.DateTimeFormat>();
 export function formatDateTime(value: Date | number, locale: Locale): string {
   let fmt = dateTimeCache.get(locale);
   if (!fmt) {
-    fmt = new Intl.DateTimeFormat(locale, { dateStyle: "short", timeStyle: "medium" });
+    const short = SHORT_DATE_OVERRIDE[locale];
+    fmt = new Intl.DateTimeFormat(
+      locale,
+      short
+        ? { ...short, hour: "2-digit", minute: "2-digit", second: "2-digit" }
+        : { dateStyle: "short", timeStyle: "medium" },
+    );
     dateTimeCache.set(locale, fmt);
   }
   return fmt.format(value);

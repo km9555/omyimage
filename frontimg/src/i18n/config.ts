@@ -5,8 +5,10 @@
  *
  * Routing model: the DEFAULT locale lives at the site root with no prefix
  * (`/compress-image`), because those URLs are already indexed and must not
- * move. Every other locale is a path prefix with a TRANSLATED slug
- * (`/pt/comprimir-imagem`) — see src/i18n/slugs.ts.
+ * move. Every other locale is a path prefix; whether the SLUG after it is
+ * translated is a per-locale decision — Portuguese translates
+ * (`/pt/comprimir-imagem`), Hindi does not (`/hi/compress-image`). See
+ * src/i18n/slugs.ts for why the two differ.
  *
  * The frontend is a static export (`output: "export"`), so there is no proxy /
  * middleware and no Accept-Language negotiation. Nothing redirects; visitors
@@ -18,7 +20,7 @@
  * is the full checklist.
  */
 
-export const LOCALES = ["en", "pt"] as const;
+export const LOCALES = ["en", "pt", "hi"] as const;
 
 export type Locale = (typeof LOCALES)[number];
 
@@ -34,6 +36,7 @@ export type TranslatedLocale = Exclude<Locale, typeof DEFAULT_LOCALE>;
 export const LOCALE_PREFIX: Record<Locale, string> = {
   en: "",
   pt: "/pt",
+  hi: "/hi",
 };
 
 /**
@@ -48,6 +51,9 @@ export const LOCALE_PREFIX: Record<Locale, string> = {
 export const LOCALE_TAG: Record<Locale, string> = {
   en: "en",
   pt: "pt",
+  // Hindi is the language-only tag for the same reason: one variant, and `hi`
+  // is not India-specific — it also serves the diaspora.
+  hi: "hi",
 };
 
 /**
@@ -59,6 +65,7 @@ export const LOCALE_TAG: Record<Locale, string> = {
 export const OG_LOCALE: Record<Locale, string> = {
   en: "en_US",
   pt: "pt_BR",
+  hi: "hi_IN",
 };
 
 /** Human label + flag, shared by the language switcher and the footer. */
@@ -68,6 +75,10 @@ export const LOCALE_LABEL: Record<Locale, { label: string; flag: string }> = {
   // audience (9% of all traffic, the largest non-English market). The hreflang
   // above still serves Portugal too.
   pt: { label: "Português", flag: "🇧🇷" },
+  // The endonym, as the switcher shows every language in its own script. The
+  // conjunct spelling "हिन्दी"; the anusvara form "हिंदी" is equally correct and
+  // is carried in aliases.ts so search finds both.
+  hi: { label: "हिन्दी", flag: "🇮🇳" },
 };
 
 export function isLocale(value: string): value is Locale {
