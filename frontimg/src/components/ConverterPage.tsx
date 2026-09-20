@@ -21,8 +21,10 @@ import { localeHome, toolHref } from "@/lib/i18n/links";
 import { categoryNavLabel, toolName } from "@/lib/i18n/tool-labels";
 import { SeoContent, type Faq, type SeoSection } from "@/components/SeoContent";
 import { ConvertTool } from "@/components/ConvertTool";
+import { I18nScope } from "@/i18n/I18nScope";
 import { getPair } from "@/lib/converters/pairs";
 import { fmt } from "@/lib/converters/formats";
+import { converterDict, formatEssay, pairCopy } from "@/lib/converters/i18n";
 import { relatedConverters, reversePair } from "@/lib/converters/related";
 import {
   buildBoilerplateFaqs,
@@ -39,37 +41,48 @@ export function ConverterPage({ slug, locale = DEFAULT_LOCALE }: { slug: string;
     throw new Error(`No TOOLS entry for converter "${slug}" — add it to src/lib/tools.ts.`);
   }
 
-  const t = getT(locale);
+  /* One dictionary for the whole page: `getT` uses it for the server markup
+     here, and the <I18nScope> below hands the same object to ConvertTool,
+     which is a client component with no scope of its own on these routes. */
+  const dict = converterDict(locale);
+  const t = getT(locale, dict);
   const home = localeHome(locale);
 
   const from = fmt(pair.from);
   const to = fmt(pair.to);
+  const fromLabel = from.label;
+  const toLabel = to.label;
   const canonical = absoluteUrl(`/${tool.slug}`);
   const accent = toolColor(tool);
 
-  const steps = buildSteps(pair);
-  const faqs: Faq[] = [...pair.unique.faqs, ...buildBoilerplateFaqs(pair)];
+  const copy = pairCopy(pair, locale, {
+    seoTitle: tool.seoTitle,
+    seoDescription: tool.seoDescription,
+  });
+
+  const steps = buildSteps(pair, t);
+  const faqs: Faq[] = [...copy.unique.faqs, ...buildBoilerplateFaqs(pair, t)];
   const related = relatedConverters(pair, 4);
   const reverse = reversePair(pair);
 
   const sections: SeoSection[] = [
     {
-      heading: `Why convert ${from.label} to ${to.label}?`,
+      heading: t("Why convert {from} to {to}?", { from: fromLabel, to: toLabel }),
       id: "why",
-      body: pair.unique.whyConvert,
+      body: copy.unique.whyConvert,
     },
-    ...pair.unique.notes.map((nb) => ({ heading: nb.heading, body: nb.body })),
+    ...copy.unique.notes.map((nb) => ({ heading: nb.heading, body: nb.body })),
     {
-      heading: `${from.label} and ${to.label}, briefly`,
+      heading: t("{from} and {to}, briefly", { from: fromLabel, to: toLabel }),
       id: "formats",
-      body: [from.essay, to.essay],
+      body: [formatEssay(pair.from, locale), formatEssay(pair.to, locale)],
     },
   ];
 
   const software = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: `${SITE.name} ${pair.name}`,
+    name: `${SITE.name} ${copy.name}`,
     url: canonical,
     operatingSystem: "All",
     applicationCategory: "MultimediaApplication",
@@ -79,12 +92,18 @@ export function ConverterPage({ slug, locale = DEFAULT_LOCALE }: { slug: string;
       ratingValue: pair.rating.value,
       ratingCount: pair.rating.count,
     },
-    description: tool.seoDescription,
+    description: copy.seoDescription,
+    // Same rule as the HowTo below and as ToolPageShell: only on translated
+    // pages, so English markup is unchanged.
+    ...(locale === DEFAULT_LOCALE ? {} : { inLanguage: locale }),
   };
   const howTo = {
     "@context": "https://schema.org",
     "@type": "HowTo",
-    name: `How to convert ${from.label} to ${to.label}`,
+    name: t("How to convert {from} to {to}", { from: fromLabel, to: toLabel }),
+    /* Tells a crawler which language this HowTo is written in. English pages
+       omit it, so their markup is byte-identical to the pre-i18n build. */
+    ...(locale === DEFAULT_LOCALE ? {} : { inLanguage: locale }),
     step: steps.map((s, i) => ({
       "@type": "HowToStep",
       position: i + 1,
@@ -106,23 +125,26 @@ export function ConverterPage({ slug, locale = DEFAULT_LOCALE }: { slug: string;
         />
 
         <header className="flex flex-col gap-stack-sm mt-2">
-          <h1 className="text-display-lg-mobile md:text-display-lg text-primary">{pair.name}</h1>
+          <h1 className="text-display-lg-mobile md:text-display-lg text-primary">{copy.name}</h1>
           <h2 data-tool-subtitle className="text-body-lg text-on-surface-variant">
-            {tool.seoDescription}
+            {copy.seoDescription}
           </h2>
           {/* Reciprocal link, above the fold. Useful to the reader, and it
               gives every pair page one guaranteed inbound link from its twin. */}
           {reverse && (
             <p data-tool-subtitle className="text-body-sm text-on-surface-variant">
-              Going the other way?{" "}
+              {t("Going the other way?")}{" "}
               <Link href={toolHref(reverse.slug, locale)} className="text-secondary hover:underline">
-                Convert {reverse.name}
+                {t("Convert {name}", {
+                  name: pairCopy(reverse, locale, { seoTitle: "", seoDescription: "" }).name,
+                })}
               </Link>
               .
             </p>
           )}
         </header>
 
+        <I18nScope locale={locale} dict={dict ?? undefined}>
         <ConvertTool
           config={{
             accent,
@@ -132,27 +154,28 @@ export function ConverterPage({ slug, locale = DEFAULT_LOCALE }: { slug: string;
             flatten: pair.flatten,
             quality: pair.quality,
     metadata: pair.metadata,
-            dropHint: `or drop ${from.label} images here`,
+            dropHint: t("or drop {from} images here", { from: fromLabel }),
             sourceKinds: pair.sourceKinds,
             sourceLabel: from.label,
             serverFallback: pair.engine.serverFallback,
-            privacyNote: buildPrivacyNote(pair),
+            privacyNote: buildPrivacyNote(pair, t),
           }}
         />
+        </I18nScope>
 
         <RelatedTools tools={related} locale={locale} />
       </div>
 
       <SeoContent
         locale={locale}
-        toolName={pair.name}
-        intro={pair.unique.intro}
-        howToTitle={`How to convert ${from.label} to ${to.label}`}
+        toolName={copy.name}
+        intro={copy.unique.intro}
+        howToTitle={t("How to convert {from} to {to}", { from: fromLabel, to: toLabel })}
         steps={steps}
-        features={buildFeatures(pair)}
+        features={buildFeatures(pair, t)}
         faqs={faqs}
         sections={sections}
-        security={buildSecurity(pair)}
+        security={buildSecurity(pair, t)}
         fullWidthText
       />
 

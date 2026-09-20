@@ -114,9 +114,7 @@ function walkFiles(p, out = []) {
  * The gate skips them until then; this list must only ever shrink, and must be
  * empty when the last batch lands.
  */
-const PENDING = new Set([
-  "src/components/ConverterPage.tsx", // batch 7 — converter copy layer
-]);
+const PENDING = new Set([]);
 
 /**
  * With no paths, gate mode: every shared component, plus the app/ folder of

@@ -1,0 +1,79 @@
+/**
+ * The translated half of a converter page.
+ *
+ * A converter page is assembled from four sources, and each one needs its own
+ * answer for a locale:
+ *
+ *   1. generated sentences (steps, features, boilerplate FAQs) → `copy.ts`,
+ *      which takes a `t` and looks up `dictionaries/<loc>/converters.ts`;
+ *   2. the page's own chrome (headings, the reciprocal link) → the same
+ *      dictionary, used by ConverterPage;
+ *   3. the pair's `unique` prose and its title/description → per-pair modules
+ *      in `src/content/converters/<slug>.<locale>.ts`, registered below;
+ *   4. the two format essays → `FORMAT_ESSAYS`, keyed by locale.
+ *
+ * Anything missing falls back to English, which is why a pair can ship in one
+ * language before the next: `pairCopy()` returns the English pair data
+ * untouched when a locale has no module for that slug.
+ */
+import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
+import type { Dict } from "@/i18n/t";
+import { ptConverters } from "@/i18n/dictionaries/pt/converters";
+import { PT_ESSAYS } from "@/content/converters/essays.pt";
+import { PT_PAIR_COPY } from "@/content/converters/index.pt";
+import { fmt } from "./formats";
+import type { ConverterPair, FormatId, LocalizedPairCopy } from "./types";
+
+export type { LocalizedPairCopy };
+
+const PAIR_COPY: Partial<Record<Locale, Record<string, LocalizedPairCopy>>> = {
+  pt: PT_PAIR_COPY,
+};
+
+const FORMAT_ESSAYS: Partial<Record<Locale, Partial<Record<FormatId, string>>>> = {
+  pt: PT_ESSAYS,
+};
+
+const DICTS: Partial<Record<Locale, Dict>> = {
+  pt: ptConverters,
+};
+
+/**
+ * The converter dictionary for a locale, or null for English.
+ *
+ * ConverterPage passes it to `getT()` for its own markup AND down through an
+ * `<I18nScope>` so ConvertTool's `useT()` sees the same strings — the tool is
+ * a client component and has no scope of its own on these routes.
+ */
+export function converterDict(locale: Locale): Dict | null {
+  return DICTS[locale] ?? null;
+}
+
+/** Has this pair been translated into this locale? */
+export function pairTranslated(slug: string, locale: Locale): boolean {
+  return locale === DEFAULT_LOCALE || !!PAIR_COPY[locale]?.[slug];
+}
+
+/**
+ * Pair copy for a locale, falling back to the English data in `pairs.ts` and
+ * the TOOLS registry (passed in, so this module stays free of that import).
+ */
+export function pairCopy(
+  pair: ConverterPair,
+  locale: Locale,
+  english: { seoTitle: string; seoDescription: string },
+): LocalizedPairCopy {
+  const translated = PAIR_COPY[locale]?.[pair.slug];
+  if (translated) return translated;
+  return {
+    name: pair.name,
+    seoTitle: english.seoTitle,
+    seoDescription: english.seoDescription,
+    unique: pair.unique,
+  };
+}
+
+/** The "what is this format" essay, in the page's language. */
+export function formatEssay(id: FormatId, locale: Locale): string {
+  return FORMAT_ESSAYS[locale]?.[id] ?? fmt(id).essay;
+}

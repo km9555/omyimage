@@ -58,6 +58,21 @@ export interface PairUniqueCopy {
   faqs: { q: string; a: string }[];
 }
 
+/**
+ * The same prose in another language, plus the bits that live in the TOOLS
+ * registry for English. One per translated pair, in
+ * `src/content/converters/<slug>.<locale>.ts` (conversion.md §6.4).
+ */
+export interface LocalizedPairCopy {
+  /** H1 and display name — "WEBP para PNG". */
+  name: string;
+  /** <title>, absolute. */
+  seoTitle: string;
+  /** Meta description, and the h2 under the H1. */
+  seoDescription: string;
+  unique: PairUniqueCopy;
+}
+
 export interface ConverterPair {
   /** Route folder name and tool id. */
   slug: string;

@@ -11,30 +11,43 @@
  * single source of truth for anything the sitemap or home grid also reads.
  */
 import type { Metadata } from "next";
+import { DEFAULT_LOCALE, OG_LOCALE, type Locale } from "@/i18n/config";
+import { toolPath } from "@/i18n/slugs";
+import { toolAlternates } from "@/lib/i18n/tool-meta";
 import { absoluteUrl } from "@/lib/site";
 import { getTool } from "@/lib/tools";
+import { getPair } from "./pairs";
+import { pairCopy } from "./i18n";
 
-export function buildConverterMetadata(slug: string): Metadata {
+export function buildConverterMetadata(slug: string, locale: Locale = DEFAULT_LOCALE): Metadata {
   const tool = getTool(slug);
   if (!tool) {
     throw new Error(`No TOOLS entry for converter "${slug}" — add it to src/lib/tools.ts.`);
   }
-  const canonical = absoluteUrl(`/${tool.slug}`);
+  const copy = pairCopy(getPair(slug), locale, {
+    seoTitle: tool.seoTitle,
+    seoDescription: tool.seoDescription,
+  });
+  const canonical = absoluteUrl(toolPath(slug, locale));
+  const languages = toolAlternates(slug);
 
   return {
-    title: { absolute: tool.seoTitle },
-    description: tool.seoDescription,
-    alternates: { canonical },
+    title: { absolute: copy.seoTitle },
+    description: copy.seoDescription,
+    alternates: languages ? { canonical, languages } : { canonical },
     openGraph: {
       type: "website",
       url: canonical,
-      title: tool.seoTitle,
-      description: tool.seoDescription,
+      title: copy.seoTitle,
+      description: copy.seoDescription,
+      // English pages never carried og:locale; adding one would change their
+      // output (tool-meta.ts header).
+      ...(locale === DEFAULT_LOCALE ? {} : { locale: OG_LOCALE[locale] }),
     },
     twitter: {
       card: "summary_large_image",
-      title: tool.seoTitle,
-      description: tool.seoDescription,
+      title: copy.seoTitle,
+      description: copy.seoDescription,
     },
   };
 }

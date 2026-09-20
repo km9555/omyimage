@@ -56,6 +56,13 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "base64-to-image",
     "image-metadata",
     "remove-exif",
+    // Batch 7 — HEIC to PNG, and the four WEBP pairs (the first converter
+    // pages to ship in a second language).
+    "heic-to-png",
+    "webp-to-png",
+    "webp-to-jpg",
+    "jpg-to-webp",
+    "png-to-webp",
   ],
 };
 

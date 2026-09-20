@@ -592,6 +592,36 @@ locale)`, which is why a Brazilian page shows 20/09/2026 and an English one
 is used both in the rail and in the palette swatch sheet it renders, so the
 decimal separator follows the page in the exported image too (§6.3).
 
+### 6.2.7 Batch 7 (heic-para-png + the four WEBP pairs — the converter layer)
+
+**A shared page component needs FOUR translation seams, not one.** A converter
+page is assembled from generated sentences (`copy.ts`), the page's own chrome
+(`ConverterPage`), the pair's prose (`pairs.ts`) and two format essays
+(`formats.ts`). Translating one and forgetting another gives a page that is
+half Portuguese, which reads worse than one that is honestly English. §6.4
+below is the map.
+
+**A client component inside a server page has no scope.** ConvertTool calls
+`useT()` and, on a converter route, had only `common.ts` — its drop hint and
+privacy note come from the converter dictionary. ConverterPage now wraps it in
+an `<I18nScope>` carrying the same dict it uses itself, so the server markup
+and the client tool cannot disagree.
+
+**JSON-LD is page copy too.** The converter pages emit their own
+SoftwareApplication and HowTo blocks, which were still building an English
+`name` and carrying no `inLanguage`. `i18n:verify` caught the missing
+`inLanguage` — the check exists because the shell pages had the same bug in
+batch 1, and a second code path meant a second occurrence.
+
+**The stub generator had to learn about locales.** `gen-converters.mjs` writes
+every converter route, so a hand-written `/pt` stub would drift the moment a
+pair is added. It now emits translated stubs too, for any pair that is both in
+`SHIPPED_TOOLS` and has a Portuguese slug — `--check` covers all 14 routes.
+
+**`i18n:props` now runs with no exemptions.** ConverterPage was the last entry
+in the scanner's PENDING list; that list is empty, so every component and every
+shipped tool folder is held to the rule.
+
 ### 6.3 Image-specific traps (watch for these in every batch)
 
 - **Text drawn INTO the image.** Meme captions, watermark defaults, the
@@ -610,6 +640,32 @@ decimal separator follows the page in the exported image too (§6.3).
   tool-local canvases are swept per batch.
 - **Server-backed tools** (remove-background, upscale, heic, html-to-image, OCR
   fallback) surface backend sentences — see §6.2.
+
+### 6.4 The converter layer in two languages
+
+The ten `x-to-y` pages are not hand-written; one component renders all of them
+from data. That makes translating them a different job from translating a tool
+page, and it has four seams. Miss one and the page is half Portuguese.
+
+| Seam | English source | Portuguese source |
+|---|---|---|
+| Generated sentences (steps, features, boilerplate FAQs, security, privacy note) | `lib/converters/copy.ts` builders | the same builders, via `t` → `i18n/dictionaries/pt/converters.ts` |
+| Page chrome (section headings, the reciprocal link, the drop hint, JSON-LD names) | `components/ConverterPage.tsx` | same file, same dictionary |
+| The pair's own prose + title/description | `lib/converters/pairs.ts` (`unique`) and `lib/tools.ts` | `src/content/converters/<slug>.pt.ts`, registered in `index.pt.ts` |
+| The two format essays | `lib/converters/formats.ts` | `src/content/converters/essays.pt.ts` |
+
+Rules that fall out of this:
+
+- **`lib/converters/i18n.ts` is the only place that knows about locales.**
+  `pairCopy()` falls back to the English pair data, so a pair with no module is
+  simply not translated rather than half-translated — and `status.ts` is what
+  decides whether its `/pt` route exists at all. Keep those two in step.
+- **A sentence with a conditional tail gets one key per variant.** English glues
+  " unless one is among …" onto the end; Portuguese does not put it there.
+  Interpolating format labels ({from}, {to}) is fine — those travel.
+- **`gen-converters.mjs` writes the `/pt` stubs too.** Never hand-write one.
+- **English output must not move.** The builders return the identical strings
+  for `en` (t() falls through to the key), which the snapshot diff checks.
 
 ---
 
