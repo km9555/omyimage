@@ -117,6 +117,12 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "grayscale-image",
     "remove-exif",
     "base64-to-image",
+    // Batch 8 — the mid-weight tools (25–41 ui keys each).
+    "image-color-picker",
+    "circle-crop",
+    "gif-to-images",
+    "meme-generator",
+    "blur-image",
   ],
 };
 
