@@ -237,8 +237,12 @@ export const hiCommon: Record<string, string> = {
   "Total: {before} → {after}": "कुल: {before} → {after}",
   "1 file ready": "1 फ़ाइल तैयार",
   "{n} files ready — downloads as a ZIP": "{n} फ़ाइलें तैयार — ZIP में डाउनलोड होंगी",
-  "Convert to {format}": "{format} में बदलें",
-  "Convert {n} to {format}": "{n} को {format} में बदलें",
+  // The desktop button says "कन्वर्ट", like the mobile one ("Convert" above),
+  // so a how-to step that says "कन्वर्ट दबाएँ" is true on both layouts. With
+  // "…में बदलें" here the two labels shared no word — English and Portuguese
+  // never had that problem because both of their labels begin with "Convert".
+  "Convert to {format}": "{format} में कन्वर्ट करें",
+  "Convert {n} to {format}": "{n} को {format} में कन्वर्ट करें",
   "Output:": "आउटपुट:",
   "Quality": "क्वालिटी",
   "Auto-rotate by EXIF orientation": "EXIF ओरिएंटेशन से अपने आप घुमाएँ",

@@ -24,13 +24,14 @@ const appDir = join(root, "src", "app");
 /**
  * Translated routes are generated too, from the same list.
  *
- * A pt converter page exists when BOTH are true: the slug is in
- * `status.ts` (SHIPPED_TOOLS) and `slugs.ts` gives it a Portuguese slug. The
- * page's prose comes from `src/content/converters/<slug>.pt.ts`, which the
- * TypeScript build already requires — so the only thing that can drift is the
- * stub, which is exactly what this script exists to prevent.
+ * A translated converter page exists when BOTH are true: the slug is in that
+ * locale's `status.ts` SHIPPED_TOOLS list and `slugs.ts` gives it a slug in
+ * `<LOCALE>_TOOL_SLUGS` (for Hindi, the English slug itself). The page's prose
+ * comes from `src/content/converters/<slug>.<locale>.ts`, which the TypeScript
+ * build already requires — so the only thing that can drift is the stub,
+ * which is exactly what this script exists to prevent.
  */
-const LOCALES = ["pt"];
+const LOCALES = ["pt", "hi"];
 
 const src = readFileSync(pairsFile, "utf8");
 const slugs = [...src.matchAll(/^\s{4}slug:\s*"([a-z0-9-]+)"/gm)].map((m) => m[1]);

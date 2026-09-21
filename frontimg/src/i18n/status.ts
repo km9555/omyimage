@@ -97,6 +97,13 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "watermark-image",
     "rotate-image",
     "heic-to-jpg",
+    // Batch 5 — the converter layer comes alive for Hindi. These routes are
+    // GENERATED (npm run gen:converters), never hand-written.
+    "webp-to-png",
+    "webp-to-jpg",
+    "jpg-to-webp",
+    "png-to-webp",
+    "jfif-to-jpg",
   ],
 };
 

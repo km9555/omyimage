@@ -21,6 +21,9 @@ import type { Dict } from "@/i18n/t";
 import { ptConverters } from "@/i18n/dictionaries/pt/converters";
 import { PT_ESSAYS } from "@/content/converters/essays.pt";
 import { PT_PAIR_COPY } from "@/content/converters/index.pt";
+import { hiConverters } from "@/i18n/dictionaries/hi/converters";
+import { HI_ESSAYS } from "@/content/converters/essays.hi";
+import { HI_PAIR_COPY } from "@/content/converters/index.hi";
 import { fmt } from "./formats";
 import type { ConverterPair, FormatId, LocalizedPairCopy } from "./types";
 
@@ -28,14 +31,17 @@ export type { LocalizedPairCopy };
 
 const PAIR_COPY: Partial<Record<Locale, Record<string, LocalizedPairCopy>>> = {
   pt: PT_PAIR_COPY,
+  hi: HI_PAIR_COPY,
 };
 
 const FORMAT_ESSAYS: Partial<Record<Locale, Partial<Record<FormatId, string>>>> = {
   pt: PT_ESSAYS,
+  hi: HI_ESSAYS,
 };
 
 const DICTS: Partial<Record<Locale, Dict>> = {
   pt: ptConverters,
+  hi: hiConverters,
 };
 
 /**

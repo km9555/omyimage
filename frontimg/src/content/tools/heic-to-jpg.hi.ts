@@ -115,8 +115,10 @@ const content: ToolPageContent = {
     "{n} HEIC images": "{n} HEIC इमेज",
     "Conversion runs on our server; results are auto-deleted within an hour.":
       "कन्वर्ज़न हमारे सर्वर पर चलता है; नतीजे एक घंटे के भीतर अपने आप मिटा दिए जाते हैं।",
-    "Convert {n} images": "{n} इमेज बदलें",
-    "Convert & download": "बदलें और डाउनलोड करें",
+    // "कन्वर्ट", matching the mobile button (common.ts "Convert"), so the
+    // how-to step's "कन्वर्ट दबाएँ" names a button that exists on both layouts.
+    "Convert {n} images": "{n} इमेज कन्वर्ट करें",
+    "Convert & download": "कन्वर्ट करें और डाउनलोड करें",
     "Remove EXIF, colour profile, camera and location data. Photos from a phone usually carry GPS coordinates.":
       "EXIF, कलर प्रोफ़ाइल, कैमरा और लोकेशन डेटा हटा देता है। मोबाइल की फोटो में आम तौर पर GPS निर्देशांक होते हैं।",
     // Backend sentences this tool can surface (routes/image/heic)
