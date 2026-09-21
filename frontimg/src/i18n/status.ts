@@ -89,6 +89,14 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "remove-background",
     "image-to-text",
     "image-to-pdf",
+    // Batch 3 — the rest of the pilot: the second AI tool, the full editor,
+    // and the three that answer an everyday complaint (watermark, rotate,
+    // and the iPhone photo Windows will not open).
+    "upscale-image",
+    "image-editor",
+    "watermark-image",
+    "rotate-image",
+    "heic-to-jpg",
   ],
 };
 
