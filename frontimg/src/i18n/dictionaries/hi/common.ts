@@ -373,4 +373,9 @@ export const hiCommon: Record<string, string> = {
   "That URL can't be reached — use a public http(s) address.":
     "इस URL तक नहीं पहुँचा जा सका — कोई सार्वजनिक http(s) पता इस्तेमाल करें।",
   "Provide a width and/or height.": "चौड़ाई और/या ऊँचाई बताएँ।",
+
+  // ── Punctuation ─────────────────────────────────────────────────────────
+  // A sentence terminator composed between two translated fragments. The
+  // "|sentence-end" suffix keeps it from colliding with any real ". " key.
+  ". |sentence-end": "। ",
 };
