@@ -110,6 +110,13 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "bmp-to-jpg",
     "avif-to-jpg",
     "avif-to-png",
+    // Batch 7 — the light tools (13–18 ui keys each). heic-to-png shares
+    // HeicTool with heic-to-jpg, so its ui block is a verified duplicate.
+    "heic-to-png",
+    "image-to-base64",
+    "grayscale-image",
+    "remove-exif",
+    "base64-to-image",
   ],
 };
 
