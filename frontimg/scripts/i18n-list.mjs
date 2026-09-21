@@ -60,22 +60,32 @@ const PT_BATCHES = [
 ];
 
 /**
- * Hindi ships as a PILOT: home, the 14 highest-value tools and the four legal
- * twins — 19 pages, then a measurement gate (see conversion.md §9 and the
- * Hindi plan). The remaining 26 tools and the contact / pricing / hub / auth
- * pages are deliberately ABSENT from this list rather than listed as `todo`:
- * a tracker row is a commitment to ship, and whether those pages get written
- * at all depends on what Search Console says about these nineteen.
+ * Hindi, all 54 pages. Batches 1–4 were the pilot (home, the 14
+ * highest-value tools, the four legal twins), ordered by Indian search value
+ * rather than the Brazilian order above. Batches 5–12 complete the locale —
+ * decided 2026-09-21, closing the Search Console gate conversion.md §9.7 had
+ * left open.
  *
- * Order within the pilot follows Indian search value, not the Brazilian order
- * above: convert-to-jpg and crop-image rank higher here, image-to-text lower
- * (Hindi OCR queries are mostly informational).
+ * 5–6 are the ten converter-layer pairs (§6.4), which need that layer's
+ * Hindi infrastructure before any of them can render. 7–10 are the other
+ * sixteen tools, grouped by `ui` weight: 9 and 10 are three pages each
+ * because blur-face alone carries more `ui` keys than all of batch 7. 11–12
+ * are the static pages; /image-converter sits after the converter pairs
+ * because the hub renders their names and essays.
  */
 const HI_BATCHES = [
   ["/", "compress-image", "resize-image", "crop-image", "convert-to-jpg"],
   ["png-to-jpg", "jpg-to-png", "remove-background", "image-to-text", "image-to-pdf"],
   ["upscale-image", "image-editor", "watermark-image", "rotate-image", "heic-to-jpg"],
   ["/privacy", "/terms", "/refunds", "/cookies"],
+  ["webp-to-png", "webp-to-jpg", "jpg-to-webp", "png-to-webp", "jfif-to-jpg"],
+  ["gif-to-png", "gif-to-jpg", "bmp-to-jpg", "avif-to-jpg", "avif-to-png"],
+  ["heic-to-png", "image-to-base64", "grayscale-image", "remove-exif", "base64-to-image"],
+  ["image-color-picker", "circle-crop", "gif-to-images", "meme-generator", "blur-image"],
+  ["gif-maker", "merge-images", "add-border"],
+  ["html-to-image", "image-metadata", "blur-face"],
+  ["/contact", "/image-converter", "/pricing", "/login", "/signup"],
+  ["/forgot-password", "/reset-password", "/account", "/dashboard"],
 ];
 
 const BATCHES = LOC === "hi" ? HI_BATCHES : PT_BATCHES;

@@ -45,17 +45,27 @@ const PT_PATHS: PathMap = {
  * transliteration like `/mulya` carries a phrase nobody searches, and a path is
  * permanent once indexed.
  *
- * Unlike the tool map this one still has to be authored rather than derived: it
- * is the list of which non-tool routes the locale has AT ALL, so every entry is
- * a promise that `src/app/hi/<path>/page.tsx` exists. Entries are added as
- * their pages ship.
+ * Unlike the tool map this one still has to be authored rather than derived:
+ * it is the list of which non-tool routes the locale has at all. An entry
+ * alone links nowhere — localeHref() also requires the page to be listed in
+ * status.ts SHIPPED_PAGES — so the full set can be declared ahead of the
+ * batches that ship it.
  */
 const HI_PATHS: PathMap = {
   "/": "",
+  "/image-converter": "/image-converter",
+  "/pricing": "/pricing",
+  "/contact": "/contact",
   "/privacy": "/privacy",
   "/terms": "/terms",
   "/cookies": "/cookies",
   "/refunds": "/refunds",
+  "/login": "/login",
+  "/signup": "/signup",
+  "/forgot-password": "/forgot-password",
+  "/reset-password": "/reset-password",
+  "/dashboard": "/dashboard",
+  "/account": "/account",
 };
 
 const STATIC_PATHS: Record<TranslatedLocale, PathMap> = {

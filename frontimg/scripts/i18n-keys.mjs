@@ -76,7 +76,9 @@ function slugToId() {
 const SLUG_TO_ID = slugToId();
 
 /** Route folders that are never localized. */
-const IGNORED = new Set(["pt", "blog", "admin", "auth"]);
+// Locale route folders are listed so a literal inside one (a written legal
+// twin, say) is never mistaken for a page bucket named after the locale.
+const IGNORED = new Set(["pt", "hi", "blog", "admin", "auth"]);
 
 /**
  * Components that render on ONE page only, so their keys ride with that page's
