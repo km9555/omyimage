@@ -82,6 +82,13 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "resize-image",
     "crop-image",
     "convert-to-jpg",
+    // Batch 2 — the format pair everyone searches, the two server tools and
+    // the document workflow (image → PDF is how Indian forms get submitted).
+    "png-to-jpg",
+    "jpg-to-png",
+    "remove-background",
+    "image-to-text",
+    "image-to-pdf",
   ],
 };
 
