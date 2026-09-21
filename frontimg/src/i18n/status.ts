@@ -104,6 +104,12 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "jpg-to-webp",
     "png-to-webp",
     "jfif-to-jpg",
+    // Batch 6 — the other five pairs; the converter layer is now complete.
+    "gif-to-png",
+    "gif-to-jpg",
+    "bmp-to-jpg",
+    "avif-to-jpg",
+    "avif-to-png",
   ],
 };
 

@@ -4,6 +4,11 @@ import webpToJpg from "./webp-to-jpg.hi";
 import jpgToWebp from "./jpg-to-webp.hi";
 import pngToWebp from "./png-to-webp.hi";
 import jfifToJpg from "./jfif-to-jpg.hi";
+import gifToPng from "./gif-to-png.hi";
+import gifToJpg from "./gif-to-jpg.hi";
+import bmpToJpg from "./bmp-to-jpg.hi";
+import avifToJpg from "./avif-to-jpg.hi";
+import avifToPng from "./avif-to-png.hi";
 
 /**
  * Every Hindi converter pair, keyed by the ENGLISH slug (the pair id), which
@@ -19,4 +24,9 @@ export const HI_PAIR_COPY: Record<string, LocalizedPairCopy> = {
   "jpg-to-webp": jpgToWebp,
   "png-to-webp": pngToWebp,
   "jfif-to-jpg": jfifToJpg,
+  "gif-to-png": gifToPng,
+  "gif-to-jpg": gifToJpg,
+  "bmp-to-jpg": bmpToJpg,
+  "avif-to-jpg": avifToJpg,
+  "avif-to-png": avifToPng,
 };
