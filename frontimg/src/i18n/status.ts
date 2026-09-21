@@ -129,6 +129,13 @@ const SHIPPED_PAGES: Record<TranslatedLocale, string[]> = {
     // whose page has no Hindi twin yet, and its presence is what flips
     // "हिन्दी" from "जल्द" to a live link in the language menus.
     "/",
+    // Batch 4 — the four legal twins, which close the pilot. They ship
+    // together because they cross-link each other: a Hindi page linking to an
+    // English policy is exactly the seam a reader notices.
+    "/privacy",
+    "/terms",
+    "/refunds",
+    "/cookies",
   ],
 };
 
