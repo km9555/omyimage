@@ -75,7 +75,7 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
   // Hindi — a PILOT: the home page, the 14 highest-value tools and the four
   // legal twins. The remaining 26 tools wait on Search Console data, because
   // the Hindi-script query for an image tool is informational and is currently
-  // won by Hindi tutorial blogs rather than by tool pages (conversion.md §8).
+  // won by Hindi tutorial blogs rather than by tool pages (conversion.md §9).
   hi: [
     // Batch 1 — the four tools an Indian visitor is most likely to arrive on.
     "compress-image",

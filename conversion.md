@@ -132,16 +132,41 @@ the page just renders English.
    `CATEGORY_DICTS` in `src/lib/i18n/tool-labels.ts`, `LOCALE_ALIASES` in
    `src/lib/tool-search.ts`.
 7. `src/app/<xx>/layout.tsx` — copy `app/pt/layout.tsx`.
-8. `app/layout.tsx` — add the code to the `L={pt:1}` map in `NO_FLASH_THEME`.
+8. `app/layout.tsx` — add the code to the `L={pt:1,hi:1}` map in `NO_FLASH_THEME`.
 9. `src/lib/languages.ts` — the row already exists for id/ru/ja/hi/es/fr/de; it
    flips to available by itself when `/` ships.
 10. `scripts/i18n-hardcoded.mjs` — add the prefix to `SKIP_DIR` (the localized
     routes contain localized literals on purpose). `i18n-verify.mjs` — add the
     `OG` row.
 11. Script needs a font? Inter's `latin` subset covers Portuguese and
-    Indonesian; **Russian needs `cyrillic`, Japanese needs a CJK face** — decide
-    before the first page, and scope it with `:lang(xx)` so other locales don't
-    pay for it (oMyPDF did this for Devanagari).
+    Indonesian; **Russian needs `cyrillic`, Japanese needs a CJK face**,
+    **Hindi needs Noto Sans Devanagari** — decide before the first page, and
+    scope it with `:lang(xx)` so other locales don't pay for it. Declare the
+    face at module scope in `app/layout.tsx` with `preload: false`, and apply
+    it ONLY under `:lang(xx)` in `globals.css`, listing Inter FIRST so Latin
+    runs inside the copy (JPG, oMyImage) keep Inter's shapes. The face is
+    activated by the `lang` attribute, which `NO_FLASH_THEME` stamps pre-paint
+    and `HtmlLang` re-stamps after hydration — both halves are load-bearing for
+    typography, not just for screen readers.
+12. **Non-Latin script? Check the search box before anything else.**
+    `src/lib/tool-search.ts` normalises with a word class. A script missing
+    from it does not degrade the query, it ERASES it — "इमेज कंप्रेस" became
+    `""` and matched nothing, silently. Add the block (Devanagari is
+    `ऀ-ॿ`) and fold any script-specific diacritic alongside the
+    combining-mark fold (the nukta, `़`, so फ़ाइल and फाइल are one
+    string).
+13. **Check `src/i18n/format.ts` for a date override.** ICU's `dateStyle:
+    "short"` gets the ORDER right for `hi` and the FORM wrong — "4/8/26", which
+    no Indian document uses. Add a `SHORT_DATE_OVERRIDE` row when the locale
+    writes dates differently from the ICU short form.
+14. **Does a tool default to a language?** `ImageToTextTool.tsx` keys its OCR
+    default off an `OCR_DEFAULT` map. Add a row when the locale's script would
+    be mangled by the English model — on Hindi an English model does not drop
+    accents, it returns confident Latin nonsense.
+15. `scripts/i18n-list.mjs` — the tracker takes a locale argument and writes
+    `tracker-<loc>.csv`. One file per locale, never one wide file: the rows
+    differ, and a shared file makes every edit touch the other language's
+    record.
 
 Then `npm run i18n:audit` — it checks slugs (ASCII, unique, no collision with a
 static path) and that every gate entry has its route and module.
@@ -792,8 +817,8 @@ Two consequences to keep in step:
 | `npm run i18n:keys pt [bucket…]` | Every `t("…")` key Portuguese lacks, bucketed by **who renders it**: `shared` → `common.ts`, a tool folder → that tool's `ui` block, a page folder → its page dictionary. "0 missing" is a claim about what it parsed — it cannot see a literal that never reached `t()`. |
 | `npm run i18n:props [paths]` | **AST** scan for copy that bypasses `t()`: JSX text in any position, text-bearing props, literals inside prop and child expressions, template literals, text keys in object literals built inside components, toast messages. With no paths it is the gate: shared components + every shipped tool/page folder. `i18n-raw` comment with a reason opts a line out. `--summary` gives counts. Shared components not yet swept sit in its `PENDING` list, which must shrink to empty. |
 | `npm run i18n:audit` | Slugs (ASCII, unique, no static-path collision); `status.ts` ↔ routes ↔ content modules in both directions; translated modules carry `metaTitle`/`metaDescription`/`tagline`, English icons in order, ≥ English FAQ count, every English section id; no `„`; no European vocabulary; `ui` values still equal to their key are warned. Then runs `i18n:props`. **Gates `prebuild`.** |
-| `npm run i18n:verify -- pt <slugs\|--all>` | Reads the **rendered** pages (dev server, or `OUT=out`): canonical, reciprocal hreflang incl. `x-default`, `og:locale`, JSON-LD types + `inLanguage`, title/H1 differ from English, 900-word floor, and lists English-looking sentences. |
-| `npm run i18n:list` | Regenerates `../tracker.csv`: URLs and the derived columns from disk, hand-set columns preserved. `-- --check` fails if stale. |
+| `npm run i18n:verify -- <loc> <slugs\|--all>` | Reads the **rendered** pages (dev server, or `OUT=out`): canonical, reciprocal hreflang incl. `x-default`, `og:locale`, JSON-LD types + `inLanguage`, title/H1 differ from English, 900-word floor, and lists English-looking sentences. |
+| `npm run i18n:list -- [locale]` | Regenerates that locale's tracker — `tracker.csv` for pt (the default), `tracker-<loc>.csv` for anything else. URLs and the derived columns come from disk; hand-set columns are preserved. `-- <loc> --check` fails if stale, `--done id,id,…` marks a batch's hand-set stages done. |
 | `npm run verify:build` | After `npm run build`: English **and** shipped Portuguese pages — one H1, title, canonical, hreflang, JSON-LD, duplicate FAQs, 900 words, converter similarity (accent-folded), sitemap both ways. |
 | `npx tsc --noEmit --incremental false` | Must be 0. |
 
@@ -843,9 +868,130 @@ Portuguese twins, which is the point.
 - **`/admin/*` and `/auth/callback` are not translated**; the OAuth redirect
   target has no user-visible copy worth the risk.
 
-**Next language.** §2 is the checklist. Indonesia (9.1%), Russia (6.2%) and
-Japan (5.8%) are the next three by audience. Two things Portuguese did not
-exercise: Russian needs Inter's `cyrillic` subset and Japanese needs a CJK
+**Next language.** §2 is the checklist, and §9 is what the second locale
+taught — read both. Hindi shipped on 2026-09-21 as a 19-page pilot and is
+waiting on Search Console (§9.7). Indonesia (9.1%), Russia (6.2%) and Japan
+(5.8%) are next by audience. Two things neither Portuguese nor Hindi
+exercised: Russian needs Inter's `cyrillic` subset and Japanese needs a CJK
 face, so decide the font before the first page (§2.11); and both languages
 pluralise differently from English, so the "1 x / {n} x" key pairs used
 throughout will need a third form.
+
+---
+
+## 9. Hindi (`/hi`) — the pilot
+
+Shipped 2026-09-21 as a **19-page pilot**, not a full locale: the home page,
+the 14 highest-value tools and the four legal twins. Everything below is what
+Hindi taught that Portuguese could not.
+
+### 9.1 Why a pilot and not 54 pages
+
+India is the largest single audience (13.0% of traffic), but that traffic is
+not the Portuguese shape. Two facts decided the plan:
+
+- **The tool query in India is typed in English or Hinglish.** iLoveIMG serves
+  Hindi at `/hi/compress-image`, `/hi/resize-image`, `/hi/remove-background` —
+  English slugs, Hindi body. Smallpdf does the same. So do we.
+- **The Hindi-script query is informational**, and tutorial blogs own it.
+  "फोटो का साइज कैसे कम करें" returns 91mobiles Hindi, hindiknow, hindisink —
+  how-to articles, not tool pages. A Hindi tool page is therefore competing
+  for a *different query shape* than its English twin, and nobody has proved
+  it can win.
+
+Hence the gate: ship 19, wait for Search Console, and only then decide about
+the remaining 26 tools and the contact / pricing / hub / auth pages. Those
+pages are **absent** from `tracker-hi.csv` rather than listed as `todo`,
+because a tracker row is a commitment to ship.
+
+### 9.2 Decisions, with the evidence
+
+| Decision | Ruling | Why |
+|---|---|---|
+| Tool slugs | **English, under `/hi/`** | iLoveIMG and Smallpdf both do this; the query is English or Hinglish; `i18n:audit` requires ASCII slugs, so Devanagari is not expressible anyway |
+| Slug map form | **Authored literal**, 40 lines, value === English slug | a derived `Object.fromEntries` has no `};` and broke two of oMyPDF's regex parsers |
+| Static paths | **English too** — `/hi/privacy` | same reasoning; but this map must still be authored, because each entry promises a route exists |
+| Register | Formal **आप**, imperative **करें**, danda **।** to end a sentence | matches iLoveIMG HI and Smallpdf HI |
+| Script mixing | **Format/product names stay Latin** (JPG, PNG, WEBP, HEIC, EXIF, DPI); **loanword verbs go Devanagari** (कंप्रेस, रीसाइज़, क्रॉप, कन्वर्ट) | iLoveIMG's own convention; these strings sit beside file names where Latin is unambiguous. Devanagari spellings (जेपीजी, पीएनजी) live in `aliases.ts` so search finds both |
+| Head terms | **Two per page, distributed** | the loanword form carries the H1 ("इमेज कंप्रेस करें"); the native descriptive form carries the tagline, intro and one H2 ("फोटो का साइज़ कम करें"). One page answers both query shapes |
+| Loanword spelling | **Follow the market where it has settled** | रीसाइज़, not रिसाइज़ — that is what iLoveIMG /hi ships and what the Hindi web uses. Both are in `aliases.ts` |
+| Numerals & dates | **Latin digits** (०१२ never), lakh grouping, **dd/mm/yyyy** | ICU already gives `hi` Latin digits and lakh grouping; its short date does not match any Indian document |
+| ALL CAPS | **Becomes `<strong>`** | Devanagari has no case. iLovePDF: 159 caps blocks in its English terms, **1** in its Hindi |
+
+### 9.3 The three bugs Hindi would have hit silently
+
+All three are in shared code. All three are now fixed, and the fixes moved
+**zero bytes** of English or Portuguese output (snapshot diff, §9.5).
+
+1. **The search box erased the query.** `tool-search.ts` normalised with
+   `[^a-z0-9]`, which does not damage a Devanagari query — it deletes it
+   entirely, with no error and nothing on screen to explain. Fixed by naming
+   the block in the word class and folding the nukta.
+2. **Dates were in the wrong form.** ICU's short date for `hi` is "4/8/26":
+   right order, a form no Indian document uses. `SHORT_DATE_OVERRIDE` now
+   gives dd/mm/yyyy.
+3. **No Devanagari face existed** and `globals.css` had no `:lang()` rule at
+   all. See §2 step 11 for the shape of the fix.
+
+**A fourth, caught by a gate rather than by a reader:** `gen:converters
+--check` compared stubs byte for byte, so `core.autocrlf=true` made all ten
+Portuguese routes read stale on a clean tree. The comparison is now
+line-ending blind.
+
+### 9.4 What Devanagari does that Latin does not
+
+- **Canvas text renders, but ignores the font picker.** Verified before
+  shipping the claim: Hindi watermark text draws correctly (2164 ink pixels,
+  no tofu), but all four font choices measure "नमस्ते" at an identical
+  138.8px while the same four measure "Hello" at 127.5–144.6px. One fallback
+  face serves every option. The watermark FAQ says so and points at the logo
+  route for anyone who needs a specific face.
+- **OCR is genuinely weaker**, and the page says so. The shiro-rekha joins
+  letters so the recogniser must find the boundaries, matras attach on four
+  sides, and conjuncts (क्ष, त्र, ज्ञ) are shapes unlike their parts. Errors
+  land in predictable places — dropped or swapped matras, split conjuncts,
+  lost anusvara. A page promising parity would mislead exactly the readers who
+  need the warning.
+- **Not a risk here:** nothing in oMyImage draws text into a PDF (`grep
+  drawText|StandardFonts` is empty), so oMyPDF's WinAnsi/pdf-lib crash does
+  not apply.
+
+### 9.5 Verification at close
+
+- `tsc --noEmit` clean; `i18n:audit` passes for both locales;
+  `i18n:keys hi` reports 0 shared strings missing.
+- `i18n:verify hi --all` — **19/19 clean**.
+- `npm run build` + `verify:build` — 14 localized hi tool pages checked, all
+  over the 900-word floor.
+- **Snapshot diff against the pre-Hindi build: 0 html files differ** after
+  normalising build ids and chunk hashes. The Phase 0 edits touched
+  `tool-search.ts`, `format.ts`, `layout.tsx` and `globals.css` — shared by
+  English and Portuguese — and moved neither.
+- Sitemap carries 19 `/hi` URLs with reciprocal three-way alternates. Pages
+  outside the pilot correctly omit `hi` rather than advertising a twin that
+  does not exist.
+- In-browser: `<html lang="hi">`, the h1 resolving to Inter → Noto Sans
+  Devanagari, a Devanagari search returning results, a real JPG compressed
+  311 KB → 83 KB, a two-page PDF built, and a watermark applied with
+  Devanagari text — every string Hindi throughout.
+
+### 9.6 Debt this rollout created
+
+- **Four more legal copies.** `/hi/privacy`, `/hi/terms`, `/hi/refunds` and
+  `/hi/cookies` are written twins, so the §6.5 obligation now doubles: an
+  English legal edit reaches neither `/pt/…` nor `/hi/…`.
+- **A Latin full stop in one composed string.** The file-count line renders
+  "2 इमेज → 2 पन्ने." because the separator is composed in the component and
+  shared with English. Fixing it would move English output, so it waits for a
+  batch where that is worth doing.
+- **`/hi` links to English contact and pricing.** By design — `localeHref`
+  falls back — but it is a visible seam if the pilot is extended.
+
+### 9.7 The measurement gate
+
+Record the verdict here when Search Console has data. The question is narrow:
+**do the 19 Hindi pages earn impressions, and on which query shape** — the
+Hinglish tool name, or the Devanagari problem statement? If it is the latter,
+the remaining 26 pages should lead with the native descriptive term rather
+than the loanword, which would change §9.2's head-term ruling for the rest of
+the locale.
