@@ -179,6 +179,14 @@ const SHIPPED_PAGES: Record<TranslatedLocale, string[]> = {
     "/pricing",
     "/login",
     "/signup",
+    // Batch 12 — the password flow and the two signed-in surfaces. This closes
+    // the locale at 54 pages, full parity with Portuguese. /account and
+    // /dashboard prerender a spinner because they are auth-gated, and all four
+    // are index: false.
+    "/forgot-password",
+    "/reset-password",
+    "/account",
+    "/dashboard",
   ],
 };
 
