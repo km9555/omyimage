@@ -107,7 +107,7 @@ const content: ToolPageContent = {
     "Rotate": "घुमाएँ",
     "Rotating…": "घुमाया जा रहा है…",
     "Rotation preview": "घुमाव का प्रीव्यू",
-    "Preview of": "इसका प्रीव्यू",
+    "Preview of": "प्रीव्यू:",
     "— the same transform applies to all {n} images.": "— वही बदलाव सभी {n} इमेज पर लगेगा।",
     "Transform Settings": "घुमाव की सेटिंग",
     "90° steps straighten; the angle slider gives a custom tilt.":

@@ -113,7 +113,7 @@ const content: ToolPageContent = {
     // "कन्वर्ट", matching the mobile button (common.ts "Convert").
     "Grayscale & download": "कन्वर्ट करें और डाउनलोड करें",
     "Grayscale {n} images": "{n} इमेज कन्वर्ट करें",
-    "Live preview of": "इसका सीधा प्रीव्यू",
+    "Live preview of": "सीधा प्रीव्यू:",
     "— applied to all {n} images.": "— सभी {n} इमेज पर लागू।",
     "Intensity": "तीव्रता",
     "100% = fully black & white. Lower values desaturate partially.":

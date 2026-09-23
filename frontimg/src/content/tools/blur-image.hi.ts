@@ -123,7 +123,7 @@ const content: ToolPageContent = {
     "Blur failed.": "ब्लर नहीं हो सका।",
     "or drop JPG, PNG or WEBP images here": "या JPG, PNG या WEBP इमेज यहाँ छोड़ें",
     "done": "हो गया",
-    "Live preview of": "इसका सीधा प्रीव्यू",
+    "Live preview of": "सीधा प्रीव्यू:",
     "— applied to all {n} images.": "— सभी {n} इमेज पर लागू।",
     "Drag to draw an area, click one to select, drag its handles to resize, Delete to remove.":
       "हिस्सा बनाने के लिए खींचें, चुनने के लिए उस पर क्लिक करें, साइज़ बदलने के लिए उसके हैंडल खींचें, और हटाने के लिए Delete दबाएँ।",

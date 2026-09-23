@@ -117,7 +117,7 @@ const content: ToolPageContent = {
     "Watermarking failed.": "वॉटरमार्क नहीं लग सका।",
     "or drop JPG, PNG or WEBP images here": "या JPG, PNG या WEBP इमेज यहाँ छोड़ें",
     "done": "हो गया",
-    "Live preview of": "इसका सीधा प्रीव्यू",
+    "Live preview of": "सीधा प्रीव्यू:",
     "— the same watermark applies to all {n} images.": "— वही वॉटरमार्क सभी {n} इमेज पर लगेगा।",
     "Clear images": "इमेज हटाएँ",
     "Files": "फ़ाइलें",
