@@ -854,11 +854,12 @@ Portuguese twins, which is the point.
   in `html-to-image.pt.ts` follow the wording the other server-backed tools use.
   An unmatched sentence falls back to English. Check them against the Contabo
   backend.
-- **An English-side inaccuracy is still open.** `heic-to-jpg.en.ts` says EXIF
-  (date, GPS) is not carried into the output; `HeicTool.tsx` documents that
-  ImageMagick copies it across and offers a "Remove metadata" checkbox. The
-  Portuguese page follows the CODE. Fix the English page, then re-check the pt
-  FAQ still matches.
+- ~~An English-side inaccuracy is still open.~~ **Fixed 2026-09-23.**
+  `heic-to-jpg.en.ts` claimed EXIF (date, GPS) was not carried into the output;
+  `HeicTool.tsx` documents that ImageMagick copies it across unless told
+  otherwise, and `stripMeta` defaults to `false` behind a user-facing checkbox.
+  The English FAQ now follows the code, as pt and hi already did.
+  `heic-to-png.en.ts` was checked for the same claim.
 
 **Decisions deliberately deferred.**
 
@@ -879,11 +880,12 @@ throughout will need a third form.
 
 ---
 
-## 9. Hindi (`/hi`) — the pilot
+## 9. Hindi (`/hi`)
 
-Shipped 2026-09-21 as a **19-page pilot**, not a full locale: the home page,
-the 14 highest-value tools and the four legal twins. Everything below is what
-Hindi taught that Portuguese could not.
+Shipped 2026-09-21 as a **19-page pilot** — the home page, the 14
+highest-value tools and the four legal twins — and completed 2026-09-23 to
+**54 pages**, full parity with Portuguese (40 tools + 14 static pages).
+Everything below is what Hindi taught that Portuguese could not.
 
 ### 9.1 Why a pilot and not 54 pages
 
@@ -958,15 +960,13 @@ line-ending blind.
 
 ### 9.5 Verification at close
 
+**At the pilot (19 pages, 2026-09-21).**
+
 - `tsc --noEmit` clean; `i18n:audit` passes for both locales;
   `i18n:keys hi` reports 0 shared strings missing.
 - `i18n:verify hi --all` — **19/19 clean**.
 - `npm run build` + `verify:build` — 14 localized hi tool pages checked, all
   over the 900-word floor.
-- **Snapshot diff against the pre-Hindi build: 0 html files differ** after
-  normalising build ids and chunk hashes. The Phase 0 edits touched
-  `tool-search.ts`, `format.ts`, `layout.tsx` and `globals.css` — shared by
-  English and Portuguese — and moved neither.
 - Sitemap carries 19 `/hi` URLs with reciprocal three-way alternates. Pages
   outside the pilot correctly omit `hi` rather than advertising a twin that
   does not exist.
@@ -975,23 +975,84 @@ line-ending blind.
   311 KB → 83 KB, a two-page PDF built, and a watermark applied with
   Devanagari text — every string Hindi throughout.
 
+> **A correction worth keeping.** This section first claimed the snapshot diff
+> showed **0 html files differ**. That claim was vacuous: the comparison was
+> run from Windows Python against a Git Bash `/tmp` path, which does not
+> resolve, so it walked an empty directory and reported "0 differ" having
+> compared nothing. Re-run properly, **115 pages had in fact changed** — all of
+> them explicable (the Noto class on `<html>`, the `L={pt:1,hi:1}` flag, the
+> new `hreflang="hi"` on twinned pages, RSC row renumbering, a meta reorder on
+> the 404 pages, one whitespace collapse in `pt/privacidade`). The right claim
+> was never "zero bytes moved" but "no unintended change", and a verification
+> that cannot fail is worth less than none, because it is trusted.
+
+**At completion (54 pages, 2026-09-23).**
+
+- `tsc --noEmit`, `i18n:audit`, `gen:converters --check` clean;
+  `i18n:keys hi` empty for every bucket.
+- `i18n:verify hi --all` — **54/54 clean**. `/account` and `/dashboard` have
+  no `<h1>` because they are auth-gated and prerender a spinner; the script
+  skips an empty h1 by design.
+- `npm run build` + `verify:build` — **40 localized hi tool pages**, matching
+  pt exactly.
+- `tracker-hi.csv`: 54 rows, all `done`; both trackers report current.
+- Sitemap: **48 `/hi` URLs**, identical to pt — 54 minus the six `index: false`
+  pages. All 144 `hi` alternates are ASCII, confirming the English-slug rule
+  held across the locale.
+- **Snapshot diff against a real build of the previous commit.** 47 files
+  differ: 43 are `/hi` pages whose internal links gained the `hi/` prefix as
+  their targets became available (what `localeHref` exists to do); two pages
+  gain one `<script>` preload from a new import with identical visible markup;
+  one is a whitespace-only collapse; one is another task's uncommitted edit.
+  No English content changed.
+  Two traps in doing this at all, both hit: a fresh `git worktree` checks out
+  **CRLF** on Windows and `i18n-audit.mjs`'s registry parser cannot read it
+  (see §9.6), and a baseline built **without `.env.local`** reports 120 false
+  differences because the cloud-import bar is env-gated. Match the environment
+  before believing the diff.
+
 ### 9.6 Debt this rollout created
 
 - **Four more legal copies.** `/hi/privacy`, `/hi/terms`, `/hi/refunds` and
   `/hi/cookies` are written twins, so the §6.5 obligation now doubles: an
   English legal edit reaches neither `/pt/…` nor `/hi/…`.
-- **A Latin full stop in one composed string.** The file-count line renders
-  "2 इमेज → 2 पन्ने." because the separator is composed in the component and
-  shared with English. Fixing it would move English output, so it waits for a
-  batch where that is worth doing.
-- **`/hi` links to English contact and pricing.** By design — `localeHref`
-  falls back — but it is a visible seam if the pilot is extended.
+- **Ten more converter twins.** `src/content/converters/*.hi.ts` join the pt
+  set, so a pair's copy now has three versions to keep in step.
+- ~~A Latin full stop in one composed string.~~ **Fixed.** Both instances now
+  go through a context key: `t(". |sentence-end")` in `ImageToPdfTool` and
+  `t(".|sentence-end")` in the signup consent checkbox, with `"। "` and `"।"`
+  in `hi/common.ts`. `stripContext()` drops the suffix, so English and
+  Portuguese render `.` exactly as before — confirmed in the snapshot diff,
+  where neither `signup.html` nor `pt/criar-conta.html` appears.
+- ~~`/hi` links to English contact and pricing.~~ **Closed** — the locale is
+  complete, so `localeHref` no longer falls back anywhere inside it.
+- **`i18n-audit.mjs` cannot parse a CRLF `lib/tools.ts`.** It reports
+  "registry parse found only 0 tools" and then 80 bogus slug errors, so
+  `npm run build` fails on any fresh Windows clone with `core.autocrlf=true`.
+  `gen-converters.mjs` was given a CRLF-blind comparison during Phase 0; the
+  audit's registry parser still needs the same treatment. Not caused by this
+  rollout — only surfaced by it.
+- **`/hi/account` and `/hi/dashboard` are unswept.** Both are auth-gated and
+  there is no test account, so their strings have never been seen rendered.
+  The dictionaries are complete per `i18n:keys` and each route's payload was
+  confirmed to carry its own dictionary, but that is wiring, not copy.
 
-### 9.7 The measurement gate
+### 9.7 The measurement gate — closed by decision, not by data
 
-Record the verdict here when Search Console has data. The question is narrow:
-**do the 19 Hindi pages earn impressions, and on which query shape** — the
-Hinglish tool name, or the Devanagari problem statement? If it is the latter,
-the remaining 26 pages should lead with the native descriptive term rather
-than the loanword, which would change §9.2's head-term ruling for the rest of
-the locale.
+The pilot left this open: **do the 19 Hindi pages earn impressions, and on
+which query shape** — the Hinglish tool name, or the Devanagari problem
+statement? If the latter, the remaining 35 pages should have led with the
+native descriptive term rather than the loanword, changing §9.2's head-term
+ruling for the rest of the locale.
+
+**Superseded 2026-09-21 by a decision to finish the locale without waiting.**
+The reasoning is kept because the question was never answered, only set aside:
+the pages shipped on §9.2's ruling — loanword in the H1, native problem wording
+in the tagline, intro and one H2 — which hedges across both query shapes rather
+than betting on one. That hedge is what makes the unanswered question
+survivable, and it is also what will make the eventual Search Console data
+harder to read, since every page competes for both shapes at once.
+
+If the data ever shows the Devanagari phrasing carrying the impressions, the
+change is an H1 swap across 40 tool pages, not a rewrite: the native term is
+already in the body of each one.
