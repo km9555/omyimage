@@ -172,6 +172,15 @@ const strings = (t) => [...(t ?? "").matchAll(/"([^"]+)"/g)].map((m) => m[1]);
 const slugMap = pairs(block(read("i18n/slugs.ts"), `${LOC.toUpperCase()}_TOOL_SLUGS`));
 const pathMap = pairs(block(read("i18n/static-paths.ts"), `${LOC.toUpperCase()}_PATHS`));
 const status = read("i18n/status.ts");
+/**
+ * The ids a locale's gate array lists in status.ts.
+ *
+ * Requires the MULTI-LINE array form, because the closing bracket is anchored
+ * at `^  ]`. A single-line `ru: ["/"]` matches nothing and yields an empty set,
+ * which reads downstream as "shipped: no" — the tracker then reports the page
+ * as in_progress forever while the site serves it correctly. Every locale in
+ * status.ts is written multi-line, so keep it that way.
+ */
 const gate = (name) =>
   new Set(strings(new RegExp(`^  ${LOC}: \\[([\\s\\S]*?)^  \\]`, "m").exec(block(status, name))?.[1]?.replace(/\/\/.*$/gm, "")));
 const shippedTools = gate("SHIPPED_TOOLS");
