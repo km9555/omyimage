@@ -152,9 +152,70 @@ const HI_TOOL_SLUGS: Record<string, string> = {
   "upscale-image": "upscale-image",
 };
 
+/**
+ * Russian keeps the ENGLISH slug, like Hindi and unlike Portuguese.
+ *
+ * iLoveIMG does the same: /ru/compress-image is a live page and the
+ * transliterated /ru/szhat-izobrazhenie is a 404. Transliterating Cyrillic
+ * gives no keyword benefit — Google reads the page's language from its content
+ * and hreflang, not its path — and it produces slugs a Russian reader cannot
+ * type and an English speaker cannot recognise. i18n-audit also requires
+ * lowercase ASCII, which Cyrillic could only satisfy via percent-encoding.
+ */
+const RU_TOOL_SLUGS: Record<string, string> = {
+  // ── Оптимизация ─────────────────────────────────────────────────────────
+  "compress-image": "compress-image",
+  "resize-image": "resize-image",
+  "crop-image": "crop-image",
+  "rotate-image": "rotate-image",
+
+  // ── Конвертация ──────────────────────────────────────────────────────────
+  "convert-to-jpg": "convert-to-jpg",
+  "png-to-jpg": "png-to-jpg",
+  "jpg-to-png": "jpg-to-png",
+  "webp-to-png": "webp-to-png",
+  "heic-to-png": "heic-to-png",
+  "image-to-text": "image-to-text",
+  "webp-to-jpg": "webp-to-jpg",
+  "jpg-to-webp": "jpg-to-webp",
+  "png-to-webp": "png-to-webp",
+  "jfif-to-jpg": "jfif-to-jpg",
+  "gif-to-png": "gif-to-png",
+  "gif-to-jpg": "gif-to-jpg",
+  "bmp-to-jpg": "bmp-to-jpg",
+  "avif-to-jpg": "avif-to-jpg",
+  "avif-to-png": "avif-to-png",
+  "heic-to-jpg": "heic-to-jpg",
+  "image-to-pdf": "image-to-pdf",
+  "image-to-base64": "image-to-base64",
+  "base64-to-image": "base64-to-image",
+  "gif-to-images": "gif-to-images",
+
+  // ── Редактирование и создание ───────────────────────────────────────────────────
+  "image-editor": "image-editor",
+  "watermark-image": "watermark-image",
+  "meme-generator": "meme-generator",
+  "html-to-image": "html-to-image",
+  "blur-face": "blur-face",
+  "grayscale-image": "grayscale-image",
+  "blur-image": "blur-image",
+  "add-border": "add-border",
+  "circle-crop": "circle-crop",
+  "merge-images": "merge-images",
+  "image-color-picker": "image-color-picker",
+  "image-metadata": "image-metadata",
+  "remove-exif": "remove-exif",
+  "gif-maker": "gif-maker",
+
+  // ── AI ───────────────────────────────────────────────────────────────
+  "remove-background": "remove-background",
+  "upscale-image": "upscale-image",
+};
+
 const TOOL_SLUGS: Record<TranslatedLocale, Record<string, string>> = {
   pt: PT_TOOL_SLUGS,
   hi: HI_TOOL_SLUGS,
+  ru: RU_TOOL_SLUGS,
 };
 
 /** The slug a tool uses in `locale` (no prefix). English → the registry slug. */

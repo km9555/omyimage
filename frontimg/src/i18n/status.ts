@@ -132,6 +132,10 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "image-metadata",
     "blur-face",
   ],
+  // Russian ships in batches ordered by Russian demand, which is NOT the pt/hi
+  // order: "улучшить качество фото" outweighs "сжать фото" roughly ten to one,
+  // so upscale-image leads rather than compress-image. conversion.md §10.
+  ru: [],
 };
 
 /** English paths of the non-tool pages that are live in each locale. */
@@ -188,6 +192,7 @@ const SHIPPED_PAGES: Record<TranslatedLocale, string[]> = {
     "/account",
     "/dashboard",
   ],
+  ru: [],
 };
 
 const TOOL_SETS: Record<string, ReadonlySet<string>> = Object.fromEntries(

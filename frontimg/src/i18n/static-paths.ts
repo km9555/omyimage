@@ -68,9 +68,28 @@ const HI_PATHS: PathMap = {
   "/account": "/account",
 };
 
+/** Russian keeps English segments, like Hindi — see the note in slugs.ts. */
+const RU_PATHS: PathMap = {
+  "/": "",
+  "/image-converter": "/image-converter",
+  "/pricing": "/pricing",
+  "/contact": "/contact",
+  "/privacy": "/privacy",
+  "/terms": "/terms",
+  "/cookies": "/cookies",
+  "/refunds": "/refunds",
+  "/login": "/login",
+  "/signup": "/signup",
+  "/forgot-password": "/forgot-password",
+  "/reset-password": "/reset-password",
+  "/dashboard": "/dashboard",
+  "/account": "/account",
+};
+
 const STATIC_PATHS: Record<TranslatedLocale, PathMap> = {
   pt: PT_PATHS,
   hi: HI_PATHS,
+  ru: RU_PATHS,
 };
 
 /** Does `locale` define a counterpart for this English path? */

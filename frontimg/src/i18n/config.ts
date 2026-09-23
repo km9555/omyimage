@@ -68,6 +68,16 @@ export const LOCALE_META = {
    * carried in aliases.ts so search finds both.
    */
   hi: { prefix: "/hi", tag: "hi", og: "hi_IN", label: "हिन्दी", flag: "🇮🇳", script: "devanagari" },
+  /**
+   * Russian is language-only for the same reason as the others, and it matters
+   * more here: `ru` is the working language of Kazakhstan, Belarus, much of
+   * Central Asia and a large diaspora, so `ru-RU` would exclude a real share of
+   * the audience. `og` carries the territory because its format demands one.
+   *
+   * Script is "cyrillic", which Inter already covers — unlike Devanagari, this
+   * costs a subset rather than a second font family.
+   */
+  ru: { prefix: "/ru", tag: "ru", og: "ru_RU", label: "Русский", flag: "🇷🇺", script: "cyrillic" },
 } as const satisfies Record<string, LocaleMeta>;
 
 export const LOCALES = Object.keys(LOCALE_META) as readonly (keyof typeof LOCALE_META)[];

@@ -95,7 +95,44 @@ const HI_BATCHES = [
  * pt's batches and its translated slugs, and the tracker would have looked
  * plausible while describing the wrong rollout.
  */
-const BATCHES_BY_LOCALE = { pt: PT_BATCHES, hi: HI_BATCHES };
+/**
+ * Russian, all 54 pages — ordered by RUSSIAN demand, which is not the order
+ * Portuguese and Hindi used. Both of those opened with compress; Russian must
+ * not. Measured (Kazakhstan proxy, `ru`, DataForSEO — Russia itself returns no
+ * Russian-language data at all):
+ *
+ *   улучшить качество фото   27,100     upscale-image   ← ~10× the next term
+ *   удалить фон с фото        2,900     remove-background
+ *   сжать фото                2,900     compress-image
+ *   обрезать фото             2,400     crop-image
+ *   уменьшить размер фото     1,300     resize-image
+ *   редактор фото онлайн        720     image-editor
+ *   размыть фото                480     blur-image
+ *   конвертировать heic в jpg   320     heic-to-jpg
+ *   распознать текст с картинки 170     image-to-text
+ *
+ * Batch 4 is the four legal twins, which ship together because they cross-link.
+ * 5–6 are the ten converter-layer pairs (§6.4). 9 and 10 are three pages each
+ * because blur-face alone carries more `ui` keys than all of batch 7. 11–12 are
+ * the static pages; /image-converter sits after the converter pairs because the
+ * hub renders their names and essays.
+ */
+const RU_BATCHES = [
+  ["/", "upscale-image", "remove-background", "compress-image", "crop-image"],
+  ["resize-image", "image-editor", "blur-image", "heic-to-jpg", "image-to-text"],
+  ["convert-to-jpg", "png-to-jpg", "jpg-to-png", "image-to-pdf", "watermark-image"],
+  ["/privacy", "/terms", "/refunds", "/cookies"],
+  ["webp-to-png", "webp-to-jpg", "jpg-to-webp", "png-to-webp", "jfif-to-jpg"],
+  ["gif-to-png", "gif-to-jpg", "bmp-to-jpg", "avif-to-jpg", "avif-to-png"],
+  ["rotate-image", "heic-to-png", "image-to-base64", "grayscale-image", "remove-exif"],
+  ["base64-to-image", "image-color-picker", "circle-crop", "gif-to-images", "meme-generator"],
+  ["gif-maker", "merge-images", "add-border"],
+  ["html-to-image", "image-metadata", "blur-face"],
+  ["/contact", "/image-converter", "/pricing", "/login", "/signup"],
+  ["/forgot-password", "/reset-password", "/account", "/dashboard"],
+];
+
+const BATCHES_BY_LOCALE = { pt: PT_BATCHES, hi: HI_BATCHES, ru: RU_BATCHES };
 
 const BATCHES = BATCHES_BY_LOCALE[LOC];
 if (!BATCHES) {

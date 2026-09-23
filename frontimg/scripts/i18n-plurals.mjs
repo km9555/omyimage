@@ -77,11 +77,18 @@ function walk(dir) {
  */
 function definedKeys(file) {
   const keys = new Set();
+  const invariant = new Set();
+  // Strip whole-line comments, but keep TRAILING ones — the invariant marker
+  // lives there.
   const src = readText(file).replace(/^\s*\/\/.*$/gm, "");
-  for (const m of src.matchAll(/^\s*"((?:[^"\\]|\\.)*)":/gm)) {
-    keys.add(m[1].replace(/\\"/g, '"').replace(/\\\\/g, "\\"));
+  for (const line of src.split("\n")) {
+    const m = /^\s*"((?:[^"\\]|\\.)*)":/.exec(line);
+    if (!m) continue;
+    const key = m[1].replace(/\\"/g, '"').replace(/\\\\/g, "\\");
+    keys.add(key);
+    if (/\/\/.*i18n-plural-invariant/.test(line)) invariant.add(key);
   }
-  return keys;
+  return { keys, invariant };
 }
 
 const only = process.argv.slice(2).filter((a) => !a.startsWith("--"));
@@ -149,13 +156,29 @@ for (const { code, tag } of locales) {
 
   let missing = 0;
   let checked = 0;
+  let invariantCount = 0;
 
   for (const file of files) {
-    const keys = definedKeys(file);
+    const { keys, invariant } = definedKeys(file);
     for (const key of keys) {
       if (!key.includes("{n}")) continue;
       // A key that IS a plural form is not itself a base key.
       if (extra.some((c) => key.endsWith(`|${c}`))) continue;
+      /*
+       * Not every {n} takes agreement. A parenthetical count ("Выбранные файлы
+       * (3)"), an index ("Кадр 7") or a percentage ("Сэкономьте 20%") reads the
+       * same at every number, and writing three identical rows for each would
+       * add noise to ~40 keys while teaching a reviewer nothing.
+       *
+       * A trailing `// i18n-plural-invariant` on the base key opts out, the
+       * same way `// i18n-same` marks a value that is deliberately untranslated.
+       * It is a claim someone made on purpose and can be grepped and argued
+       * with — unlike silence, which is what an absent key would be.
+       */
+      if (invariant.has(key)) {
+        invariantCount++;
+        continue;
+      }
       checked++;
       for (const cat of extra) {
         if (!keys.has(`${key}|${cat}`)) {
@@ -173,7 +196,8 @@ for (const { code, tag } of locales) {
   problems += missing;
   console.log(
     `[${code}] ${firing.sort().join("/")} (base "${base}", needs ${extra.map((c) => `|${c}`).join(" ")}) — ` +
-      `${checked} counted key(s) across ${files.length} file(s); ` +
+      `${checked} counted key(s) across ${files.length} file(s)` +
+      `${invariantCount ? `, ${invariantCount} marked invariant` : ""}; ` +
       `${missing === 0 ? "all forms present" : `${missing} missing`}.`,
   );
 }
