@@ -123,6 +123,10 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "gif-to-images",
     "meme-generator",
     "blur-image",
+    // Batch 9 — the heavy ui blocks (50–62 keys each), three pages not five.
+    "gif-maker",
+    "merge-images",
+    "add-border",
   ],
 };
 
