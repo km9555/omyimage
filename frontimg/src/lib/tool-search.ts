@@ -216,15 +216,32 @@ const stripAccents = (s: string) =>
   s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\u093c/g, "");
 
 /**
- * The word class — and the reason Devanagari is named in it explicitly.
+ * Letter ranges the word class must KEEP, one per writing system.
  *
- * `[^a-z0-9]` does not merely damage a Hindi query, it ERASES it: "इमेज कंप्रेस"
- * normalises to "" and matches nothing at all, with no error and nothing on
- * screen to hint at why. Latin letters outside a-z are handled by the NFD fold
- * above, but Devanagari has no such decomposition, so its block
- * (U+0900–U+097F) has to be kept here.
+ * `[^a-z0-9]` does not merely damage a non-Latin query, it ERASES it: "इमेज
+ * कंप्रेस" normalises to "" and matches nothing at all, with no error and
+ * nothing on screen to hint at why. Latin letters outside a-z are handled by
+ * the NFD fold above; a script that does not decompose to ASCII has to be
+ * named here or it disappears.
+ *
+ * Russian's ё needs no row: NFD decomposes it to е + U+0308 and the combining
+ * strip above removes the diaeresis, so "ёлка" and "елка" — which Russians type
+ * interchangeably — already fold together. Worth stating, because the next
+ * person to read this will look for it.
+ *
+ * The same fold also merges й into и ("белый" and "белыи" normalise alike), so
+ * й-final and и-final words collide. That is deliberate and matches what the
+ * accent fold already does to Portuguese ç and ã: this string is a matching
+ * key, never anything a visitor reads.
  */
-const NON_WORD = /[^a-z0-9\u0900-\u097f]+/g;
+const SCRIPT_RANGES: Record<string, string> = {
+  devanagari: "\u0900-\u097f",
+  // Cyrillic + its supplement. Keyed by SCRIPT, not locale, because that is
+  // what varies: Ukrainian or Bulgarian would reuse this row, not add one.
+  cyrillic: "\u0400-\u04ff\u0500-\u052f",
+};
+
+const NON_WORD = new RegExp(`[^a-z0-9${Object.values(SCRIPT_RANGES).join("")}]+`, "g");
 
 // Lowercase, replace every run of non-word characters with a single space.
 // "HEIC to JPG" → "heic to jpg". Used for word-boundary aware matching.

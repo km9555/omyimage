@@ -29,19 +29,24 @@ import type { ConverterPair, FormatId, LocalizedPairCopy } from "./types";
 
 export type { LocalizedPairCopy };
 
-const PAIR_COPY: Partial<Record<Locale, Record<string, LocalizedPairCopy>>> = {
-  pt: PT_PAIR_COPY,
-  hi: HI_PAIR_COPY,
-};
+/**
+ * One row per locale, not three. These used to be three parallel records —
+ * PAIR_COPY, FORMAT_ESSAYS, DICTS — so a new language meant three edits in
+ * three places and two of them were easy to forget; a missing FORMAT_ESSAYS row
+ * is invisible, because `formatEssay()` silently falls back to English.
+ *
+ * Still a static object rather than a dynamic import: the bundler has to see
+ * these to tree-shake a locale a page does not use.
+ */
+interface LocaleConverters {
+  dict: Dict;
+  essays: Partial<Record<FormatId, string>>;
+  pairs: Record<string, LocalizedPairCopy>;
+}
 
-const FORMAT_ESSAYS: Partial<Record<Locale, Partial<Record<FormatId, string>>>> = {
-  pt: PT_ESSAYS,
-  hi: HI_ESSAYS,
-};
-
-const DICTS: Partial<Record<Locale, Dict>> = {
-  pt: ptConverters,
-  hi: hiConverters,
+const LOCALE_CONVERTERS: Partial<Record<Locale, LocaleConverters>> = {
+  pt: { dict: ptConverters, essays: PT_ESSAYS, pairs: PT_PAIR_COPY },
+  hi: { dict: hiConverters, essays: HI_ESSAYS, pairs: HI_PAIR_COPY },
 };
 
 /**
@@ -52,12 +57,12 @@ const DICTS: Partial<Record<Locale, Dict>> = {
  * a client component and has no scope of its own on these routes.
  */
 export function converterDict(locale: Locale): Dict | null {
-  return DICTS[locale] ?? null;
+  return LOCALE_CONVERTERS[locale]?.dict ?? null;
 }
 
 /** Has this pair been translated into this locale? */
 export function pairTranslated(slug: string, locale: Locale): boolean {
-  return locale === DEFAULT_LOCALE || !!PAIR_COPY[locale]?.[slug];
+  return locale === DEFAULT_LOCALE || !!LOCALE_CONVERTERS[locale]?.pairs[slug];
 }
 
 /**
@@ -69,7 +74,7 @@ export function pairCopy(
   locale: Locale,
   english: { seoTitle: string; seoDescription: string },
 ): LocalizedPairCopy {
-  const translated = PAIR_COPY[locale]?.[pair.slug];
+  const translated = LOCALE_CONVERTERS[locale]?.pairs[pair.slug];
   if (translated) return translated;
   return {
     name: pair.name,
@@ -81,5 +86,5 @@ export function pairCopy(
 
 /** The "what is this format" essay, in the page's language. */
 export function formatEssay(id: FormatId, locale: Locale): string {
-  return FORMAT_ESSAYS[locale]?.[id] ?? fmt(id).essay;
+  return LOCALE_CONVERTERS[locale]?.essays[id] ?? fmt(id).essay;
 }

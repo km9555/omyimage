@@ -14,15 +14,65 @@
  * middleware and no Accept-Language negotiation. Nothing redirects; visitors
  * reach a locale through a link, the language switcher, or a search result.
  *
- * To add a locale: add it to LOCALES, give it a row in every Record below, add
- * its slug map in slugs.ts, its paths in static-paths.ts, its gate arrays in
- * status.ts and its dictionaries under dictionaries/<code>/. conversion.md §2
- * is the full checklist.
+ * To add a locale: add ONE row to LOCALE_META below, then its slug map in
+ * slugs.ts, its paths in static-paths.ts, its gate arrays in status.ts and its
+ * dictionaries under dictionaries/<code>/. conversion.md §2 is the full
+ * checklist.
+ *
+ * LOCALE_META used to be five parallel `Record<Locale, …>` — prefix, hreflang
+ * tag, og:locale, label, flag — which meant five edits in five places for one
+ * new language, and five chances to add four of them. They are one row now. The
+ * five named exports below still exist and are still `Record<Locale, …>`, so
+ * every call site is unchanged and TypeScript still refuses to compile a locale
+ * that is missing anything.
  */
 
-export const LOCALES = ["en", "pt", "hi"] as const;
+/**
+ * Everything about a locale that is not a map of its own file.
+ *
+ * `script` drives the webfont (layout.tsx) and the search normaliser's
+ * character ranges (lib/tool-search.ts) — both of which used to grow a branch
+ * per language rather than per writing system, which is the thing that actually
+ * varies.
+ */
+export type LocaleScript = "latin" | "devanagari" | "cyrillic";
 
-export type Locale = (typeof LOCALES)[number];
+export interface LocaleMeta {
+  /** URL prefix. The default locale is unprefixed (root). */
+  prefix: string;
+  /** BCP-47 for `<html lang>`, hreflang and JSON-LD inLanguage. */
+  tag: string;
+  /** og:locale — `language_TERRITORY`, where a bare language is not valid. */
+  og: string;
+  /** Endonym, as the switcher shows every language in its own script. */
+  label: string;
+  flag: string;
+  script: LocaleScript;
+}
+
+export const LOCALE_META = {
+  en: { prefix: "", tag: "en", og: "en_US", label: "English", flag: "🇬🇧", script: "latin" },
+  /**
+   * Portuguese is the language-only tag `pt`, deliberately, even though the copy
+   * is Brazilian. Google's rule is that a region subtag belongs there only when
+   * you publish MORE THAN ONE variant of a language; we publish one, and `pt`
+   * also serves Portugal, Angola and Mozambique rather than excluding them.
+   * iLoveIMG ships a single /pt the same way. The Brazilian targeting is stated
+   * in `og`, whose format requires a territory.
+   */
+  pt: { prefix: "/pt", tag: "pt", og: "pt_BR", label: "Português", flag: "🇧🇷", script: "latin" },
+  /**
+   * Hindi is language-only for the same reason: one variant, and `hi` is not
+   * India-specific — it also serves the diaspora. The label is the conjunct
+   * spelling "हिन्दी"; the anusvara form "हिंदी" is equally correct and is
+   * carried in aliases.ts so search finds both.
+   */
+  hi: { prefix: "/hi", tag: "hi", og: "hi_IN", label: "हिन्दी", flag: "🇮🇳", script: "devanagari" },
+} as const satisfies Record<string, LocaleMeta>;
+
+export const LOCALES = Object.keys(LOCALE_META) as readonly (keyof typeof LOCALE_META)[];
+
+export type Locale = keyof typeof LOCALE_META;
 
 // `satisfies` (not `: Locale`) so the type stays the literal "en". Annotating
 // it widens to Locale, which collapses `Exclude<Locale, typeof DEFAULT_LOCALE>`
@@ -32,54 +82,35 @@ export const DEFAULT_LOCALE = "en" satisfies Locale;
 /** Every locale except the default — the ones that need translated content. */
 export type TranslatedLocale = Exclude<Locale, typeof DEFAULT_LOCALE>;
 
+/*
+ * The five views below are DERIVED from LOCALE_META, not maintained beside it.
+ * They keep their original names and their `Record<Locale, …>` types so no call
+ * site changed when they stopped being hand-written, and so a locale missing a
+ * field is still a compile error rather than an undefined at runtime.
+ */
+
+const view = <T,>(pick: (m: LocaleMeta) => T): Record<Locale, T> =>
+  Object.fromEntries(
+    (Object.entries(LOCALE_META) as [Locale, LocaleMeta][]).map(([k, m]) => [k, pick(m)]),
+  ) as Record<Locale, T>;
+
 /** URL prefix per locale. The default locale is unprefixed (root). */
-export const LOCALE_PREFIX: Record<Locale, string> = {
-  en: "",
-  pt: "/pt",
-  hi: "/hi",
-};
+export const LOCALE_PREFIX: Record<Locale, string> = view((m) => m.prefix);
 
-/**
- * BCP-47 tag for `<html lang>`, hreflang and JSON-LD `inLanguage`.
- *
- * Portuguese is the language-only tag `pt`, deliberately, even though the copy
- * is Brazilian. Google's rule is that a region subtag belongs there only when
- * you publish MORE THAN ONE variant of a language; we publish one, and `pt`
- * also serves Portugal, Angola and Mozambique rather than excluding them.
- * iLoveIMG ships a single /pt the same way.
- */
-export const LOCALE_TAG: Record<Locale, string> = {
-  en: "en",
-  pt: "pt",
-  // Hindi is the language-only tag for the same reason: one variant, and `hi`
-  // is not India-specific — it also serves the diaspora.
-  hi: "hi",
-};
+/** BCP-47 tag for `<html lang>`, hreflang and JSON-LD `inLanguage`. */
+export const LOCALE_TAG: Record<Locale, string> = view((m) => m.tag);
 
-/**
- * Open Graph `og:locale` value.
- *
- * Unlike hreflang, og:locale's format is `language_TERRITORY` — a bare "pt" is
- * not valid there — so this is where the Brazilian targeting is stated.
- */
-export const OG_LOCALE: Record<Locale, string> = {
-  en: "en_US",
-  pt: "pt_BR",
-  hi: "hi_IN",
-};
+/** Open Graph `og:locale` — `language_TERRITORY`, unlike hreflang. */
+export const OG_LOCALE: Record<Locale, string> = view((m) => m.og);
+
+/** Writing system, for the webfont and the search normaliser. */
+export const LOCALE_SCRIPT: Record<Locale, LocaleScript> = view((m) => m.script);
 
 /** Human label + flag, shared by the language switcher and the footer. */
-export const LOCALE_LABEL: Record<Locale, { label: string; flag: string }> = {
-  en: { label: "English", flag: "🇬🇧" },
-  // Brazilian flag, not Portuguese: the copy is Brazilian and Brazil is the
-  // audience (9% of all traffic, the largest non-English market). The hreflang
-  // above still serves Portugal too.
-  pt: { label: "Português", flag: "🇧🇷" },
-  // The endonym, as the switcher shows every language in its own script. The
-  // conjunct spelling "हिन्दी"; the anusvara form "हिंदी" is equally correct and
-  // is carried in aliases.ts so search finds both.
-  hi: { label: "हिन्दी", flag: "🇮🇳" },
-};
+export const LOCALE_LABEL: Record<Locale, { label: string; flag: string }> = view((m) => ({
+  label: m.label,
+  flag: m.flag,
+}));
 
 export function isLocale(value: string): value is Locale {
   return (LOCALES as readonly string[]).includes(value);

@@ -119,9 +119,10 @@ Ported from oMyPDF unchanged in behaviour:
 Do these once, before any page. Every one of them fails **silently** if missed —
 the page just renders English.
 
-1. `src/i18n/config.ts` — add the code to `LOCALES` and a row to
-   `LOCALE_PREFIX`, `LOCALE_TAG`, `OG_LOCALE`, `LOCALE_LABEL`. Use the
-   language-only tag (`id`, `ru`, `ja`) unless you publish two variants.
+1. `src/i18n/config.ts` — **one row in `LOCALE_META`**: prefix, hreflang tag,
+   og:locale, label, flag, script. `LOCALES` and the five `LOCALE_*` records are
+   DERIVED from it, so this is the only edit. Use the language-only tag (`id`,
+   `ru`, `ja`) unless you publish two variants; `og` still needs a territory.
 2. `src/i18n/slugs.ts` — `<XX>_TOOL_SLUGS` for **all 40 tools**, as an
    authored object literal (a derived `Object.fromEntries(...)` map breaks the
    text parsers — oMyPDF §4.28). Wire it into `TOOL_SLUGS`. §5 for how to pick.
@@ -130,9 +131,14 @@ the page just renders English.
 5. `src/i18n/dictionaries/<xx>/` — `common.ts`, `tools.ts`, `aliases.ts`, `site.ts`.
 6. Register the dictionaries: `COMMON` in `src/i18n/t.ts`, `DICTS` and
    `CATEGORY_DICTS` in `src/lib/i18n/tool-labels.ts`, `LOCALE_ALIASES` in
-   `src/lib/tool-search.ts`.
+   `src/lib/tool-search.ts`, and — once the converter layer ships for the
+   locale — one row in `LOCALE_CONVERTERS` (`src/lib/converters/i18n.ts`),
+   which carries its dictionary, essays and pair copy together.
 7. `src/app/<xx>/layout.tsx` — copy `app/pt/layout.tsx`.
-8. `app/layout.tsx` — add the code to the `L={pt:1,hi:1}` map in `NO_FLASH_THEME`.
+8. `app/layout.tsx` — **nothing to do.** `NO_FLASH_THEME`'s lang map is built
+   from `LOCALES`. It used to be a literal `{pt:1,hi:1}` inside that string,
+   where a forgotten locale kept `lang="en"` until hydration — long enough for
+   the wrong font to paint, with no error anywhere.
 9. `src/lib/languages.ts` — the row already exists for id/ru/ja/hi/es/fr/de; it
    flips to available by itself when `/` ships.
 10. `scripts/i18n-hardcoded.mjs` — add the prefix to `SKIP_DIR` (the localized
@@ -154,7 +160,8 @@ the page just renders English.
     `""` and matched nothing, silently. Add the block (Devanagari is
     `ऀ-ॿ`) and fold any script-specific diacritic alongside the
     combining-mark fold (the nukta, `़`, so फ़ाइल and फाइल are one
-    string).
+    string). Cyrillic is `Ѐ-ӿԀ-ԯ`; Russian needs no
+    diacritic rule of its own, because NFD already folds ё to е.
 13. **Check `src/i18n/format.ts` for a date override.** ICU's `dateStyle:
     "short"` gets the ORDER right for `hi` and the FORM wrong — "4/8/26", which
     no Indian document uses. Add a `SHORT_DATE_OVERRIDE` row when the locale
@@ -163,13 +170,26 @@ the page just renders English.
     default off an `OCR_DEFAULT` map. Add a row when the locale's script would
     be mangled by the English model — on Hindi an English model does not drop
     accents, it returns confident Latin nonsense.
-15. `scripts/i18n-list.mjs` — the tracker takes a locale argument and writes
+15. `scripts/i18n-list.mjs` — add `<XX>_BATCHES` and a row in
+    `BATCHES_BY_LOCALE`. The tracker takes a locale argument and writes
     `tracker-<loc>.csv`. One file per locale, never one wide file: the rows
     differ, and a shared file makes every edit touch the other language's
-    record.
+    record. An unknown locale now fails loudly; it used to fall through a
+    ternary and silently hand the new language Portuguese's rollout plan.
+16. **Three or more plural forms?** `Intl.PluralRules("<xx>")` tells you.
+    English, Portuguese and Hindi are two-form languages and the call sites'
+    `n === 1 ? t("1 image") : t("{n} images")` pairing covers them. Russian,
+    Polish, Czech and Arabic are not: Russian's `one` form fires at 21, 31 and
+    101, which no `n === 1` ternary reaches. `t()` handles this by probing a
+    `"<key>|<category>"` suffix first (`i18n/t.ts`), so **no call site changes**
+    — the locale just defines the extra forms. `npm run i18n:plurals` is the
+    gate, and it is the only one that can catch a missing form, because the
+    suffixed key never appears in source for `i18n-keys.mjs` to find.
+    Beware `resolvedOptions().pluralCategories`: it is the DECLARED set and
+    over-reports. Portuguese declares `many`, which never fires for any integer.
 
-Then `npm run i18n:audit` — it checks slugs (ASCII, unique, no collision with a
-static path) and that every gate entry has its route and module.
+Then `npm run i18n:audit` (slugs: ASCII, unique, no collision with a static
+path; every gate entry has its route and module) and `npm run i18n:plurals`.
 
 ---
 

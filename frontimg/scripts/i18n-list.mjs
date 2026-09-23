@@ -88,7 +88,22 @@ const HI_BATCHES = [
   ["/forgot-password", "/reset-password", "/account", "/dashboard"],
 ];
 
-const BATCHES = LOC === "hi" ? HI_BATCHES : PT_BATCHES;
+/**
+ * Rollout order per locale. A map rather than a ternary: the ternary read
+ * `LOC === "hi" ? HI_BATCHES : PT_BATCHES`, so any locale that was not "hi"
+ * silently got the PORTUGUESE plan — a third language would have been handed
+ * pt's batches and its translated slugs, and the tracker would have looked
+ * plausible while describing the wrong rollout.
+ */
+const BATCHES_BY_LOCALE = { pt: PT_BATCHES, hi: HI_BATCHES };
+
+const BATCHES = BATCHES_BY_LOCALE[LOC];
+if (!BATCHES) {
+  console.error(
+    `No batch plan for "${LOC}". Add <LOC>_BATCHES above and a row in BATCHES_BY_LOCALE.`,
+  );
+  process.exit(1);
+}
 const COPY_COL = `${LOC}_copy`;
 const URL_COL = `${LOC}_url`;
 const HAND = ["ui_sweep", COPY_COL, "seo_meta", "verify", "browser_qa", "status", "notes"];
