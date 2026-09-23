@@ -127,6 +127,10 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "gif-maker",
     "merge-images",
     "add-border",
+    // Batch 10 — the heaviest ui blocks (80/83/89 keys), three pages not five.
+    "html-to-image",
+    "image-metadata",
+    "blur-face",
   ],
 };
 
