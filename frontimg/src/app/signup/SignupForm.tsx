@@ -166,7 +166,7 @@ export function SignupForm() {
             {t("I agree to the")}{" "}
             <Link href={localeHref("/terms", locale)} className="text-secondary hover:underline">{t("Terms")}</Link>{" "}
             {t("and|between links")}{" "}
-            <Link href={localeHref("/privacy", locale)} className="text-secondary hover:underline">{t("Privacy Policy")}</Link>.
+            <Link href={localeHref("/privacy", locale)} className="text-secondary hover:underline">{t("Privacy Policy")}</Link>{t(".|sentence-end")}
           </span>
         </label>
 

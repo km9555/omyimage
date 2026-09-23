@@ -383,4 +383,8 @@ export const hiCommon: Record<string, string> = {
   // A sentence terminator composed between two translated fragments. The
   // "|sentence-end" suffix keeps it from colliding with any real ". " key.
   ". |sentence-end": "। ",
+  // The same terminator with no trailing space, for a sentence that ends on a
+  // link (the signup consent checkbox). English and Portuguese still render
+  // "." — stripContext() drops the suffix and there is no pt entry.
+  ".|sentence-end": "।",
 };
