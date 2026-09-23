@@ -3,10 +3,27 @@ import type { ToolPageContent } from "@/content/tools/types";
 /**
  * Russian copy for /ru/remove-background.
  *
- * Head term «удалить фон с фото» (2,900/mo, KD 14) verbatim in the H1 and
- * metaTitle. «Убрать фон» is the equally common colloquial variant and carries
- * the tagline and intro; «прозрачный фон» and «вырезать объект» are the
- * outcome-shaped queries and appear in the body. All four are in aliases.ts.
+ * THE biggest page in the Russian locale. Measured on iLoveIMG's own /ru
+ * footprint, their remove-background page carries ~103,000/mo of demand across
+ * 19 keywords — more than their upscale page (59,000) and eight times their
+ * compress page. The cluster:
+ *
+ *   удалить фон          40,500   KD 8    ← the bare head term
+ *   убрать фон            9,900   KD 10
+ *   удалить фон онлайн    8,100   KD 10
+ *   удаление фона         4,400   KD 16
+ *   убрать фон онлайн     3,600   KD 28
+ *   удалить фон с фото    2,900   KD 14
+ *
+ * So the H1 is the BARE «Удалить фон», not «Удалить фон с фото»: the qualifier
+ * costs a fourteen-fold drop in volume and adds nothing a reader needs, since
+ * the page is obviously about photos. The first research pass here seeded the
+ * qualified phrase and missed the head term entirely — a good argument for
+ * seeding short before seeding specific.
+ *
+ * «Убрать фон» is the equally common colloquial variant and carries the
+ * tagline; «прозрачный фон» and «вырезать объект» are the outcome-shaped
+ * queries and appear in the body. All are in aliases.ts.
  *
  * Written for the market it serves: the dominant Russian use case is the
  * marketplace product photo — Wildberries and Ozon both require a plain
@@ -17,14 +34,14 @@ import type { ToolPageContent } from "@/content/tools/types";
 const content: ToolPageContent = {
   toolId: "remove-background",
   locale: "ru",
-  name: "Удалить фон с фото",
+  name: "Удалить фон",
   tagline:
-    "Уберите фон автоматически — нейросеть сама находит объект и вырезает его. Прозрачный PNG за пару секунд, бесплатно и без регистрации.",
+    "Уберите фон с фотографии автоматически — нейросеть сама находит объект и вырезает его. Прозрачный PNG за пару секунд, бесплатно и без регистрации.",
   category: { id: "ai", label: "ИИ для фото" },
 
-  metaTitle: "Удалить фон с фото онлайн бесплатно — прозрачный фон | oMyImage",
+  metaTitle: "Удалить фон онлайн бесплатно — убрать фон с фото | oMyImage",
   metaDescription:
-    "Удалите фон с фото онлайн бесплатно: нейросеть вырежет объект и вернёт PNG с прозрачным фоном. Для маркетплейсов, документов и аватаров — без регистрации и водяных знаков.",
+    "Удалить фон онлайн бесплатно: нейросеть сама вырежет объект и вернёт PNG с прозрачным фоном. Для маркетплейсов, документов и аватаров — без регистрации и водяных знаков.",
 
   intro:
     "Убрать фон с фотографии вручную — это полчаса работы с выделением и всё равно рваные края на волосах и мехе. Этот инструмент делает то же самое автоматически: нейросеть rembg находит на снимке главный объект, отделяет его от фона и возвращает PNG с прозрачностью. Дальше можно поставить любой фон — белый для карточки товара, свой цвет для презентации — или оставить прозрачный и положить объект на другое изображение. Загрузите JPG, PNG или WEBP и скачайте результат. Бесплатно, без водяного знака, без регистрации.",

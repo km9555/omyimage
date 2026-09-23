@@ -89,27 +89,40 @@ const HI_BATCHES = [
 ];
 
 /**
- * Rollout order per locale. A map rather than a ternary: the ternary read
- * `LOC === "hi" ? HI_BATCHES : PT_BATCHES`, so any locale that was not "hi"
- * silently got the PORTUGUESE plan — a third language would have been handed
- * pt's batches and its translated slugs, and the tracker would have looked
- * plausible while describing the wrong rollout.
- */
-/**
  * Russian, all 54 pages — ordered by RUSSIAN demand, which is not the order
- * Portuguese and Hindi used. Both of those opened with compress; Russian must
- * not. Measured (Kazakhstan proxy, `ru`, DataForSEO — Russia itself returns no
- * Russian-language data at all):
+ * Portuguese and Hindi used. Both of those opened with compression; Russian
+ * does not, and compression is only fourth here.
  *
- *   улучшить качество фото   27,100     upscale-image   ← ~10× the next term
- *   удалить фон с фото        2,900     remove-background
- *   сжать фото                2,900     compress-image
- *   обрезать фото             2,400     crop-image
- *   уменьшить размер фото     1,300     resize-image
- *   редактор фото онлайн        720     image-editor
- *   размыть фото                480     blur-image
- *   конвертировать heic в jpg   320     heic-to-jpg
- *   распознать текст с картинки 170     image-to-text
+ * Measured against Kazakhstan (2398) / ru, because Russia itself (2643)
+ * returns no Russian-language data from DataForSEO at all. Russia is also
+ * ~60% Yandex, so these figures understate real demand — they are used to
+ * ORDER the work, never as a forecast.
+ *
+ * PAGE-LEVEL demand, taken from iLoveIMG's own /ru footprint (the sum of the
+ * volumes it ranks for on each page), which is a better signal than any single
+ * head term:
+ *
+ *   remove-background  103,160   ← «удалить фон» alone is 40,500
+ *   upscale-image       59,480   ← «улучшить качество фото» 27,100
+ *   convert-to-jpg      17,800
+ *   compress-image      12,920
+ *   resize-image        10,300
+ *   crop-image           9,460
+ *   meme-generator       7,380
+ *   watermark-image      6,280
+ *   blur-face            5,400
+ *
+ * Batches 3, 7, 8 and 9 were REORDERED on 2026-09-23 after hydrating the head
+ * term of every unshipped page. Russian demand falls off a cliff after the top
+ * six, and three pages that sat late turned out to be both bigger and easier
+ * than the converter pairs ahead of them:
+ *
+ *   объединить фото   590  KD 0   merge-images         was batch 9 → 3
+ *   пипетка онлайн    590  KD 3   image-color-picker   was batch 8 → 3
+ *   черно белое фото  480  KD 0   grayscale-image      was batch 7 → 3
+ *
+ * They displaced png-to-jpg (90) and jpg-to-png (no measurable volume), which
+ * moved back. watermark-image («водяной знак на фото», 70) moved to 9.
  *
  * Batch 4 is the four legal twins, which ship together because they cross-link.
  * 5–6 are the ten converter-layer pairs (§6.4). 9 and 10 are three pages each
@@ -120,18 +133,25 @@ const HI_BATCHES = [
 const RU_BATCHES = [
   ["/", "upscale-image", "remove-background", "compress-image", "crop-image"],
   ["resize-image", "image-editor", "blur-image", "heic-to-jpg", "image-to-text"],
-  ["convert-to-jpg", "png-to-jpg", "jpg-to-png", "image-to-pdf", "watermark-image"],
+  ["convert-to-jpg", "image-to-pdf", "grayscale-image", "merge-images", "image-color-picker"],
   ["/privacy", "/terms", "/refunds", "/cookies"],
   ["webp-to-png", "webp-to-jpg", "jpg-to-webp", "png-to-webp", "jfif-to-jpg"],
   ["gif-to-png", "gif-to-jpg", "bmp-to-jpg", "avif-to-jpg", "avif-to-png"],
-  ["rotate-image", "heic-to-png", "image-to-base64", "grayscale-image", "remove-exif"],
-  ["base64-to-image", "image-color-picker", "circle-crop", "gif-to-images", "meme-generator"],
-  ["gif-maker", "merge-images", "add-border"],
+  ["rotate-image", "heic-to-png", "image-to-base64", "png-to-jpg", "remove-exif"],
+  ["base64-to-image", "jpg-to-png", "circle-crop", "gif-to-images", "meme-generator"],
+  ["gif-maker", "watermark-image", "add-border"],
   ["html-to-image", "image-metadata", "blur-face"],
   ["/contact", "/image-converter", "/pricing", "/login", "/signup"],
   ["/forgot-password", "/reset-password", "/account", "/dashboard"],
 ];
 
+/**
+ * Rollout order per locale. A map rather than a ternary: the ternary read
+ * `LOC === "hi" ? HI_BATCHES : PT_BATCHES`, so any locale that was not "hi"
+ * silently got the PORTUGUESE plan — a third language would have been handed
+ * pt's batches and its translated slugs, and the tracker would have looked
+ * plausible while describing the wrong rollout.
+ */
 const BATCHES_BY_LOCALE = { pt: PT_BATCHES, hi: HI_BATCHES, ru: RU_BATCHES };
 
 const BATCHES = BATCHES_BY_LOCALE[LOC];
