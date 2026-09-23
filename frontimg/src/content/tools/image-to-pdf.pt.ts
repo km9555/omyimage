@@ -116,6 +116,11 @@ const content: ToolPageContent = {
     "1 page": "1 página",
     "{n} pages": "{n} páginas",
     "Use the arrows to reorder.": "Use as setas para reordenar.",
+    // The separator between the page count and the line above. Portuguese ends
+    // a sentence the same way English does, so this is deliberately identical
+    // to the key — stated rather than left to the fallback, so `i18n:keys pt`
+    // stops reporting it as missing. Hindi maps it to "। " (hi/common.ts).
+    ". |sentence-end": ". ", // i18n-same
     "Create PDF": "Criar PDF",
     "That's {size} of images. They're embedded without recompression, so the PDF will be about that big — likely too large to email.":
       "São {size} de imagens. Elas entram sem nova compressão, então o PDF vai ficar mais ou menos desse tamanho — provavelmente grande demais para e-mail.",

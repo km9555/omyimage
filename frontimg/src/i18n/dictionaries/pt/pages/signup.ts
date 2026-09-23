@@ -23,6 +23,11 @@ export const ptSignup: Dict = {
   "Terms": "Termos",
   "and|between links": "e a",
   "Privacy Policy": "Política de Privacidade",
+  // Closes the consent sentence, which ends on a link. Portuguese ends a
+  // sentence the same way English does, so this is deliberately identical to
+  // the key — stated rather than left to the fallback, so `i18n:keys pt` stops
+  // reporting it as missing. Hindi maps it to "।" (hi/common.ts).
+  ".|sentence-end": ".", // i18n-same
   "Create account": "Criar conta",
   "Sign up with Google": "Criar conta com o Google",
   "The free tools stay free and will never require an account.":
