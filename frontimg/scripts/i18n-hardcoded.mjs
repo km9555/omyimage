@@ -45,6 +45,19 @@ const root = join(fileURLToPath(import.meta.url), "..", "..");
 const require = createRequire(join(root, "package.json"));
 const ts = require("typescript");
 
+/**
+ * Read a source file as LF — see the note in i18n-audit.mjs, which is the
+ * script that genuinely breaks on a CRLF checkout.
+ *
+ * This one passed unchanged on such a checkout, but only because it had
+ * nothing to report. gateTargets()'s section() was anchored at one end and
+ * silently returned the rest of the file when its `$` failed to match, which
+ * CRLF makes certain — that is fixed below rather than merely papered over.
+ * It also matters for the scan itself, which does src.split("\n") to quote the
+ * offending line; on CRLF every quoted line would carry a trailing \r.
+ */
+const readText = (p) => readFileSync(p, "utf8").replace(/\r\n/g, "\n");
+
 const args = process.argv.slice(2);
 const summary = args.includes("--summary");
 const paths = args.filter((a) => !a.startsWith("--"));
@@ -141,12 +154,19 @@ const TWIN_TRANSLATED = new Set([
  * but the moment it ships, its folder is held to the same rule.
  */
 function gateTargets() {
-  const src = (p) => readFileSync(join(root, "src", p), "utf8");
+  const src = (p) => readText(join(root, "src", p));
   const status = src("i18n/status.ts");
+  // Bounded at BOTH ends, like every other parse in this repo — conversion.md
+  // §4.28/§4.35 is the same bug written twice. This one was single-anchored:
+  // when `^\};?$` failed to match it returned slice(0, -1), i.e. the whole file
+  // from the const onwards, so SHIPPED_TOOLS swallowed SHIPPED_PAGES and
+  // everything after it. A CRLF checkout makes that regex fail every time.
   const section = (name) => {
     const start = status.search(new RegExp(`^const ${name}\\b`, "m"));
+    if (start === -1) return "";
     const rest = status.slice(start);
-    return rest.slice(0, rest.search(/^\};?$/m));
+    const ends = [rest.search(/^\};?$/m), rest.slice(1).search(/^(export )?const /m) + 1].filter((i) => i > 0);
+    return ends.length ? rest.slice(0, Math.min(...ends) + 2) : rest;
   };
   const quoted = (t) => [...t.replace(/\/\/.*$/gm, "").matchAll(/"([^"]+)"/g)].map((m) => m[1]);
   const out = ["src/components"];
@@ -169,7 +189,7 @@ const hits = [];
 
 for (const file of files) {
   const rel = relative(root, file).replace(/\\/g, "/");
-  const src = readFileSync(file, "utf8");
+  const src = readText(file);
   const lines = src.split("\n");
   const sf = ts.createSourceFile(file, src, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
 

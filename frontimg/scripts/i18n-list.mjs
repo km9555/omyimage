@@ -94,7 +94,19 @@ const URL_COL = `${LOC}_url`;
 const HAND = ["ui_sweep", COPY_COL, "seo_meta", "verify", "browser_qa", "status", "notes"];
 const COLS = ["sn", "batch", "section", "id", "en_url", URL_COL, "en_extracted", "ui_sweep", COPY_COL, "route", "gated", "seo_meta", "verify", "browser_qa", "status", "notes"];
 
-const read = (p) => readFileSync(join(SRC, p), "utf8");
+/**
+ * Read a file as LF — see the note in i18n-audit.mjs, which is the script that
+ * genuinely breaks on a CRLF checkout.
+ *
+ * This one passed unchanged, and both halves were checked rather than assumed:
+ * block() below is bounded at BOTH ends, so when its `^\};?$` fails to match it
+ * is dropped by the `i > 0` filter and the next-const bound still closes the
+ * block; and parseCsv() already strips a trailing \r per row. Confirmed by
+ * running --check against a deliberately CRLF-converted tracker. Hardening.
+ */
+const readText = (p) => readFileSync(p, "utf8").replace(/\r\n/g, "\n");
+const read = (p) => readText(join(SRC, p));
+
 function block(src, name) {
   const start = src.search(new RegExp(`^(export )?const ${name}\\b`, "m"));
   if (start === -1) return "";
@@ -143,7 +155,7 @@ function parseCsv(text) {
 }
 const prev = new Map();
 if (existsSync(FILE)) {
-  const [head, ...body] = parseCsv(readFileSync(FILE, "utf8"));
+  const [head, ...body] = parseCsv(readText(FILE));
   for (const r of body) {
     if (r.length < 2) continue;
     const o = Object.fromEntries(head.map((h, i) => [h, r[i] ?? ""]));
@@ -210,7 +222,7 @@ const esc = (v) => (/[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v);
 const csv = [COLS.join(","), ...rows.map((r) => COLS.map((c) => esc(r[c] ?? "")).join(","))].join("\n") + "\n";
 
 if (process.argv.includes("--check")) {
-  const cur = existsSync(FILE) ? readFileSync(FILE, "utf8").replace(/\r\n/g, "\n") : "";
+  const cur = existsSync(FILE) ? readText(FILE) : "";
   if (cur !== csv) {
     console.error(`${basename(FILE)} is stale — run \`npm run i18n:list -- ${LOC}\`.`);
     process.exit(1);

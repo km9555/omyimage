@@ -1026,12 +1026,30 @@ line-ending blind.
   where neither `signup.html` nor `pt/criar-conta.html` appears.
 - ~~`/hi` links to English contact and pricing.~~ **Closed** — the locale is
   complete, so `localeHref` no longer falls back anywhere inside it.
-- **`i18n-audit.mjs` cannot parse a CRLF `lib/tools.ts`.** It reports
-  "registry parse found only 0 tools" and then 80 bogus slug errors, so
-  `npm run build` fails on any fresh Windows clone with `core.autocrlf=true`.
-  `gen-converters.mjs` was given a CRLF-blind comparison during Phase 0; the
-  audit's registry parser still needs the same treatment. Not caused by this
-  rollout — only surfaced by it.
+- ~~`i18n-audit.mjs` cannot parse a CRLF `lib/tools.ts`.~~ **Fixed 2026-09-23.**
+  Its registry pattern embeds a literal `\n` between fields, so a Windows
+  checkout with `core.autocrlf=true` matched nothing: 0 tools parsed, 81 bogus
+  "not in the registry" errors, and `npm run build` failing at prebuild on any
+  fresh clone. Every source read in the five i18n scripts now normalises CRLF
+  on READ, the way `gen-converters.mjs` already did — writes are untouched.
+  Measured on a real `git worktree add`: 81 errors before, a clean 168-page
+  build after, with the tree still CRLF.
+
+  Worth keeping: only `i18n-audit.mjs` actually failed. `i18n-keys.mjs`,
+  `verify-build.mjs` and `i18n-list.mjs` were run against the same CRLF tree
+  and passed unchanged — their parsers anchor at line start, are bounded at
+  BOTH ends so a failed `$` is dropped and the next-`const` bound still closes
+  the block, and `parseCsv()` already strips a trailing `\r`. The
+  normalisation there is hardening, and each script's comment says so rather
+  than implying it fixed something.
+
+  The exception is `i18n-hardcoded.mjs`, where `gateTargets()`'s `section()`
+  was anchored at ONE end — `rest.slice(0, rest.search(/^\};?$/m))`, which
+  returns `slice(0, -1)` when the match fails, i.e. the whole file from the
+  const onwards, so `SHIPPED_TOOLS` swallowed `SHIPPED_PAGES` and everything
+  after. CRLF makes that failure certain. This is §4.28/§4.35's bug a third
+  time, and it is now bounded at both ends like the others. It never surfaced
+  because the over-broad gate still found nothing to report.
 - **`/hi/account` and `/hi/dashboard` are unswept.** Both are auth-gated and
   there is no test account, so their strings have never been seen rendered.
   The dictionaries are complete per `i18n:keys` and each route's payload was

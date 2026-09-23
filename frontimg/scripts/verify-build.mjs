@@ -31,6 +31,17 @@ import { fileURLToPath } from "node:url";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const out = join(root, "out");
 
+/**
+ * Read a file as LF — see the note in i18n-audit.mjs, which is the script that
+ * genuinely breaks on a CRLF checkout.
+ *
+ * This one passed unchanged: block() is bounded at both ends and degrades to
+ * the next-const bound, and the registry parse anchors at line start. The
+ * files under out/ are written by Next and are always LF, so normalising those
+ * reads is a no-op kept for uniformity. Hardening, not a fix.
+ */
+const readText = (p) => readFileSync(p, "utf8").replace(/\r\n/g, "\n");
+
 const MIN_WORDS = 900;
 const MAX_SIMILARITY = 0.6;
 
@@ -43,7 +54,7 @@ if (!existsSync(out)) {
 // Sliced on `id:` boundaries rather than brace-matched: every TOOLS entry
 // starts with `id:` and the fields we need appear once each before the next
 // one, so this survives formatting changes that a brace regex would not.
-const toolsSrc = readFileSync(join(root, "src", "lib", "tools.ts"), "utf8");
+const toolsSrc = readText(join(root, "src", "lib", "tools.ts"));
 const idMatches = [...toolsSrc.matchAll(/^ {4}id:\s*"([^"]+)",/gm)];
 const tools = [];
 for (let i = 0; i < idMatches.length; i++) {
@@ -65,7 +76,7 @@ if (tools.length === 0) {
 }
 
 const converterSlugs = new Set(
-  [...readFileSync(join(root, "src", "lib", "converters", "pairs.ts"), "utf8")
+  [...readText(join(root, "src", "lib", "converters", "pairs.ts"))
     .matchAll(/^\s{4}slug:\s*"([a-z0-9-]+)"/gm)].map((m) => m[1]),
 );
 
@@ -118,7 +129,7 @@ for (const { slug, seoTitle } of tools) {
     errors.push(`${slug}: no out/${slug}.html (registry says live — sitemap will ship a 404)`);
     continue;
   }
-  const html = readFileSync(file, "utf8");
+  const html = readText(file);
 
   const h1s = html.match(/<h1[\s>]/g) || [];
   if (h1s.length !== 1) errors.push(`${slug}: expected exactly one <h1>, found ${h1s.length}`);
@@ -182,7 +193,7 @@ function block(src, name) {
   const ends = [rest.search(/^\};?$/m), rest.slice(1).search(/^(export )?const /m) + 1].filter((i) => i > 0);
   return rest.slice(0, Math.min(...ends) + 2);
 }
-const srcFile = (p) => readFileSync(join(root, "src", p), "utf8");
+const srcFile = (p) => readText(join(root, "src", p));
 const localeList = [...(/export const LOCALES = \[([^\]]*)\]/.exec(srcFile("i18n/config.ts"))?.[1] ?? "").matchAll(/"([^"]+)"/g)]
   .map((m) => m[1])
   .filter((l) => l !== "en");
@@ -202,13 +213,13 @@ for (const loc of localeList) {
       continue;
     }
     localized.push(label);
-    const html = readFileSync(file, "utf8");
+    const html = readText(file);
     const h1s = html.match(/<h1[\s>]/g) || [];
     if (h1s.length !== 1) errors.push(`${label}: expected exactly one <h1>, found ${h1s.length}`);
 
     const modFile = join(root, "src", "content", "tools", `${id}.${loc}.ts`);
     const want = existsSync(modFile)
-      ? /^ {2}metaTitle:\s*\n?\s*"((?:[^"\\]|\\.)*)"/m.exec(readFileSync(modFile, "utf8"))?.[1]?.replace(/\\"/g, '"')
+      ? /^ {2}metaTitle:\s*\n?\s*"((?:[^"\\]|\\.)*)"/m.exec(readText(modFile))?.[1]?.replace(/\\"/g, '"')
       : null;
     const t = /<title>([\s\S]*?)<\/title>/.exec(html);
     const title = t ? decode(t[1].trim()) : null;
@@ -254,7 +265,7 @@ const smFile = join(out, "sitemap.xml");
 if (!existsSync(smFile)) {
   errors.push("out/sitemap.xml missing");
 } else {
-  const sm = readFileSync(smFile, "utf8");
+  const sm = readText(smFile);
   const urls = [...sm.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
   for (const u of urls) {
     const path = u.replace(/^https?:\/\/[^/]+\//, "").replace(/\/$/, "");

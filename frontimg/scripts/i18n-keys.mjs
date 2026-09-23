@@ -27,6 +27,19 @@ import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const SRC = join(root, "src");
+
+/**
+ * Read a source file as LF — see the note in i18n-audit.mjs, which is the
+ * script that genuinely breaks on a CRLF checkout.
+ *
+ * This one was checked against such a checkout and passed unchanged: its
+ * patterns anchor at line START (`^\s*(id|slug):`) or not at all (T_CALL), and
+ * none of them embeds a literal \n, so a trailing \r never lands inside a
+ * capture. The normalisation is hardening against the next pattern someone
+ * adds here, not a fix for a live failure.
+ */
+const readText = (p) => readFileSync(p, "utf8").replace(/\r\n/g, "\n");
+
 const args = process.argv.slice(2).filter((a) => !a.startsWith("--"));
 const locale = args[0] ?? null;
 const only = new Set(args.slice(1));
@@ -62,7 +75,7 @@ function walk(dir, out = []) {
 /** English slug → tool id, from the registry. */
 function slugToId() {
   const map = new Map();
-  const src = readFileSync(join(SRC, "lib", "tools.ts"), "utf8");
+  const src = readText(join(SRC, "lib", "tools.ts"));
   let id = null;
   for (const m of src.matchAll(/^\s*(id|slug):\s*"([^"]+)",/gm)) {
     if (m[1] === "id") id = m[2];
@@ -122,7 +135,7 @@ for (const file of walk(SRC)) {
   if (/[\\/]i18n[\\/]dictionaries[\\/]/.test(file) || /[\\/]content[\\/]tools[\\/]/.test(file)) continue;
   const bucket = bucketOf(file);
   if (!bucket) continue;
-  const src = stripComments(readFileSync(file, "utf8"));
+  const src = stripComments(readText(file));
   for (const m of src.matchAll(T_CALL)) {
     const key = m[1].replace(/\\"/g, '"').replace(/\\\\/g, "\\");
     if (!buckets.has(bucket)) buckets.set(bucket, new Set());
@@ -135,7 +148,7 @@ function readKeys(file, indent) {
   const out = new Set();
   if (!existsSync(file)) return out;
   const re = new RegExp(`^\\s{${indent}}"((?:[^"\\\\]|\\\\.)*)":`, "gm");
-  for (const m of readFileSync(file, "utf8").matchAll(re)) out.add(m[1].replace(/\\"/g, '"').replace(/\\\\/g, "\\"));
+  for (const m of readText(file).matchAll(re)) out.add(m[1].replace(/\\"/g, '"').replace(/\\\\/g, "\\"));
   return out;
 }
 
