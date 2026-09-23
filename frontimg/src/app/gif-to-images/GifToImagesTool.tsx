@@ -11,6 +11,7 @@ import { BackgroundPicker, resolveBg, type BgValue } from "@/components/Backgrou
 import { canvasToBlob, downloadBlob, zipAndDownload, baseName, mimeExt, type ExportMime } from "@/lib/image/raster";
 import { useHandoff } from "@/lib/tool-handoff";
 import { useT } from "@/i18n/I18nScope";
+import { translateError } from "@/i18n/errors";
 
 const ACCENT = "#B85C8C";
 const ACCEPT = "image/gif,.gif";
@@ -91,7 +92,7 @@ export function GifToImagesTool() {
       toast.success(out.length === 1 ? t("Extracted 1 frame.") : t("Extracted {n} frames.", { n: out.length }));
     } catch (err) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : t("Couldn't read that GIF."));
+      toast.error(translateError(err, t, "Couldn't read that GIF."));
     } finally {
       setIsWorking(false);
     }

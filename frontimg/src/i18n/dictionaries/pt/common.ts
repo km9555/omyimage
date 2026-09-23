@@ -343,6 +343,7 @@ export const ptCommon: Record<string, string> = {
   "Couldn't reach the processing server for this large file.":
     "Não foi possível conectar ao servidor de processamento para este arquivo grande.",
   "Couldn't reach the processing server.": "Não foi possível conectar ao servidor de processamento.",
+  "No image selected.": "Nenhuma imagem selecionada.",
   "The server did not start the job. Please try again.": "O servidor não iniciou a tarefa. Tente novamente.",
   "Timed out waiting for the server to finish.": "Tempo esgotado esperando o servidor terminar.",
   // …and the backend's own user-facing sentences (backend/src/routes/image).

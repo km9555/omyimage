@@ -14,6 +14,7 @@ import {
 } from "@/lib/image/raster";
 import { useHandoff } from "@/lib/tool-handoff";
 import { useFormatBytes, useT } from "@/i18n/I18nScope";
+import { translateError } from "@/i18n/errors";
 
 const ACCENT = "#6E7A8A";
 const ACCEPT = "image/jpeg,image/png,image/webp";
@@ -124,7 +125,7 @@ export function GrayscaleTool() {
       toast.success(out.length === 1 ? t("Converted 1 image to grayscale.") : t("Converted {n} images to grayscale.", { n: out.length }));
     } catch (err) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : t("Grayscale failed."));
+      toast.error(translateError(err, t, "Grayscale failed."));
     } finally {
       setIsWorking(false);
     }

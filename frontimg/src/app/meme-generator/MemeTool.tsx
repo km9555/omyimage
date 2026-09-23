@@ -11,6 +11,7 @@ import { BackgroundPicker } from "@/components/BackgroundPicker";
 import { decodeBitmap, canvasToBlob, downloadBlob, baseName, mimeExt, type ExportMime } from "@/lib/image/raster";
 import { useHandoff } from "@/lib/tool-handoff";
 import { useT } from "@/i18n/I18nScope";
+import { translateError } from "@/i18n/errors";
 
 const ACCENT = "#C98B3E";
 const ACCEPT = "image/jpeg,image/png,image/webp,image/gif";
@@ -136,7 +137,7 @@ export function MemeTool() {
       toast.success(t("Meme exported — download started."));
     } catch (err) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : t("Export failed."));
+      toast.error(translateError(err, t, "Export failed."));
     } finally {
       setIsWorking(false);
     }

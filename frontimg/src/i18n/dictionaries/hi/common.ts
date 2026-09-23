@@ -360,6 +360,7 @@ export const hiCommon: Record<string, string> = {
   "Couldn't reach the processing server for this large file.":
     "इस बड़ी फ़ाइल के लिए प्रोसेसिंग सर्वर से कनेक्ट नहीं हो सका।",
   "Couldn't reach the processing server.": "प्रोसेसिंग सर्वर से कनेक्ट नहीं हो सका।",
+  "No image selected.": "कोई इमेज नहीं चुनी गई।",
   "The server did not start the job. Please try again.": "सर्वर ने काम शुरू नहीं किया। फिर कोशिश करें।",
   "Timed out waiting for the server to finish.": "सर्वर के पूरा होने का इंतज़ार करते-करते समय ख़त्म हो गया।",
   // …and the backend's own user-facing sentences (backend/src/routes/image).

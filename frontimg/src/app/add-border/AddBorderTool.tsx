@@ -19,6 +19,7 @@ import {
 } from "@/lib/image/frame";
 import { useHandoff } from "@/lib/tool-handoff";
 import { useFormatBytes, useLocale, useT } from "@/i18n/I18nScope";
+import { translateError } from "@/i18n/errors";
 
 const ACCENT = "#D08048";
 const ACCEPT = "image/jpeg,image/png,image/webp";
@@ -291,7 +292,7 @@ export function AddBorderTool() {
       toast.success(out.length === 1 ? t("Added a border to 1 image.") : t("Added a border to {n} images.", { n: out.length }));
     } catch (err) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : t("Adding the border failed."));
+      toast.error(translateError(err, t, "Adding the border failed."));
     } finally {
       setIsWorking(false);
     }

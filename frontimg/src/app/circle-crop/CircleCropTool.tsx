@@ -20,6 +20,7 @@ import {
 } from "@/lib/image/crop";
 import { useHandoff } from "@/lib/tool-handoff";
 import { useFormatBytes, useLocale, useT } from "@/i18n/I18nScope";
+import { translateError } from "@/i18n/errors";
 
 const ACCENT = "#3E96AE";
 const ACCEPT = "image/jpeg,image/png,image/webp";
@@ -173,7 +174,7 @@ export function CircleCropTool() {
       toast.success(outItems.length === 1 ? t("Circle-cropped 1 image.") : t("Circle-cropped {n} images.", { n: outItems.length }));
     } catch (err) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : t("Circle crop failed."));
+      toast.error(translateError(err, t, "Circle crop failed."));
     } finally {
       setIsWorking(false);
     }
