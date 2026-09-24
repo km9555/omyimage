@@ -265,6 +265,15 @@ const SHIPPED_PAGES: Record<TranslatedLocale, string[]> = {
     "/terms",
     "/refunds",
     "/cookies",
+    // Batch 11 — the first static block. All five are shared components: two
+    // take a dict prop, three an <I18nScope>. /image-converter had to wait for
+    // the converter layer (batches 5–6), because its cards and format essays
+    // are read from it.
+    "/contact",
+    "/image-converter",
+    "/pricing",
+    "/login",
+    "/signup",
   ],
 };
 
