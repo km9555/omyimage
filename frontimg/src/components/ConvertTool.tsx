@@ -60,8 +60,10 @@ export interface ConvertConfig {
   sourceLabel?: string;
   /**
    * May an oversize file be offloaded to the backend? Defaults true.
-   * MUST be false when the SOURCE is a format Sharp cannot decode — BMP is the
-   * live case: `looksLikeImage()` accepts BMP magic bytes so the upload passes
+   * MUST be false when the SOURCE is a format Sharp cannot decode. BMP, the
+   * live case, is also excluded per file (`serverCanDecode`) so mixed-source
+   * routes such as convert-to-jpg can keep the fallback for PNG/WEBP/GIF:
+   * `looksLikeImage()` accepts BMP magic bytes so the upload passes
    * validation, then libvips has no BMP loader and the conversion throws.
    */
   serverFallback?: boolean;
@@ -102,6 +104,18 @@ type Item = {
 
 let counter = 0;
 const uid = () => `f${Date.now()}_${counter++}`;
+
+/**
+ * False for a BMP, which Sharp/libvips cannot decode. Checks the "BM"
+ * signature as well as `kindOf`, because the backend validates by magic bytes:
+ * a BMP whose name or MIME says otherwise (image/x-ms-bmp, no extension) would
+ * still reach Sharp and throw.
+ */
+async function serverCanDecode(file: File): Promise<boolean> {
+  if (kindOf(file) === "bmp") return false;
+  const head = new Uint8Array(await file.slice(0, 2).arrayBuffer());
+  return !(head[0] === 0x42 && head[1] === 0x4d);
+}
 
 export function ConvertTool({ config }: { config: ConvertConfig }) {
   const t = useT();
@@ -199,12 +213,17 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
             : null;
         let blob: Blob;
         let onServer = false;
-        if (serverFallback && (await shouldUseServerForFile(it.file))) {
+        if (
+          serverFallback &&
+          (await serverCanDecode(it.file)) &&
+          (await shouldUseServerForFile(it.file))
+        ) {
           // Past the browser's canvas ceiling or the byte cap → offload to the
           // shared oMyPDF backend (Sharp, /api/image/*).
-          // Gated on `serverFallback`: Sharp/libvips cannot DECODE bmp, so a
-          // large BMP sent here throws instead of converting. Those pairs keep
-          // everything in the browser, where canvas handles BMP fine.
+          // Gated per file as well as per route: Sharp/libvips cannot DECODE
+          // bmp, so a large BMP sent here throws instead of converting. A BMP
+          // stays in the browser, where canvas handles it fine, even on a
+          // mixed-source route that offloads its other formats.
           const r = await processOnServer("/api/image/convert", it.file, {
             format: toServerFormat(targetMime),
             quality: quality_,
