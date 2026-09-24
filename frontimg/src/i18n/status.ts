@@ -208,6 +208,13 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "compress-image",
     "upscale-image",
     "image-to-pdf",
+    // Batch 2 — editor foto ~162K, gabung(kan) foto ~121K, ubah ukuran/resize
+    // foto ~66K, bingkai foto 33K, color picker 27K.
+    "image-editor",
+    "merge-images",
+    "resize-image",
+    "add-border",
+    "image-color-picker",
   ],
 };
 
