@@ -257,7 +257,13 @@ export const ruCommon: Record<string, string> = {
   "{n} files ready — downloads as a ZIP|one": "{n} файл готов — скачается одним ZIP",
   "{n} files ready — downloads as a ZIP|few": "{n} файла готовы — скачаются одним ZIP",
   "Convert to {format}": "Конвертировать в {format}",
-  "Convert {n} to {format}": "Конвертировать {n} в {format}", // i18n-plural-invariant
+  // English gets away with a bare numeral here ("Convert 2 to JPG"); Russian
+  // does not — it reads like a machine translation without the noun. Naming
+  // «файл» makes it natural, at the cost of needing the three forms. Matches
+  // the «{n} файлов готово» line above, which the button sits directly under.
+  "Convert {n} to {format}": "Конвертировать {n} файлов в {format}",
+  "Convert {n} to {format}|one": "Конвертировать {n} файл в {format}",
+  "Convert {n} to {format}|few": "Конвертировать {n} файла в {format}",
   "Output:": "Результат:",
   "Quality": "Качество",
   "Auto-rotate by EXIF orientation": "Автоповорот по EXIF",

@@ -119,7 +119,13 @@ export const ruConverters: Dict = {
 
   // ── ConverterPage chrome ────────────────────────────────────────────────
   "Why convert {from} to {to}?": "Зачем конвертировать {from} в {to}?",
-  "{from} and {to}, briefly": "Коротко о {from} и {to}",
+  // Deliberately NOT «Коротко о {from} и {to}». The preposition «о» becomes
+  // «об» before a vowel sound, so that phrasing produces «Коротко о AVIF»
+  // where Russian wants «об AVIF» (а́виф). Every other format id here starts
+  // with a consonant sound, so it would be one wrong heading out of ten — and
+  // a new format could add more. Putting the names in front of the colon
+  // removes the seam for any id, present or future.
+  "{from} and {to}, briefly": "{from} и {to}: коротко о форматах",
   "How to convert {from} to {to}": "Как конвертировать {from} в {to}",
   "Going the other way?": "Нужно в обратную сторону?",
   "Convert {name}": "Конвертировать: {name}",

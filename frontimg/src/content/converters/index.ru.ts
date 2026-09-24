@@ -4,6 +4,11 @@ import webpToJpg from "./webp-to-jpg.ru";
 import jpgToWebp from "./jpg-to-webp.ru";
 import pngToWebp from "./png-to-webp.ru";
 import jfifToJpg from "./jfif-to-jpg.ru";
+import gifToPng from "./gif-to-png.ru";
+import gifToJpg from "./gif-to-jpg.ru";
+import bmpToJpg from "./bmp-to-jpg.ru";
+import avifToJpg from "./avif-to-jpg.ru";
+import avifToPng from "./avif-to-png.ru";
 
 /**
  * Every Russian converter pair, keyed by the ENGLISH slug (the pair id), which
@@ -19,4 +24,9 @@ export const RU_PAIR_COPY: Record<string, LocalizedPairCopy> = {
   "jpg-to-webp": jpgToWebp,
   "png-to-webp": pngToWebp,
   "jfif-to-jpg": jfifToJpg,
+  "gif-to-png": gifToPng,
+  "gif-to-jpg": gifToJpg,
+  "bmp-to-jpg": bmpToJpg,
+  "avif-to-jpg": avifToJpg,
+  "avif-to-png": avifToPng,
 };
