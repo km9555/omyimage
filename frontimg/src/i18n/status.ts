@@ -157,6 +157,13 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "grayscale-image",
     "merge-images",
     "image-color-picker",
+    // Batch 5 — the converter layer comes alive for Russian. These routes are
+    // GENERATED (npm run gen:converters), never hand-written.
+    "webp-to-png",
+    "webp-to-jpg",
+    "jpg-to-webp",
+    "png-to-webp",
+    "jfif-to-jpg",
   ],
 };
 
