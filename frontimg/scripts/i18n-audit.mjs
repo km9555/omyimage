@@ -82,7 +82,20 @@ const CONVERTERS = new Set([...read("lib/converters/pairs.ts").matchAll(/^\s+slu
 
 // ── Locales ─────────────────────────────────────────────────────────────
 const config = read("i18n/config.ts");
-const LOCALES = strings(/export const LOCALES = \[([^\]]*)\]/.exec(config)?.[1]).filter((l) => l !== "en");
+/* Parse LOCALE_META's keys, NOT `export const LOCALES`. Phase 0A turned that
+   export into `Object.keys(LOCALE_META)`, which the old array regex could not
+   match — so LOCALES came back empty and the entire per-locale loop below
+   silently did nothing for seven Russian batches. The zero guard is the real
+   fix: a gate that checks nothing must fail, not pass. Same parser as
+   scripts/gen-converters.mjs. */
+const metaBlock = /export const LOCALE_META = \{([\s\S]*?)\n\} as const/.exec(config)?.[1] ?? "";
+const LOCALES = [...metaBlock.matchAll(/^  ([a-z]{2}(?:-[A-Za-z]+)?): \{/gm)]
+  .map((m) => m[1])
+  .filter((l) => l !== "en");
+if (LOCALES.length === 0) {
+  console.error("Parsed zero translated locales from config.ts LOCALE_META — has its shape changed?");
+  process.exit(1);
+}
 
 const slugsSrc = read("i18n/slugs.ts");
 const pathsSrc = read("i18n/static-paths.ts");

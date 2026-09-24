@@ -171,6 +171,13 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "bmp-to-jpg",
     "avif-to-jpg",
     "avif-to-png",
+    // Batch 7 — hand-written tool pages again. heic-to-png shares HeicTool
+    // with heic-to-jpg, so its `ui` block is a deliberate duplicate.
+    "rotate-image",
+    "heic-to-png",
+    "image-to-base64",
+    "png-to-jpg",
+    "remove-exif",
   ],
 };
 

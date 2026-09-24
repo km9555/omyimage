@@ -92,7 +92,7 @@ const content: ToolPageContent = {
 
   features: [
     {
-      icon: "picture_as_pdf",
+      icon: "reorder",
       title: "Порядок страниц под контролем",
       description:
         "Переставляйте снимки стрелками и смотрите постраничный предпросмотр — в готовом документе будет ровно то, что вы видели.",
@@ -184,7 +184,9 @@ const content: ToolPageContent = {
     "Created a PDF with {n} pages.|one": "Создан PDF из {n} страницы.",
     "Created a PDF with {n} pages.|few": "Создан PDF из {n} страниц.",
     "Couldn't create the PDF.": "Не удалось создать PDF.",
-    "{orientation} — {name}": "{orientation} — {name}",
+    // Pure template — both slots are filled with already-translated values,
+    // so there is nothing here to translate.
+    "{orientation} — {name}": "{orientation} — {name}", // i18n-same
     "Clear images": "Убрать изображения",
     "PDF settings": "Настройки PDF",
     "PDF Settings": "Настройки PDF",
