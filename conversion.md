@@ -187,9 +187,23 @@ the page just renders English.
     suffixed key never appears in source for `i18n-keys.mjs` to find.
     Beware `resolvedOptions().pluralCategories`: it is the DECLARED set and
     over-reports. Portuguese declares `many`, which never fires for any integer.
+17. **Nothing to do for the charset gate** — it reads the `script` you set in
+    step 1. `npm run i18n:charset` then asserts that every character in the
+    locale's files belongs either to a universal block or to that script. It
+    exists because a stray CJK character was typed into Russian prose twice
+    and survived every other gate (§10.6).
 
 Then `npm run i18n:audit` (slugs: ASCII, unique, no collision with a static
-path; every gate entry has its route and module) and `npm run i18n:plurals`.
+path; every gate entry has its route and module), `npm run i18n:plurals` and
+`npm run i18n:charset`.
+
+> **The gates that read `LOCALE_META` must fail when they parse zero locales.**
+> `i18n-audit.mjs` and `verify-build.mjs` both spent seven Russian batches
+> silently checking nothing, still printing "passed", because Phase 0A changed
+> the shape they were parsing (§10.4). All five now carry the guard. If you
+> change `LOCALE_META`'s shape, run the gates and confirm each still NAMES the
+> locales it checked — a gate that prints no locale line is not passing, it is
+> not running.
 
 ---
 
@@ -1094,3 +1108,305 @@ harder to read, since every page competes for both shapes at once.
 If the data ever shows the Devanagari phrasing carrying the impressions, the
 change is an H1 swap across 40 tool pages, not a rewrite: the native term is
 already in the body of each one.
+
+## 10. Russian (`/ru`)
+
+Shipped 2026-09-24 in twelve batches on a branch of its own, straight to
+**54 pages** — no pilot. Hindi's pilot existed because nobody could show a
+Hindi-script tool page would win its query; Russian had no such doubt
+(iLoveIMG ranks #1 or #2 on almost every Russian head term with the same
+page shape we ship), so the open question was priority, not viability.
+
+Everything below is what Russian taught that Portuguese and Hindi could not.
+
+### 10.1 The brief changed shape: locale #4, not locale #3
+
+The instruction was "add Russian **and** plan for more languages". So the
+rollout opens with **Phase 0A**, a generalisation pass that moved zero bytes
+of output and was proved so by the snapshot diff:
+
+- `i18n/config.ts` — five parallel `Record<Locale, …>` collapsed into one
+  `LOCALE_META` row per locale. `LOCALE_PREFIX`, `LOCALE_TAG`, `OG_LOCALE`,
+  `LOCALE_SCRIPT` and `LOCALE_LABEL` are now derived views, so none of their
+  call sites changed. **One row per new locale instead of five.**
+- `lib/converters/i18n.ts` — three records became one `LOCALE_CONVERTERS`
+  registry of `{dict, essays, pairs}`.
+- `lib/tool-search.ts` — the normaliser's growing character class became a
+  named `SCRIPT_RANGES` map, so a new script is a data edit.
+- `app/layout.tsx` — font subsets and `LANG_MAP` read from `LOCALES`.
+- `scripts/gen-converters.mjs` and `scripts/i18n-list.mjs` — both had a
+  duplicated locale list; both now parse `LOCALE_META`.
+- New gate `scripts/i18n-plurals.mjs` (§10.3) and, later, new gate
+  `scripts/i18n-charset.mjs` (§10.6).
+
+Branch: cut from `hindi` as `russian`, so the ~8 shared files were edited once
+in sequence rather than conflicting. Staggered indexing is achieved by merging
+to `main` separately with a gap — publish order, not git order, is what Google
+sees.
+
+### 10.2 Decisions, with the evidence
+
+| Decision | Ruling | Why |
+|---|---|---|
+| Tool slugs | **English, under `/ru/`** | `iloveimg.com/ru/compress-image` returns 200; the transliterated `/ru/szhat-izobrazhenie` 404s. Same call Hindi made, and `i18n-audit.mjs` requires ASCII slugs anyway |
+| Head noun | **`фото`**, with `изображение` secondary in body copy | сжать **фото** 2,900/mo · сжать **изображение** 590 · сжать **картинку** 50. A ~5:1 answer, unlike Hindi, which had to hedge across two head terms because the data never arrived |
+| Verbs | **Native** — сжать, обрезать, удалить, улучшить, уменьшить, размыть | the loanword `конвертировать` is accepted for format pairs *only*; format names stay Latin (JPG, PNG, HEIC) |
+| Pair page titles | **Verb-led metaTitle, bare pair H1** | конвертировать png в jpg 110/mo (transactional) beats png в jpg 90 (informational); the H1 keeps the bare pair because it reads as a heading and matches `tools.ts` |
+| Register | Formal **вы**, lowercase | capitalised `Вы` is letter-writing register and wrong for UI |
+| Byte units | **Cyrillic** — Б / КБ / МБ, via `format.ts` `BYTE_UNITS` | standard in Russian; "KB" in a file listing reads as foreign |
+| ms / fps | **Left Latin**, as in pt and hi | «мс» would be equally correct, but the string is marked `i18n-raw` in a shared component and changing it moves every locale for no gain |
+| Numerals & dates | **Nothing to override** | ICU already gives `ru` → `04.09.2026` and `1 234 567,89`. `SHORT_DATE_OVERRIDE` needs no `ru` row — cheaper than Hindi, which did |
+| Font | **No second face** | Inter already ships `cyrillic` and `cyrillic-ext`; adding the subset was the whole change. Hindi needed Noto Sans Devanagari *and* a `:lang()` block |
+| ALL CAPS | **Stays upper case** | Russian has case, unlike Devanagari. The meme generator's drawn-in captions are «ВЕРХНИЙ ТЕКСТ» / «НИЖНИЙ ТЕКСТ» |
+| Quotes | **«ёлочки»** in prose | and they turned out to be the answer to three separate agreement problems (§10.5) |
+| ё | **Written in content, folded in search** | `tool-search.ts` strips the diaeresis, so «ёлка» and «елка» are one key. Unlike Hindi's anusvara pairs, which are genuinely different codepoints and had to be listed twice |
+
+**Demand order is not Portuguese's or Hindi's.** Both opened with compression;
+Russian must not. Page-level demand measured on iLoveIMG's own `/ru`:
+remove-background ~103,160/mo · upscale-image ~59,480 · convert-to-jpg 17,800 ·
+compress-image 12,920. Compression is fourth.
+
+**The measurement caveat that governs all of it:** DataForSEO returns **no
+Russian-language data for Russia** — location 2643 errors with "Language 'ru'
+is not available". Every Russian figure in this section comes from
+**Kazakhstan (2398)**, which does serve `ru`. Russia is also roughly 60%
+Yandex. Use these numbers to *order* the work, which is what they are good
+for; do not treat them as a forecast. The long tail is under-reported badly —
+the batch 6–7 terms measured 10–110/mo where the head terms measured
+2,400–40,500 — so use the proxy to choose *phrasing*, not to decide whether a
+page is worth writing. All five EXIF/metadata phrasings returned literally no
+data; `remove-exif` was written on merit.
+
+### 10.3 Plural was the only thing that could fail structurally
+
+Everything else in a locale rollout is editorial. This was not.
+
+There was no plural machinery: every count was a ternary at the call site,
+`items.length === 1 ? t("1 image") : t("{n} images", { n })` — a two-form
+model, across **46 call sites and 75 distinct `{n}` keys**. Russian needs
+three forms, and it is not a size rule but `n % 10` / `n % 100`, so **21 takes
+the singular and 11 does not**.
+
+`Intl.PluralRules("ru")` returns exactly `one` / `few` / `many`, verified:
+`one: 1, 21, 31, 101` · `few: 2, 3, 4, 22` · `many: 0, 5, 11, 12, 25, 111`.
+
+**The fix keeps all 46 call sites untouched.** When `vars.n` is a finite
+number, `makeT` probes `"<key>|<category>"` before the ordinary lookup:
+
+```ts
+const category = pluralCategory(locale, n);
+if (category !== "other") {
+  const form = scope?.[`${key}|${category}`] ?? common[`${key}|${category}`];
+  if (form !== undefined) return interpolate(form, vars);
+}
+```
+
+The base (unsuffixed) key is the `many` form, and `|one` / `|few` are
+siblings. English, Portuguese and Hindi define no siblings, so the probe
+misses and falls straight through — **zero output change**, proved in the
+snapshot diff. The mechanism is generic: Polish, Czech and Arabic get it free.
+
+Three things worth knowing about it:
+
+1. **The probe keys off `vars.n`, not off the text.** A key with no `{n}` in
+   it still resolves its siblings if the call passes `n`. That is how
+   `GifToImagesTool`'s bare noun was fixed — the component renders the count
+   in its own `<span>` for styling, so the noun reached `t()` alone:
+   `t("frames")` became `t("frames", { n: count })`, and «2 кадра»,
+   «5 кадров», «21 кадр» all resolve. English still prints "21 frames".
+2. **Oblique cases collapse `few` onto `many`, and that is correct.** «у 2
+   файлов» and «у 5 файлов» are the same word; only `one` («у 21 файла»)
+   differs. Both siblings are still listed — the identical string is the right
+   answer, not a missing one. Contrast «обрезать в круг {n} файлов», plain
+   accusative, where all three genuinely differ.
+3. **Some counted keys are genuinely invariant** and are marked
+   `// i18n-plural-invariant`: a parenthesised count («Выбранные файлы ({n})»),
+   a numeral that follows its noun («Кадр {n}»), a percentage («Экономия
+   {n}%»), and `{done} of {total}` progress lines.
+
+**New gate: `scripts/i18n-plurals.mjs`.** For any locale whose
+`Intl.PluralRules` reports more than two categories, every `{n}` key in its
+dictionaries must have the required siblings or carry the invariant marker.
+This is the one gate `i18n-keys.mjs` structurally *cannot* provide, because it
+only sees literals that reach `t()` — it can never know `|few` is missing.
+
+> **The first version of this gate cried wolf** and is worth recording. It
+> used `resolvedOptions().pluralCategories`, which reports what a locale
+> *declares*. Portuguese declares `many` (for compact notation like "1 million"),
+> so the gate demanded 164 sibling keys from an already-correct pt locale.
+> Fixed by *measuring* which categories actually fire on integers 0–1000
+> rather than asking what is declared. Checked to 2,000,000: pt `many` never
+> fires.
+
+**Verify plural in the browser at 1 / 2 / 5 / 21, not just 1 and 2.** 21 is
+the case that proves `|one` is wired and the one a reviewer skips. Done on
+`compress-image`, `remove-exif`, `circle-crop`, `gif-to-images`, `blur-face`
+and `html-to-image`.
+
+> **A bug that was not one.** «Изменить размер 3 изображений» looked wrong and
+> was checked before being "fixed": «изменить размер» governs the genitive,
+> which collapses `few` onto `many`. The obvious correction would have
+> introduced the error.
+
+### 10.4 A gate that silently checked nothing for seven batches
+
+Phase 0A changed `export const LOCALES` from a literal array to
+`Object.keys(LOCALE_META)`. `i18n-audit.mjs` parsed it with
+`/export const LOCALES = \[([^\]]*)\]/`, which no longer matched, so `LOCALES`
+came back **empty** and the entire per-locale loop — slugs, gates↔disk,
+`tagline`, `locale` field, icon drift, FAQ drift, section drift, Portuguese
+vocabulary — did nothing. It still printed **"i18n audit passed."**
+
+It surfaced because `/ru/heic-to-png` printed two English sentences:
+`ToolPageShell` falls back to `lib/tools.ts` `seoDescription` when a content
+module has no `tagline`, which is invisible on the English page. The audit has
+*always* required `tagline`. It simply was not running.
+
+Two fixes, and the second is the important one:
+
+1. Parse `LOCALE_META`'s keys, the way `gen-converters.mjs` already did.
+2. **Fail when zero locales are parsed.** A gate that checks nothing must
+   fail, not pass. `gen-converters.mjs` already had this guard; the audit did
+   not, which is precisely why the regression was silent.
+
+Reviving it surfaced **14 real errors**, all in Russian batches 1–3 and all
+the same one: the feature blocks had been *re-authored* rather than translated,
+so their icons no longer matched the English modules. Features are a design
+contract — pt and hi both translate them one-for-one — and the fourteen blocks
+were brought back onto the English structure.
+
+**`i18n-verify.mjs`'s English-sentence threshold also dropped from 3 to 2.**
+Two English sentences on a localized page is already a defect, and 3 is what
+let the tagline fallback through. All three locales still pass.
+
+A second component-level gap found the same way: `ASPECT_PRESETS` in
+`add-border` rendered `{a.label}` raw. Every entry but the first is a ratio
+that needs no translation, so nobody noticed the first one is the word
+"Original" — printing in English on `/ru` and in **Latin script on `/hi`**.
+
+### 10.5 Case agreement at composition seams — the Russian sweep
+
+Hindi reorders; Russian **inflects**. Any `A <slot> B` string is a risk in a
+way no Latin-script locale prepared us for, and the fixes are almost always in
+the *translation*, not the component — changing a component moves English
+output.
+
+Seven instances, and the shapes repeat:
+
+| Seam | Problem | Answer |
+|---|---|---|
+| `{offload}` in the converter privacy line | fragment was genitive, used as a nominative subject | made the fragment nominative; reworded the one genitive call site as «Исключение — {offload}» |
+| «Коротко о {from} и {to}» | «о» becomes «об» before a vowel sound, so AVIF (а́виф) alone was wrong — 1 of 10 format ids, and a new id could add more | names moved in front of a colon: «{from} и {to}: коротко о форматах». No euphony rule needed, for any id |
+| «Удалить {name}» | the verb takes the accusative; `{name}` defaults to the **translated** «Страница N» | colon form: «Удалить: {name}». Swept across `blur-face`, `circle-crop`, `html-to-image` |
+| «{effect} keeps some of the original detail» | `{effect}` is the SUBJECT, and its six possible values span three genders and a plural | rebuilt around «У эффекта «{effect}» …», where the name sits in quotes after a genitive noun |
+| The signup consent checkbox | «принимать» wants the accusative, which would make the link label «Политику конфиденциальности» — grammatical, and wrong as a *link* | «Я принимаю: Условия использования и Политика конфиденциальности.» Same answer Hindi reached for the same structural reason |
+| The account plan line | `A " " <strong>{plan}</strong> " " B`; B cannot start on a colon or it renders «… Free : …» | «Вы на плане» + «— {allowance}, …»; a spaced em dash is correct Russian punctuation |
+| «Предпросмотр {name}» before a file name | Russian cannot inflect a file name | «Предпросмотр: {name}» |
+
+**Sweep the whole locale for this, not just the page in front of you.** Every
+non-numeric interpolation was checked at the end: format and service names are
+Latin and do not inflect, `{tool}` and `{query}` were already in guillemets,
+`{value}` is a hex code. Guillemets and a colon between them solve most of it.
+
+**The dashboard greeting is a different shape of the same problem.** `"there"`
+is a fallback *word* that lands where a first name goes. Russian has no
+neutral vocative filler — «друг» breaks the formal register, «пользователь»
+reads like a system message — so the slot takes a second greeting instead, the
+way Portuguese uses "por aqui": «С возвращением, рады вас видеть».
+
+### 10.6 New gate: `i18n-charset.mjs`
+
+Twice during this rollout a stray CJK character was typed into Russian prose
+(`符` in `upscale-image`, `から` in `privacy`) and survived every existing gate,
+because nothing checked what *script* a localized file was written in.
+
+`scripts/i18n-charset.mjs` asserts that every character in a locale's files
+belongs either to a universal block (ASCII, punctuation, symbols, emoji) or to
+that locale's own `script`, read from `LOCALE_META`. It honours an
+`i18n-charset-ok` marker for the rare deliberate exception. It is generic by
+construction: a new locale declares its script in one place and is covered.
+
+### 10.7 Verification at close (54 pages, 2026-09-24)
+
+- `tsc --noEmit`, `i18n:audit` (now actually auditing — §10.4),
+  `i18n:hardcoded`, `i18n:charset`, `i18n:plurals`, `gen:converters --check`
+  all clean. **`i18n:keys ru` reports zero missing keys in every bucket.**
+- `i18n:verify ru --all` — **54/54 clean**, at the tightened
+  English-sentence threshold. `/ru/account` and `/ru/dashboard` ship an empty
+  `<h1>` in every locale because they are auth-gated; the script skips it by
+  design.
+- `tracker-ru.csv`: 54 rows, all `done`.
+- `npm run build` + `verify:build` — **40 localized ru tool pages**, matching
+  pt and hi exactly, and the converter-prose similarity ceiling holds at 0.289
+  against a 0.6 limit. (This gate had also been checking zero locales — §10.4.)
+- Sitemap: **48 `/ru` URLs**, identical to pt and hi (54 minus the six
+  `index: false` pages). All **192 URL blocks carry a four-way reciprocal
+  alternate set** (en/pt/hi/ru), and all 192 `ru` hrefs are ASCII, confirming
+  the English-slug rule held across the locale.
+- **Snapshot diff against a real build of the pre-Russian commit** (`8daccd9`,
+  the `hindi` tip), environment matched per §9.5 — `.env.local` copied,
+  `node_modules` copied rather than linked, and the fresh worktree's CRLF
+  checkout noted.
+
+  Raw bytes: 54 files added (53 under `/ru`, plus a new `ru.html`), none
+  removed, and all 168 common files differ — every page gains a Russian
+  hreflang alternate, a row in the language menu and a new Inter module hash,
+  because Inter gained the `cyrillic` subset.
+
+  **Normalised** for exactly those expected changes, 6 files still differ.
+  **Compared on visible text alone, 5 do** — and every one is accounted for:
+
+  - `pt/cookies`, `pt/privacidade`, `hi/cookies`, `hi/privacy` — the
+    `LegalTable headers` prop added in batch 4. The baseline rendered the
+    table headers ("Service", "Purpose", "Privacy Policy") in **English inside
+    the Portuguese and Hindi policies**; they now render translated. An
+    intended fix that improves two other locales.
+  - `image-to-text.html` — another task's uncommitted edit to
+    `image-to-text.en.ts`, which the build picked up. It appears in none of
+    the Russian commits; `git diff --stat` attributes it.
+
+  `pt/remover-fundo` differs in bytes (one fewer RSC script row) and not in
+  visible text, which is what that normalisation exists to separate.
+
+  **The claim this supports is "no unintended change to en, pt or hi"** — not
+  "zero bytes moved", which §9.5 records as the wrong claim to make.
+- In-browser, with real files throughout: Cyrillic search resolving («сжать
+  фото», «убрать фон» via alias, «улучшить качество»), OCR with `rus`
+  preselected recognising a Russian test image at 95% confidence across three
+  lines, hand-built BMPs and animated GIFs decoded to check counted strings at
+  1 / 2 / 5 / 21, a JPEG with a spliced APP1/EXIF block read back as «Марка
+  камеры Canon», face detection and export on `blur-face`, and a real GIF
+  assembled at «Собран GIF из 5 кадров (3 КБ)».
+
+### 10.8 Debt this rollout created
+
+- **Four more legal copies.** `/ru/privacy`, `/ru/terms`, `/ru/refunds` and
+  `/ru/cookies` are written twins, so the §6.5 obligation is now threefold: an
+  English legal edit reaches none of `/pt`, `/hi` or `/ru`.
+- **Ten more converter twins**, so a pair's copy now has four versions.
+- **`/ru/account` and `/ru/dashboard` are unswept** in their signed-in state,
+  exactly as `/hi`'s are — there is no test account. Signed *out*, `/ru/account`
+  correctly redirects to `/ru/login` rather than `/login`, so the locale
+  survives the redirect.
+- **Two English-source debts surfaced, not fixed here.** The contact and
+  pricing pages claim "All 30 tools" when the site ships 40; and the converter
+  hub prints both "to WEBP" and "to WebP" in adjacent elements. The English
+  text *is* the translation key, so correcting the first orphans the matching
+  entry in three locale dictionaries at once — it belongs in its own change,
+  across all four locales, not drifting in one of them.
+
+### 10.9 Still open: Yandex and IndexNow
+
+Deferred to last by decision, and not done at the time of writing. Russia is
+roughly 60% Yandex, so **Search Console will never show most of this locale's
+traffic** — the same blindness that makes the Kazakhstan proxy necessary
+(§10.2), now on the reporting side rather than the research side.
+
+Planned:
+
+- **Yandex.Webmaster** — verify the property, submit the sitemap, confirm
+  `/ru` is crawlable and that the hreflang set is read.
+- **IndexNow** — a key file at the site root plus submission on publish. It is
+  one endpoint for Bing *and* Yandex, which also makes the stale-Bing-state
+  problem (§8) cheaper to re-test.
+- Record here what Yandex reports that Search Console cannot.

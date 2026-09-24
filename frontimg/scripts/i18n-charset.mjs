@@ -73,6 +73,14 @@ function localesFromConfig() {
     if (m[1] === "en") continue;
     out.push({ code: m[1], script: /script: "([a-z]+)"/.exec(m[2])?.[1] ?? "latin" });
   }
+  /* A gate that checks nothing must fail, not pass. i18n-audit.mjs and
+     verify-build.mjs both spent seven Russian batches silently checking zero
+     locales because their parser stopped matching and nothing noticed
+     (conversion.md §10.4). */
+  if (out.length === 0) {
+    console.error("Parsed zero translated locales from config.ts LOCALE_META — has its shape changed?");
+    process.exit(1);
+  }
   return out;
 }
 

@@ -194,9 +194,21 @@ function block(src, name) {
   return rest.slice(0, Math.min(...ends) + 2);
 }
 const srcFile = (p) => readText(join(root, "src", p));
-const localeList = [...(/export const LOCALES = \[([^\]]*)\]/.exec(srcFile("i18n/config.ts"))?.[1] ?? "").matchAll(/"([^"]+)"/g)]
+/* Parse LOCALE_META's keys, NOT `export const LOCALES`. Phase 0A of the
+   Russian rollout turned that export into `Object.keys(LOCALE_META)`, which
+   the old array regex could not match — so this list came back empty and every
+   localized check below, plus the sitemap cross-check that depends on
+   `localized`, silently did nothing while the script still printed "All checks
+   passed." Same fault as i18n-audit.mjs had (conversion.md §10.4). The zero
+   guard is the real fix: a check that checks nothing must fail, not pass. */
+const metaBlock = /export const LOCALE_META = \{([\s\S]*?)\n\} as const/.exec(srcFile("i18n/config.ts"))?.[1] ?? "";
+const localeList = [...metaBlock.matchAll(/^  ([a-z]{2}(?:-[A-Za-z]+)?): \{/gm)]
   .map((m) => m[1])
   .filter((l) => l !== "en");
+if (localeList.length === 0) {
+  console.error("Parsed zero translated locales from config.ts LOCALE_META — has its shape changed?");
+  process.exit(1);
+}
 const localized = []; // shipped localized paths, for the sitemap check
 for (const loc of localeList) {
   const slugMap = Object.fromEntries(
