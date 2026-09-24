@@ -110,7 +110,9 @@ const content: ToolPageContent = {
     "Circle-cropped {n} images.|few": "{n} изображения обрезано в круг.",
     "Circle crop failed.": "Не удалось обрезать в круг.",
     "or drop JPG, PNG or WEBP images here": "или перетащите сюда изображения JPG, PNG или WEBP",
-    "Preview {name}": "Посмотреть {name}",
+    // Matches crop-image's «Просмотр: {name}» — the colon keeps the name in a
+    // slot where the nominative is always correct.
+    "Preview {name}": "Просмотр: {name}",
     "done": "готово",
     "Drag the circle to move it, or a corner handle to resize":
       "Тяните круг, чтобы переместить, или ручку в углу, чтобы изменить размер",

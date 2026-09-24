@@ -191,6 +191,11 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "gif-maker",
     "watermark-image",
     "add-border",
+    // Batch 10 — the three heaviest ui blocks in the locale (blur-face 72
+    // keys, html-to-image 64, image-metadata 26). This closes the tools at 40.
+    "html-to-image",
+    "image-metadata",
+    "blur-face",
   ],
 };
 
