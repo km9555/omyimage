@@ -4,6 +4,11 @@ import webpToJpg from "./webp-to-jpg.id";
 import jpgToWebp from "./jpg-to-webp.id";
 import pngToWebp from "./png-to-webp.id";
 import jfifToJpg from "./jfif-to-jpg.id";
+import gifToPng from "./gif-to-png.id";
+import gifToJpg from "./gif-to-jpg.id";
+import bmpToJpg from "./bmp-to-jpg.id";
+import avifToJpg from "./avif-to-jpg.id";
+import avifToPng from "./avif-to-png.id";
 
 /**
  * Indonesian converter pairs, keyed by the ENGLISH slug (the pair id). /id uses
@@ -13,7 +18,7 @@ import jfifToJpg from "./jfif-to-jpg.id";
  * A pair that is not listed here has no Indonesian page: `pairTranslated()`
  * reads this map, `status.ts` gates the route, and `pairCopy()` falls back to
  * the English data — so the two stay in step instead of an /id route rendering
- * English prose (conversion.md §6.4). Batch 6 adds the other five.
+ * English prose (conversion.md §6.4).
  */
 export const ID_PAIR_COPY: Record<string, LocalizedPairCopy> = {
   "webp-to-png": webpToPng,
@@ -21,4 +26,9 @@ export const ID_PAIR_COPY: Record<string, LocalizedPairCopy> = {
   "jpg-to-webp": jpgToWebp,
   "png-to-webp": pngToWebp,
   "jfif-to-jpg": jfifToJpg,
+  "gif-to-png": gifToPng,
+  "gif-to-jpg": gifToJpg,
+  "bmp-to-jpg": bmpToJpg,
+  "avif-to-jpg": avifToJpg,
+  "avif-to-png": avifToPng,
 };

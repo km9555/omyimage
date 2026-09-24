@@ -230,6 +230,12 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "jpg-to-webp",
     "png-to-webp",
     "jfif-to-jpg",
+    // Batch 6 — closes the converter layer (ten of ten pairs).
+    "gif-to-png",
+    "gif-to-jpg",
+    "bmp-to-jpg",
+    "avif-to-jpg",
+    "avif-to-png",
   ],
 };
 
