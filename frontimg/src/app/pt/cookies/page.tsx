@@ -188,6 +188,7 @@ export default function CookiesPage() {
           Cada um é regido pela própria política:
         </LegalP>
         <LegalTable
+          headers={["Serviço", "Finalidade", "Política de Privacidade"]}
           rows={[
             [
               "Cloudflare",

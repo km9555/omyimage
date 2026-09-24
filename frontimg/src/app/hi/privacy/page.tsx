@@ -219,6 +219,7 @@ export default function PrivacyPage() {
           हम तीसरे पक्षों को कम से कम रखते हैं। oMyImage को चलाने में सिर्फ़ ये शामिल हैं:
         </LegalP>
         <LegalTable
+          headers={["सेवा", "किसलिए", "प्राइवेसी पॉलिसी"]}
           rows={[
             ["Cloudflare", "साइट की होस्टिंग, CDN और DDoS से सुरक्षा", "cloudflare.com/privacypolicy"],
             ["Contabo", "उन टूल के सर्वर की होस्टिंग जो हमारे सर्वर पर प्रोसेस करते हैं", "contabo.com/en/legal/privacy-policy"],

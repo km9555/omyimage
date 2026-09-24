@@ -11,7 +11,7 @@
  * home copy leads with **фото**. «Изображение» stays available for the precise
  * technical sense, but it is not the word that gets typed.
  *
- * «Бесплатно» up front for the same reason «मुफ़्त» leads the Hindi line and
+ * «Бесплатно» up front for the same reason «मुफ़्त» leads the Hindi line and  (i18n-charset-ok: quotes another locale on purpose)
  * «grátis» the Portuguese: on a Russian SERP full of freemium editors, free is
  * the word that decides the click. «Без регистрации» closes on the second
  * objection.

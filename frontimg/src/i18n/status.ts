@@ -219,6 +219,13 @@ const SHIPPED_PAGES: Record<TranslatedLocale, string[]> = {
   // "Русский" from "Скоро" to a live link in the language menus.
   ru: [
     "/",
+    // Batch 4 — the four legal twins. They ship together because they
+    // cross-link each other: a Russian page pointing at an English policy is
+    // exactly the seam a reader notices.
+    "/privacy",
+    "/terms",
+    "/refunds",
+    "/cookies",
   ],
 };
 

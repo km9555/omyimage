@@ -220,6 +220,7 @@ export default function PrivacyPage() {
           oMyImage:
         </LegalP>
         <LegalTable
+          headers={["Serviço", "Finalidade", "Política de Privacidade"]}
           rows={[
             ["Cloudflare", "Hospedagem do site, CDN e proteção contra DDoS", "cloudflare.com/privacypolicy"],
             ["Contabo", "Hospedagem do servidor das ferramentas que processam no nosso servidor", "contabo.com/en/legal/privacy-policy"],

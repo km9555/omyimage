@@ -188,6 +188,7 @@ export default function CookiesPage() {
           पॉलिसी से चलता है:
         </LegalP>
         <LegalTable
+          headers={["सेवा", "किसलिए", "प्राइवेसी पॉलिसी"]}
           rows={[
             [
               "Cloudflare",
