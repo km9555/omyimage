@@ -197,6 +197,12 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "image-metadata",
     "blur-face",
   ],
+  // Indonesian — batches of five, ordered by Indonesian search demand, which
+  // is its own shape again (tracker-id.csv is the plan of record). Written
+  // multi-line even while empty: i18n-list and i18n-audit anchor the closing
+  // bracket at `^  ]`, and a one-line `id: []` reads as nothing at all.
+  id: [
+  ],
 };
 
 /** English paths of the non-tool pages that are live in each locale. */
@@ -280,6 +286,8 @@ const SHIPPED_PAGES: Record<TranslatedLocale, string[]> = {
     "/reset-password",
     "/account",
     "/dashboard",
+  ],
+  id: [
   ],
 };
 

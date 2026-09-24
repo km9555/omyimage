@@ -39,6 +39,9 @@ const dateCache = new Map<string, Intl.DateTimeFormat>();
  */
 const SHORT_DATE_OVERRIDE: Partial<Record<Locale, Intl.DateTimeFormatOptions>> = {
   hi: { day: "2-digit", month: "2-digit", year: "numeric" },
+  // ICU's short form for `id` is "04/09/26" — right order, two-digit year.
+  // Indonesian forms and documents write the full year, "04/09/2026".
+  id: { day: "2-digit", month: "2-digit", year: "numeric" },
 };
 
 /** Short numeric date in the page's locale — "9/4/26" in English, "04/09/2026" in Portuguese. */

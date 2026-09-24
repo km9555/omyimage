@@ -1410,3 +1410,105 @@ Planned:
   one endpoint for Bing *and* Yandex, which also makes the stale-Bing-state
   problem (§8) cheaper to re-test.
 - Record here what Yandex reports that Search Console cannot.
+
+Timing, decided 2026-09-24: **Yandex.Webmaster and IndexNow are done when the
+branch is merged to `main` and pushed**, as part of the release step — not as
+a follow-on to locale work.
+
+## 11. Indonesian (`/id`)
+
+Started 2026-09-24 on branch `indonesian`, cut from `conversion` (which by
+then held pt, hi and ru and was pushed). 54 pages in twelve batches, the same
+shape as Russian — no pilot, because the market question was settled by
+measurement before a page was written.
+
+This is the first locale added after the Phase 0A generalisation (§10.1), and
+it shows: registering Indonesian cost **one row in `LOCALE_META`** plus the
+per-locale files. TypeScript then flagged exactly four records (the slug map,
+the static-path map, both ship lists); the three non-type-forced registries
+(`COMMON`, the tool-label dicts, `LOCALE_ALIASES`) are listed in §2 and were
+added from it.
+
+### 11.1 The research, and why it is different this time
+
+**Real in-country data.** Indonesia (DataForSEO 2360) serves `id` — unlike
+Russia, which returns no Russian at all and forced a Kazakhstan proxy (§10.2).
+So the Indonesian figures below can be read as demand, not only as an order.
+Two keyword calls, 74 terms, 41 credits of the free balance (97 → 56); nothing
+bought.
+
+**Competitors, verified live:**
+
+| Site | `/id` slug form | Register | Head noun |
+|---|---|---|---|
+| iLoveIMG | **translated** — `/id/kompres-gambar` 200, `/id/compress-image` 404 | Anda | gambar |
+| imagetotext.info | **translated** — `/id/gambar-ke-teks` | Anda | gambar |
+| Asli Tools | no Indonesian version; a structural reference only (converter-pair pages like ours) | — | — |
+
+iLoveIMG serves English slugs on `/ru` and `/hi` but translated ones on `/id`
+and `/pt`. The split is **script**: a Latin-script language gets its own words
+in the URL. Indonesian has no diacritics at all, so its slugs are already the
+plain ASCII the audit requires.
+
+### 11.2 Decisions, with the evidence
+
+| Decision | Ruling | Why (Indonesia, per month) |
+|---|---|---|
+| Slugs | **Translated**, like pt | both Indonesian competitors do; §11.1 |
+| Head noun | **foto** | kompres **foto** 673,000 vs kompres **gambar** 18,100 — 37:1. ubah ukuran foto 40,500 vs gambar 3,600 |
+| …except | **gambar** for non-photographs | gambar ke teks 5,400 ("foto ke teks" returned nothing); a rendered web page; a GIF's frames; Base64 |
+| Loanwords | **Keep the English word where it has taken over** | hapus **background** 1,220,000 vs hapus **latar belakang** 201,000 · **crop** foto 14,800 vs **potong** foto 8,100 · **color picker** 27,100 vs pemilih warna 260 · **gif maker** 12,100 vs buat gif 390 · **meme generator** 9,900 vs buat meme 170 · **blur** wajah 1,300 vs buramkan wajah 110 |
+| Native phrases | **Keep the Indonesian where it is the natural phrase** | **bingkai** foto 33,100 vs border foto 320 · **ubah foto ke jpg** 22,200 vs konversi ke jpg 880 · **gabungkan** foto · foto **hitam putih** |
+| Upscale | **"hd foto"** — slug `hd-foto`, H1 «Jadikan Foto HD» | hd foto **823,000** · foto hd 110,000 · memperjelas foto 27,100. The single biggest discovery: the Indonesian upscale query is "make my photo HD" |
+| Converter pattern | **x ke y** — `png-ke-jpg` | every Indonesian competitor writes it this way |
+| Register | Formal **Anda**; bare-verb imperatives (Kompres, Ubah, Hapus) | both competitors |
+| UI vocabulary | unggah / unduh / masuk / keluar / akun / **file** / tautan / bagikan | the words every Indonesian app and portal already puts on those buttons; «berkas» is a dictionary word nobody clicks |
+| Plurals | **None** | `Intl.PluralRules("id")` only ever returns `other`: "1 gambar", "21 gambar". No `|one`/`|few` siblings; `i18n:plurals` reports a one-form language |
+| Dates | **Override to dd/mm/yyyy** | ICU's short form is "04/09/26"; Indonesian forms write "04/09/2026" (`SHORT_DATE_OVERRIDE`) |
+| Numbers | Nothing to do | ICU already gives `1.234.567,89` |
+| Font | Nothing to do | plain Latin; Inter's `latin` subset covers it |
+| OCR default | **Stays `eng`** for now | Indonesian (`ind`) is not among the 13 OCR languages. Adding it changes the "13 languages" copy in four locales at once and would collide with another task's uncommitted rewrite of that same tool. Indonesian uses the unaccented Latin alphabet the English model already reads; verify on a real Indonesian image in batch 7 (§11.4) |
+
+**The opening this creates.** iLoveIMG's `/id` chose the formal Indonesian
+phrase on almost every page — `kompres-gambar`, `hapus-latar-belakang`,
+`tingkatkan-gambar`, `konversi-ke-jpg`, `buramkan-wajah`, `pembuat-meme` —
+which is the minority phrasing nearly every time. Our slugs and H1s carry what
+is actually typed. Nearly every term measured is KD 0–10; only "remove
+background" (English, KD 81), "compress foto" (52) and "editor foto" (48) are
+contested.
+
+**One Indonesia-specific intent to serve directly.** "kompres foto 200kb" is
+22,200 a month on its own: government recruitment (CPNS), school and university
+registration and job portals cap uploads at 100–200 KB. The compress page speaks
+to it by name, and the aliases carry "foto cpns", "pas foto" and the size
+variants.
+
+### 11.3 The batches — ordered by Indonesian demand
+
+| B | Pages | Why here |
+|---|---|---|
+| 1 | `/`, remove-background, compress-image, upscale-image, image-to-pdf | ~1.5M · ~1.07M · ~975K · ~335K — the four biggest jobs, and the home so the switcher goes live |
+| 2 | image-editor, merge-images, resize-image, add-border, image-color-picker | ~162K · ~121K · ~66K · 33K · 27K |
+| 3 | crop-image, convert-to-jpg, blur-image, grayscale-image, jpg-to-png | the 12–28K tier |
+| 4 | `/privacy`, `/terms`, `/refunds`, `/cookies` | written twins that cross-link; ship together |
+| 5 | converter layer + webp-to-jpg, webp-to-png, jpg-to-webp, png-to-webp, jfif-to-jpg | the layer comes alive; routes are GENERATED |
+| 6 | gif-to-png, gif-to-jpg, bmp-to-jpg, avif-to-jpg, avif-to-png | closes the converter layer |
+| 7 | png-to-jpg, gif-maker, meme-generator, image-to-text, heic-to-jpg | |
+| 8 | watermark-image, image-to-base64, circle-crop, rotate-image, heic-to-png | `heic-to-png` shares `HeicTool` — its `ui` block is DUPLICATED |
+| 9 | base64-to-image, gif-to-images, remove-exif | three |
+| 10 | html-to-image, image-metadata, blur-face | the three heaviest `ui` blocks |
+| 11 | `/contact`, `/image-converter`, `/pricing`, `/login`, `/signup` | the hub follows the converter layer |
+| 12 | `/forgot-password`, `/reset-password`, `/account`, `/dashboard` | closes at 54 |
+
+Per-batch procedure unchanged (§3/§4): content module → route → id in
+`status.ts` → gates → browser QA with a real file → `i18n-list.mjs id --done`
+→ commit. Gates: `tsc`, `i18n:keys id`, `i18n:audit`, `i18n:charset`,
+`i18n:plurals`, `gen:converters --check`, `i18n:verify id`.
+
+### 11.4 Still to verify, in the batch that touches it
+
+- **OCR on Indonesian text** (batch 7): render an Indonesian test image, run it
+  through `/id/gambar-ke-teks` on the default model, and record the result
+  before the page claims anything about Indonesian accuracy.
+- **The converter layer** (batch 5): Indonesian pair copy, essays and the
+  `LOCALE_CONVERTERS` row.

@@ -38,7 +38,7 @@ if (!loc) {
 const BASE = (process.env.BASE ?? "http://localhost:3002").replace(/\/$/, "");
 const OUT = process.env.OUT ? join(root, process.env.OUT) : null;
 const SITE = "https://omyimage.com";
-const OG = { pt: "pt_BR", hi: "hi_IN", ru: "ru_RU" };
+const OG = { pt: "pt_BR", hi: "hi_IN", ru: "ru_RU", id: "id_ID" };
 
 const read = (p) => readFileSync(join(SRC, p), "utf8");
 function block(src, name) {

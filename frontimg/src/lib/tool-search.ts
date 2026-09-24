@@ -24,6 +24,7 @@ import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
 import { ptAliases } from "@/i18n/dictionaries/pt/aliases";
 import { hiAliases } from "@/i18n/dictionaries/hi/aliases";
 import { ruAliases } from "@/i18n/dictionaries/ru/aliases";
+import { idAliases } from "@/i18n/dictionaries/id/aliases";
 import { toolDescription, toolName } from "@/lib/i18n/tool-labels";
 
 /**
@@ -275,6 +276,7 @@ const LOCALE_ALIASES: Partial<Record<Locale, Record<string, string[]>>> = {
   pt: ptAliases,
   hi: hiAliases,
   ru: ruAliases,
+  id: idAliases,
 };
 
 /**

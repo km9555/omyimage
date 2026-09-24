@@ -16,6 +16,7 @@ import { DEFAULT_LOCALE, LOCALE_TAG, type Locale } from "@/i18n/config";
 import { ptCommon } from "@/i18n/dictionaries/pt/common";
 import { hiCommon } from "@/i18n/dictionaries/hi/common";
 import { ruCommon } from "@/i18n/dictionaries/ru/common";
+import { idCommon } from "@/i18n/dictionaries/id/common";
 
 export type Dict = Record<string, string>;
 
@@ -30,6 +31,7 @@ const COMMON: Partial<Record<Locale, Dict>> = {
   pt: ptCommon,
   hi: hiCommon,
   ru: ruCommon,
+  id: idCommon,
 };
 
 /**

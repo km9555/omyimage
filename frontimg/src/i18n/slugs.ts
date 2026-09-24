@@ -212,10 +212,93 @@ const RU_TOOL_SLUGS: Record<string, string> = {
   "upscale-image": "upscale-image",
 };
 
+/**
+ * ── Slug conventions (Indonesian) ─────────────────────────────────────────
+ * Indonesian TRANSLATES its slugs, like Portuguese and unlike Hindi/Russian.
+ * Verified live 2026-09-24: iLoveIMG serves `/id/kompres-gambar` (200) and
+ * 404s `/id/compress-image`, while it serves `/ru/compress-image`; so does
+ * imagetotext.info (`/id/gambar-ke-teks`). The split is script, not size: a
+ * Latin-script language gets its own words in the URL, and Indonesian has no
+ * diacritics at all, so its slugs are already the plain ASCII the audit
+ * requires.
+ *
+ * Each slug is the phrase Indonesians measurably type — Indonesia (2360) / id,
+ * two keyword calls, figures per month — which is NOT what iLoveIMG chose:
+ *   • Head noun is `foto`, not `gambar`: kompres foto 673,000 vs kompres
+ *     gambar 18,100. iLoveIMG ships kompres-gambar.
+ *   • English loanwords win where they have taken over: hapus background
+ *     1,220,000 vs hapus latar belakang 201,000 (iLoveIMG's); crop foto 14,800
+ *     vs potong foto 8,100; blur, color picker, gif maker, meme generator,
+ *     watermark, and — by far the biggest — "hd foto" at 823,000 for upscale.
+ *   • Native Indonesian wins where a natural phrase exists: gabungkan foto,
+ *     bingkai foto (33,100 vs border foto 320), foto hitam putih, ubah foto ke
+ *     jpg (22,200 vs konversi ke jpg 880, iLoveIMG's).
+ *   • `gambar` survives only where the object is not a photograph: OCR
+ *     (gambar ke teks 5,400 — "foto ke teks" returned nothing), a rendered web
+ *     page, and a GIF's frames.
+ *   • `x ke y` is the converter pattern ("ke" = "to"): png-ke-jpg.
+ *   • The Base64 pair keeps its English slugs because that is what is typed
+ *     ("image to base64" 1,600; "gambar ke base64" returned nothing) — it is a
+ *     developer tool and the query is a developer's.
+ *
+ * A slug is FOREVER once shipped. Every one below was settled by measurement
+ * before the first page, precisely so none of them has to move.
+ */
+const ID_TOOL_SLUGS: Record<string, string> = {
+  // ── Optimasi ───────────────────────────────────────────────────────────
+  "compress-image": "kompres-foto",
+  "resize-image": "ubah-ukuran-foto",
+  "crop-image": "crop-foto",
+  "rotate-image": "putar-foto",
+
+  // ── Konversi ───────────────────────────────────────────────────────────
+  "convert-to-jpg": "ubah-foto-ke-jpg",
+  "png-to-jpg": "png-ke-jpg",
+  "jpg-to-png": "jpg-ke-png",
+  "webp-to-png": "webp-ke-png",
+  "heic-to-png": "heic-ke-png",
+  "image-to-text": "gambar-ke-teks",
+  "webp-to-jpg": "webp-ke-jpg",
+  "jpg-to-webp": "jpg-ke-webp",
+  "png-to-webp": "png-ke-webp",
+  "jfif-to-jpg": "jfif-ke-jpg",
+  "gif-to-png": "gif-ke-png",
+  "gif-to-jpg": "gif-ke-jpg",
+  "bmp-to-jpg": "bmp-ke-jpg",
+  "avif-to-jpg": "avif-ke-jpg",
+  "avif-to-png": "avif-ke-png",
+  "heic-to-jpg": "heic-ke-jpg",
+  "image-to-pdf": "foto-ke-pdf",
+  "image-to-base64": "image-to-base64",
+  "base64-to-image": "base64-to-image",
+  "gif-to-images": "gif-ke-gambar",
+
+  // ── Edit & buat ────────────────────────────────────────────────────────
+  "image-editor": "editor-foto",
+  "watermark-image": "watermark-foto",
+  "meme-generator": "meme-generator",
+  "html-to-image": "html-ke-gambar",
+  "blur-face": "blur-wajah",
+  "grayscale-image": "foto-hitam-putih",
+  "blur-image": "blur-foto",
+  "add-border": "bingkai-foto",
+  "circle-crop": "crop-foto-bulat",
+  "merge-images": "gabungkan-foto",
+  "image-color-picker": "color-picker",
+  "image-metadata": "metadata-foto",
+  "remove-exif": "hapus-exif",
+  "gif-maker": "gif-maker",
+
+  // ── AI ─────────────────────────────────────────────────────────────────
+  "remove-background": "hapus-background",
+  "upscale-image": "hd-foto",
+};
+
 const TOOL_SLUGS: Record<TranslatedLocale, Record<string, string>> = {
   pt: PT_TOOL_SLUGS,
   hi: HI_TOOL_SLUGS,
   ru: RU_TOOL_SLUGS,
+  id: ID_TOOL_SLUGS,
 };
 
 /** The slug a tool uses in `locale` (no prefix). English → the registry slug. */

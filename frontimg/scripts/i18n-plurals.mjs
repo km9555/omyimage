@@ -139,13 +139,15 @@ for (const { code, tag } of locales) {
   const { firing, base } = integerCategories(tag);
 
   /*
-   * A two-form language needs nothing here: the call sites already pair a
-   * literal `"1 image"` with `"{n} images"`, which is exactly two forms. Three
-   * or more is where that model breaks — Russian's `one` fires at 21, 31 and
-   * 101, which no `n === 1` ternary will ever reach.
+   * A one- or two-form language needs nothing here: the call sites already
+   * pair a literal `"1 image"` with `"{n} images"`, which covers two forms —
+   * and a language with one (Indonesian: "1 gambar", "5 gambar") simply writes
+   * both the same way. Three or more is where that model breaks — Russian's
+   * `one` fires at 21, 31 and 101, which no `n === 1` ternary will ever reach.
    */
   if (firing.length <= 2) {
-    console.log(`[${code}] ${firing.sort().join("/")} — two-form language, nothing to check.`);
+    const shape = firing.length === 1 ? "one-form language (nouns do not inflect for number)" : "two-form language";
+    console.log(`[${code}] ${firing.sort().join("/")} — ${shape}, nothing to check.`);
     continue;
   }
 

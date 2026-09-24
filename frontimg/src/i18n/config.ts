@@ -78,6 +78,16 @@ export const LOCALE_META = {
    * costs a subset rather than a second font family.
    */
   ru: { prefix: "/ru", tag: "ru", og: "ru_RU", label: "Русский", flag: "🇷🇺", script: "cyrillic" },
+  /**
+   * Indonesian is `id` — the ISO 639-1 code, NOT the retired `in` that older
+   * Java-era systems still emit. Language-only for the same reason as the
+   * others: one variant, and Bahasa Indonesia is also read in Timor-Leste and
+   * by a large diaspora. `og` carries the territory its format requires.
+   *
+   * Latin script with no diacritics at all, so Inter's `latin` subset already
+   * covers it and nothing about fonts or search normalisation changes.
+   */
+  id: { prefix: "/id", tag: "id", og: "id_ID", label: "Bahasa Indonesia", flag: "🇮🇩", script: "latin" },
 } as const satisfies Record<string, LocaleMeta>;
 
 export const LOCALES = Object.keys(LOCALE_META) as readonly (keyof typeof LOCALE_META)[];

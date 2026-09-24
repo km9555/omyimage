@@ -14,18 +14,21 @@ import type { Locale } from "@/i18n/config";
 import { ptCategories, ptTools, type LocalizedTool } from "@/i18n/dictionaries/pt/tools";
 import { hiCategories, hiTools } from "@/i18n/dictionaries/hi/tools";
 import { ruCategories, ruTools } from "@/i18n/dictionaries/ru/tools";
+import { idCategories, idTools } from "@/i18n/dictionaries/id/tools";
 import { CATEGORIES, type Tool } from "@/lib/tools";
 
 const DICTS: Partial<Record<Locale, Record<string, LocalizedTool>>> = {
   pt: ptTools,
   hi: hiTools,
   ru: ruTools,
+  id: idTools,
 };
 
 const CATEGORY_DICTS: Partial<Record<Locale, Record<string, { title: string; navLabel: string }>>> = {
   pt: ptCategories,
   hi: hiCategories,
   ru: ruCategories,
+  id: idCategories,
 };
 
 export function toolName(tool: Tool, locale: Locale): string {

@@ -70,7 +70,7 @@ const paths = args.filter((a) => !a.startsWith("--"));
  *   • app/auth — OAuth callback, a spinner the reader never reads
  * Every future locale prefix belongs in this list.
  */
-const SKIP_DIR = /^src\/app\/(pt|hi|ru|admin|blog|auth)(\/|$)/;
+const SKIP_DIR = /^src\/app\/(pt|hi|ru|id|admin|blog|auth)(\/|$)/;
 
 /** Props whose value is read by a human (or a screen reader). */
 const TEXT_PROPS = new Set([

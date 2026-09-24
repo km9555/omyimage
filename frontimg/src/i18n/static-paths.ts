@@ -86,10 +86,39 @@ const RU_PATHS: PathMap = {
   "/account": "/account",
 };
 
+/**
+ * Indonesian translates its paths, like its tool slugs (see slugs.ts) and like
+ * Portuguese. The words are the ones Indonesian web UI already uses for these
+ * pages — masuk / daftar / akun / lupa kata sandi are what Google, Tokopedia
+ * and the national e-government portals put on the same buttons — so the URL
+ * matches the label a reader clicked.
+ *
+ * /terms is "syarat-ketentuan", the stock Indonesian name for a Terms and
+ * Conditions page ("Syarat & Ketentuan"), rather than the bare "ketentuan".
+ * /cookies stays "cookies", as it does in Portuguese: the loanword is the word.
+ */
+const ID_PATHS: PathMap = {
+  "/": "",
+  "/image-converter": "/konverter-gambar",
+  "/pricing": "/harga",
+  "/contact": "/kontak",
+  "/privacy": "/privasi",
+  "/terms": "/syarat-ketentuan",
+  "/cookies": "/cookies",
+  "/refunds": "/pengembalian-dana",
+  "/login": "/masuk",
+  "/signup": "/daftar",
+  "/forgot-password": "/lupa-kata-sandi",
+  "/reset-password": "/atur-ulang-kata-sandi",
+  "/dashboard": "/dasbor",
+  "/account": "/akun",
+};
+
 const STATIC_PATHS: Record<TranslatedLocale, PathMap> = {
   pt: PT_PATHS,
   hi: HI_PATHS,
   ru: RU_PATHS,
+  id: ID_PATHS,
 };
 
 /** Does `locale` define a counterpart for this English path? */

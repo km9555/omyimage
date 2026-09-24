@@ -146,13 +146,43 @@ const RU_BATCHES = [
 ];
 
 /**
+ * Indonesian, ordered by measured Indonesian demand (Indonesia 2360 / id, two
+ * keyword calls on 2026-09-24 — real in-country data, unlike Russian's proxy).
+ * Its shape is its own again:
+ *   1. remove-background ~1.5M/mo, compress-image ~1.07M, upscale-image ~975K
+ *      ("hd foto" alone is 823,000), image-to-pdf ~335K — batch 1 with the home.
+ *   2. image-editor ~162K, merge-images ~121K, resize-image ~66K, add-border
+ *      ("bingkai foto" 33,100) and the colour picker ("color picker" 27,100).
+ *   3. crop, convert-to-jpg ("ubah foto ke jpg" 22,200), blur, grayscale,
+ *      jpg-to-png — the 12–23K tier.
+ * 4 is the legal twins, which cross-link and ship together. 5–6 are the ten
+ * converter-layer pairs. 9 and 10 are three pages each, 10 holding the three
+ * heaviest `ui` blocks. /image-converter follows the converter pairs because
+ * the hub renders their names and essays.
+ */
+const ID_BATCHES = [
+  ["/", "remove-background", "compress-image", "upscale-image", "image-to-pdf"],
+  ["image-editor", "merge-images", "resize-image", "add-border", "image-color-picker"],
+  ["crop-image", "convert-to-jpg", "blur-image", "grayscale-image", "jpg-to-png"],
+  ["/privacy", "/terms", "/refunds", "/cookies"],
+  ["webp-to-jpg", "webp-to-png", "jpg-to-webp", "png-to-webp", "jfif-to-jpg"],
+  ["gif-to-png", "gif-to-jpg", "bmp-to-jpg", "avif-to-jpg", "avif-to-png"],
+  ["png-to-jpg", "gif-maker", "meme-generator", "image-to-text", "heic-to-jpg"],
+  ["watermark-image", "image-to-base64", "circle-crop", "rotate-image", "heic-to-png"],
+  ["base64-to-image", "gif-to-images", "remove-exif"],
+  ["html-to-image", "image-metadata", "blur-face"],
+  ["/contact", "/image-converter", "/pricing", "/login", "/signup"],
+  ["/forgot-password", "/reset-password", "/account", "/dashboard"],
+];
+
+/**
  * Rollout order per locale. A map rather than a ternary: the ternary read
  * `LOC === "hi" ? HI_BATCHES : PT_BATCHES`, so any locale that was not "hi"
  * silently got the PORTUGUESE plan — a third language would have been handed
  * pt's batches and its translated slugs, and the tracker would have looked
  * plausible while describing the wrong rollout.
  */
-const BATCHES_BY_LOCALE = { pt: PT_BATCHES, hi: HI_BATCHES, ru: RU_BATCHES };
+const BATCHES_BY_LOCALE = { pt: PT_BATCHES, hi: HI_BATCHES, ru: RU_BATCHES, id: ID_BATCHES };
 
 const BATCHES = BATCHES_BY_LOCALE[LOC];
 if (!BATCHES) {
