@@ -215,6 +215,13 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "resize-image",
     "add-border",
     "image-color-picker",
+    // Batch 3 — ubah foto ke jpg 22,200, crop foto 14,800, blur foto 14,800,
+    // foto hitam putih 12,100, jpg ke png 12,100 (all KD 0).
+    "crop-image",
+    "convert-to-jpg",
+    "blur-image",
+    "grayscale-image",
+    "jpg-to-png",
   ],
 };
 
