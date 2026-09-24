@@ -73,7 +73,16 @@ const LANGUAGES: { code: string; label: string }[] = [
  * Anything not listed starts on "eng". Add a row when a locale ships whose
  * script or accents an English model would mangle.
  */
-const OCR_DEFAULT: Record<string, string> = { pt: "por", hi: "hin" };
+/**
+ * Which Tesseract model a locale should start on.
+ *
+ * Not cosmetic. An English model pointed at Cyrillic does not degrade politely
+ * — it returns confident Latin nonsense, because every Russian letter gets
+ * mapped to whichever Latin shape it resembles (п→n, и→u, д→a). The visitor
+ * sees a full page of plausible-looking garbage and no error, which is worse
+ * than a failure. Same reason Hindi defaults to `hin`.
+ */
+const OCR_DEFAULT: Record<string, string> = { pt: "por", hi: "hin", ru: "rus" };
 
 /**
  * Map tesseract's status strings onto something a human can read. Returns the

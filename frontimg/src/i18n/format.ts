@@ -98,7 +98,26 @@ function fixed(value: number, digits: number, locale: Locale): string {
 }
 
 /**
- * "2.45 MB" in English, "2,45 MB" in Portuguese.
+ * Byte-size unit symbols per locale.
+ *
+ * Latin B/KB/MB is right for English, Portuguese and Hindi — all three use the
+ * Latin abbreviations in practice, and Hindi keeps format and unit names Latin
+ * by rule (conversion.md §9.2).
+ *
+ * Russian does not. Cyrillic Б/КБ/МБ is the form used in Windows, on Yandex,
+ * and in every Russian file manager; "6 KB" beside «6 изображений» reads like
+ * a string someone forgot. GOST prefers КиБ/МиБ for binary multiples, but no
+ * consumer product writes that, so this follows the convention people actually
+ * see rather than the standard.
+ */
+const BYTE_UNITS: Partial<Record<Locale, { b: string; kb: string; mb: string }>> = {
+  ru: { b: "Б", kb: "КБ", mb: "МБ" },
+};
+
+const DEFAULT_BYTE_UNITS = { b: "B", kb: "KB", mb: "MB" };
+
+/**
+ * "2.45 MB" in English, "2,45 MB" in Portuguese, "2,45 МБ" in Russian.
  *
  * English output is byte-identical to the original `formatBytes` in
  * lib/image/file-naming.ts (which stays the English implementation and is what
@@ -106,12 +125,13 @@ function fixed(value: number, digits: number, locale: Locale): string {
  * nothing for English readers.
  */
 export function formatBytesIn(n: number, locale: Locale): string {
+  const u = BYTE_UNITS[locale] ?? DEFAULT_BYTE_UNITS;
   if (locale === "en") {
-    if (n < 1024) return `${n} B`;
-    if (n < 1024 * 1024) return `${(n / 1024).toFixed(0)} KB`;
-    return `${(n / (1024 * 1024)).toFixed(2)} MB`;
+    if (n < 1024) return `${n} ${u.b}`;
+    if (n < 1024 * 1024) return `${(n / 1024).toFixed(0)} ${u.kb}`;
+    return `${(n / (1024 * 1024)).toFixed(2)} ${u.mb}`;
   }
-  if (n < 1024) return `${n} B`;
-  if (n < 1024 * 1024) return `${fixed(n / 1024, 0, locale)} KB`;
-  return `${fixed(n / (1024 * 1024), 2, locale)} MB`;
+  if (n < 1024) return `${n} ${u.b}`;
+  if (n < 1024 * 1024) return `${fixed(n / 1024, 0, locale)} ${u.kb}`;
+  return `${fixed(n / (1024 * 1024), 2, locale)} ${u.mb}`;
 }

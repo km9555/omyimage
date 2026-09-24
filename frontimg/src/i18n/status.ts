@@ -141,6 +141,13 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "remove-background",
     "compress-image",
     "crop-image",
+    // Batch 2 — the next tier, plus blur-image out of order on purpose: at
+    // KD 0 with iLoveIMG only #24, it is the most winnable SERP in the locale.
+    "resize-image",
+    "image-editor",
+    "blur-image",
+    "heic-to-jpg",
+    "image-to-text",
   ],
 };
 
