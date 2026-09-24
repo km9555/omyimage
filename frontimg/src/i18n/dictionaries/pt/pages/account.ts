@@ -39,9 +39,12 @@ export const ptAccount: Dict = {
   "Could not change password.": "Não foi possível alterar a senha.",
 
   // Plan card
+  // AccountClient renders `A <strong>{plan}</strong>{" "}B`, so B must not open
+  // on punctuation: ": {allowance}…" printed "no plano Free : 10 execuções",
+  // a space before the colon. A spaced em dash is correct Portuguese here.
   "You're on the": "Você está no plano",
   "plan: {allowance}, and server processing for files up to {mb} MB. Everything that runs in your browser is unlimited on every plan.":
-    ": {allowance} e processamento no servidor para arquivos de até {mb} MB. Tudo o que roda no seu navegador é ilimitado em todos os planos.",
+    "— {allowance} e processamento no servidor para arquivos de até {mb} MB. Tudo o que roda no seu navegador é ilimitado em todos os planos.",
   "Paid plans aren't available to buy yet, so there is nothing to cancel and no payment method stored.":
     "Os planos pagos ainda não estão à venda, então não há nada para cancelar e nenhuma forma de pagamento guardada.",
   "See plans": "Ver planos",

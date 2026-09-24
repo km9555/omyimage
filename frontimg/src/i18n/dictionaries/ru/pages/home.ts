@@ -84,9 +84,13 @@ export const ruHome: Record<string, string> = {
   "Import from Google Drive": "Загрузка из Google Drive",
   ", which lets you pick an image already stored in your Drive instead of uploading it from your device.":
     " — она позволяет выбрать изображение, которое уже лежит у вас на Drive, вместо того чтобы загружать его с устройства.",
+  // HomeShell renders `A{" "}<code>drive.file</code>{" "}B`, so B must not open
+  // on punctuation: the original ". Оно…" printed «drive.file . Оно даёт» —
+  // a space before the full stop. A spaced em dash is correct Russian
+  // punctuation here, and the same answer Portuguese uses.
   "When you use it, oMyImage requests the": "При её использовании oMyImage запрашивает разрешение",
   "scope. That scope gives the app access only to the specific files you choose in Google's own file picker — it cannot see, browse or search the rest of your Drive. The file you pick is downloaded into your browser for the tool you are using, and that is all: oMyImage does not modify or delete anything in your Drive, does not store your Google files on our servers, does not use Google user data to train AI models, and never sells or shares it with third parties.":
-    ". Оно даёт приложению доступ только к тем файлам, которые вы сами выбрали в файловом окне Google, — остальную часть Drive оно не видит, не просматривает и не ищет по ней. Выбранный файл скачивается в ваш браузер для того инструмента, которым вы пользуетесь, и на этом всё: oMyImage ничего не меняет и не удаляет на вашем Drive, не хранит ваши файлы Google на своих серверах, не обучает на данных пользователей Google модели ИИ и никогда не продаёт и не передаёт их третьим лицам.",
+    "— оно даёт приложению доступ только к тем файлам, которые вы сами выбрали в файловом окне Google, — остальную часть Drive оно не видит, не просматривает и не ищет по ней. Выбранный файл скачивается в ваш браузер для того инструмента, которым вы пользуетесь, и на этом всё: oMyImage ничего не меняет и не удаляет на вашем Drive, не хранит ваши файлы Google на своих серверах, не обучает на данных пользователей Google модели ИИ и никогда не продаёт и не передаёт их третьим лицам.",
   "You can revoke access at any time from your": "Отозвать доступ можно в любой момент —",
   "Google Account permissions page": "на странице разрешений вашего аккаунта Google",
   "Contact us": "Связаться с нами",

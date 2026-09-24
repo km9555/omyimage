@@ -202,6 +202,12 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
   // multi-line even while empty: i18n-list and i18n-audit anchor the closing
   // bracket at `^  ]`, and a one-line `id: []` reads as nothing at all.
   id: [
+    // Batch 1 — the four biggest Indonesian jobs, measured: hapus background
+    // ~1.5M/mo, kompres foto ~1.07M, hd foto ~975K, foto/jpg ke pdf ~335K.
+    "remove-background",
+    "compress-image",
+    "upscale-image",
+    "image-to-pdf",
   ],
 };
 
@@ -288,6 +294,9 @@ const SHIPPED_PAGES: Record<TranslatedLocale, string[]> = {
     "/dashboard",
   ],
   id: [
+    // Batch 1. The home ships first: its presence is what flips "Bahasa
+    // Indonesia" from "Segera" to a live link in the language menus.
+    "/",
   ],
 };
 
