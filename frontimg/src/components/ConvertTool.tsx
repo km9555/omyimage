@@ -23,7 +23,7 @@ import {
   RailSecondaryAction,
   RailNote,
 } from "@/components/tool/SettingsRail";
-import { shouldUseServerForFile, toServerFormat, processOnServer } from "@/lib/process-router";
+import { serverCanDecode, shouldUseServerForFile, toServerFormat, processOnServer } from "@/lib/process-router";
 import {
   readSourceMetadata, applySourceMetadata, stripOutputMetadata, canCarryMetadata,
 } from "@/lib/image/metadata";
@@ -104,18 +104,6 @@ type Item = {
 
 let counter = 0;
 const uid = () => `f${Date.now()}_${counter++}`;
-
-/**
- * False for a BMP, which Sharp/libvips cannot decode. Checks the "BM"
- * signature as well as `kindOf`, because the backend validates by magic bytes:
- * a BMP whose name or MIME says otherwise (image/x-ms-bmp, no extension) would
- * still reach Sharp and throw.
- */
-async function serverCanDecode(file: File): Promise<boolean> {
-  if (kindOf(file) === "bmp") return false;
-  const head = new Uint8Array(await file.slice(0, 2).arrayBuffer());
-  return !(head[0] === 0x42 && head[1] === 0x4d);
-}
 
 export function ConvertTool({ config }: { config: ConvertConfig }) {
   const t = useT();
