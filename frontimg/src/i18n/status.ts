@@ -186,6 +186,11 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "circle-crop",
     "gif-to-images",
     "meme-generator",
+    // Batch 9 — three, not five: these carry the heaviest ui blocks so far
+    // (gif-maker 43 keys, add-border 37, watermark-image 32).
+    "gif-maker",
+    "watermark-image",
+    "add-border",
   ],
 };
 

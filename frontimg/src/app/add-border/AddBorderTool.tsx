@@ -410,7 +410,12 @@ export function AddBorderTool() {
                     aspect === a.ratio ? "border-secondary bg-secondary/10" : "border-surface-variant hover:border-secondary/50"
                   }`}
                 >
-                  <span className={`text-label-md font-semibold ${aspect === a.ratio ? "text-secondary" : "text-primary"}`}>{a.label}</span>
+                  {/* Translated, not raw: every other label in this list is a
+                      ratio that passes through t() unchanged ("1:1", "4:5"),
+                      but the first one is the word "Original", which was
+                      rendering in English on /hi and /ru. Both already define
+                      it in common.ts. */}
+                  <span className={`text-label-md font-semibold ${aspect === a.ratio ? "text-secondary" : "text-primary"}`}>{t(a.label)}</span>
                   {a.hint && <span className="text-[10px] leading-tight text-on-surface-variant">{t(a.hint)}</span>}
                 </button>
               ))}
