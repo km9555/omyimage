@@ -311,6 +311,12 @@ const SHIPPED_PAGES: Record<TranslatedLocale, string[]> = {
     // Batch 1. The home ships first: its presence is what flips "Bahasa
     // Indonesia" from "Segera" to a live link in the language menus.
     "/",
+    // Batch 4 — the four legal pages are written twins that cross-link, so
+    // they ship together.
+    "/privacy",
+    "/terms",
+    "/refunds",
+    "/cookies",
   ],
 };
 
