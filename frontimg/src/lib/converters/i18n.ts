@@ -27,6 +27,9 @@ import { HI_PAIR_COPY } from "@/content/converters/index.hi";
 import { ruConverters } from "@/i18n/dictionaries/ru/converters";
 import { RU_ESSAYS } from "@/content/converters/essays.ru";
 import { RU_PAIR_COPY } from "@/content/converters/index.ru";
+import { idConverters } from "@/i18n/dictionaries/id/converters";
+import { ID_ESSAYS } from "@/content/converters/essays.id";
+import { ID_PAIR_COPY } from "@/content/converters/index.id";
 import { fmt } from "./formats";
 import type { ConverterPair, FormatId, LocalizedPairCopy } from "./types";
 
@@ -51,6 +54,7 @@ const LOCALE_CONVERTERS: Partial<Record<Locale, LocaleConverters>> = {
   pt: { dict: ptConverters, essays: PT_ESSAYS, pairs: PT_PAIR_COPY },
   hi: { dict: hiConverters, essays: HI_ESSAYS, pairs: HI_PAIR_COPY },
   ru: { dict: ruConverters, essays: RU_ESSAYS, pairs: RU_PAIR_COPY },
+  id: { dict: idConverters, essays: ID_ESSAYS, pairs: ID_PAIR_COPY },
 };
 
 /**

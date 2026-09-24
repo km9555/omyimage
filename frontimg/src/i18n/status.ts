@@ -222,6 +222,14 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "blur-image",
     "grayscale-image",
     "jpg-to-png",
+    // Batch 5 — the converter layer comes alive: dictionaries/id/converters.ts,
+    // essays.id.ts, the LOCALE_CONVERTERS row, and GENERATED routes
+    // (gen:converters). webp ke jpg 880/mo is the only measured pair.
+    "webp-to-jpg",
+    "webp-to-png",
+    "jpg-to-webp",
+    "png-to-webp",
+    "jfif-to-jpg",
   ],
 };
 
