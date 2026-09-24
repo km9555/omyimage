@@ -192,7 +192,13 @@ export function GifToImagesTool() {
           </div>
         </div>
         <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
-          <span className="font-semibold text-on-surface">{count}</span> {count === 1 ? t("frame") : t("frames")}{dims && <> · {dims.w} × {dims.h} px</>}
+          {/* The count is rendered separately so it can be styled, which leaves
+              the noun with no {n} of its own. Passing `n` anyway lets makeT run
+              its plural probe on a key that has no placeholder — needed for
+              Russian, where 2 frames, 5 frames and 21 frames are three
+              different words. Locales that define no |few/|one siblings (en,
+              pt, hi) miss the probe and fall through unchanged. */}
+          <span className="font-semibold text-on-surface">{count}</span> {count === 1 ? t("frame") : t("frames", { n: count })}{dims && <> · {dims.w} × {dims.h} px</>}
           {count > MAX_THUMBS && <> · {t("showing first {n}, all included in the ZIP", { n: MAX_THUMBS })}</>}
         </p>
         <button type="button" onClick={reset} className="self-center inline-flex items-center gap-1.5 text-label-md font-medium text-on-surface-variant hover:text-error"><Icon name="close" className="text-[18px]" /> {t("Change GIF")}</button>

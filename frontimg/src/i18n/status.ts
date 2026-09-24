@@ -178,6 +178,14 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "image-to-base64",
     "png-to-jpg",
     "remove-exif",
+    // Batch 8 — meme-generator is here on measurement, not on plan order:
+    // ~7,380/mo page-level demand on iLoveIMG's /ru, above watermark-image
+    // (6,280) and photo-editor (6,660).
+    "base64-to-image",
+    "jpg-to-png",
+    "circle-crop",
+    "gif-to-images",
+    "meme-generator",
   ],
 };
 
