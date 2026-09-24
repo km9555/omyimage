@@ -767,6 +767,17 @@ export const TOOLS: Tool[] = [
   },
 ];
 
+/**
+ * How many tools are actually shipped. Marketing copy that claims a number
+ * ("All {n} tools are free") interpolates this instead of hard-coding one:
+ * the count was wrong on /contact and /pricing for ten tools' worth of
+ * releases, because nothing links a prose string to the registry.
+ *
+ * Counts `live` only — a "planned" entry renders as "Coming soon" and is not
+ * a tool a visitor can use.
+ */
+export const LIVE_TOOL_COUNT: number = TOOLS.filter((t) => t.status === "live").length;
+
 // ── Lookups ──────────────────────────────────────────────────────────────
 export const TOOLS_BY_ID: Record<string, Tool> = Object.fromEntries(
   TOOLS.map((t) => [t.id, t])

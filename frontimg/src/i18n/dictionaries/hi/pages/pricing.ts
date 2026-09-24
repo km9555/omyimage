@@ -39,7 +39,7 @@ export const hiPricing: Dict = {
   "For regular users who want more headroom.": "उनके लिए जो नियमित इस्तेमाल करते हैं और थोड़ी और छूट चाहते हैं।",
   "Unlimited AI, the largest files, priority speed.": "असीमित AI, सबसे बड़ी फ़ाइलें, और क़तार में पहले नंबर।",
   "Start using the tools": "टूल इस्तेमाल करना शुरू करें",
-  "All 30 tools, no account needed": "तीसों टूल, खाते की ज़रूरत नहीं",
+  "All {n} tools, no account needed": "सभी {n} टूल, खाते की ज़रूरत नहीं",
   "Unlimited in-browser processing, no daily cap": "ब्राउज़र में असीमित प्रोसेसिंग, कोई रोज़ाना सीमा नहीं",
   "Server processing for files up to 100 MB": "100 MB तक की फ़ाइलों के लिए सर्वर प्रोसेसिंग",
   "10 AI runs / day": "रोज़ 10 बार AI",
@@ -107,7 +107,7 @@ export const hiPricing: Dict = {
 
   // Closing CTA
   "Start now — no card, no account.": "अभी शुरू करें — न कार्ड, न खाता।",
-  "All 30 tools are free to use today. Paid plans will add headroom, not gatekeeping.":
-    "तीसों टूल आज मुफ़्त इस्तेमाल किए जा सकते हैं। पेड प्लान छूट बढ़ाएँगे, रास्ता नहीं रोकेंगे।",
+  "All {n} tools are free to use today. Paid plans will add headroom, not gatekeeping.":
+    "सभी {n} टूल आज मुफ़्त इस्तेमाल किए जा सकते हैं। पेड प्लान छूट बढ़ाएँगे, रास्ता नहीं रोकेंगे।",
   "Browse all tools": "सारे टूल देखें",
 };

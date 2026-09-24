@@ -35,7 +35,7 @@ export const ptPricing: Dict = {
   "For regular users who want more headroom.": "Para quem usa com frequência e quer mais folga.",
   "Unlimited AI, the largest files, priority speed.": "IA ilimitada, os maiores arquivos e prioridade na fila.",
   "Start using the tools": "Comece a usar as ferramentas",
-  "All 30 tools, no account needed": "As 30 ferramentas, sem precisar de conta",
+  "All {n} tools, no account needed": "As {n} ferramentas, sem precisar de conta",
   "Unlimited in-browser processing, no daily cap": "Processamento ilimitado no navegador, sem limite diário",
   "Server processing for files up to 100 MB": "Processamento no servidor para arquivos de até 100 MB",
   "10 AI runs / day": "10 usos de IA por dia",
@@ -103,7 +103,7 @@ export const ptPricing: Dict = {
 
   // Closing CTA
   "Start now — no card, no account.": "Comece agora — sem cartão e sem conta.",
-  "All 30 tools are free to use today. Paid plans will add headroom, not gatekeeping.":
-    "As 30 ferramentas são grátis hoje. Os planos pagos vão dar mais folga, não criar barreira.",
+  "All {n} tools are free to use today. Paid plans will add headroom, not gatekeeping.":
+    "As {n} ferramentas são grátis hoje. Os planos pagos vão dar mais folga, não criar barreira.",
   "Browse all tools": "Ver todas as ferramentas",
 };

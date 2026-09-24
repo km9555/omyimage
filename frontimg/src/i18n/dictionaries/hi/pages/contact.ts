@@ -31,8 +31,8 @@ export const hiContact: Dict = {
   // FAQ
   "Before you write": "लिखने से पहले",
   "Is oMyImage free?": "क्या oMyImage मुफ़्त है?",
-  "Yes. All 30 tools are free to use with no account. Paid plans are planned for larger files and more AI runs, but nothing is chargeable today.":
-    "हाँ। तीसों टूल बिना किसी खाते के मुफ़्त इस्तेमाल किए जा सकते हैं। बड़ी फ़ाइलों और ज़्यादा AI इस्तेमाल के लिए पेड प्लान की योजना है, पर आज कुछ भी पैसे लेकर नहीं दिया जाता।",
+  "Yes. All {n} tools are free to use with no account. Paid plans are planned for larger files and more AI runs, but nothing is chargeable today.":
+    "हाँ। सभी {n} टूल बिना किसी खाते के मुफ़्त इस्तेमाल किए जा सकते हैं। बड़ी फ़ाइलों और ज़्यादा AI इस्तेमाल के लिए पेड प्लान की योजना है, पर आज कुछ भी पैसे लेकर नहीं दिया जाता।",
   "Are my images uploaded?": "क्या मेरी इमेज अपलोड होती हैं?",
   "For most tools, no — they run entirely in your browser and the file never leaves your device. Uploads only happen for images too large for a browser tab to handle, the AI tools, and HEIC conversion. Each of those says so on its own page.":
     "ज़्यादातर टूल में नहीं — वे पूरी तरह आपके ब्राउज़र में चलते हैं और फ़ाइल कभी आपके डिवाइस से बाहर नहीं जाती। अपलोड सिर्फ़ तब होता है जब इमेज ब्राउज़र टैब के संभालने लायक से बड़ी हो, AI टूल हों, या HEIC कन्वर्ज़न हो। इनमें से हर एक अपने पन्ने पर यह साफ़ बता देता है।",

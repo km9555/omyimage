@@ -15,9 +15,9 @@ import type { Dict } from "@/i18n/t";
  * Russia-specific claim here would be a claim this repo cannot verify — the
  * price book lives on the backend.
  *
- * "All 30 tools" is translated faithfully as thirty even though the site now
- * ships forty; the number is wrong in the ENGLISH source, which is also the
- * translation key, so it has to be corrected across all four locales at once.
+ * The tool count is no longer written out anywhere: the English source now
+ * interpolates `{n}` from LIVE_TOOL_COUNT, so the number cannot drift from the
+ * registry again. Russian needs all three integer forms for it — see below.
  */
 export const ruPricing: Dict = {
   // Hero
@@ -47,7 +47,12 @@ export const ruPricing: Dict = {
   "For regular users who want more headroom.": "Для тех, кто работает регулярно и хочет больше запаса.",
   "Unlimited AI, the largest files, priority speed.": "Безлимитный ИИ, самые большие файлы, приоритет в очереди.",
   "Start using the tools": "Начать пользоваться",
-  "All 30 tools, no account needed": "Все 30 инструментов, без регистрации",
+  // {n} is the live tool count — 40 today, so `many`, but it grows. At 41 it
+  // takes `one` and at 42 `few`, hence all three forms rather than an
+  // invariant marker.
+  "All {n} tools, no account needed": "Все {n} инструментов, без регистрации",
+  "All {n} tools, no account needed|one": "Все {n} инструмент, без регистрации",
+  "All {n} tools, no account needed|few": "Все {n} инструмента, без регистрации",
   "Unlimited in-browser processing, no daily cap": "Безлимитная обработка в браузере, без дневного лимита",
   "Server processing for files up to 100 MB": "Обработка на сервере для файлов до 100 МБ",
   "10 AI runs / day": "10 запусков ИИ в день",
@@ -115,7 +120,11 @@ export const ruPricing: Dict = {
 
   // Closing CTA
   "Start now — no card, no account.": "Начните прямо сейчас — без карты и без аккаунта.",
-  "All 30 tools are free to use today. Paid plans will add headroom, not gatekeeping.":
-    "Все 30 инструментов сегодня бесплатны. Платные планы добавят запаса, а не поставят шлагбаум.",
+  "All {n} tools are free to use today. Paid plans will add headroom, not gatekeeping.":
+    "Все {n} инструментов сегодня бесплатны. Платные планы добавят запаса, а не поставят шлагбаум.",
+  "All {n} tools are free to use today. Paid plans will add headroom, not gatekeeping.|one":
+    "Все {n} инструмент сегодня бесплатен. Платные планы добавят запаса, а не поставят шлагбаум.",
+  "All {n} tools are free to use today. Paid plans will add headroom, not gatekeeping.|few":
+    "Все {n} инструмента сегодня бесплатны. Платные планы добавят запаса, а не поставят шлагбаум.",
   "Browse all tools": "Все инструменты",
 };

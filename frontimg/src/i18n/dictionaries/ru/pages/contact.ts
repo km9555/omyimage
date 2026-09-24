@@ -7,10 +7,9 @@ import type { Dict } from "@/i18n/t";
  * page names in the footer — those are links whose labels come from this file
  * so they read as the Russian pages they point at.
  *
- * "All 30 tools" is translated faithfully as thirty even though the site now
- * ships forty. The number is wrong in the ENGLISH source, and the English text
- * is also the translation key, so correcting it has to happen across all four
- * locales at once rather than drifting in one of them.
+ * The tool count is no longer written out anywhere: the English source now
+ * interpolates `{n}` from LIVE_TOOL_COUNT, so the number cannot drift from the
+ * registry again. Russian needs all three integer forms for it — see below.
  */
 export const ruContact: Dict = {
   "Contact": "Контакты",
@@ -36,8 +35,15 @@ export const ruContact: Dict = {
   // FAQ
   "Before you write": "Прежде чем писать",
   "Is oMyImage free?": "oMyImage бесплатный?",
-  "Yes. All 30 tools are free to use with no account. Paid plans are planned for larger files and more AI runs, but nothing is chargeable today.":
-    "Да. Все 30 инструментов доступны бесплатно и без регистрации. Платные планы задуманы для файлов побольше и большего числа запусков ИИ, но сегодня ничего платного здесь нет.",
+  // {n} is the live tool count — 40 today, so `many`, but it grows. At 41 it
+  // takes `one` and at 42 `few`, so all three forms are spelled out: «Все 41
+  // инструмент доступен», «Все 42 инструмента доступны».
+  "Yes. All {n} tools are free to use with no account. Paid plans are planned for larger files and more AI runs, but nothing is chargeable today.":
+    "Да. Все {n} инструментов доступны бесплатно и без регистрации. Платные планы задуманы для файлов побольше и большего числа запусков ИИ, но сегодня ничего платного здесь нет.",
+  "Yes. All {n} tools are free to use with no account. Paid plans are planned for larger files and more AI runs, but nothing is chargeable today.|one":
+    "Да. Все {n} инструмент доступен бесплатно и без регистрации. Платные планы задуманы для файлов побольше и большего числа запусков ИИ, но сегодня ничего платного здесь нет.",
+  "Yes. All {n} tools are free to use with no account. Paid plans are planned for larger files and more AI runs, but nothing is chargeable today.|few":
+    "Да. Все {n} инструмента доступны бесплатно и без регистрации. Платные планы задуманы для файлов побольше и большего числа запусков ИИ, но сегодня ничего платного здесь нет.",
   "Are my images uploaded?": "Загружаются ли мои изображения?",
   "For most tools, no — they run entirely in your browser and the file never leaves your device. Uploads only happen for images too large for a browser tab to handle, the AI tools, and HEIC conversion. Each of those says so on its own page.":
     "У большинства инструментов — нет: они работают целиком в вашем браузере, и файл не покидает устройство. Загрузка происходит только для изображений, слишком больших для вкладки браузера, для инструментов с ИИ и для конвертации HEIC. Каждый из них говорит об этом на своей странице.",

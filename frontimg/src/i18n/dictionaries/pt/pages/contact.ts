@@ -31,8 +31,8 @@ export const ptContact: Dict = {
   // FAQ
   "Before you write": "Antes de escrever",
   "Is oMyImage free?": "O oMyImage é grátis?",
-  "Yes. All 30 tools are free to use with no account. Paid plans are planned for larger files and more AI runs, but nothing is chargeable today.":
-    "É. Todas as 30 ferramentas são gratuitas e não exigem conta. Planos pagos estão previstos para arquivos maiores e mais usos de IA, mas hoje não há nada cobrado.",
+  "Yes. All {n} tools are free to use with no account. Paid plans are planned for larger files and more AI runs, but nothing is chargeable today.":
+    "É. Todas as {n} ferramentas são gratuitas e não exigem conta. Planos pagos estão previstos para arquivos maiores e mais usos de IA, mas hoje não há nada cobrado.",
   "Are my images uploaded?": "Minhas imagens são enviadas?",
   "For most tools, no — they run entirely in your browser and the file never leaves your device. Uploads only happen for images too large for a browser tab to handle, the AI tools, and HEIC conversion. Each of those says so on its own page.":
     "Na maioria das ferramentas, não — elas rodam inteiramente no seu navegador e o arquivo nunca sai do seu aparelho. O envio só acontece com imagens grandes demais para uma aba do navegador dar conta, com as ferramentas de IA e com a conversão de HEIC. Cada uma delas avisa isso na própria página.",
