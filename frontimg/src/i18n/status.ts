@@ -148,6 +148,15 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "blur-image",
     "heic-to-jpg",
     "image-to-text",
+    // Batch 3 — convert-to-jpg and image-to-pdf, plus the three pages the
+    // 2026-09-23 demand reorder promoted: merge-images (590/mo, KD 0),
+    // image-color-picker (590, KD 3) and grayscale-image (480, KD 0), all of
+    // which beat the converter pairs that had been ahead of them.
+    "convert-to-jpg",
+    "image-to-pdf",
+    "grayscale-image",
+    "merge-images",
+    "image-color-picker",
   ],
 };
 
