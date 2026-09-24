@@ -274,6 +274,12 @@ const SHIPPED_PAGES: Record<TranslatedLocale, string[]> = {
     "/pricing",
     "/login",
     "/signup",
+    // Batch 12 — the password flow and the two signed-in surfaces. This closes
+    // the Russian locale at 54 pages.
+    "/forgot-password",
+    "/reset-password",
+    "/account",
+    "/dashboard",
   ],
 };
 
