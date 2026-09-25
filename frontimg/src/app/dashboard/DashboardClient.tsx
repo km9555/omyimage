@@ -60,7 +60,10 @@ export function DashboardClient() {
   }
 
   const email = user.email ?? "";
-  const firstName = (user.name?.trim() || email.split("@")[0] || t("there")).split(" ")[0];
+  // Only the user's own name is cut to its first word. The "there" fallback is
+  // a translated phrase ("por aqui", «рады вас видеть», «senang melihat Anda
+  // lagi») and splitting it left one dangling word.
+  const firstName = user.name?.trim().split(" ")[0] || email.split("@")[0] || t("there");
   const initial = (firstName[0] ?? email[0] ?? "?").toUpperCase();
 
   const plan = profile?.plan ?? "free";
