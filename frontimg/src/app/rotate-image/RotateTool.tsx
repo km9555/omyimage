@@ -17,7 +17,7 @@ import { Dropzone } from "@/components/image/Dropzone";
 import { FileTray, TrayAction, type TrayEntry } from "@/components/tool/FileTray";
 import { SettingsRail, RailAction, RailSecondaryAction, RailNote } from "@/components/tool/SettingsRail";
 import { BackgroundPicker, resolveBg, type BgValue } from "@/components/BackgroundPicker";
-import { shouldUseServerForFile, toServerFormat, processOnServer } from "@/lib/process-router";
+import { serverCanDecode, shouldUseServerForFile, toServerFormat, processOnServer } from "@/lib/process-router";
 import { useHandoff } from "@/lib/tool-handoff";
 import { useFormatBytes, useT } from "@/i18n/I18nScope";
 import { translateError } from "@/i18n/errors";
@@ -96,7 +96,9 @@ export function RotateTool() {
       for (const it of items) {
         const mime = outMimeFor(it.file, format);
         let blob: Blob;
-        if (await shouldUseServerForFile(it.file)) {
+        // A BMP never leaves the browser: Sharp/libvips has no BMP loader, so
+        // the upload would pass validation and then throw. Canvas decodes BMP fine.
+        if ((await serverCanDecode(it.file)) && (await shouldUseServerForFile(it.file))) {
           // Past the browser's canvas ceiling or the byte cap → offload to the
           // shared oMyPDF backend (Sharp, /api/image/*).
           const r = await processOnServer("/api/image/rotate", it.file, {
