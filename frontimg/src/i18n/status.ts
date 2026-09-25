@@ -243,6 +243,13 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "meme-generator",
     "image-to-text",
     "heic-to-jpg",
+    // Batch 8 — watermark foto 2,900, image to base64 1,600, crop foto bulat
+    // 720, putar foto 320. heic-to-png shares HeicTool: its `ui` is DUPLICATED.
+    "watermark-image",
+    "image-to-base64",
+    "circle-crop",
+    "rotate-image",
+    "heic-to-png",
   ],
 };
 

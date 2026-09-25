@@ -151,7 +151,7 @@ const content: ToolPageContent = {
     "Change logo": "Ganti logo",
     "Upload logo": "Unggah logo",
     "Logo size": "Ukuran logo",
-    "Opacity": "Transparansi",
+    "Opacity": "Opasitas",
     "Position": "Posisi",
     "Text to stamp": "Teks yang ditempel",
     "Label": "Label", // i18n-same
