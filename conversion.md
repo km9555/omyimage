@@ -1550,21 +1550,23 @@ Per-batch procedure unchanged (§3/§4): content module → route → id in
   the translated "there", so «senang melihat Anda lagi» printed as «senang»
   (and pt «por aqui» as «por»). Only the user's own name is cut now; English
   output is unchanged (`bd0a0da`).
-- Claims about features that don't exist, copied from the English source, were
-  written correctly in Indonesian only, because the English text is also the
-  translation key:
+- Claims about features that don't exist, copied from the English source into
+  every locale's content module, were written correctly in Indonesian only.
+  Correcting them means five separate module edits per tool, which is outside
+  a locale branch's scope, so each was raised as its own task:
   - **auto-orient** on rotate and remove-EXIF. Rotate has no such option, and
-    remove-EXIF bakes the orientation in. Raised as separate tasks for all
-    four locales.
-  - **a margin control** on watermark. There isn't one.
-  - **"the largest circle"** on circle crop. It opens at 90% of the short
-    side.
-
-  The watermark and circle-crop claims are **not yet raised** anywhere, and
-  are listed here so they are not lost.
-- One Indonesian-only slip: batch 2 translated the editor's "Opacity" slider
-  as «Transparansi», which inverts its meaning. It was found while writing
-  watermark in batch 8 and changed to «Opasitas».
+    remove-EXIF bakes the orientation in.
+  - **a margin control** on watermark (en, pt, hi «किनारे से दूरी», ru
+    «отступ»). The margin is fixed at 4%, and the panel has no slider for it.
+  - **"the largest circle"** on circle crop (en, pt, hi, ru). It actually
+    opens centred at 90% of the short side (`centeredCrop`, `fill = 0.9`).
+- **"Opacity" translated as "transparency".** This inverts the slider, where
+  100% means fully opaque. Indonesian batch 2 wrote «Transparansi»; batch 8
+  found it while writing watermark and changed it to «Opasitas». Checking the
+  other locales then showed that **hi (पारदर्शिता) and ru (Прозрачность) make
+  the same mistake**, in both the editor and watermark. Raised with the
+  watermark/circle-crop task; the correct words are «अपारदर्शिता» and
+  «Непрозрачность». pt «Opacidade» is right.
 
 ### 11.6 Verification at close (54 pages, 2026-09-25)
 
@@ -1635,11 +1637,10 @@ Per-batch procedure unchanged (§3/§4): content module → route → id in
 - **`/id/akun` and `/id/dasbor` are unswept** when signed in, the same as
   every other locale's: there is no test account. They were checked against
   the source instead.
-- **The English-source claims listed in §11.5** are still wrong in en, pt, hi
-  and ru. Rotate and remove-EXIF have tasks; watermark margin and circle crop
-  do not. Indonesian already says the right thing, so correcting English
-  orphans none of its keys, only the matching entries in the other three
-  dictionaries.
+- **The claims listed in §11.5 are still wrong in en, pt, hi and ru** until
+  their tasks land. Indonesian already says the right thing. The claims live
+  in each locale's content module, not in a shared dictionary, so a fix in one
+  locale leaves the others unchanged, which is exactly how they drifted.
 
 ### 11.8 Still open: Yandex and IndexNow
 
