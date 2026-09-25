@@ -254,6 +254,11 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "base64-to-image",
     "gif-to-images",
     "remove-exif",
+    // Batch 10 — the three heaviest `ui` blocks (64, 83, 89 keys). With this,
+    // all 40 tools are live in Indonesian.
+    "html-to-image",
+    "image-metadata",
+    "blur-face",
   ],
 };
 
