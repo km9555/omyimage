@@ -1505,10 +1505,36 @@ Per-batch procedure unchanged (§3/§4): content module → route → id in
 → commit. Gates: `tsc`, `i18n:keys id`, `i18n:audit`, `i18n:charset`,
 `i18n:plurals`, `gen:converters --check`, `i18n:verify id`.
 
-### 11.4 Still to verify, in the batch that touches it
+### 11.4 Verified in the batch that touched it
 
-- **OCR on Indonesian text** (batch 7): render an Indonesian test image, run it
-  through `/id/gambar-ke-teks` on the default model, and record the result
-  before the page claims anything about Indonesian accuracy.
-- **The converter layer** (batch 5): Indonesian pair copy, essays and the
-  `LOCALE_CONVERTERS` row.
+- **OCR on Indonesian text** (batch 7) — DONE, two rendered test images on the
+  default `eng` model:
+  - a six-line *surat keterangan* (name, date of birth, street address; 38
+    words) through `/image-to-text`: one error — «Jl.» (jalan) read as «JI.»,
+    the lowercase-l / capital-I confusion of sans-serif type;
+  - a six-line *pengumuman* (RT/RW, date, «07.00 WIB»; 34 words) through
+    `/id/gambar-ke-teks`: zero errors, confidence 90%.
+
+  Both runs went through the **on-device fallback** (Tesseract) — the server
+  OCR (PaddleOCR) is not reachable from the dev machine — so the page claims
+  only what was observed: Indonesian reads well on the English model, and
+  «Jl.» is the thing to proofread. `OCR_DEFAULT` needs no `id` row; the
+  selector's own hint tells Indonesian users to keep «Inggris».
+- **The converter layer** (batch 5) — DONE: `dictionaries/id/converters.ts`,
+  `essays.id.ts`, ten pair modules, the `LOCALE_CONVERTERS` row; routes
+  generated.
+
+### 11.5 Found while writing Indonesian, fixed in other locales
+
+- `crop-image.ru` claimed 2:3 is a preset ratio (the list has 3:2 only, and no
+  orientation flip) — corrected in batch 3.
+- `convert-to-jpg.ru` listed AVIF as an input six times (the route's `accept`
+  excludes it; `lib/tools.ts` warns about exactly this) and called the default
+  fill white (it is Auto) — corrected in batch 3.
+- The English OCR page (committed) still says recognition happens in the
+  browser; the tool is server-first. The ru and hi twins already say so; the
+  en/pt correction is another task's uncommitted work and was left to it.
+- Two loanword H1s («GIF Maker», «Meme Generator») were identical to English
+  and failed `i18n:verify`. Rather than weaken the gate, the H1 carries the
+  native phrase too («GIF Maker: Buat GIF Animasi», «Meme Generator: Bikin
+  Meme»), with `seoName`/`crumbLabel` keeping the short product name.

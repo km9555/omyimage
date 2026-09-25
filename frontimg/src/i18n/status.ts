@@ -236,6 +236,13 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "bmp-to-jpg",
     "avif-to-jpg",
     "avif-to-png",
+    // Batch 7 — png ke jpg 12,100, gif maker 12,100, meme generator 9,900,
+    // gambar ke teks 5,400, heic ke jpg 2,900.
+    "png-to-jpg",
+    "gif-maker",
+    "meme-generator",
+    "image-to-text",
+    "heic-to-jpg",
   ],
 };
 
