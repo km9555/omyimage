@@ -10,10 +10,10 @@ import type { ToolPageContent } from "@/content/tools/types";
  *
  * "Flip H" / "Flip V" follow image-editor.id.ts («Balik H», «Balik V»).
  *
- * NOT CARRIED OVER: the English page (and the pt/hi/ru twins) describe an
- * "auto-orient" option that reads each file's EXIF tag. RotateTool has no such
- * control — it rasterizes with autoOrient:false and applies one rotation to
- * the whole batch — so this page says to group photos by direction instead.
+ * No "auto-orient" option: RotateTool has no such control — it rasterizes
+ * with autoOrient:false and applies one rotation to the whole batch — so this
+ * page says to group photos by direction instead. The English page and the
+ * pt/hi/ru twins once promised one; they were corrected to match this page.
  */
 const content: ToolPageContent = {
   toolId: "rotate-image",

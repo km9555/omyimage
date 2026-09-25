@@ -51,7 +51,7 @@ export const idTools: Record<string, LocalizedTool> = {
   },
   "rotate-image": {
     name: "Putar Foto",
-    shortDescription: "Putar 90°, 180°, 270°, atau luruskan otomatis, sekaligus banyak.",
+    shortDescription: "Putar 90°, 180°, 270° atau sudut berapa pun, dan balik, sekaligus banyak.",
   },
 
   // ── Konversi ───────────────────────────────────────────────────────────

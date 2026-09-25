@@ -1555,7 +1555,21 @@ Per-batch procedure unchanged (§3/§4): content module → route → id in
   Correcting them means five separate module edits per tool, which is outside
   a locale branch's scope, so each was raised as its own task:
   - **auto-orient** on rotate and remove-EXIF. Rotate has no such option, and
-    remove-EXIF bakes the orientation in.
+    remove-EXIF bakes the orientation in. **Rotate: fixed** in en/pt/hi/ru
+    (the batch paragraph, the "What is auto-orient?" FAQ, now "What if each
+    photo needs a different rotation?", and the folder FAQ). The same claim
+    was also on the tool card (`lib/tools.ts` shortDescription and the en meta
+    description; pt «endireite automaticamente», hi «अपने आप सीधा करें», and
+    the Indonesian card's own «luruskan otomatis») — all corrected. FAQ
+    counts and section ids are unchanged.
+
+    Checked with a JPEG carrying EXIF Orientation=6 (stored 200×100). At +90°
+    the output is 200×100 with no EXIF: the file was read upright from its
+    tag, then turned. That holds only because Chrome 152 treats
+    `imageOrientation: "none"`, which RotateTool asks for, the same as
+    `"from-image"`; a browser that honours `"none"` would ignore the tag.
+    Large files go to the server path (Sharp) instead, which was not
+    inspected. That is why the copy promises no per-photo correction.
   - **a margin control** on watermark (en, pt, hi «किनारे से दूरी», ru
     «отступ»). The margin is fixed at 4%, and the panel has no slider for it.
   - **"the largest circle"** on circle crop (en, pt, hi, ru). It actually

@@ -113,7 +113,7 @@ export const TOOLS: Tool[] = [
     name: "Rotate Image",
     slug: "rotate-image",
     categoryId: "optimize",
-    shortDescription: "Rotate 90°, 180°, 270° or auto-orient, in bulk.",
+    shortDescription: "Rotate 90°, 180°, 270° or any angle, and flip, in bulk.",
     icon: "rotate_90_degrees_cw",
     processing: "client",
     library: "Canvas / Sharp",
@@ -121,7 +121,7 @@ export const TOOLS: Tool[] = [
     priority: 4,
     seoTitle: "Rotate Image Online - Free | oMyImage",
     seoDescription:
-      "Rotate images online for free. Turn photos 90°, 180° or 270°, auto-orient by EXIF, and rotate multiple files at once. Fast and private.",
+      "Rotate images online for free. Turn photos 90°, 180°, 270° or any angle, flip them, and rotate multiple files at once. Fast and private.",
     primaryKeyword: "rotate image online",
   },
 

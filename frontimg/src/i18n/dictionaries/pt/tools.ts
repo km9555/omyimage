@@ -49,7 +49,7 @@ export const ptTools: Record<string, LocalizedTool> = {
   },
   "rotate-image": {
     name: "Girar imagem",
-    shortDescription: "Gire 90°, 180°, 270° ou endireite automaticamente, em lote.",
+    shortDescription: "Gire 90°, 180°, 270° ou em qualquer ângulo, e espelhe, em lote.",
   },
 
   // ── Converter ─────────────────────────────────────────────────────────
