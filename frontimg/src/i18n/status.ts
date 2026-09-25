@@ -361,6 +361,11 @@ const SHIPPED_PAGES: Record<TranslatedLocale, string[]> = {
     "/pricing",
     "/login",
     "/signup",
+    // Batch 12 — the signed-in and password surfaces. Closes the locale at 54.
+    "/forgot-password",
+    "/reset-password",
+    "/account",
+    "/dashboard",
   ],
 };
 
