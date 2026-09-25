@@ -354,6 +354,13 @@ const SHIPPED_PAGES: Record<TranslatedLocale, string[]> = {
     "/terms",
     "/refunds",
     "/cookies",
+    // Batch 11 — shared bodies with page dictionaries. The hub follows the
+    // converter layer (batches 5–6), so every card on it links to /id.
+    "/contact",
+    "/image-converter",
+    "/pricing",
+    "/login",
+    "/signup",
   ],
 };
 
