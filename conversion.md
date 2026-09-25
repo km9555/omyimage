@@ -1585,15 +1585,29 @@ Per-batch procedure unchanged (§3/§4): content module → route → id in
     spec default.
   - **a margin control** on watermark (en, pt, hi «किनारे से दूरी», ru
     «отступ»). The margin is fixed at 4%, and the panel has no slider for it.
+    **Fixed:** the feature card now says size, which is real ("Size" for
+    text, "Logo size" for a logo), matching the Indonesian card.
   - **"the largest circle"** on circle crop (en, pt, hi, ru). It actually
     opens centred at 90% of the short side (`centeredCrop`, `fill = 0.9`).
+    **Fixed:** the FAQ now says it starts centred, nearly as wide as the
+    shorter side, and names the Recentre button by its label on each page.
 - **"Opacity" translated as "transparency".** This inverts the slider, where
   100% means fully opaque. Indonesian batch 2 wrote «Transparansi»; batch 8
   found it while writing watermark and changed it to «Opasitas». Checking the
   other locales then showed that **hi (पारदर्शिता) and ru (Прозрачность) make
-  the same mistake**, in both the editor and watermark. Raised with the
-  watermark/circle-crop task; the correct words are «अपारदर्शिता» and
-  «Непрозрачность». pt «Opacidade» is right.
+  the same mistake**, in both the editor and watermark. pt «Opacidade» is
+  right.
+
+  **Fixed:** the `ui` label is now «अपारदर्शिता» / «Непрозрачность» in both
+  tools. So is every sentence in those modules that names the setting: the
+  tagline, meta description, intro, the "Opacity, size and contrast"
+  section, the steps, cards and FAQs. That matters most where a number is
+  attached ("30–50%"), because under the old word the number meant the
+  opposite. Alpha-channel wording stays («прозрачный PNG», «पारदर्शी PNG»,
+  «прозрачность сохраняется в PNG и WEBP»), as does the Russian editor's
+  descriptive «полупрозрачный знак». The live `/ru/watermark-image` panel
+  now reads «Непрозрачность 60%» on a 0.6 slider. No other hi/ru module has
+  an opacity key; every other «прозрачность» / «पारदर्शिता» is about alpha.
 
 ### 11.6 Verification at close (54 pages, 2026-09-25)
 
@@ -1664,10 +1678,12 @@ Per-batch procedure unchanged (§3/§4): content module → route → id in
 - **`/id/akun` and `/id/dasbor` are unswept** when signed in, the same as
   every other locale's: there is no test account. They were checked against
   the source instead.
-- **The claims listed in §11.5 are still wrong in en, pt, hi and ru** until
-  their tasks land. Indonesian already says the right thing. The claims live
-  in each locale's content module, not in a shared dictionary, so a fix in one
-  locale leaves the others unchanged, which is exactly how they drifted.
+- **The claims listed in §11.5 are now fixed in all five locales** (rotate,
+  remove-EXIF, watermark margin, circle crop, Opacity). The lesson stands:
+  these claims live in each locale's content module, not in a shared
+  dictionary, so a fix in one locale leaves the others unchanged. That is
+  exactly how they drifted, and why each fix here touched four or five
+  modules at once.
 
 ### 11.8 Still open: Yandex and IndexNow
 

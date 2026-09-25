@@ -77,7 +77,7 @@ const content: ToolPageContent = {
 
   faqs: [
     { q: "O fundo fica transparente?", a: "Sim, por padrão — exporte em PNG ou WEBP para os cantos fora do círculo continuarem transparentes. Escolha JPG para achatar sobre uma cor." },
-    { q: "E se a minha imagem não for quadrada?", a: "Não precisa ser. O círculo começa do maior tamanho que couber, e você pode arrastá-lo para qualquer parte da imagem e redimensionar — então um rosto no canto de uma foto larga é tão fácil de recortar quanto um centralizado." },
+    { q: "E se a minha imagem não for quadrada?", a: "Não precisa ser. O círculo começa centralizado, quase da largura do lado menor, e você pode arrastá-lo para qualquer parte da imagem e redimensionar — então um rosto no canto de uma foto larga é tão fácil de recortar quanto um centralizado. \"Centralizar e zerar o zoom\" o traz de volta." },
     { q: "Posso escolher onde o círculo fica?", a: "Pode. Arraste o círculo para mover, puxe a alça na borda para redimensionar e use o zoom quando precisar de precisão. As setas do teclado movem um pixel por vez (com Shift, dez), e + e − redimensionam." },
     { q: "Qual vai ser o tamanho da imagem exportada?", a: "Por padrão, \"Original\" exporta o círculo na resolução que ele tem na imagem de origem, então nada é ampliado. Você também pode fixar 256, 512 ou 1024 pixels de lado, o que é prático para avatares com um espaço de tamanho definido." },
     { q: "Dá para colocar uma borda em volta do círculo?", a: "Sim. Ajuste a espessura e a cor da borda para criar um contorno limpo em volta do recorte circular." },

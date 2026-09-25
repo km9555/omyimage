@@ -146,7 +146,7 @@ const content: ToolPageContent = {
     "Change logo": "लोगो बदलें",
     "Upload logo": "लोगो अपलोड करें",
     "Logo size": "लोगो का आकार",
-    "Opacity": "पारदर्शिता",
+    "Opacity": "अपारदर्शिता",
     "Position": "जगह",
     "Text to stamp": "लगाने के लिए टेक्स्ट",
     "Label": "लेबल",

@@ -68,7 +68,7 @@ const content: ToolPageContent = {
 
   faqs: [
     { q: "Will the background be transparent?", a: "Yes, by default — export as PNG or WEBP to keep the corners outside the circle transparent. Choose JPG to flatten onto a color." },
-    { q: "What if my image isn't square?", a: "It doesn't need to be. The circle starts as the largest one that fits, and you can drag it anywhere on the image and resize it — so a face in the corner of a wide photo is just as easy to crop as a centred one." },
+    { q: "What if my image isn't square?", a: "It doesn't need to be. The circle starts centred, nearly as wide as the shorter side, and you can drag it anywhere on the image and resize it — so a face in the corner of a wide photo is just as easy to crop as a centred one. 'Recentre & reset zoom' puts it back." },
     { q: "Can I choose where the circle goes?", a: "Yes. Drag the circle to move it, drag the handle on its edge to resize it, and scroll to zoom in when you need to be precise. Arrow keys nudge it a pixel at a time (hold Shift for ten), and + and − resize it." },
     { q: "What size will the exported image be?", a: "By default, 'Original' exports the circle at its own resolution in the source image, so nothing is ever upscaled. You can also force 256, 512 or 1024 pixels square, which is convenient for avatars that have a fixed slot to fill." },
     { q: "Can I add a ring around the circle?", a: "Yes. Set the ring thickness and color to add a clean border around the circular crop." },
