@@ -1538,3 +1538,111 @@ Per-batch procedure unchanged (§3/§4): content module → route → id in
   and failed `i18n:verify`. Rather than weaken the gate, the H1 carries the
   native phrase too («GIF Maker: Buat GIF Animasi», «Meme Generator: Bikin
   Meme»), with `seoName`/`crumbLabel` keeping the short product name.
+- `remove-background.ru` promised a background-colour option («сразу
+  подставьте белый фон…») the tool does not have: it returns a transparent PNG
+  and nothing else. The copy now sends people to PNG → JPG, whose background
+  picker does fill the transparency. Corrected in batch 1.
+- Two `A{" "}<slot>{" "}B` seams where B opened on punctuation and printed a
+  space before it: the Russian home («drive.file . Оно…») and the Portuguese
+  account page («no plano Free : 10 execuções»). Both now open B with a spaced
+  em dash. Corrected in batches 1 and 12.
+- `DashboardClient` cut the greeting to its first word *after* falling back to
+  the translated "there", so «senang melihat Anda lagi» printed as «senang»
+  (and pt «por aqui» as «por»). Only the user's own name is cut now; English
+  output is unchanged (`bd0a0da`).
+- Claims about features that don't exist, copied from the English source, were
+  written correctly in Indonesian only, because the English text is also the
+  translation key:
+  - **auto-orient** on rotate and remove-EXIF. Rotate has no such option, and
+    remove-EXIF bakes the orientation in. Raised as separate tasks for all
+    four locales.
+  - **a margin control** on watermark. There isn't one.
+  - **"the largest circle"** on circle crop. It opens at 90% of the short
+    side.
+
+  The watermark and circle-crop claims are **not yet raised** anywhere, and
+  are listed here so they are not lost.
+- One Indonesian-only slip: batch 2 translated the editor's "Opacity" slider
+  as «Transparansi», which inverts its meaning. It was found while writing
+  watermark in batch 8 and changed to «Opasitas».
+
+### 11.6 Verification at close (54 pages, 2026-09-25)
+
+- `tsc --noEmit`, `i18n:audit`, `i18n:hardcoded`, `i18n:charset`,
+  `i18n:plurals` and `gen:converters --check` are all clean. **`i18n:keys id`
+  reports zero missing keys.** `i18n:plurals` recognises `id` as a one-form
+  language and has nothing to check, which is correct (§11.2).
+- `i18n:verify id --all` — **54/54 clean.**
+- `tracker-id.csv`: 54 rows, all `done`.
+- `npm run build` + `verify:build` — **40 localized id tool pages**, the same
+  as pt, hi and ru. The converter-prose similarity ceiling holds at 0.289
+  (webp-to-jpg ~ gif-to-jpg), against a 0.6 limit.
+- Sitemap: **48 `/id` URLs** (54 minus the six `index: false` pages: masuk,
+  daftar, lupa-kata-sandi, atur-ulang-kata-sandi, akun, dasbor). All **240 URL
+  blocks carry a five-way reciprocal alternate set** plus `x-default`. Every
+  `/id` href is ASCII even though the slugs are translated, because Indonesian
+  has no diacritics (§11.1).
+- The HTML of all 54 `/id` pages has the right canonical and alternates, and
+  the six account pages are `noindex`. All 54 ship `lang="en"`, the same as
+  every other locale: a static export renders `<html>` once, and the pre-paint
+  script stamps the language from the URL. `id` is in that script's derived
+  map.
+- **Snapshot diff against a real build of the pre-Indonesian commit**
+  (`7ffb652`, parent of the Phase 0 commit). The environment was matched as in
+  §9.5: `.env.local` copied, `node_modules` copied rather than linked, and the
+  other task's uncommitted `image-to-text` en/pt edits applied to the baseline
+  too, so they cancel out. The comparison is **text level**: title, meta,
+  canonical, alternates, JSON-LD and visible body text, extracted per file. A
+  byte diff is useless because every build re-hashes the chunks.
+
+  54 files were added (53 under `/id`, plus `id.html`) and none removed. **212
+  of the 222 common files gained exactly one `hreflang="id"` alternate.** The
+  other 10 are the ones that never carry alternates in any locale: 404 and
+  not-found, admin, auth callback, the English-only blog, and the four noindex
+  account pages. The language menu renders on the client, so it adds no text
+  to the static HTML. Inter's module hash did not move either, since no new
+  subset was needed.
+
+  With the new alternate set aside, **English, Portuguese and Hindi are
+  identical. 4 Russian files differ, and all four are intended fixes from
+  §11.5:** `ru/convert-to-jpg` (AVIF removed: meta, JSON-LD, text),
+  `ru/crop-image` (2:3 → 3:2), `ru/remove-background` (no background-colour
+  promise: JSON-LD HowTo step and text), and `ru.html` (the `drive.file`
+  seam). The pt account and dashboard fixes do not show up because those
+  pages only render when signed in.
+
+  Three commits on this branch came from another session: `5bfcc32`,
+  `fc26338` and `c89d93a`, which keep BMP sources off the server in the
+  convert, resize, rotate and compress tools. They change tool behaviour, not
+  static HTML, and the diff confirms that.
+- In the browser, with real files in every batch: tools run end to end and
+  their downloads were read back as blobs and checked pixel by pixel (edge-
+  colour fill on convert, a hand-built EXIF Orientation=6 JPEG through
+  remove-EXIF and rotate, a 24-bit BMP through the converters). OCR was tested
+  on two Indonesian documents (§11.4). The signed-out dashboard redirects to
+  `/id/masuk?redirect=%2Fid%2Fdasbor`, so the locale survives the redirect.
+
+### 11.7 Debt this rollout created
+
+- **Four more legal copies.** `/id/privasi`, `/id/syarat-ketentuan`,
+  `/id/pengembalian-dana` and `/id/cookies` are written twins, so an English
+  legal edit now has four locales to reach. The Indonesian privacy policy
+  names UU PDP by role only and makes no claim about Indonesian consumer law.
+  That is deliberate, and it is the first thing a local lawyer should review.
+- **Ten more converter twins**, so a pair's copy now has five versions.
+- **Translated slugs, like pt.** A tool renamed in English does not rename its
+  `/id` URL; `ID_TOOL_SLUGS` is its own decision each time.
+- **`/id/akun` and `/id/dasbor` are unswept** when signed in, the same as
+  every other locale's: there is no test account. They were checked against
+  the source instead.
+- **The English-source claims listed in §11.5** are still wrong in en, pt, hi
+  and ru. Rotate and remove-EXIF have tasks; watermark margin and circle crop
+  do not. Indonesian already says the right thing, so correcting English
+  orphans none of its keys, only the matching entries in the other three
+  dictionaries.
+
+### 11.8 Still open: Yandex and IndexNow
+
+Same ruling as §10.9: done when the branch is merged to `main` and pushed.
+Indonesia is a Google market, so Yandex matters little here. IndexNow is what
+Indonesian needs, because it also reaches Bing.
