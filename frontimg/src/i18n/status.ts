@@ -250,6 +250,10 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "circle-crop",
     "rotate-image",
     "heic-to-png",
+    // Batch 9 — three: the developer pair's second half and the privacy tool.
+    "base64-to-image",
+    "gif-to-images",
+    "remove-exif",
   ],
 };
 
