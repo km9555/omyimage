@@ -35,12 +35,12 @@ const content: ToolPageContent = {
       ],
     },
     {
-      heading: "The orientation trap",
+      heading: "Orientation stays correct",
       id: "orientation",
       body: [
         "One EXIF field is doing real work: the orientation tag. Phone sensors are fixed, so when you rotate the phone the image is stored sideways and a tag records which way up it should be displayed.",
-        "Strip the metadata and that instruction disappears with it, so a photo that looked correct everywhere can suddenly appear rotated. Nothing has corrupted — the pixels were always sideways, and the note explaining that has been removed.",
-        "The fix is order of operations. Run the image through the Rotate tool first, using auto-orient to bake the correct orientation into the pixels, and then strip the metadata. After that the file needs no instruction, because it is stored the right way up.",
+        "Many metadata strippers throw that instruction away with everything else, so a photo that looked correct everywhere suddenly appears on its side. Nothing has corrupted — the pixels were always sideways, and the note explaining that has been removed.",
+        "This tool avoids it: the orientation from the tag is applied to the pixels first, and only then is the metadata dropped. The result is stored the right way up and needs no instruction, so it displays upright everywhere.",
       ],
     },
     {
@@ -74,7 +74,7 @@ const content: ToolPageContent = {
     { q: "Is it free and private?", a: "Yes. No sign-up and no watermark, and every image is processed locally in your browser." },
     { q: "What exactly is stored in EXIF data?", a: "Far more than most people expect: GPS coordinates accurate to a few metres, the exact date and time, the camera or phone model and serial number, lens and exposure settings, and on some devices the owner name, copyright field and a thumbnail of the original image." },
     { q: "Do social networks strip EXIF automatically?", a: "The big ones generally do on upload, but you should not rely on it. Direct messages, cloud links, email attachments, forums, marketplace listings and personal websites frequently pass the file through untouched — and those are exactly the places people share photos of things at their home address." },
-    { q: "Will removing EXIF change how the photo looks?", a: "Only in one respect. The orientation tag is metadata too, so stripping it can make a photo that displayed upright appear sideways. Rotate the image first so the correct orientation is baked into the pixels, then remove the metadata." },
+    { q: "Will removing EXIF change how the photo looks?", a: "Not its orientation. The orientation tag is applied to the pixels first and the metadata is dropped afterwards, so a photo that displayed upright stays upright. The only other change is the re-encode, which the quality setting controls." },
     { q: "Does this remove a hidden watermark or tracking code?", a: "No. It clears standard metadata fields. Steganographic marks embedded in the pixels themselves are a different thing entirely and survive metadata removal — they would survive most edits, in fact." },
     { q: "Can I recover the metadata afterwards?", a: "Not from the stripped file. Keep your original if the capture date or location matters to you — for organising a photo library, for insurance documentation, or simply for remembering where a picture was taken." },
     { q: "How can I check what my photo contains first?", a: "Use the Image Metadata Viewer. It reads every tag your file carries, including GPS coordinates plotted on a map, entirely in your browser. Looking before you strip is usually worth the extra step." },

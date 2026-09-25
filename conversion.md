@@ -1570,6 +1570,19 @@ Per-batch procedure unchanged (§3/§4): content module → route → id in
     `"from-image"`; a browser that honours `"none"` would ignore the tag.
     Large files go to the server path (Sharp) instead, which was not
     inspected. That is why the copy promises no per-photo correction.
+
+    **Remove-EXIF: fixed** in en/pt/hi/ru. The `orientation` section had said
+    stripping makes photos sideways and sent readers to Rotate's non-existent
+    auto-orient; the FAQ "Will removing EXIF change how the photo looks?"
+    repeated it. Both now say what the tool does, following the Indonesian
+    page: the heading is "Orientation stays correct", and the tag is applied
+    to the pixels before the metadata goes. The FAQ also points at the only
+    real visual change, the re-encode, which the quality setting controls.
+    Section id and FAQ counts are unchanged. Re-checked on `/remove-exif`:
+    the Orientation=6 JPEG comes out 100×200, upright, with no APP1 segment.
+    Unlike Rotate, RemoveExifTool has no server path that could behave
+    differently, and `autoOrient: true` requests `"from-image"`, which is the
+    spec default.
   - **a margin control** on watermark (en, pt, hi «किनारे से दूरी», ru
     «отступ»). The margin is fixed at 4%, and the panel has no slider for it.
   - **"the largest circle"** on circle crop (en, pt, hi, ru). It actually

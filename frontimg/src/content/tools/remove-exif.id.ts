@@ -12,9 +12,9 @@ import type { ToolPageContent } from "@/content/tools/types";
  * ORIENTATION, stated as the tool behaves: RemoveExifTool rasterizes with
  * autoOrient:true, so the EXIF orientation is applied to the pixels BEFORE the
  * metadata is dropped and the output stays upright. The English page (and
- * its twins) describe the opposite — a sideways result and a detour through
- * an "auto-orient" option in the Rotate tool, which does not exist. This page
- * follows the code; the other locales are flagged as a separate task.
+ * its twins) once described the opposite — a sideways result and a detour
+ * through an "auto-orient" option in the Rotate tool, which does not exist.
+ * They were corrected to match this page.
  */
 const content: ToolPageContent = {
   toolId: "remove-exif",
