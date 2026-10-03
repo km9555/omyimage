@@ -1395,9 +1395,11 @@ construction: a new locale declares its script in one place and is covered.
   entry in three locale dictionaries at once — it belongs in its own change,
   across all four locales, not drifting in one of them.
 
-### 10.9 Still open: Yandex and IndexNow
+### 10.9 Yandex and IndexNow (done 2026-10-03)
 
-Deferred to last by decision, and not done at the time of writing. Russia is
+Deferred to last by decision, and done in the release step on 2026-10-03,
+right after `conversion` merged to `main` (f15e37b). What was done and what
+each service reported is at the end of this section. Russia is
 roughly 60% Yandex, so **Search Console will never show most of this locale's
 traffic** — the same blindness that makes the Kazakhstan proxy necessary
 (§10.2), now on the reporting side rather than the research side.
@@ -1414,6 +1416,41 @@ Planned:
 Timing, decided 2026-09-24: **Yandex.Webmaster and IndexNow are done when the
 branch is merged to `main` and pushed**, as part of the release step — not as
 a follow-on to locale work.
+
+**Release step, 2026-10-03** (commit 4eb4547, deployed before any of this ran):
+
+- **Yandex.Webmaster.** `https://omyimage.com` was added to the same Yandex
+  account that already holds omypdf.com, and verified by **meta tag** (code
+  `8a7d738b0bb7cfac`, in the root layout's `verification` block next to the
+  Google and Bing tags). The account shows Owner, verified 10/03/2026. The
+  first Verify click had failed with "meta tag not found" because it ran
+  before the deploy; Yandex does not re-check on its own, so verify only
+  after Cloudflare reports the deploy live.
+- **Sitemap.** `https://omyimage.com/sitemap.xml` was submitted and sits in
+  Yandex's processing queue, which it says takes 1–2 weeks.
+- **`/ru` is crawlable.** The Webmaster *Server response check* fetched
+  `/ru/image-to-text` as the main YandexBot: **200 OK**, 235 ms, UTF-8,
+  113.7 KB. robots.txt is `Allow: /` with the sitemap line.
+- **hreflang.** Not confirmable yet. Yandex has no hreflang report, and it
+  reads the alternates only when it crawls. The pages carry the full
+  en/pt/hi/ru/id + x-default cluster, which `i18n-verify` checks on every
+  page. Look again once *Searchable pages* lists `/ru` URLs.
+- **IndexNow.** The key file is `public/942e061e1c972caafc2883c558e2d835.txt`
+  and the script is `npm run indexnow` (`scripts/indexnow-submit.mjs`). The
+  first POST got **403 `SiteVerificationNotCompleted`**, which is what a
+  brand-new key gets while api.indexnow.org fetches the key file. A retry a
+  few minutes later returned **200 OK for all 240 URLs** (en, pt, hi, ru, id:
+  48 each). Bing Webmaster → IndexNow then listed **240 URLs submitted,
+  source "Self"**. So the submission reached Bing as well, which is the cheap
+  re-test of the stale-Bing-state problem (§8).
+- **What Yandex reports that Search Console cannot:** nothing yet. The site
+  is minutes old in Webmaster. Come back after the sitemap is processed and
+  record *Searchable pages* per locale, *Crawl statistics* (IndexNow shows
+  up there as a source) and any *Site diagnostics* warnings.
+
+After every deploy that adds or changes pages, run `npm run indexnow` once
+Cloudflare reports the deploy live. It reads the live sitemap, and it
+refuses to post until the key file is served.
 
 ## 11. Indonesian (`/id`)
 
@@ -1685,8 +1722,12 @@ Per-batch procedure unchanged (§3/§4): content module → route → id in
   exactly how they drifted, and why each fix here touched four or five
   modules at once.
 
-### 11.8 Still open: Yandex and IndexNow
+### 11.8 Yandex and IndexNow (done 2026-10-03)
 
 Same ruling as §10.9: done when the branch is merged to `main` and pushed.
 Indonesia is a Google market, so Yandex matters little here. IndexNow is what
 Indonesian needs, because it also reaches Bing.
+
+Done in the same release step as §10.9. All 48 `/id` URLs were in the
+IndexNow submission that returned 200 and appear in Bing Webmaster's IndexNow
+list. The details are in §10.9.
