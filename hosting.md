@@ -65,17 +65,38 @@ matching one subdomain label (`omypdf-project/backend/src/lib/cors-origins.ts`,
 commit 0c45eb2). Server tools therefore work on previews against the
 **production** API.
 
-The two Google keys were added to Preview as well, at the user's request, with
-the same values as production. That makes the "import from Google Drive"
-button render on previews, but **Google refuses the sign-in popup there with
-`Error 400: redirect_uri_mismatch`**, checked against Google's OAuth endpoint
-on 2026-10-03. The "oMyImage Web" OAuth client lists only the production
-domains as Authorized JavaScript origins; even `omyimage.pages.dev` is
-missing. Google allows **no wildcards** in that list. Hash previews
-(`<hash>.omyimage.pages.dev`) therefore can never work, and a branch alias
-works only once that exact `https://<branch>.omyimage.pages.dev` is
-registered. The Picker API key's HTTP-referrer list does accept wildcards
-(`https://*.omyimage.pages.dev/*`).
+The two Google keys were added to Preview as well, with the same values as
+production, so the "import from Google Drive" button renders on previews.
+
+**Use the `staging` branch to test Drive import before production.** It is a
+long-lived branch, created 2026-10-03, served at
+**`https://staging.omyimage.pages.dev`**. Push work there to preview it, then
+merge to `main` to publish. Google refuses every other preview with
+`Error 400: redirect_uri_mismatch`. The reason is that Google allows **no
+wildcards** in an OAuth client's Authorized JavaScript origins, so the
+per-deploy `<hash>.omyimage.pages.dev` addresses can never be registered.
+Only exact branch aliases can.
+
+Google Cloud project `omyimage`, OAuth client "oMyImage" (`392103674640-jp1p…`),
+**Authorized JavaScript origins** as of 2026-10-03: `http://localhost:3002`,
+`https://omyimage.com`, `https://www.omyimage.com`,
+`https://staging.omyimage.pages.dev`, `https://omyimage.pages.dev`. The last
+two were added that day. The redirect URIs are the backend's Google sign-in
+callbacks and were not touched. Google's OAuth endpoint accepted both new
+origins within minutes. To test an origin without a browser, GET
+`https://accounts.google.com/o/oauth2/v2/auth?client_id=<id>&response_type=token&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive.file&redirect_uri=storagerelay%3A%2F%2Fhttps%2F<host>%3Fid%3Dx`.
+A 302 to `/v3/signin/identifier` means the origin is accepted; a 302 to
+`/signin/oauth/error` means it is refused.
+
+The "oMyImage Picker" API key is restricted to the Google Picker API but has
+**no website restriction** (Application restrictions: None), so it already
+works from any origin and needed no change. Adding a website restriction
+would be a hardening step; it would have to list every origin above, plus
+`https://*.omyimage.pages.dev/*`.
+
+Dropbox import on staging additionally needs `staging.omyimage.pages.dev` in
+the Dropbox app's Chooser domains. That list has `omyimage.pages.dev` but not
+the staging alias.
 
 > ⚠ **These are read at BUILD time, and they are load-bearing.** If
 > `NEXT_PUBLIC_BACKEND_URL` is unset, `frontimg/src/lib/site.ts` falls back to
