@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-09-19",
-  "count": 94,
+  "generatedAt": "2026-10-03",
+  "count": 95,
   "summary": {
-    "MIT": 71,
+    "MIT": 72,
     "MIT-0": 2,
     "Apache-2.0": 9,
     "CC-BY-4.0": 1,
@@ -65,7 +65,7 @@
     },
     {
       "name": "@csstools/color-helpers",
-      "version": "6.1.1",
+      "version": "6.1.2",
       "license": "MIT-0",
       "author": "Antonio Laguna",
       "repository": "https://github.com/csstools/postcss-plugins",
@@ -73,7 +73,7 @@
     },
     {
       "name": "@csstools/css-calc",
-      "version": "3.4.0",
+      "version": "3.4.3",
       "license": "MIT",
       "author": "Antonio Laguna",
       "repository": "https://github.com/csstools/postcss-plugins",
@@ -81,7 +81,7 @@
     },
     {
       "name": "@csstools/css-color-parser",
-      "version": "4.2.3",
+      "version": "4.2.6",
       "license": "MIT",
       "author": "Antonio Laguna",
       "repository": "https://github.com/csstools/postcss-plugins",
@@ -89,7 +89,7 @@
     },
     {
       "name": "@csstools/css-parser-algorithms",
-      "version": "4.0.0",
+      "version": "4.0.2",
       "license": "MIT",
       "author": "Antonio Laguna",
       "repository": "https://github.com/csstools/postcss-plugins",
@@ -97,7 +97,7 @@
     },
     {
       "name": "@csstools/css-syntax-patches-for-csstree",
-      "version": "1.1.14",
+      "version": "1.1.15",
       "license": "MIT-0",
       "author": "Antonio Laguna",
       "repository": "https://github.com/csstools/postcss-plugins",
@@ -105,7 +105,7 @@
     },
     {
       "name": "@csstools/css-tokenizer",
-      "version": "4.0.1",
+      "version": "4.0.2",
       "license": "MIT",
       "author": "Antonio Laguna",
       "repository": "https://github.com/csstools/postcss-plugins",
@@ -113,7 +113,7 @@
     },
     {
       "name": "@exodus/bytes",
-      "version": "1.15.1",
+      "version": "1.16.0",
       "license": "MIT",
       "author": "Exodus Movement, Inc.",
       "repository": "https://github.com/ExodusOSS/bytes",
@@ -129,7 +129,7 @@
     },
     {
       "name": "@next/env",
-      "version": "16.2.7",
+      "version": "16.3.8",
       "license": "MIT",
       "author": "Next.js Team",
       "repository": "https://github.com/vercel/next.js",
@@ -153,7 +153,7 @@
     },
     {
       "name": "@swc/helpers",
-      "version": "0.5.15",
+      "version": "0.5.23",
       "license": "Apache-2.0",
       "author": "강동윤",
       "repository": "https://github.com/swc-project/swc",
@@ -169,7 +169,7 @@
     },
     {
       "name": "baseline-browser-mapping",
-      "version": "2.10.38",
+      "version": "2.11.27",
       "license": "Apache-2.0",
       "author": "",
       "repository": "https://github.com/web-platform-dx/baseline-browser-mapping",
@@ -193,7 +193,7 @@
     },
     {
       "name": "caniuse-lite",
-      "version": "1.0.30001799",
+      "version": "1.0.30001814",
       "license": "CC-BY-4.0",
       "author": "Ben Briggs",
       "repository": "browserslist/caniuse-lite",
@@ -257,7 +257,7 @@
     },
     {
       "name": "dompurify",
-      "version": "3.4.15",
+      "version": "3.4.16",
       "license": "Apache-2.0",
       "offeredLicense": "(MPL-2.0 OR Apache-2.0)",
       "author": "Dr.-Ing. Mario Heiderich, Cure53",
@@ -394,7 +394,7 @@
     },
     {
       "name": "jszip",
-      "version": "3.10.1",
+      "version": "3.10.2",
       "license": "MIT",
       "offeredLicense": "(MIT OR GPL-3.0-or-later)",
       "author": "Stuart Knightley",
@@ -419,7 +419,7 @@
     },
     {
       "name": "marked",
-      "version": "18.0.13",
+      "version": "18.0.14",
       "license": "MIT",
       "author": "Christopher Jeffrey",
       "repository": "https://github.com/markedjs/marked",
@@ -443,7 +443,7 @@
     },
     {
       "name": "nanoid",
-      "version": "3.3.15",
+      "version": "3.3.19",
       "license": "MIT",
       "author": "Andrey Sitnik",
       "repository": "ai/nanoid",
@@ -451,7 +451,7 @@
     },
     {
       "name": "next",
-      "version": "16.2.7",
+      "version": "16.3.8",
       "license": "MIT",
       "author": "",
       "repository": "vercel/next.js",
@@ -507,7 +507,7 @@
     },
     {
       "name": "postcss",
-      "version": "8.5.15",
+      "version": "8.5.28",
       "license": "MIT",
       "author": "Andrey Sitnik",
       "repository": "postcss/postcss",
@@ -520,6 +520,14 @@
       "author": "",
       "repository": "https://github.com/calvinmetcalf/process-nextick-args",
       "text": "# Copyright (c) 2015 Calvin Metcalf\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\n**THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.**"
+    },
+    {
+      "name": "punycode",
+      "version": "2.3.1",
+      "license": "MIT",
+      "author": "Mathias Bynens",
+      "repository": "https://github.com/mathiasbynens/punycode.js",
+      "text": "Copyright Mathias Bynens <https://mathiasbynens.be/>\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
     },
     {
       "name": "react",
@@ -595,7 +603,7 @@
     },
     {
       "name": "sonner",
-      "version": "2.0.7",
+      "version": "2.0.8",
       "license": "MIT",
       "author": "Emil Kowalski",
       "repository": "https://github.com/emilkowalski/sonner",
@@ -603,7 +611,7 @@
     },
     {
       "name": "source-map-js",
-      "version": "1.2.1",
+      "version": "1.2.2",
       "license": "BSD-3-Clause",
       "author": "Valentin 7rulnik Semirulnik",
       "repository": "7rulnik/source-map-js",
@@ -651,7 +659,7 @@
     },
     {
       "name": "tldts",
-      "version": "7.4.13",
+      "version": "7.4.16",
       "license": "MIT",
       "author": "Rémi Berson",
       "repository": "https://github.com/remusao/tldts",
@@ -659,7 +667,7 @@
     },
     {
       "name": "tldts-core",
-      "version": "7.4.13",
+      "version": "7.4.16",
       "license": "MIT",
       "author": "Rémi Berson",
       "repository": "https://github.com/remusao/tldts",
@@ -675,11 +683,11 @@
     },
     {
       "name": "tr46",
-      "version": "0.0.3",
+      "version": "6.0.0",
       "license": "MIT",
       "author": "Sebastian Mayr",
-      "repository": "https://github.com/Sebmaster/tr46.js",
-      "text": null
+      "repository": "https://github.com/jsdom/tr46",
+      "text": "The MIT License (MIT)\n\nCopyright (c) Sebastian Mayr\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE."
     },
     {
       "name": "tslib",
@@ -691,7 +699,7 @@
     },
     {
       "name": "undici",
-      "version": "7.29.1",
+      "version": "7.30.0",
       "license": "MIT",
       "author": "Daniele Belardi",
       "repository": "https://github.com/nodejs/undici",
@@ -723,10 +731,10 @@
     },
     {
       "name": "webidl-conversions",
-      "version": "3.0.1",
+      "version": "8.0.1",
       "license": "BSD-2-Clause",
       "author": "Domenic Denicola",
-      "repository": "jsdom/webidl-conversions",
+      "repository": "https://github.com/jsdom/webidl-conversions",
       "text": "# The BSD 2-Clause License\n\nCopyright (c) 2014, Domenic Denicola\nAll rights reserved.\n\nRedistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:\n\n1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.\n\n2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
     },
     {
@@ -739,11 +747,11 @@
     },
     {
       "name": "whatwg-url",
-      "version": "5.0.0",
+      "version": "16.0.1",
       "license": "MIT",
       "author": "Sebastian Mayr",
-      "repository": "jsdom/whatwg-url",
-      "text": "The MIT License (MIT)\n\nCopyright (c) 2015–2016 Sebastian Mayr\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE."
+      "repository": "https://github.com/jsdom/whatwg-url",
+      "text": "The MIT License (MIT)\n\nCopyright (c) Sebastian Mayr\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE."
     },
     {
       "name": "xml-name-validator",

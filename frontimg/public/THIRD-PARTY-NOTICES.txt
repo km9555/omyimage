@@ -1,8 +1,8 @@
 oMyImage — Third-Party Software Notices and Information
 ================================================================
 
-Generated: 2026-09-19
-Packages:  94 npm production dependencies
+Generated: 2026-10-03
+Packages:  95 npm production dependencies
            + 14 additional components (fonts and external binaries)
 
 This product incorporates the open-source components listed below.
@@ -183,7 +183,7 @@ THE SOFTWARE.
 
 ----------------------------------------------------------------
 
-@csstools/color-helpers@6.1.1
+@csstools/color-helpers@6.1.2
 Author:     Antonio Laguna
 License:    MIT-0
 Repository: https://github.com/csstools/postcss-plugins
@@ -209,7 +209,7 @@ SOFTWARE.
 
 ----------------------------------------------------------------
 
-@csstools/css-calc@3.4.0
+@csstools/css-calc@3.4.3
 Author:     Antonio Laguna
 License:    MIT
 Repository: https://github.com/csstools/postcss-plugins
@@ -237,7 +237,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ----------------------------------------------------------------
 
-@csstools/css-color-parser@4.2.3
+@csstools/css-color-parser@4.2.6
 Author:     Antonio Laguna
 License:    MIT
 Repository: https://github.com/csstools/postcss-plugins
@@ -265,7 +265,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ----------------------------------------------------------------
 
-@csstools/css-parser-algorithms@4.0.0
+@csstools/css-parser-algorithms@4.0.2
 Author:     Antonio Laguna
 License:    MIT
 Repository: https://github.com/csstools/postcss-plugins
@@ -293,7 +293,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ----------------------------------------------------------------
 
-@csstools/css-syntax-patches-for-csstree@1.1.14
+@csstools/css-syntax-patches-for-csstree@1.1.15
 Author:     Antonio Laguna
 License:    MIT-0
 Repository: https://github.com/csstools/postcss-plugins
@@ -319,7 +319,7 @@ SOFTWARE.
 
 ----------------------------------------------------------------
 
-@csstools/css-tokenizer@4.0.1
+@csstools/css-tokenizer@4.0.2
 Author:     Antonio Laguna
 License:    MIT
 Repository: https://github.com/csstools/postcss-plugins
@@ -347,7 +347,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ----------------------------------------------------------------
 
-@exodus/bytes@1.15.1
+@exodus/bytes@1.16.0
 Author:     Exodus Movement, Inc.
 License:    MIT
 Repository: https://github.com/ExodusOSS/bytes
@@ -385,7 +385,7 @@ Repository: http://mediapipe.dev
 
 ----------------------------------------------------------------
 
-@next/env@16.2.7
+@next/env@16.3.8
 Author:     Next.js Team
 License:    MIT
 Repository: https://github.com/vercel/next.js
@@ -452,7 +452,7 @@ SOFTWARE.
 
 ----------------------------------------------------------------
 
-@swc/helpers@0.5.15
+@swc/helpers@0.5.23
 Author:     강동윤
 License:    Apache-2.0
 Repository: https://github.com/swc-project/swc
@@ -691,7 +691,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ----------------------------------------------------------------
 
-baseline-browser-mapping@2.10.38
+baseline-browser-mapping@2.11.27
 License:    Apache-2.0
 Repository: https://github.com/web-platform-dx/baseline-browser-mapping
 
@@ -958,7 +958,7 @@ SOFTWARE.
 
 ----------------------------------------------------------------
 
-caniuse-lite@1.0.30001799
+caniuse-lite@1.0.30001814
 Author:     Ben Briggs
 License:    CC-BY-4.0
 Repository: browserslist/caniuse-lite
@@ -1522,7 +1522,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ----------------------------------------------------------------
 
-dompurify@3.4.15
+dompurify@3.4.16
 Author:     Dr.-Ing. Mario Heiderich, Cure53
 License:    Apache-2.0
             (offered as (MPL-2.0 OR Apache-2.0); oMyImage elects Apache-2.0)
@@ -2154,7 +2154,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 ----------------------------------------------------------------
 
-jszip@3.10.1
+jszip@3.10.2
 Author:     Stuart Knightley
 License:    MIT
             (offered as (MIT OR GPL-3.0-or-later); oMyImage elects MIT)
@@ -2891,7 +2891,7 @@ software or this license, under any kind of legal claim.***
 
 ----------------------------------------------------------------
 
-marked@18.0.13
+marked@18.0.14
 Author:     Christopher Jeffrey
 License:    MIT
 Repository: https://github.com/markedjs/marked
@@ -3095,7 +3095,7 @@ SOFTWARE.
 
 ----------------------------------------------------------------
 
-nanoid@3.3.15
+nanoid@3.3.19
 Author:     Andrey Sitnik
 License:    MIT
 Repository: ai/nanoid
@@ -3123,7 +3123,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ----------------------------------------------------------------
 
-next@16.2.7
+next@16.3.8
 License:    MIT
 Repository: vercel/next.js
 
@@ -3317,7 +3317,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ----------------------------------------------------------------
 
-postcss@8.5.15
+postcss@8.5.28
 Author:     Andrey Sitnik
 License:    MIT
 Repository: postcss/postcss
@@ -3368,6 +3368,34 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.**
+
+----------------------------------------------------------------
+
+punycode@2.3.1
+Author:     Mathias Bynens
+License:    MIT
+Repository: https://github.com/mathiasbynens/punycode.js
+
+Copyright Mathias Bynens <https://mathiasbynens.be/>
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ----------------------------------------------------------------
 
@@ -3633,7 +3661,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ----------------------------------------------------------------
 
-sonner@2.0.7
+sonner@2.0.8
 Author:     Emil Kowalski
 License:    MIT
 Repository: https://github.com/emilkowalski/sonner
@@ -3662,7 +3690,7 @@ SOFTWARE.
 
 ----------------------------------------------------------------
 
-source-map-js@1.2.1
+source-map-js@1.2.2
 Author:     Valentin 7rulnik Semirulnik
 License:    BSD-3-Clause
 Repository: 7rulnik/source-map-js
@@ -4226,7 +4254,7 @@ Apache License
 
 ----------------------------------------------------------------
 
-tldts@7.4.13
+tldts@7.4.16
 Author:     Rémi Berson
 License:    MIT
 Repository: https://github.com/remusao/tldts
@@ -4247,7 +4275,7 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTH
 
 ----------------------------------------------------------------
 
-tldts-core@7.4.13
+tldts-core@7.4.16
 Author:     Rémi Berson
 License:    MIT
 Repository: https://github.com/remusao/tldts
@@ -4288,12 +4316,32 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 ----------------------------------------------------------------
 
-tr46@0.0.3
+tr46@6.0.0
 Author:     Sebastian Mayr
 License:    MIT
-Repository: https://github.com/Sebmaster/tr46.js
+Repository: https://github.com/jsdom/tr46
 
-(No bundled license file. Distributed under the MIT license.)
+The MIT License (MIT)
+
+Copyright (c) Sebastian Mayr
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 ----------------------------------------------------------------
 
@@ -4317,7 +4365,7 @@ PERFORMANCE OF THIS SOFTWARE.
 
 ----------------------------------------------------------------
 
-undici@7.29.1
+undici@7.30.0
 Author:     Daniele Belardi
 License:    MIT
 Repository: https://github.com/nodejs/undici
@@ -4619,10 +4667,10 @@ Apache License
 
 ----------------------------------------------------------------
 
-webidl-conversions@3.0.1
+webidl-conversions@8.0.1
 Author:     Domenic Denicola
 License:    BSD-2-Clause
-Repository: jsdom/webidl-conversions
+Repository: https://github.com/jsdom/webidl-conversions
 
 # The BSD 2-Clause License
 
@@ -4654,14 +4702,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ----------------------------------------------------------------
 
-whatwg-url@5.0.0
+whatwg-url@16.0.1
 Author:     Sebastian Mayr
 License:    MIT
-Repository: jsdom/whatwg-url
+Repository: https://github.com/jsdom/whatwg-url
 
 The MIT License (MIT)
 
-Copyright (c) 2015–2016 Sebastian Mayr
+Copyright (c) Sebastian Mayr
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
