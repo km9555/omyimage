@@ -14,6 +14,13 @@
  *   node scripts/i18n-keys.mjs pt           # only what Portuguese lacks
  *   node scripts/i18n-keys.mjs pt --json    # same, as JSON
  *   node scripts/i18n-keys.mjs pt compress-image resize-image   # just these buckets
+ *   node scripts/i18n-keys.mjs --check      # GATE: every translated locale, exit 1 on any gap
+ *
+ * `--check` runs in `prebuild`. Before it did, this was a report someone had to
+ * remember to read, and the build passed while shipping English: main's
+ * signup-resend commit added eight keys in pt only, and the merge that brought
+ * in hi/ru/id would have published those three signup screens half in English
+ * (caught by hand on 2026-10-03, fixed in f15e37b).
  *
  * "0 missing" is a claim about what this PARSED, not about the page: it cannot
  * see a literal that never reaches t() (that is `i18n:props`), and a key
@@ -44,6 +51,26 @@ const args = process.argv.slice(2).filter((a) => !a.startsWith("--"));
 const locale = args[0] ?? null;
 const only = new Set(args.slice(1));
 const asJson = process.argv.includes("--json");
+const check = process.argv.includes("--check");
+
+/**
+ * Translated locales, from config.ts LOCALE_META — the same parser as
+ * i18n-plurals.mjs and i18n-charset.mjs. A gate that checks nothing must fail,
+ * not pass: i18n-audit.mjs and verify-build.mjs spent seven Russian batches
+ * silently checking zero locales when their parser stopped matching
+ * (conversion.md §10.4).
+ */
+function localesFromConfig() {
+  const src = readText(join(SRC, "i18n", "config.ts"));
+  const block = /export const LOCALE_META = \{([\s\S]*?)\n\} as const/.exec(src)?.[1] ?? "";
+  const out = [...block.matchAll(/^  ([a-z]{2}(?:-[A-Za-z]+)?): \{/gm)].map((m) => m[1]).filter((l) => l !== "en");
+  if (out.length === 0) {
+    console.error("Parsed zero translated locales from config.ts LOCALE_META — has its shape changed?");
+    process.exit(1);
+  }
+  return out;
+}
+const LOCALES = localesFromConfig();
 
 /**
  * `t("…")` but not `it("…")`, `split("…")` … — the call must stand alone.
@@ -89,9 +116,12 @@ function slugToId() {
 const SLUG_TO_ID = slugToId();
 
 /** Route folders that are never localized. */
-// Locale route folders are listed so a literal inside one (a written legal
-// twin, say) is never mistaken for a page bucket named after the locale.
-const IGNORED = new Set(["pt", "hi", "blog", "admin", "auth"]);
+// Locale route folders are included so a literal inside one (a written legal
+// twin, say) is never mistaken for a page bucket named after the locale. They
+// come from LOCALE_META: this list was hand-written as "pt", "hi" and never
+// gained "ru" or "id" — harmless only because no t() call lives under those
+// folders today.
+const IGNORED = new Set([...LOCALES, "blog", "admin", "auth"]);
 
 /**
  * Components that render on ONE page only, so their keys ride with that page's
@@ -175,23 +205,58 @@ function coverage(loc) {
   };
 }
 
-const lookup = locale ? coverage(locale) : () => ({ have: new Set(), where: "" });
-const result = {};
-for (const [bucket, keys] of [...buckets].sort()) {
-  if (only.size && !only.has(bucket)) continue;
-  const { have, where } = lookup(bucket);
-  const list = [...keys].filter((k) => !have.has(k)).sort();
-  if (list.length) result[bucket] = { where, keys: list };
+/** Keys `loc` lacks, per bucket; with no locale, every key. */
+function missing(loc) {
+  const lookup = loc ? coverage(loc) : () => ({ have: new Set(), where: "" });
+  const result = {};
+  for (const [bucket, keys] of [...buckets].sort()) {
+    if (only.size && !only.has(bucket)) continue;
+    const { have, where } = lookup(bucket);
+    const list = [...keys].filter((k) => !have.has(k)).sort();
+    if (list.length) result[bucket] = { where, keys: list };
+  }
+  return result;
 }
 
-if (asJson) {
-  console.log(JSON.stringify(result, null, 2));
-} else {
-  const total = Object.values(result).reduce((n, v) => n + v.keys.length, 0);
-  console.log(locale ? `${total} key(s) missing from "${locale}":\n` : `${total} translation key(s):\n`);
+const countOf = (result) => Object.values(result).reduce((n, v) => n + v.keys.length, 0);
+
+function printBuckets(result) {
   for (const [bucket, { where, keys }] of Object.entries(result)) {
     console.log(`── ${bucket} (${keys.length})${where ? `  → ${where}` : ""}`);
     for (const key of keys) console.log(`  ${JSON.stringify(key)}: ${JSON.stringify(key)},`);
     console.log();
+  }
+}
+
+if (check) {
+  // One line per locale, so a locale the loop never reached shows up as a
+  // missing line rather than as a quiet pass.
+  if (buckets.size === 0) {
+    console.error("Found zero t() keys in src/ — has the call shape changed?");
+    process.exit(1);
+  }
+  let failed = false;
+  for (const loc of locale ? [locale] : LOCALES) {
+    const result = missing(loc);
+    const total = countOf(result);
+    console.log(`[${loc}] ${total} key(s) missing`);
+    if (total) {
+      failed = true;
+      printBuckets(result);
+    }
+  }
+  if (failed) {
+    console.error("i18n keys failed: add each key above to the file it names (npm run i18n:keys <loc>).");
+    process.exit(1);
+  }
+  console.log("i18n keys passed.");
+} else {
+  const result = missing(locale);
+  if (asJson) {
+    console.log(JSON.stringify(result, null, 2));
+  } else {
+    const total = countOf(result);
+    console.log(locale ? `${total} key(s) missing from "${locale}":\n` : `${total} translation key(s):\n`);
+    printBuckets(result);
   }
 }
