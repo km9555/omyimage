@@ -63,9 +63,19 @@ Dropbox key. Until then Preview had no backend URL, so preview builds baked in
 backend's `FRONTEND_ORIGIN` ends with `https://*.omyimage.pages.dev`, an entry
 matching one subdomain label (`omypdf-project/backend/src/lib/cors-origins.ts`,
 commit 0c45eb2). Server tools therefore work on previews against the
-**production** API. The Google keys are deliberately not set for Preview: the
-OAuth client does not list preview origins, so the Drive button would only
-fail there.
+**production** API.
+
+The two Google keys were added to Preview as well, at the user's request, with
+the same values as production. That makes the "import from Google Drive"
+button render on previews, but **Google refuses the sign-in popup there with
+`Error 400: redirect_uri_mismatch`**, checked against Google's OAuth endpoint
+on 2026-10-03. The "oMyImage Web" OAuth client lists only the production
+domains as Authorized JavaScript origins; even `omyimage.pages.dev` is
+missing. Google allows **no wildcards** in that list. Hash previews
+(`<hash>.omyimage.pages.dev`) therefore can never work, and a branch alias
+works only once that exact `https://<branch>.omyimage.pages.dev` is
+registered. The Picker API key's HTTP-referrer list does accept wildcards
+(`https://*.omyimage.pages.dev/*`).
 
 > ⚠ **These are read at BUILD time, and they are load-bearing.** If
 > `NEXT_PUBLIC_BACKEND_URL` is unset, `frontimg/src/lib/site.ts` falls back to
