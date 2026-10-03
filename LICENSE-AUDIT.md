@@ -26,7 +26,7 @@ dependency; the other by adding third-party notices. Both are recorded below.
 | F1 | `heic2any` shipped LGPL-3.0 `libheif` to the browser | **High** | **Fixed** — decoding moved server-side, dependency removed |
 | F2 | No third-party notices anywhere (~180 permissive packages require them) | Medium | **Fixed** — notices generated on build |
 | F3 | Low-risk items (sharp/LGPL server-side, jszip dual, MPL build tools) | Low | Documented, no action |
-| F4 | Capability copy claimed formats the tool never accepted | Low | **Fixed** — copy corrected |
+| F4 | Capability/privacy copy that did not match the engine (formats, "never uploaded") | Low | **Fixed** — copy corrected (recurrences 2026-08-14, 2026-09-19) |
 
 ---
 
@@ -223,6 +223,17 @@ places and fixed:
   validation and the conversion then throws. BMP pairs are flagged
   `serverFallback: false` and always convert locally.
 
+**Recurrence (2026-09-19).** `/image-to-text` became server-first — `runOcrImage()`
+in `lib/process-router.ts` uploads the image to `/api/image/ocr` (PaddleOCR),
+the file is deleted after reading, and Tesseract.js in the browser is only the
+fallback when the server is unreachable. The tool's `privacyNote` was updated at
+the time, but the English content module `src/content/tools/image-to-text.en.ts`
+still said the image "never leaves your device" in the intro, the `model`
+section, the first feature, two FAQs and the security paragraph. All six were
+rewritten to describe the real behaviour: encrypted upload, deletion after
+reading, and on-device reading only in the fallback case (which the UI labels
+"read on your device"). The pt-BR module already described it correctly.
+
 ---
 
 ## F5 — `tesseract.js` for browser OCR · **Approved** · 2026-08-14
@@ -254,10 +265,12 @@ so the bundled C libraries were added to `MANUAL_COMPONENTS` in
 this is the F2 obligation applied to statically-linked code.
 
 **Runtime note.** The engine core and the language models are fetched from the
-jsDelivr CDN on first use of `/image-to-text`, not bundled. The *image* is never
-transmitted, so the page's privacy claim holds; only a generic model file is
-downloaded. Self-hosting them under `public/` is a one-line `corePath`/`langPath`
-change if the third-party request is later judged unacceptable.
+jsDelivr CDN on first use of the browser fallback on `/image-to-text`, not
+bundled. On that path the *image* is never transmitted; only a generic model file
+is downloaded. (Since 2026-09-19 the primary path is server-side PaddleOCR and
+does upload the image — see the F4 recurrence note; the page copy says so.)
+Self-hosting them under `public/` is a one-line `corePath`/`langPath` change if
+the third-party request is later judged unacceptable.
 
 ---
 

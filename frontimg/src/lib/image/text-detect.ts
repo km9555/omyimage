@@ -11,8 +11,9 @@
  * though, and say so in the UI rather than implying otherwise: MediaPipe's
  * runtime and weights are served from our own origin, while Tesseract fetches
  * its worker, wasm core and language data from a CDN on first use, exactly as
- * /image-to-text already does. The *image* is never uploaded either way; what
- * leaves is a request for the engine.
+ * /image-to-text's on-device fallback does. (/image-to-text itself is
+ * server-first and does upload — LICENSE-AUDIT.md F4.) Here the *image* is
+ * never uploaded either way; what leaves is a request for the engine.
  *
  * Everything is behind a dynamic import — the engine is several megabytes and
  * must not be in the bundle for the majority who only blur faces.

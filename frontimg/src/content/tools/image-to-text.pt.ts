@@ -11,9 +11,8 @@ import type { ToolPageContent } from "@/content/tools/types";
  *
  * ACCURACY NOTE — this page describes what the tool actually does TODAY:
  * it reads on the server first (PaddleOCR) and falls back to Tesseract in the
- * browser. The English module (image-to-text.en.ts) still says the image is
- * never uploaded, which is no longer true; that is an English-side fix, and
- * this translation deliberately does not reproduce it.
+ * browser. The English module (image-to-text.en.ts) describes the same
+ * behaviour (LICENSE-AUDIT.md F4, recurrence 2026-09-19).
  *
  * On /pt the recognition language defaults to Portuguese (ImageToTextTool.tsx).
  * The OCR language names and status strings are module scope → ui, by hand.
