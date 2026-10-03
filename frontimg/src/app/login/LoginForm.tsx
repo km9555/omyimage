@@ -70,10 +70,17 @@ export function LoginForm() {
 
   const resend = async () => {
     try {
-      await authFetch("/resend-verification", {
+      const res = await authFetch("/resend-verification", {
         method: "POST",
         body: JSON.stringify({ email: email.trim() }),
       });
+      // apiFetch only throws on a network failure, so without this check a 500
+      // from the endpoint reported a cheerful "sent" for mail that never left —
+      // on the one control that exists to recover from a failed send.
+      if (!res.ok) {
+        toast.error(t("Could not resend. Please try again."));
+        return;
+      }
       toast.success(t("Confirmation email sent — check your inbox."));
     } catch {
       toast.error(t("Could not resend. Please try again."));

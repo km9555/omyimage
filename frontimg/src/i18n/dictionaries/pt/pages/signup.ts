@@ -34,9 +34,20 @@ export const ptSignup: Dict = {
     "Enviamos um link de confirmação para {email}. Clique nele para ativar a sua conta.",
   "Wrong email?": "Errou o e-mail?",
   "Go back": "Voltar",
-  "Didn't get it? Check spam, or wait a minute and try signing up again.":
-    "Não chegou? Veja o spam, ou espere um minuto e tente criar a conta de novo.",
+  "Didn't get it? Check spam, or request a new link below.":
+    "Não chegou? Veja o spam, ou peça um novo link abaixo.",
   "Back to login": "Voltar para o login",
+  "Resend confirmation email": "Reenviar e-mail de confirmação",
+  "Sending…": "Enviando…",
+  "Confirmation email sent — check your inbox.": "E-mail de confirmação enviado — confira a sua caixa de entrada.",
+  "Could not resend. Please try again.": "Não foi possível reenviar. Tente de novo.",
+
+  // Confirmation state when the email could not be sent
+  "Account created": "Conta criada",
+  "Your account is ready, but we couldn't send the confirmation link to {email}.":
+    "Sua conta está pronta, mas não conseguimos enviar o link de confirmação para {email}.",
+  "This can happen if the address has a typo, or if our mail server is briefly unavailable. Request a new link below, or go back and correct the address.":
+    "Isso pode acontecer se o endereço tiver um erro de digitação ou se o nosso servidor de e-mail estiver fora do ar por um momento. Peça um novo link abaixo, ou volte e corrija o endereço.",
 
   // Validation
   "Password must be at least 6 characters.": "A senha precisa ter pelo menos 6 caracteres.",

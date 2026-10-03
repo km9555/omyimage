@@ -33,6 +33,11 @@ export function SignupForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sent, setSent] = useState(false);
+  // The account is created before the confirmation email is attempted, so a 201
+  // does not mean mail went out — /register reports which. False puts the screen
+  // below into its "couldn't send" state instead of pointing at an empty inbox.
+  const [emailSent, setEmailSent] = useState(true);
+  const [resending, setResending] = useState(false);
 
   useEffect(() => {
     if (!authLoading && user) router.replace(redirect);
@@ -59,11 +64,13 @@ export function SignupForm() {
         method: "POST",
         body: JSON.stringify({ email: email.trim(), password, name: name.trim() || undefined }),
       });
-      const data = await res.json() as { error?: string };
+      const data = await res.json() as { error?: string; emailSent?: boolean };
       if (!res.ok) {
         toast.error(authErrorMessage(new Error(data.error ?? "Registration failed.")));
         return;
       }
+      // Absent on older backends; only an explicit false means the send failed.
+      setEmailSent(data.emailSent !== false);
       setSent(true);
     } catch (err) {
       toast.error(authErrorMessage(err));
@@ -72,11 +79,42 @@ export function SignupForm() {
     }
   };
 
+  /**
+   * Ask for a fresh confirmation link. This is the only escape from a failed
+   * send — signing up again just hits the duplicate-email check — so the screen
+   * below offers it directly rather than leaving it to be discovered on /login.
+   *
+   * The endpoint answers a deliberately generic ok, so success here means "the
+   * request was accepted", which is all it can honestly report.
+   */
+  const resend = async () => {
+    setResending(true);
+    try {
+      const res = await authFetch("/resend-verification", {
+        method: "POST",
+        body: JSON.stringify({ email: email.trim() }),
+      });
+      if (!res.ok) {
+        toast.error(t("Could not resend. Please try again."));
+        return;
+      }
+      toast.success(t("Confirmation email sent — check your inbox."));
+    } catch {
+      toast.error(t("Could not resend. Please try again."));
+    } finally {
+      setResending(false);
+    }
+  };
+
   if (sent) {
     return (
       <AuthShell
-        title={t("Check your inbox")}
-        subtitle={t("We sent a confirmation link to {email}. Click it to activate your account.", { email })}
+        title={emailSent ? t("Check your inbox") : t("Account created")}
+        subtitle={
+          emailSent
+            ? t("We sent a confirmation link to {email}. Click it to activate your account.", { email })
+            : t("Your account is ready, but we couldn't send the confirmation link to {email}.", { email })
+        }
         footer={
           <>
             {t("Wrong email?")}{" "}
@@ -88,11 +126,26 @@ export function SignupForm() {
       >
         <div className="flex flex-col items-center gap-3 py-2 text-center">
           <span className="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center">
-            <Icon name="mark_email_unread" fill className="text-[34px] text-secondary" />
+            {emailSent
+              ? <Icon name="mark_email_unread" fill className="text-[34px] text-secondary" />
+              : <Icon name="error" fill className="text-[34px] text-error" />}
           </span>
           <p className="text-body-md text-on-surface-variant">
-            {t("Didn't get it? Check spam, or wait a minute and try signing up again.")}
+            {emailSent
+              ? t("Didn't get it? Check spam, or request a new link below.")
+              : t("This can happen if the address has a typo, or if our mail server is briefly unavailable. Request a new link below, or go back and correct the address.")}
           </p>
+          {/* Signing up again would hit the duplicate-email check and leave the
+              account unverified with no way forward, so the escape hatch is
+              offered here rather than only on the login screen. */}
+          <button
+            type="button"
+            onClick={resend}
+            disabled={resending}
+            className="font-semibold text-secondary hover:underline disabled:opacity-60"
+          >
+            {resending ? t("Sending…") : t("Resend confirmation email")}
+          </button>
           <Link href={localeHref("/login", locale)} className="font-semibold text-secondary hover:underline">
             {t("Back to login")}
           </Link>
