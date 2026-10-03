@@ -44,12 +44,12 @@ const content: ToolPageContent = {
       ],
     },
     {
-      heading: "A armadilha da orientação",
+      heading: "A orientação continua certa",
       id: "orientation",
       body: [
         "Um campo do EXIF faz um trabalho de verdade: a tag de orientação. O sensor do celular é fixo, então, quando você gira o aparelho, a imagem é gravada deitada e uma tag registra para que lado ela deve ser exibida.",
-        "Remova os metadados e essa instrução vai junto, então uma foto que aparecia certa em todo lugar pode de repente aparecer girada. Nada corrompeu — os pixels sempre estiveram deitados, e o bilhete que explicava isso foi removido.",
-        "A solução é a ordem das operações. Passe a imagem primeiro pela ferramenta Girar imagem, usando a orientação automática para gravar o lado certo nos pixels, e só então remova os metadados. Depois disso o arquivo não precisa de instrução nenhuma, porque já está guardado do jeito certo.",
+        "Muitos removedores de metadados jogam essa instrução fora junto com o resto, e uma foto que aparecia certa em todo lugar de repente aparece deitada. Nada corrompeu — os pixels sempre estiveram deitados, e o bilhete que explicava isso foi removido.",
+        "Esta ferramenta evita isso: a orientação da tag é aplicada aos pixels primeiro, e só depois os metadados são descartados. O resultado fica guardado do jeito certo e não precisa de instrução nenhuma, então aparece em pé em qualquer lugar.",
       ],
     },
     {
@@ -83,7 +83,7 @@ const content: ToolPageContent = {
     { q: "É grátis e privado?", a: "Sim. Sem cadastro e sem marca d'água, e todas as imagens são processadas localmente no seu navegador." },
     { q: "O que exatamente fica guardado no EXIF?", a: "Muito mais do que a maioria imagina: coordenadas de GPS com precisão de poucos metros, a data e a hora exatas, o modelo e o número de série da câmera ou do celular, lente e configurações de exposição e, em alguns aparelhos, o nome do dono, o campo de direitos autorais e uma miniatura da imagem original." },
     { q: "As redes sociais removem o EXIF automaticamente?", a: "As grandes geralmente removem no envio, mas não conte com isso. Mensagens diretas, links de nuvem, anexos de e-mail, fóruns, anúncios em marketplaces e sites pessoais costumam repassar o arquivo intacto — e são exatamente os lugares onde as pessoas compartilham fotos de coisas que estão no endereço delas." },
-    { q: "Remover o EXIF muda a aparência da foto?", a: "Só num aspecto. A tag de orientação também é metadado, então removê-la pode fazer uma foto que aparecia em pé passar a aparecer deitada. Gire a imagem primeiro, para a orientação certa ficar gravada nos pixels, e só depois remova os metadados." },
+    { q: "Remover o EXIF muda a aparência da foto?", a: "Não na orientação. A tag de orientação é aplicada aos pixels primeiro e os metadados são descartados depois, então uma foto que aparecia em pé continua em pé. A única outra mudança é a nova codificação, que o ajuste de qualidade controla." },
     { q: "Isso remove marca d'água escondida ou código de rastreamento?", a: "Não. Ele limpa os campos de metadados padrão. Marcas esteganográficas gravadas nos próprios pixels são outra coisa e sobrevivem à remoção de metadados — na verdade sobreviveriam à maioria das edições." },
     { q: "Dá para recuperar os metadados depois?", a: "Do arquivo limpo, não. Guarde o original se a data ou o local da captura importarem para você — para organizar uma biblioteca de fotos, para documentação de seguro ou simplesmente para lembrar onde a foto foi tirada." },
     { q: "Como conferir antes o que a minha foto contém?", a: "Use a ferramenta Ver metadados da imagem. Ela lê todas as tags que o arquivo carrega, inclusive as coordenadas de GPS num mapa, inteiramente no seu navegador. Olhar antes de limpar quase sempre vale o passo a mais." },

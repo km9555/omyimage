@@ -10,6 +10,7 @@ import { SettingsRail, RailAction, RailSecondaryAction, RailNote } from "@/compo
 import { postJsonForImage } from "@/lib/process-router";
 import { downloadBlob, zipAndDownload, baseName } from "@/lib/image/raster";
 import { formatNumber } from "@/i18n/format";
+import { translateError } from "@/i18n/errors";
 import { useFormatBytes, useLocale, useT } from "@/i18n/I18nScope";
 
 const ACCENT = "#C96A48";
@@ -244,7 +245,7 @@ export function HtmlToImageTool() {
     } catch (err) {
       // Keep whatever finished — a rate limit on page 7 shouldn't bin pages 1–6.
       setResults(out);
-      toast.error(err instanceof Error ? err.message : t("Rendering failed."));
+      toast.error(translateError(err, t, "Rendering failed."));
     } finally {
       setIsWorking(false);
     }

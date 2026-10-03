@@ -10,7 +10,7 @@ import { ToolWorkspace, filesHeader } from "@/components/tool/ToolWorkspace";
 import { FileTray, TrayAction, TrayBusy, type TrayEntry } from "@/components/tool/FileTray";
 import { SettingsRail, RailAction, RailNote } from "@/components/tool/SettingsRail";
 import { ResultScreen } from "@/components/ResultScreen";
-import { shouldUseServer, shouldUseServerForFile, toServerFormat, processOnServer } from "@/lib/process-router";
+import { serverCanDecode, shouldUseServer, shouldUseServerForFile, toServerFormat, processOnServer } from "@/lib/process-router";
 import {
   rasterize,
   rasterizeToCanvas,
@@ -143,10 +143,12 @@ export function CompressTool() {
         let colors: number | undefined;
         // Route on decoded pixels, not bytes: a high-megapixel phone photo is
         // small on disk but past what a canvas can paint. Reuses the eager
-        // dimensions when the queue item already has them.
-        const useServer = it.w && it.h
+        // dimensions when the queue item already has them. A BMP (not in
+        // ACCEPT, but a drag-drop still lands here) never leaves the browser:
+        // Sharp/libvips has no BMP loader. Canvas decodes BMP fine.
+        const useServer = (await serverCanDecode(it.file)) && (it.w && it.h
           ? shouldUseServer(it.file.size, { width: it.w, height: it.h })
-          : await shouldUseServerForFile(it.file);
+          : await shouldUseServerForFile(it.file));
         if (useServer) {
           // Too large for this browser's canvas, or over the byte cap → offload
           // to the shared oMyPDF backend (Sharp, /api/image/*).

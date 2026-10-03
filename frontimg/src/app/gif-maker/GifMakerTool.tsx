@@ -15,6 +15,7 @@ import { encodeGif, fitBox, type FitMode } from "@/lib/image/gif-encode";
 import { decodeGifFrames } from "@/lib/image/gif-decode";
 import { useHandoff } from "@/lib/tool-handoff";
 import { useFormatBytes, useLocale, useT } from "@/i18n/I18nScope";
+import { translateError } from "@/i18n/errors";
 
 const ACCENT = "#C56A9A";
 const ACCEPT = "image/jpeg,image/png,image/webp,image/gif,image/bmp";
@@ -325,7 +326,7 @@ export function GifMakerTool() {
       toast.success(t("Created a GIF from {n} frames ({size}).", { n: frames.length, size: formatBytes(blob.size) }));
     } catch (err) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : t("Couldn't create the GIF."));
+      toast.error(translateError(err, t, "Couldn't create the GIF."));
     } finally {
       setIsWorking(false);
       setProgress(null);

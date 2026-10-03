@@ -14,6 +14,7 @@ import {
 } from "@/lib/image/raster";
 import { useHandoff } from "@/lib/tool-handoff";
 import { useFormatBytes, useT } from "@/i18n/I18nScope";
+import { translateError } from "@/i18n/errors";
 
 const ACCENT = "#C55A52";
 const ACCEPT = "image/jpeg,image/png,image/webp";
@@ -83,7 +84,7 @@ export function RemoveExifTool() {
       toast.success(out.length === 1 ? t("Removed metadata from 1 image.") : t("Removed metadata from {n} images.", { n: out.length }));
     } catch (err) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : t("Couldn't process the images."));
+      toast.error(translateError(err, t, "Couldn't process the images."));
     } finally {
       setIsWorking(false);
     }

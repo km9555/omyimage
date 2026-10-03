@@ -63,7 +63,7 @@ const content: ToolPageContent = {
 
   features: [
     { icon: "title", title: "Text or logo", description: "Stamp custom text — with font, color and outline — or overlay your own transparent PNG logo." },
-    { icon: "grid_view", title: "Full placement control", description: "Pick any of nine positions, set the margin, opacity and rotation, and see it update live before you export." },
+    { icon: "grid_view", title: "Full placement control", description: "Pick any of nine positions, set the size, opacity and rotation, and see it update live before you export." },
     { icon: "lock", title: "Private & batch", description: "Apply the same watermark to a whole batch at once, entirely in your browser — images are never uploaded." },
   ],
 

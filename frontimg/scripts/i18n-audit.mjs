@@ -31,7 +31,26 @@ import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const SRC = join(root, "src");
-const read = (p) => readFileSync(join(SRC, p), "utf8");
+
+/**
+ * Read a source file as LF, whatever the checkout did to it.
+ *
+ * This script is the one that actually breaks without it. The registry pattern
+ * below embeds literal \n between its fields:
+ *
+ *     /^    id: "…",\n    name: "…",\n    slug: "…",…/gm
+ *
+ * A Windows checkout with core.autocrlf=true hands us `,\r\n    name:`, so it
+ * matches nothing. Measured on a fresh `git worktree add`: 0 tools parsed, then
+ * 81 bogus "not in the registry" errors, and `npm run build` fails at prebuild.
+ * With this normalisation the same tree builds clean.
+ *
+ * The sibling scripts got the same treatment as hardening — see the note in
+ * each — but only this one failed outright. Normalise on READ; nothing here
+ * writes source.
+ */
+const readText = (p) => readFileSync(p, "utf8").replace(/\r\n/g, "\n");
+const read = (p) => readText(join(SRC, p));
 
 const errors = [];
 const warnings = [];
@@ -63,7 +82,20 @@ const CONVERTERS = new Set([...read("lib/converters/pairs.ts").matchAll(/^\s+slu
 
 // ── Locales ─────────────────────────────────────────────────────────────
 const config = read("i18n/config.ts");
-const LOCALES = strings(/export const LOCALES = \[([^\]]*)\]/.exec(config)?.[1]).filter((l) => l !== "en");
+/* Parse LOCALE_META's keys, NOT `export const LOCALES`. Phase 0A turned that
+   export into `Object.keys(LOCALE_META)`, which the old array regex could not
+   match — so LOCALES came back empty and the entire per-locale loop below
+   silently did nothing for seven Russian batches. The zero guard is the real
+   fix: a gate that checks nothing must fail, not pass. Same parser as
+   scripts/gen-converters.mjs. */
+const metaBlock = /export const LOCALE_META = \{([\s\S]*?)\n\} as const/.exec(config)?.[1] ?? "";
+const LOCALES = [...metaBlock.matchAll(/^  ([a-z]{2}(?:-[A-Za-z]+)?): \{/gm)]
+  .map((m) => m[1])
+  .filter((l) => l !== "en");
+if (LOCALES.length === 0) {
+  console.error("Parsed zero translated locales from config.ts LOCALE_META — has its shape changed?");
+  process.exit(1);
+}
 
 const slugsSrc = read("i18n/slugs.ts");
 const pathsSrc = read("i18n/static-paths.ts");
@@ -120,8 +152,8 @@ for (const loc of LOCALES) {
     const file = join(SRC, "content", "tools", `${id}.${loc}.ts`);
     const enFile = join(SRC, "content", "tools", `${id}.en.ts`);
     if (!existsSync(file) || !existsSync(enFile)) continue;
-    const mod = readFileSync(file, "utf8");
-    const en = readFileSync(enFile, "utf8");
+    const mod = readText(file);
+    const en = readText(enFile);
     for (const f of ["metaTitle", "metaDescription", "tagline", "howToTitle", "intro"])
       if (!new RegExp(`^  ${f}:`, "m").test(mod)) err(`[${loc}] ${id}: missing ${f}`);
     if (!new RegExp(`^  locale: "${loc}"`, "m").test(mod)) err(`[${loc}] ${id}: locale field is not "${loc}"`);

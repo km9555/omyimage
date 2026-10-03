@@ -77,7 +77,7 @@ const content: ToolPageContent = {
 
   features: [
     { icon: "title", title: "Texto ou logo", description: "Carimbe um texto personalizado — com fonte, cor e contorno — ou sobreponha o seu próprio logo em PNG transparente." },
-    { icon: "grid_view", title: "Controle total da posição", description: "Escolha qualquer uma das nove posições, ajuste a margem, a opacidade e a rotação, e veja tudo atualizar ao vivo antes de exportar." },
+    { icon: "grid_view", title: "Controle total da posição", description: "Escolha qualquer uma das nove posições, ajuste o tamanho, a opacidade e a rotação, e veja tudo atualizar ao vivo antes de exportar." },
     { icon: "lock", title: "Privado e em lote", description: "Aplique a mesma marca d'água a um lote inteiro de uma vez, tudo no seu navegador — as imagens nunca são enviadas." },
   ],
 

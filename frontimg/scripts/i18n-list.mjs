@@ -1,21 +1,26 @@
 #!/usr/bin/env node
 /**
- * Regenerates ../tracker.csv — one row per page, every URL, and the rollout
- * state of each — without losing the hand-set columns.
+ * Regenerates a locale's tracker CSV — one row per page, every URL, and the
+ * rollout state of each — without losing the hand-set columns.
  *
- *   npm run i18n:list            # rewrite tracker.csv
- *   npm run i18n:list -- --check # exit 1 if tracker.csv is stale
+ *   npm run i18n:list                   # rewrite tracker.csv      (pt, default)
+ *   npm run i18n:list -- hi             # rewrite tracker-hi.csv
+ *   npm run i18n:list -- hi --check     # exit 1 if it is stale
  *
- * Columns and who owns them:
+ * ONE FILE PER LOCALE, not one wide file with a column per language: the rows
+ * differ (a locale ships its own batch order and, for a pilot, its own subset),
+ * and a shared file would make every Hindi edit touch the Portuguese record.
  *
- *   sn, batch, section, id, en_url, pt_url ........ DERIVED (registry, slugs,
+ * Columns and who owns them (`<loc>` is the locale being tracked):
+ *
+ *   sn, batch, section, id, en_url, <loc>_url ..... DERIVED (registry, slugs,
  *                                                     static paths, BATCHES)
  *   en_extracted .................................. DERIVED — English copy lives
  *                                                     in a content module (or the
  *                                                     converter layer)
- *   route ......................................... DERIVED — src/app/pt/<slug>/page.tsx
+ *   route ......................................... DERIVED — src/app/<loc>/<slug>/page.tsx
  *   gated ......................................... DERIVED — listed in status.ts
- *   ui_sweep, pt_copy, seo_meta, verify,
+ *   ui_sweep, <loc>_copy, seo_meta, verify,
  *   browser_qa, status, notes ..................... HAND-SET per batch, preserved
  *
  * Values are todo / done / n/a / blocked. A row is `status=done` only when every
@@ -27,17 +32,20 @@
  * has one file to update.
  */
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { join, dirname, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const SRC = join(root, "src");
-const FILE = join(root, "..", "tracker.csv");
 const HOST = "http://localhost:3002";
-const LOC = "pt";
+
+// First non-flag argument is the locale; Portuguese stays the default so the
+// existing `npm run i18n:list` keeps writing tracker.csv untouched.
+const LOC = process.argv.slice(2).find((a) => !a.startsWith("--")) ?? "pt";
+const FILE = join(root, "..", LOC === "pt" ? "tracker.csv" : `tracker-${LOC}.csv`);
 
 /** Batches of five, in Brazilian search-value order. The plan of record. */
-const BATCHES = [
+const PT_BATCHES = [
   ["/", "compress-image", "resize-image", "remove-background", "image-to-text"],
   ["crop-image", "png-to-jpg", "jpg-to-png", "convert-to-jpg", "image-to-pdf"],
   ["upscale-image", "image-editor", "watermark-image", "rotate-image", "heic-to-jpg"],
@@ -50,10 +58,157 @@ const BATCHES = [
   ["/privacy", "/terms", "/refunds", "/login", "/signup"],
   ["/forgot-password", "/reset-password", "/account", "/dashboard"],
 ];
-const HAND = ["ui_sweep", "pt_copy", "seo_meta", "verify", "browser_qa", "status", "notes"];
-const COLS = ["sn", "batch", "section", "id", "en_url", "pt_url", "en_extracted", "ui_sweep", "pt_copy", "route", "gated", "seo_meta", "verify", "browser_qa", "status", "notes"];
 
-const read = (p) => readFileSync(join(SRC, p), "utf8");
+/**
+ * Hindi, all 54 pages. Batches 1–4 were the pilot (home, the 14
+ * highest-value tools, the four legal twins), ordered by Indian search value
+ * rather than the Brazilian order above. Batches 5–12 complete the locale —
+ * decided 2026-09-21, closing the Search Console gate conversion.md §9.7 had
+ * left open.
+ *
+ * 5–6 are the ten converter-layer pairs (§6.4), which need that layer's
+ * Hindi infrastructure before any of them can render. 7–10 are the other
+ * sixteen tools, grouped by `ui` weight: 9 and 10 are three pages each
+ * because blur-face alone carries more `ui` keys than all of batch 7. 11–12
+ * are the static pages; /image-converter sits after the converter pairs
+ * because the hub renders their names and essays.
+ */
+const HI_BATCHES = [
+  ["/", "compress-image", "resize-image", "crop-image", "convert-to-jpg"],
+  ["png-to-jpg", "jpg-to-png", "remove-background", "image-to-text", "image-to-pdf"],
+  ["upscale-image", "image-editor", "watermark-image", "rotate-image", "heic-to-jpg"],
+  ["/privacy", "/terms", "/refunds", "/cookies"],
+  ["webp-to-png", "webp-to-jpg", "jpg-to-webp", "png-to-webp", "jfif-to-jpg"],
+  ["gif-to-png", "gif-to-jpg", "bmp-to-jpg", "avif-to-jpg", "avif-to-png"],
+  ["heic-to-png", "image-to-base64", "grayscale-image", "remove-exif", "base64-to-image"],
+  ["image-color-picker", "circle-crop", "gif-to-images", "meme-generator", "blur-image"],
+  ["gif-maker", "merge-images", "add-border"],
+  ["html-to-image", "image-metadata", "blur-face"],
+  ["/contact", "/image-converter", "/pricing", "/login", "/signup"],
+  ["/forgot-password", "/reset-password", "/account", "/dashboard"],
+];
+
+/**
+ * Russian, all 54 pages — ordered by RUSSIAN demand, which is not the order
+ * Portuguese and Hindi used. Both of those opened with compression; Russian
+ * does not, and compression is only fourth here.
+ *
+ * Measured against Kazakhstan (2398) / ru, because Russia itself (2643)
+ * returns no Russian-language data from DataForSEO at all. Russia is also
+ * ~60% Yandex, so these figures understate real demand — they are used to
+ * ORDER the work, never as a forecast.
+ *
+ * PAGE-LEVEL demand, taken from iLoveIMG's own /ru footprint (the sum of the
+ * volumes it ranks for on each page), which is a better signal than any single
+ * head term:
+ *
+ *   remove-background  103,160   ← «удалить фон» alone is 40,500
+ *   upscale-image       59,480   ← «улучшить качество фото» 27,100
+ *   convert-to-jpg      17,800
+ *   compress-image      12,920
+ *   resize-image        10,300
+ *   crop-image           9,460
+ *   meme-generator       7,380
+ *   watermark-image      6,280
+ *   blur-face            5,400
+ *
+ * Batches 3, 7, 8 and 9 were REORDERED on 2026-09-23 after hydrating the head
+ * term of every unshipped page. Russian demand falls off a cliff after the top
+ * six, and three pages that sat late turned out to be both bigger and easier
+ * than the converter pairs ahead of them:
+ *
+ *   объединить фото   590  KD 0   merge-images         was batch 9 → 3
+ *   пипетка онлайн    590  KD 3   image-color-picker   was batch 8 → 3
+ *   черно белое фото  480  KD 0   grayscale-image      was batch 7 → 3
+ *
+ * They displaced png-to-jpg (90) and jpg-to-png (no measurable volume), which
+ * moved back. watermark-image («водяной знак на фото», 70) moved to 9.
+ *
+ * Batch 4 is the four legal twins, which ship together because they cross-link.
+ * 5–6 are the ten converter-layer pairs (§6.4). 9 and 10 are three pages each
+ * because blur-face alone carries more `ui` keys than all of batch 7. 11–12 are
+ * the static pages; /image-converter sits after the converter pairs because the
+ * hub renders their names and essays.
+ */
+const RU_BATCHES = [
+  ["/", "upscale-image", "remove-background", "compress-image", "crop-image"],
+  ["resize-image", "image-editor", "blur-image", "heic-to-jpg", "image-to-text"],
+  ["convert-to-jpg", "image-to-pdf", "grayscale-image", "merge-images", "image-color-picker"],
+  ["/privacy", "/terms", "/refunds", "/cookies"],
+  ["webp-to-png", "webp-to-jpg", "jpg-to-webp", "png-to-webp", "jfif-to-jpg"],
+  ["gif-to-png", "gif-to-jpg", "bmp-to-jpg", "avif-to-jpg", "avif-to-png"],
+  ["rotate-image", "heic-to-png", "image-to-base64", "png-to-jpg", "remove-exif"],
+  ["base64-to-image", "jpg-to-png", "circle-crop", "gif-to-images", "meme-generator"],
+  ["gif-maker", "watermark-image", "add-border"],
+  ["html-to-image", "image-metadata", "blur-face"],
+  ["/contact", "/image-converter", "/pricing", "/login", "/signup"],
+  ["/forgot-password", "/reset-password", "/account", "/dashboard"],
+];
+
+/**
+ * Indonesian, ordered by measured Indonesian demand (Indonesia 2360 / id, two
+ * keyword calls on 2026-09-24 — real in-country data, unlike Russian's proxy).
+ * Its shape is its own again:
+ *   1. remove-background ~1.5M/mo, compress-image ~1.07M, upscale-image ~975K
+ *      ("hd foto" alone is 823,000), image-to-pdf ~335K — batch 1 with the home.
+ *   2. image-editor ~162K, merge-images ~121K, resize-image ~66K, add-border
+ *      ("bingkai foto" 33,100) and the colour picker ("color picker" 27,100).
+ *   3. crop, convert-to-jpg ("ubah foto ke jpg" 22,200), blur, grayscale,
+ *      jpg-to-png — the 12–23K tier.
+ * 4 is the legal twins, which cross-link and ship together. 5–6 are the ten
+ * converter-layer pairs. 9 and 10 are three pages each, 10 holding the three
+ * heaviest `ui` blocks. /image-converter follows the converter pairs because
+ * the hub renders their names and essays.
+ */
+const ID_BATCHES = [
+  ["/", "remove-background", "compress-image", "upscale-image", "image-to-pdf"],
+  ["image-editor", "merge-images", "resize-image", "add-border", "image-color-picker"],
+  ["crop-image", "convert-to-jpg", "blur-image", "grayscale-image", "jpg-to-png"],
+  ["/privacy", "/terms", "/refunds", "/cookies"],
+  ["webp-to-jpg", "webp-to-png", "jpg-to-webp", "png-to-webp", "jfif-to-jpg"],
+  ["gif-to-png", "gif-to-jpg", "bmp-to-jpg", "avif-to-jpg", "avif-to-png"],
+  ["png-to-jpg", "gif-maker", "meme-generator", "image-to-text", "heic-to-jpg"],
+  ["watermark-image", "image-to-base64", "circle-crop", "rotate-image", "heic-to-png"],
+  ["base64-to-image", "gif-to-images", "remove-exif"],
+  ["html-to-image", "image-metadata", "blur-face"],
+  ["/contact", "/image-converter", "/pricing", "/login", "/signup"],
+  ["/forgot-password", "/reset-password", "/account", "/dashboard"],
+];
+
+/**
+ * Rollout order per locale. A map rather than a ternary: the ternary read
+ * `LOC === "hi" ? HI_BATCHES : PT_BATCHES`, so any locale that was not "hi"
+ * silently got the PORTUGUESE plan — a third language would have been handed
+ * pt's batches and its translated slugs, and the tracker would have looked
+ * plausible while describing the wrong rollout.
+ */
+const BATCHES_BY_LOCALE = { pt: PT_BATCHES, hi: HI_BATCHES, ru: RU_BATCHES, id: ID_BATCHES };
+
+const BATCHES = BATCHES_BY_LOCALE[LOC];
+if (!BATCHES) {
+  console.error(
+    `No batch plan for "${LOC}". Add <LOC>_BATCHES above and a row in BATCHES_BY_LOCALE.`,
+  );
+  process.exit(1);
+}
+const COPY_COL = `${LOC}_copy`;
+const URL_COL = `${LOC}_url`;
+const HAND = ["ui_sweep", COPY_COL, "seo_meta", "verify", "browser_qa", "status", "notes"];
+const COLS = ["sn", "batch", "section", "id", "en_url", URL_COL, "en_extracted", "ui_sweep", COPY_COL, "route", "gated", "seo_meta", "verify", "browser_qa", "status", "notes"];
+
+/**
+ * Read a file as LF — see the note in i18n-audit.mjs, which is the script that
+ * genuinely breaks on a CRLF checkout.
+ *
+ * This one passed unchanged, and both halves were checked rather than assumed:
+ * block() below is bounded at BOTH ends, so when its `^\};?$` fails to match it
+ * is dropped by the `i > 0` filter and the next-const bound still closes the
+ * block; and parseCsv() already strips a trailing \r per row. Confirmed by
+ * running --check against a deliberately CRLF-converted tracker. Hardening.
+ */
+const readText = (p) => readFileSync(p, "utf8").replace(/\r\n/g, "\n");
+const read = (p) => readText(join(SRC, p));
+
 function block(src, name) {
   const start = src.search(new RegExp(`^(export )?const ${name}\\b`, "m"));
   if (start === -1) return "";
@@ -67,6 +222,15 @@ const strings = (t) => [...(t ?? "").matchAll(/"([^"]+)"/g)].map((m) => m[1]);
 const slugMap = pairs(block(read("i18n/slugs.ts"), `${LOC.toUpperCase()}_TOOL_SLUGS`));
 const pathMap = pairs(block(read("i18n/static-paths.ts"), `${LOC.toUpperCase()}_PATHS`));
 const status = read("i18n/status.ts");
+/**
+ * The ids a locale's gate array lists in status.ts.
+ *
+ * Requires the MULTI-LINE array form, because the closing bracket is anchored
+ * at `^  ]`. A single-line `ru: ["/"]` matches nothing and yields an empty set,
+ * which reads downstream as "shipped: no" — the tracker then reports the page
+ * as in_progress forever while the site serves it correctly. Every locale in
+ * status.ts is written multi-line, so keep it that way.
+ */
 const gate = (name) =>
   new Set(strings(new RegExp(`^  ${LOC}: \\[([\\s\\S]*?)^  \\]`, "m").exec(block(status, name))?.[1]?.replace(/\/\/.*$/gm, "")));
 const shippedTools = gate("SHIPPED_TOOLS");
@@ -102,7 +266,7 @@ function parseCsv(text) {
 }
 const prev = new Map();
 if (existsSync(FILE)) {
-  const [head, ...body] = parseCsv(readFileSync(FILE, "utf8"));
+  const [head, ...body] = parseCsv(readText(FILE));
   for (const r of body) {
     if (r.length < 2) continue;
     const o = Object.fromEntries(head.map((h, i) => [h, r[i] ?? ""]));
@@ -140,7 +304,7 @@ BATCHES.forEach((keys, bi) => {
     const id = key;
     const enPath = isTool ? `/${key}` : key;
     const localSeg = isTool ? `/${slugMap[key] ?? "?"}` : pathMap[key];
-    const ptPath = `/${LOC}${localSeg ?? "?"}`.replace(/\/$/, "");
+    const locPath = `/${LOC}${localSeg ?? "?"}`.replace(/\/$/, "");
     const routeFile = join(SRC, "app", LOC, (localSeg ?? "").replace(/^\//, ""), "page.tsx");
     const enExtracted = isTool
       ? converters.has(key) ? "n/a" : existsSync(join(SRC, "content", "tools", `${key}.en.ts`)) ? "done" : "todo"
@@ -152,14 +316,14 @@ BATCHES.forEach((keys, bi) => {
       section: SECTION(key),
       id,
       en_url: `${HOST}${enPath}`,
-      pt_url: `${HOST}${ptPath}`,
+      [URL_COL]: `${HOST}${locPath}`,
       en_extracted: enExtracted,
       route: existsSync(routeFile) ? "done" : "todo",
       gated: (isTool ? shippedTools.has(key) : shippedPages.has(key)) ? "done" : "todo",
     };
     for (const h of HAND) row[h] = p[h] || (h === "notes" ? "" : "todo");
     // A row cannot claim done while any stage is not.
-    const stages = ["en_extracted", "ui_sweep", "pt_copy", "route", "gated", "seo_meta", "verify", "browser_qa"];
+    const stages = ["en_extracted", "ui_sweep", COPY_COL, "route", "gated", "seo_meta", "verify", "browser_qa"];
     if (row.status === "done" && stages.some((s) => !["done", "n/a"].includes(row[s]))) row.status = "in_progress";
     rows.push(row);
   }
@@ -169,14 +333,14 @@ const esc = (v) => (/[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v);
 const csv = [COLS.join(","), ...rows.map((r) => COLS.map((c) => esc(r[c] ?? "")).join(","))].join("\n") + "\n";
 
 if (process.argv.includes("--check")) {
-  const cur = existsSync(FILE) ? readFileSync(FILE, "utf8").replace(/\r\n/g, "\n") : "";
+  const cur = existsSync(FILE) ? readText(FILE) : "";
   if (cur !== csv) {
-    console.error("tracker.csv is stale — run `npm run i18n:list`.");
+    console.error(`${basename(FILE)} is stale — run \`npm run i18n:list -- ${LOC}\`.`);
     process.exit(1);
   }
-  console.log("tracker.csv is current.");
+  console.log(`${basename(FILE)} is current.`);
 } else {
   writeFileSync(FILE, csv);
   const done = rows.filter((r) => r.status === "done").length;
-  console.log(`tracker.csv: ${rows.length} pages, ${done} done, ${rows.length - done} to go.`);
+  console.log(`${basename(FILE)}: ${rows.length} pages, ${done} done, ${rows.length - done} to go.`);
 }

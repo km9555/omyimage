@@ -27,11 +27,28 @@ export function formatNumber(value: number, locale: Locale): string {
 
 const dateCache = new Map<string, Intl.DateTimeFormat>();
 
+/**
+ * Locales whose short date ICU gets ORDERED right and FORMED wrong.
+ *
+ * `dateStyle: "short"` for `hi` gives "4/8/26": day first, which is correct for
+ * India, and Latin digits (ICU does not use Devanagari numerals for a bare
+ * `hi`, which is also correct) — but a form no Indian document, invoice or bank
+ * statement uses. India writes dd/mm/yyyy, zero-padded, four-digit year.
+ *
+ * Portuguese needs no entry: ICU already gives it "04/09/2026".
+ */
+const SHORT_DATE_OVERRIDE: Partial<Record<Locale, Intl.DateTimeFormatOptions>> = {
+  hi: { day: "2-digit", month: "2-digit", year: "numeric" },
+  // ICU's short form for `id` is "04/09/26" — right order, two-digit year.
+  // Indonesian forms and documents write the full year, "04/09/2026".
+  id: { day: "2-digit", month: "2-digit", year: "numeric" },
+};
+
 /** Short numeric date in the page's locale — "9/4/26" in English, "04/09/2026" in Portuguese. */
 export function formatDate(value: Date | number, locale: Locale): string {
   let fmt = dateCache.get(locale);
   if (!fmt) {
-    fmt = new Intl.DateTimeFormat(locale, { dateStyle: "short" });
+    fmt = new Intl.DateTimeFormat(locale, SHORT_DATE_OVERRIDE[locale] ?? { dateStyle: "short" });
     dateCache.set(locale, fmt);
   }
   return fmt.format(value);
@@ -43,7 +60,13 @@ const dateTimeCache = new Map<string, Intl.DateTimeFormat>();
 export function formatDateTime(value: Date | number, locale: Locale): string {
   let fmt = dateTimeCache.get(locale);
   if (!fmt) {
-    fmt = new Intl.DateTimeFormat(locale, { dateStyle: "short", timeStyle: "medium" });
+    const short = SHORT_DATE_OVERRIDE[locale];
+    fmt = new Intl.DateTimeFormat(
+      locale,
+      short
+        ? { ...short, hour: "2-digit", minute: "2-digit", second: "2-digit" }
+        : { dateStyle: "short", timeStyle: "medium" },
+    );
     dateTimeCache.set(locale, fmt);
   }
   return fmt.format(value);
@@ -78,7 +101,26 @@ function fixed(value: number, digits: number, locale: Locale): string {
 }
 
 /**
- * "2.45 MB" in English, "2,45 MB" in Portuguese.
+ * Byte-size unit symbols per locale.
+ *
+ * Latin B/KB/MB is right for English, Portuguese and Hindi — all three use the
+ * Latin abbreviations in practice, and Hindi keeps format and unit names Latin
+ * by rule (conversion.md §9.2).
+ *
+ * Russian does not. Cyrillic Б/КБ/МБ is the form used in Windows, on Yandex,
+ * and in every Russian file manager; "6 KB" beside «6 изображений» reads like
+ * a string someone forgot. GOST prefers КиБ/МиБ for binary multiples, but no
+ * consumer product writes that, so this follows the convention people actually
+ * see rather than the standard.
+ */
+const BYTE_UNITS: Partial<Record<Locale, { b: string; kb: string; mb: string }>> = {
+  ru: { b: "Б", kb: "КБ", mb: "МБ" },
+};
+
+const DEFAULT_BYTE_UNITS = { b: "B", kb: "KB", mb: "MB" };
+
+/**
+ * "2.45 MB" in English, "2,45 MB" in Portuguese, "2,45 МБ" in Russian.
  *
  * English output is byte-identical to the original `formatBytes` in
  * lib/image/file-naming.ts (which stays the English implementation and is what
@@ -86,12 +128,13 @@ function fixed(value: number, digits: number, locale: Locale): string {
  * nothing for English readers.
  */
 export function formatBytesIn(n: number, locale: Locale): string {
+  const u = BYTE_UNITS[locale] ?? DEFAULT_BYTE_UNITS;
   if (locale === "en") {
-    if (n < 1024) return `${n} B`;
-    if (n < 1024 * 1024) return `${(n / 1024).toFixed(0)} KB`;
-    return `${(n / (1024 * 1024)).toFixed(2)} MB`;
+    if (n < 1024) return `${n} ${u.b}`;
+    if (n < 1024 * 1024) return `${(n / 1024).toFixed(0)} ${u.kb}`;
+    return `${(n / (1024 * 1024)).toFixed(2)} ${u.mb}`;
   }
-  if (n < 1024) return `${n} B`;
-  if (n < 1024 * 1024) return `${fixed(n / 1024, 0, locale)} KB`;
-  return `${fixed(n / (1024 * 1024), 2, locale)} MB`;
+  if (n < 1024) return `${n} ${u.b}`;
+  if (n < 1024 * 1024) return `${fixed(n / 1024, 0, locale)} ${u.kb}`;
+  return `${fixed(n / (1024 * 1024), 2, locale)} ${u.mb}`;
 }

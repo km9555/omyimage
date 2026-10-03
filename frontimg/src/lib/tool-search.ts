@@ -22,6 +22,9 @@
 import type { Tool } from "@/lib/tools";
 import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
 import { ptAliases } from "@/i18n/dictionaries/pt/aliases";
+import { hiAliases } from "@/i18n/dictionaries/hi/aliases";
+import { ruAliases } from "@/i18n/dictionaries/ru/aliases";
+import { idAliases } from "@/i18n/dictionaries/id/aliases";
 import { toolDescription, toolName } from "@/lib/i18n/tool-labels";
 
 /**
@@ -202,17 +205,52 @@ export const TOOL_ALIASES: Record<string, string[]> = {
 /**
  * Accent-insensitive folding. "Rotação" → "rotacao", so a Brazilian typing
  * without accents (common on a phone) still matches, and — the part that
- * actually broke — `[^a-z0-9]` no longer deletes the accented letters outright,
- * which turned "câmera" into "c mera". English has no accents, so its folding
- * is unchanged.
+ * actually broke — the word class below no longer deletes the accented letters
+ * outright, which turned "câmera" into "c mera". English has no accents, so its
+ * folding is unchanged.
+ *
+ * The nukta (U+093C) folds for the same reason the combining marks do: Hindi
+ * has spelling splits where a reader sees one word and a matcher sees two —
+ * फ़ाइल / फाइल, ज़िप / जिप. Folding it here means aliases.ts does not have to
+ * carry both spellings of every word.
  */
-const stripAccents = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-// Lowercase, replace every run of non-alphanumerics with a single space.
+const stripAccents = (s: string) =>
+  s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\u093c/g, "");
+
+/**
+ * Letter ranges the word class must KEEP, one per writing system.
+ *
+ * `[^a-z0-9]` does not merely damage a non-Latin query, it ERASES it: "इमेज
+ * कंप्रेस" normalises to "" and matches nothing at all, with no error and
+ * nothing on screen to hint at why. Latin letters outside a-z are handled by
+ * the NFD fold above; a script that does not decompose to ASCII has to be
+ * named here or it disappears.
+ *
+ * Russian's ё needs no row: NFD decomposes it to е + U+0308 and the combining
+ * strip above removes the diaeresis, so "ёлка" and "елка" — which Russians type
+ * interchangeably — already fold together. Worth stating, because the next
+ * person to read this will look for it.
+ *
+ * The same fold also merges й into и ("белый" and "белыи" normalise alike), so
+ * й-final and и-final words collide. That is deliberate and matches what the
+ * accent fold already does to Portuguese ç and ã: this string is a matching
+ * key, never anything a visitor reads.
+ */
+const SCRIPT_RANGES: Record<string, string> = {
+  devanagari: "\u0900-\u097f",
+  // Cyrillic + its supplement. Keyed by SCRIPT, not locale, because that is
+  // what varies: Ukrainian or Bulgarian would reuse this row, not add one.
+  cyrillic: "\u0400-\u04ff\u0500-\u052f",
+};
+
+const NON_WORD = new RegExp(`[^a-z0-9${Object.values(SCRIPT_RANGES).join("")}]+`, "g");
+
+// Lowercase, replace every run of non-word characters with a single space.
 // "HEIC to JPG" → "heic to jpg". Used for word-boundary aware matching.
-const spaced = (s: string) => stripAccents(s).toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
-// Lowercase, drop every non-alphanumeric. "PNG to JPG" → "pngtojpg".
+const spaced = (s: string) => stripAccents(s).toLowerCase().replace(NON_WORD, " ").trim();
+// Lowercase, drop every non-word character. "PNG to JPG" → "pngtojpg".
 // Lets "png2jpg" match "png to jpg".
-const collapsed = (s: string) => stripAccents(s).toLowerCase().replace(/[^a-z0-9]+/g, "");
+const collapsed = (s: string) => stripAccents(s).toLowerCase().replace(NON_WORD, "");
 
 /**
  * How well `text` matches the query, ignoring separators.
@@ -236,6 +274,9 @@ const FIELD_WEIGHT = { name: 5, keyword: 3, alias: 3, desc: 1 } as const;
 /** Translated alias sets, by locale. English is TOOL_ALIASES above. */
 const LOCALE_ALIASES: Partial<Record<Locale, Record<string, string[]>>> = {
   pt: ptAliases,
+  hi: hiAliases,
+  ru: ruAliases,
+  id: idAliases,
 };
 
 /**

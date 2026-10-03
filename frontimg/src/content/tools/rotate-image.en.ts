@@ -46,7 +46,7 @@ const content: ToolPageContent = {
       id: "batch",
       body: [
         "Scanned documents fed through the sheet feeder the wrong way round, a burst of photos taken with the phone held sideways, a set of product shots that all need the same quarter turn — these are the normal cases for applying one rotation across many files at once.",
-        "When the images need different corrections, auto-orient is usually the better tool, because it reads each file's own EXIF tag rather than applying one blanket rotation. Everything runs in your browser and comes back as a single ZIP.",
+        "The rotation and flip you set apply to every file in the batch alike. When the images need different corrections, group them by direction first — the ones turned left in one batch, the ones turned right in another — and run each group in one go. Everything runs in your browser and comes back as a single ZIP.",
       ],
     },
   ],
@@ -71,10 +71,10 @@ const content: ToolPageContent = {
     { q: "Will rotating lose quality?", a: "90° and 180° rotations are lossless. For other angles or when exporting to JPG, you can set the quality. PNG/WEBP stay sharp." },
     { q: "Is it free and private?", a: "Yes. No sign-up or watermark, and every image is rotated locally in your browser." },
     { q: "Why do my photos appear sideways on some devices but not others?", a: "Because the camera stored the picture in its sensor's orientation and added an EXIF tag saying which way up it should be shown. Software that reads the tag displays it correctly; software that ignores it shows the raw sideways image. Rotating here bakes the correct orientation into the pixels, so every viewer agrees." },
-    { q: "What is auto-orient?", a: "It reads that EXIF orientation tag and applies the rotation it describes, then clears the tag. It is the right choice for a batch of phone photos that look fine in your gallery and wrong everywhere else — it fixes them without you having to judge each one." },
+    { q: "What if each photo needs a different rotation?", a: "One rotation applies to every photo in a batch — there is no per-photo automatic mode. Group the photos by the way they are turned, all the ones that need a quarter turn clockwise for example, and run each group separately." },
     { q: "Can I rotate by an arbitrary angle?", a: "Yes. Straightening a crooked horizon usually needs only a degree or two. Be aware that any angle other than a multiple of 90° leaves triangular gaps at the corners, which are filled with your chosen background colour — most people crop slightly afterwards to remove them." },
     { q: "Does flipping change the image quality?", a: "No. Horizontal and vertical flips, like 90° and 180° rotations, simply rearrange existing pixels — nothing is resampled, so the result is pixel-for-pixel identical to the original in quality terms." },
-    { q: "Can I rotate a whole folder at once?", a: "Yes. Apply the same rotation across a batch, or use auto-orient to let each photo's own EXIF tag decide. Files come back as a single ZIP." },
+    { q: "Can I rotate a whole folder at once?", a: "Yes. Add every file from the folder and apply the same rotation to all of them; they come back as a single ZIP. If they need different turns, split them into groups first." },
   ],
 
   security:

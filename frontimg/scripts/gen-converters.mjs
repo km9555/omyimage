@@ -24,13 +24,30 @@ const appDir = join(root, "src", "app");
 /**
  * Translated routes are generated too, from the same list.
  *
- * A pt converter page exists when BOTH are true: the slug is in
- * `status.ts` (SHIPPED_TOOLS) and `slugs.ts` gives it a Portuguese slug. The
- * page's prose comes from `src/content/converters/<slug>.pt.ts`, which the
- * TypeScript build already requires — so the only thing that can drift is the
- * stub, which is exactly what this script exists to prevent.
+ * A translated converter page exists when BOTH are true: the slug is in that
+ * locale's `status.ts` SHIPPED_TOOLS list and `slugs.ts` gives it a slug in
+ * `<LOCALE>_TOOL_SLUGS` (for Hindi, the English slug itself). The page's prose
+ * comes from `src/content/converters/<slug>.<locale>.ts`, which the TypeScript
+ * build already requires — so the only thing that can drift is the stub,
+ * which is exactly what this script exists to prevent.
  */
-const LOCALES = ["pt"];
+/**
+ * Translated locales, read from config.ts rather than restated here.
+ *
+ * This list was hand-maintained and silently wrong the moment a locale was
+ * added: the generator would simply not emit that locale's stubs, and
+ * `--check` would agree with itself that everything was up to date. Parsing
+ * LOCALE_META's keys means adding a language to config.ts is enough.
+ */
+const configSrc = readFileSync(join(root, "src", "i18n", "config.ts"), "utf8").replace(/\r\n/g, "\n");
+const metaBlock = /export const LOCALE_META = \{([\s\S]*?)\n\} as const/.exec(configSrc)?.[1] ?? "";
+const LOCALES = [...metaBlock.matchAll(/^  ([a-z]{2}(?:-[A-Za-z]+)?): \{/gm)]
+  .map((m) => m[1])
+  .filter((l) => l !== "en");
+if (LOCALES.length === 0) {
+  console.error("Parsed zero translated locales from config.ts LOCALE_META — has its shape changed?");
+  process.exit(1);
+}
 
 const src = readFileSync(pairsFile, "utf8");
 const slugs = [...src.matchAll(/^\s{4}slug:\s*"([a-z0-9-]+)"/gm)].map((m) => m[1]);
@@ -95,7 +112,12 @@ for (const { slug, locale, dir } of targets) {
   const file = join(dir, "page.tsx");
   const rel = relative(root, file).replace(/\\/g, "/");
   const want = stub(slug, locale);
-  const have = existsSync(file) ? readFileSync(file, "utf8") : null;
+  // Normalize CRLF before comparing. Git is configured with
+  // `core.autocrlf=true` on this machine, so a stub committed with LF comes
+  // BACK from a checkout with CRLF — which made `--check` report all ten
+  // Portuguese routes stale on a clean tree, with byte-identical content.
+  // The generator still writes LF; only the comparison is line-ending blind.
+  const have = existsSync(file) ? readFileSync(file, "utf8").replace(/\r\n/g, "\n") : null;
   if (have === want) continue;
 
   if (check) {

@@ -69,6 +69,22 @@ const LANGUAGES: { code: string; label: string }[] = [
 ];
 
 /**
+ * The recognition language a locale's page starts on, keyed by locale.
+ * Anything not listed starts on "eng". Add a row when a locale ships whose
+ * script or accents an English model would mangle.
+ */
+/**
+ * Which Tesseract model a locale should start on.
+ *
+ * Not cosmetic. An English model pointed at Cyrillic does not degrade politely
+ * — it returns confident Latin nonsense, because every Russian letter gets
+ * mapped to whichever Latin shape it resembles (п→n, и→u, д→a). The visitor
+ * sees a full page of plausible-looking garbage and no error, which is worse
+ * than a failure. Same reason Hindi defaults to `hin`.
+ */
+const OCR_DEFAULT: Record<string, string> = { pt: "por", hi: "hin", ru: "rus" };
+
+/**
  * Map tesseract's status strings onto something a human can read. Returns the
  * English source string; the caller translates it (a plain function has no t).
  */
@@ -88,8 +104,10 @@ export function ImageToTextTool() {
   const locale = useLocale();
   const formatBytes = useFormatBytes();
   // Default the recognition language to the page's: an English model drops the
-  // accents from Portuguese text (conversion.md §6.3).
-  const [lang, setLang] = useState(locale === "pt" ? "por" : "eng");
+  // accents from Portuguese text, and on Hindi it does something worse than
+  // drop anything — it returns confident Latin nonsense for Devanagari, with
+  // nothing to hint that the wrong model ran (conversion.md §6.3).
+  const [lang, setLang] = useState(OCR_DEFAULT[locale] ?? "eng");
   const [text, setText] = useState<string | null>(null);
   const [confidence, setConfidence] = useState<number | null>(null);
   const [source, setSource] = useState<"server" | "browser" | null>(null);

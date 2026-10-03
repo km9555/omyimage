@@ -38,7 +38,7 @@ if (!loc) {
 const BASE = (process.env.BASE ?? "http://localhost:3002").replace(/\/$/, "");
 const OUT = process.env.OUT ? join(root, process.env.OUT) : null;
 const SITE = "https://omyimage.com";
-const OG = { pt: "pt_BR" };
+const OG = { pt: "pt_BR", hi: "hi_IN", ru: "ru_RU", id: "id_ID" };
 
 const read = (p) => readFileSync(join(SRC, p), "utf8");
 function block(src, name) {
@@ -139,7 +139,12 @@ for (const t of targets) {
   const english = text
     .split(/(?<=[.!?])\s+|\s{2,}| · /)
     .filter((s) => s.toLowerCase().split(/[^a-z']+/).filter((w) => EN.has(w)).length >= 3);
-  if (english.length >= 3) problems.push(`${english.length} English-looking sentence(s)`);
+  /* Threshold 2, not 3. At 3 this missed heic-to-png.ru, where a missing
+     `tagline` let ToolPageShell fall back to lib/tools.ts seoDescription and
+     print two English sentences on a Russian page. The static check in
+     i18n-audit.mjs now catches that specific fault at write time; this is the
+     backstop for whatever the next fallback turns out to be. */
+  if (english.length >= 2) problems.push(`${english.length} English-looking sentence(s)`);
 
   const ok = problems.length === 0;
   if (!ok) failed++;

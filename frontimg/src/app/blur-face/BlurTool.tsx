@@ -26,6 +26,7 @@ import {
 } from "@/lib/image/text-detect";
 import { useHandoff } from "@/lib/tool-handoff";
 import { useFormatBytes, useT } from "@/i18n/I18nScope";
+import { translateError } from "@/i18n/errors";
 
 const ACCENT = "#5D7091";
 const ACCEPT = "image/jpeg,image/png,image/webp";
@@ -317,7 +318,7 @@ export function BlurTool() {
       toast.success(out.length === 1 ? t("Exported 1 image.") : t("Exported {n} images.", { n: out.length }));
     } catch (err) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : t("Export failed."));
+      toast.error(translateError(err, t, "Export failed."));
     } finally {
       setIsWorking(false);
     }

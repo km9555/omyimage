@@ -55,7 +55,7 @@ const content: ToolPageContent = {
       id: "batch",
       body: [
         "Documentos escaneados que entraram de cabeça para baixo no alimentador, uma sequência de fotos tiradas com o celular deitado, um conjunto de fotos de produto que precisam do mesmo quarto de volta — esses são os casos normais para aplicar o mesmo giro em vários arquivos de uma vez.",
-        "Quando cada imagem precisa de uma correção diferente, a orientação automática costuma ser a melhor escolha, porque ela lê a etiqueta EXIF de cada arquivo em vez de aplicar um giro igual para todos. Tudo roda no seu navegador e volta em um único ZIP.",
+        "O giro e o espelhamento que você escolher valem igualmente para todos os arquivos do lote. Quando cada imagem precisa de uma correção diferente, separe-as primeiro pela direção — as que estão viradas para a esquerda num lote, as viradas para a direita em outro — e processe cada grupo de uma vez. Tudo roda no seu navegador e volta em um único ZIP.",
       ],
     },
   ],
@@ -80,10 +80,10 @@ const content: ToolPageContent = {
     { q: "Girar diminui a qualidade?", a: "Giros de 90° e 180° são sem perdas. Em outros ângulos, ou ao exportar em JPG, você pode definir a qualidade. PNG e WEBP continuam nítidos." },
     { q: "É grátis e privado?", a: "Sim. Sem cadastro nem marca d'água, e cada imagem é girada no seu próprio navegador." },
     { q: "Por que minhas fotos aparecem de lado em alguns aparelhos e em outros não?", a: "Porque a câmera guardou a foto na orientação do sensor e adicionou uma etiqueta EXIF dizendo em que posição ela deve ser mostrada. Programas que leem a etiqueta mostram certo; os que ignoram mostram a imagem crua, deitada. Girar aqui grava a orientação correta nos pixels, então todos os visualizadores concordam." },
-    { q: "O que é a orientação automática?", a: "Ela lê a etiqueta EXIF de orientação e aplica o giro que ela descreve, depois limpa a etiqueta. É a escolha certa para um lote de fotos do celular que aparecem certas na galeria e erradas em todo o resto — corrige sem você precisar avaliar uma por uma." },
+    { q: "E se cada foto precisar de um giro diferente?", a: "Um mesmo giro vale para todas as fotos do lote — não existe um modo automático foto a foto. Agrupe as fotos pelo lado para onde estão viradas, por exemplo todas as que precisam de um quarto de volta no sentido horário, e processe cada grupo separadamente." },
     { q: "Dá para girar em um ângulo qualquer?", a: "Sim. Endireitar um horizonte torto normalmente precisa de só um ou dois graus. Saiba que qualquer ângulo que não seja múltiplo de 90° deixa espaços triangulares nos cantos, preenchidos com a cor de fundo escolhida — a maioria das pessoas recorta um pouco depois para tirá-los." },
     { q: "Espelhar muda a qualidade da imagem?", a: "Não. Espelhar na horizontal e na vertical, assim como girar 90° e 180°, só reorganiza os pixels que já existem — nada é reamostrado, então o resultado tem exatamente a mesma qualidade do original." },
-    { q: "Posso girar uma pasta inteira de uma vez?", a: "Sim. Aplique o mesmo giro a um lote, ou use a orientação automática para deixar a etiqueta EXIF de cada foto decidir. Os arquivos voltam em um único ZIP." },
+    { q: "Posso girar uma pasta inteira de uma vez?", a: "Sim. Adicione todos os arquivos da pasta e aplique o mesmo giro a todos; eles voltam em um único ZIP. Se precisarem de giros diferentes, separe-os em grupos antes." },
     { q: "Como desvirar uma foto tirada no celular?", a: "Envie a foto, clique uma vez no botão de +90° (ou -90°, dependendo do lado) e confira na prévia. Se ela estiver de cabeça para baixo, são dois cliques. Depois é só baixar — a nova orientação fica gravada nos pixels." },
   ],
 

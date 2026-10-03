@@ -11,6 +11,7 @@ import { BackgroundPicker, resolveBg, type BgValue } from "@/components/Backgrou
 import { canvasToBlob, downloadBlob, zipAndDownload, baseName, mimeExt, type ExportMime } from "@/lib/image/raster";
 import { useHandoff } from "@/lib/tool-handoff";
 import { useT } from "@/i18n/I18nScope";
+import { translateError } from "@/i18n/errors";
 
 const ACCENT = "#B85C8C";
 const ACCEPT = "image/gif,.gif";
@@ -91,7 +92,7 @@ export function GifToImagesTool() {
       toast.success(out.length === 1 ? t("Extracted 1 frame.") : t("Extracted {n} frames.", { n: out.length }));
     } catch (err) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : t("Couldn't read that GIF."));
+      toast.error(translateError(err, t, "Couldn't read that GIF."));
     } finally {
       setIsWorking(false);
     }
@@ -191,7 +192,13 @@ export function GifToImagesTool() {
           </div>
         </div>
         <p className="text-center text-label-sm font-label-sm text-on-surface-variant">
-          <span className="font-semibold text-on-surface">{count}</span> {count === 1 ? t("frame") : t("frames")}{dims && <> · {dims.w} × {dims.h} px</>}
+          {/* The count is rendered separately so it can be styled, which leaves
+              the noun with no {n} of its own. Passing `n` anyway lets makeT run
+              its plural probe on a key that has no placeholder — needed for
+              Russian, where 2 frames, 5 frames and 21 frames are three
+              different words. Locales that define no |few/|one siblings (en,
+              pt, hi) miss the probe and fall through unchanged. */}
+          <span className="font-semibold text-on-surface">{count}</span> {count === 1 ? t("frame") : t("frames", { n: count })}{dims && <> · {dims.w} × {dims.h} px</>}
           {count > MAX_THUMBS && <> · {t("showing first {n}, all included in the ZIP", { n: MAX_THUMBS })}</>}
         </p>
         <button type="button" onClick={reset} className="self-center inline-flex items-center gap-1.5 text-label-md font-medium text-on-surface-variant hover:text-error"><Icon name="close" className="text-[18px]" /> {t("Change GIF")}</button>

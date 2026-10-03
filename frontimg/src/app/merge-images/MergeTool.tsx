@@ -21,6 +21,7 @@ import { boundsOf, translateAll } from "@/lib/image/obb";
 import { ASPECT_PRESETS } from "@/lib/image/frame";
 import { useHandoff } from "@/lib/tool-handoff";
 import { useFormatBytes, useT } from "@/i18n/I18nScope";
+import { translateError } from "@/i18n/errors";
 
 const ACCENT = "#C99B47";
 const ACCEPT = "image/jpeg,image/png,image/webp";
@@ -249,7 +250,7 @@ export function MergeTool() {
       toast.success(scene.placements.length === 1 ? t("Merged 1 image.") : t("Merged {n} images.", { n: scene.placements.length }));
     } catch (err) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : t("Merge failed."));
+      toast.error(translateError(err, t, "Merge failed."));
     } finally {
       setIsWorking(false);
     }

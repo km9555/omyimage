@@ -39,8 +39,86 @@ const PT_PATHS: PathMap = {
   "/account": "/conta",
 };
 
+/**
+ * Hindi keeps the English path segments, for the same reason its tool slugs do
+ * (see slugs.ts): iLoveIMG ships `/hi/pricing` and `/hi/login`, a
+ * transliteration like `/mulya` carries a phrase nobody searches, and a path is
+ * permanent once indexed.
+ *
+ * Unlike the tool map this one still has to be authored rather than derived:
+ * it is the list of which non-tool routes the locale has at all. An entry
+ * alone links nowhere — localeHref() also requires the page to be listed in
+ * status.ts SHIPPED_PAGES — so the full set can be declared ahead of the
+ * batches that ship it.
+ */
+const HI_PATHS: PathMap = {
+  "/": "",
+  "/image-converter": "/image-converter",
+  "/pricing": "/pricing",
+  "/contact": "/contact",
+  "/privacy": "/privacy",
+  "/terms": "/terms",
+  "/cookies": "/cookies",
+  "/refunds": "/refunds",
+  "/login": "/login",
+  "/signup": "/signup",
+  "/forgot-password": "/forgot-password",
+  "/reset-password": "/reset-password",
+  "/dashboard": "/dashboard",
+  "/account": "/account",
+};
+
+/** Russian keeps English segments, like Hindi — see the note in slugs.ts. */
+const RU_PATHS: PathMap = {
+  "/": "",
+  "/image-converter": "/image-converter",
+  "/pricing": "/pricing",
+  "/contact": "/contact",
+  "/privacy": "/privacy",
+  "/terms": "/terms",
+  "/cookies": "/cookies",
+  "/refunds": "/refunds",
+  "/login": "/login",
+  "/signup": "/signup",
+  "/forgot-password": "/forgot-password",
+  "/reset-password": "/reset-password",
+  "/dashboard": "/dashboard",
+  "/account": "/account",
+};
+
+/**
+ * Indonesian translates its paths, like its tool slugs (see slugs.ts) and like
+ * Portuguese. The words are the ones Indonesian web UI already uses for these
+ * pages — masuk / daftar / akun / lupa kata sandi are what Google, Tokopedia
+ * and the national e-government portals put on the same buttons — so the URL
+ * matches the label a reader clicked.
+ *
+ * /terms is "syarat-ketentuan", the stock Indonesian name for a Terms and
+ * Conditions page ("Syarat & Ketentuan"), rather than the bare "ketentuan".
+ * /cookies stays "cookies", as it does in Portuguese: the loanword is the word.
+ */
+const ID_PATHS: PathMap = {
+  "/": "",
+  "/image-converter": "/konverter-gambar",
+  "/pricing": "/harga",
+  "/contact": "/kontak",
+  "/privacy": "/privasi",
+  "/terms": "/syarat-ketentuan",
+  "/cookies": "/cookies",
+  "/refunds": "/pengembalian-dana",
+  "/login": "/masuk",
+  "/signup": "/daftar",
+  "/forgot-password": "/lupa-kata-sandi",
+  "/reset-password": "/atur-ulang-kata-sandi",
+  "/dashboard": "/dasbor",
+  "/account": "/akun",
+};
+
 const STATIC_PATHS: Record<TranslatedLocale, PathMap> = {
   pt: PT_PATHS,
+  hi: HI_PATHS,
+  ru: RU_PATHS,
+  id: ID_PATHS,
 };
 
 /** Does `locale` define a counterpart for this English path? */

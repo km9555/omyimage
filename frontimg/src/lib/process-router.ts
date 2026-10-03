@@ -21,6 +21,7 @@
  * always run in the browser regardless of size.
  */
 import { SITE } from "@/lib/site";
+import { kindOf } from "@/lib/file-actions";
 import { I18nError } from "@/i18n/errors";
 
 /**
@@ -154,6 +155,20 @@ export async function shouldUseServerForFile(file: File): Promise<boolean> {
   // Undecodable in this browser (an exotic or corrupt format) — let Sharp try.
   if (!size) return true;
   return !canBrowserHandlePixels(size.width * size.height);
+}
+
+/**
+ * False for a BMP, which Sharp/libvips cannot decode. Gate every offload on it
+ * before `shouldUseServerForFile`: `looksLikeImage()` on the backend accepts BMP
+ * magic bytes, so the upload passes validation and then the conversion throws.
+ * Checks the "BM" signature as well as `kindOf`, because the backend validates
+ * by magic bytes: a BMP whose name or MIME says otherwise (image/x-ms-bmp, no
+ * extension) would still reach Sharp and throw.
+ */
+export async function serverCanDecode(file: File): Promise<boolean> {
+  if (kindOf(file) === "bmp") return false;
+  const head = new Uint8Array(await file.slice(0, 2).arrayBuffer());
+  return !(head[0] === 0x42 && head[1] === 0x4d);
 }
 
 /** Map an export mime to the backend's short format token. */

@@ -110,7 +110,7 @@ const content: ToolPageContent = {
     },
     {
       q: "Will the photo's date and location be kept?",
-      a: "The image itself converts faithfully, but EXIF metadata such as capture date and GPS coordinates is not carried into the PNG. If you need to inspect that data first, the Image Metadata Viewer reads it directly from a HEIC without converting.",
+      a: "The converter copies metadata across wherever the target format can hold it, and the \"Strip metadata\" option removes everything before download. If you want to be certain what the photo carries, the Image Metadata Viewer reads the EXIF directly from a HEIC without converting.",
     },
     {
       q: "How do I stop my iPhone saving HEIC in the first place?",

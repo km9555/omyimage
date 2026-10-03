@@ -353,7 +353,11 @@ export function ImageToPdfTool() {
                 <RailNote>
                   {items.length === 1 ? t("1 image") : t("{n} images", { n: items.length })}{" → "}
                   {pageCount === 1 ? t("1 page") : t("{n} pages", { n: pageCount })}
-                  {". "}
+                  {/* A key, not a literal: Devanagari ends a sentence with the
+                      danda "।", so a hardcoded ". " left Hindi with a Latin
+                      full stop. stripContext() drops the suffix, so English
+                      and Portuguese still render ". " unchanged. */}
+                  {t(". |sentence-end")}
                   {t("Use the arrows to reorder.")}
                 </RailNote>
                 <RailAction onClick={buildPdf} busy={isWorking} busyLabel={t("Building PDF…")} icon="picture_as_pdf">

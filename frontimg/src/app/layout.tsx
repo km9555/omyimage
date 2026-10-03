@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Noto_Sans_Devanagari } from "next/font/google";
 import "./globals.css";
 import { SITE } from "@/lib/site";
 import { Navbar } from "@/components/Navbar";
@@ -10,6 +10,7 @@ import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import { ThemeProvider } from "@/lib/theme/ThemeProvider";
 import { AuthProvider } from "@/lib/auth/AuthProvider";
 import { HtmlLang } from "@/components/HtmlLang";
+import { DEFAULT_LOCALE, LOCALES } from "@/i18n/config";
 import { preload } from "react-dom";
 import { ICON_FONT_URL } from "@/lib/icon-font";
 
@@ -24,10 +25,27 @@ import { ICON_FONT_URL } from "@/lib/icon-font";
 // label token now points at Inter, which is already on the wire.
 const inter = Inter({
   variable: "--font-inter",
-  subsets: ["latin"],
+  // A script belongs here when Inter can serve it, and gets a SEPARATE font
+  // below only when it cannot. Inter covers Cyrillic, so Russian costs one
+  // subset rather than a second family — next/font emits per-subset files and
+  // unicode-range, so a Latin page never downloads the Cyrillic one.
+  subsets: ["latin", "cyrillic"],
   // Mobile uses the system stack in globals.css, so a global preload would
   // waste ~48 KB there. Desktop still discovers Inter from this font-face;
   // `optional` prevents a late swap from creating a new paint milestone.
+  display: "optional",
+  preload: false,
+});
+
+// Devanagari for /hi — the one script Inter does NOT cover. Declared here
+// because next/font must be called at module scope — this root layout wraps
+// every locale — but globals.css only APPLIES it under `:lang(hi)`, so an
+// English, Portuguese or Russian page never downloads it.
+// `preload: false` for the same reason: preloading here would put both Noto
+// files on the wire for every page in every language.
+const notoDevanagari = Noto_Sans_Devanagari({
+  variable: "--font-devanagari",
+  subsets: ["devanagari", "latin"],
   display: "optional",
   preload: false,
 });
@@ -45,9 +63,16 @@ const inter = Inter({
 // Also stamps <html lang> from the URL's locale segment ("/pt/…" → "pt"). A
 // static export renders <html> once with lang="en", so this is what gives a
 // Portuguese page the right language before paint; HtmlLang keeps it right
-// after hydration and on client-side navigation (see that component). The map
-// must list every non-default locale in i18n/config.ts LOCALES.
-const NO_FLASH_THEME = `(function(){try{var L={pt:1},s=location.pathname.split('/')[1];if(L[s]){document.documentElement.lang=s;}}catch(e){}try{if(localStorage.getItem('theme')==='dark'){document.documentElement.classList.add('dark');document.documentElement.style.colorScheme='dark';document.querySelectorAll('meta[name="theme-color"]').forEach(function(m){m.setAttribute('content','#191512')});}var c=localStorage.getItem('omyimage_cookie_consent');if(c==='accepted'||c==='declined'){document.documentElement.setAttribute('data-cookie-choice','1');}}catch(e){}})();`;
+// after hydration and on client-side navigation (see that component).
+//
+// The map is BUILT from LOCALES rather than written out. It used to be a
+// literal `{pt:1,hi:1}` inside this string, where a forgotten locale costs no
+// error and no warning — the page simply keeps `lang="en"` until hydration,
+// which is exactly long enough for the wrong font to paint.
+const LANG_MAP = JSON.stringify(
+  Object.fromEntries(LOCALES.filter((l) => l !== DEFAULT_LOCALE).map((l) => [l, 1])),
+);
+const NO_FLASH_THEME = `(function(){try{var L=${LANG_MAP},s=location.pathname.split('/')[1];if(L[s]){document.documentElement.lang=s;}}catch(e){}try{if(localStorage.getItem('theme')==='dark'){document.documentElement.classList.add('dark');document.documentElement.style.colorScheme='dark';document.querySelectorAll('meta[name="theme-color"]').forEach(function(m){m.setAttribute('content','#191512')});}var c=localStorage.getItem('omyimage_cookie_consent');if(c==='accepted'||c==='declined'){document.documentElement.setAttribute('data-cookie-choice','1');}}catch(e){}})();`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -131,7 +156,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} h-full`}
+      className={`${inter.variable} ${notoDevanagari.variable} h-full`}
       suppressHydrationWarning
     >
       <head>

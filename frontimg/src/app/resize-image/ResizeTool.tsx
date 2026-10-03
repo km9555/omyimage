@@ -11,7 +11,7 @@ import { ToolWorkspace, filesHeader } from "@/components/tool/ToolWorkspace";
 import { FileTray, TrayAction, TrayIconButton, type TrayEntry } from "@/components/tool/FileTray";
 import { SettingsRail, RailAction, RailSecondaryAction, RailNote } from "@/components/tool/SettingsRail";
 import {
-  shouldUseServer, shouldUseServerForFile, toServerFormat, processOnServer, canBrowserHandlePixels,
+  serverCanDecode, shouldUseServer, shouldUseServerForFile, toServerFormat, processOnServer, canBrowserHandlePixels,
 } from "@/lib/process-router";
 import {
   rasterize, imageSize, downloadBlob, zipAndDownload, baseName, mimeExt,
@@ -364,10 +364,12 @@ export function ResizeTool() {
         let blob: Blob;
         let width = plan.out.width;
         let height = plan.out.height;
-        // Pixels, not bytes — see process-router.ts.
-        const useServer = it.w && it.h
+        // Pixels, not bytes — see process-router.ts. A BMP never leaves the
+        // browser: Sharp/libvips has no BMP loader, so the upload would pass
+        // validation and then throw. Canvas decodes BMP fine.
+        const useServer = (await serverCanDecode(it.file)) && (it.w && it.h
           ? shouldUseServer(it.file.size, { width: it.w, height: it.h })
-          : await shouldUseServerForFile(it.file);
+          : await shouldUseServerForFile(it.file));
         if (useServer) {
           // Past the browser's canvas ceiling or the byte cap → offload to the
           // shared oMyPDF backend (Sharp, /api/image/*). It takes the same fit

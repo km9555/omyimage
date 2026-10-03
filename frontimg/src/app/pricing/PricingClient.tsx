@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Icon } from "@/components/Icon";
 import { getRegionPrices, type PriceBook } from "@/lib/billing";
+import { LIVE_TOOL_COUNT } from "@/lib/tools";
 import type { Locale } from "@/i18n/config";
 import { localeHome } from "@/lib/i18n/links";
 import { useLocale, useT } from "@/i18n/I18nScope";
@@ -96,7 +97,7 @@ const PLANS: Plan[] = [
     ctaHref: "/",
     highlight: false,
     features: [
-      "All 30 tools, no account needed",
+      "All {n} tools, no account needed",
       "Unlimited in-browser processing, no daily cap",
       "Server processing for files up to 100 MB",
       "10 AI runs / day",
@@ -356,7 +357,10 @@ export function PricingClient() {
                         fill
                         className="text-[18px] text-secondary shrink-0 mt-0.5"
                       />
-                      <span>{t(f)}</span>
+                      {/* `n` is passed to every feature; only the tool-count
+                          one has a `{n}` to spend it on, and interpolate
+                          leaves the rest untouched. */}
+                      <span>{t(f, { n: LIVE_TOOL_COUNT })}</span>
                     </li>
                   ))}
                 </ul>
@@ -457,7 +461,7 @@ export function PricingClient() {
             {t("Start now — no card, no account.")}
           </h2>
           <p className="mt-3 text-body-lg text-on-surface-variant max-w-xl mx-auto">
-            {t("All 30 tools are free to use today. Paid plans will add headroom, not gatekeeping.")}
+            {t("All {n} tools are free to use today. Paid plans will add headroom, not gatekeeping.", { n: LIVE_TOOL_COUNT })}
           </p>
           <Link
             href={localeHome(locale)}
