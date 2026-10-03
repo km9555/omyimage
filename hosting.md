@@ -33,7 +33,8 @@ Static export (`output: "export"` → `frontimg/out`), so Pages just serves file
 - Build command: `npm run build`
 - Build output directory: `out`
 - Root directory: `frontimg`
-- Node version: 20+ (`NODE_VERSION=20`).
+- Node version: **22**. The v3 build image default (22.16.0 as of 2026-10-03)
+  is what builds run on; no `NODE_VERSION` is set.
 
 **Environment variables (Production):** set under **Pages → Settings → Variables and
 secrets**.
@@ -53,6 +54,18 @@ The Dropbox key additionally needs `omyimage.com`, `www.omyimage.com` and
 `omyimage.pages.dev` listed under **Chooser / Saver / Embedder domains** in the
 Dropbox App Console — that list is matched against the origin serving the page,
 and a missing entry makes the chooser popup open and refuse.
+
+**Environment variables (Preview)**, the builds for every non-`main` branch,
+set 2026-10-03: `NEXT_PUBLIC_BACKEND_URL=https://api.omyimage.com` and the
+Dropbox key. Until then Preview had no backend URL, so preview builds baked in
+`localhost:5000`. Previews are served from `<hash>.omyimage.pages.dev` and
+`<branch>.omyimage.pages.dev`, so the API also has to accept those origins. The
+backend's `FRONTEND_ORIGIN` ends with `https://*.omyimage.pages.dev`, an entry
+matching one subdomain label (`omypdf-project/backend/src/lib/cors-origins.ts`,
+commit 0c45eb2). Server tools therefore work on previews against the
+**production** API. The Google keys are deliberately not set for Preview: the
+OAuth client does not list preview origins, so the Drive button would only
+fail there.
 
 > ⚠ **These are read at BUILD time, and they are load-bearing.** If
 > `NEXT_PUBLIC_BACKEND_URL` is unset, `frontimg/src/lib/site.ts` falls back to
