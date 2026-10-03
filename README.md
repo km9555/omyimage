@@ -41,6 +41,17 @@ or npm run dev -- -p 3002
 npm run build    # static export → frontimg/out/
 ```
 
+After a deploy that adds or changes pages, tell the search engines once
+Cloudflare reports it live:
+
+```bash
+npm run indexnow   # posts the LIVE sitemap to IndexNow (Bing, Yandex, …)
+```
+
+It refuses to run until the key file `public/942e061e1c972caafc2883c558e2d835.txt`
+is served, and `-- --dry-run` prints the per-locale count without posting.
+Run it after the deploy, not before: it reads the live sitemap.
+
 ## Processing router
 
 - **≤ 15 MB** → in-browser (raw Canvas) — instant, private, nothing uploaded.

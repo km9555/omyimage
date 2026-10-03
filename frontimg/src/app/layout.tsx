@@ -90,7 +90,7 @@ export const metadata: Metadata = {
   //     <meta name="…"> value — e.g. Bing uses "msvalidate.01".
   verification: {
     google: "N9pbKXktdiaIOJa3fCoZuqAOeWh8YSB0EZ8ohp1QIXA",
-    // yandex: "",
+    yandex: "8a7d738b0bb7cfac", // Yandex.Webmaster (conversion.md §10.9)
     // yahoo: "",
     other: {
       "msvalidate.01": "84376653A44FBB71E74AC0801E8D0CAD", // Bing Webmaster Tools

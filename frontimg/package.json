@@ -20,6 +20,7 @@
     "build": "next build",
     "start": "next start",
     "licenses": "node scripts/generate-licenses.mjs",
+    "indexnow": "node scripts/indexnow-submit.mjs",
     "predev": "node scripts/copy-mediapipe.mjs",
     "copy:mediapipe": "node scripts/copy-mediapipe.mjs"
   },
