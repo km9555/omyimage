@@ -201,6 +201,66 @@ export const ptTools: Record<string, LocalizedTool> = {
     name: "Melhorar qualidade da imagem",
     shortDescription: "Aumente e melhore com IA — 2×, 3×, 4× recuperando detalhes.",
   },
+
+  // ── Variantes: comprimir até um tamanho (expansion.md) ──
+  "reduce-image-size-in-kb": {
+    name: "Reduzir tamanho da imagem em KB",
+    shortDescription: "Diminua a foto para o tamanho em KB que você precisar.",
+  },
+  "compress-image-to-20kb": {
+    name: "Comprimir imagem para 20 KB",
+    shortDescription: "Fotos e assinaturas abaixo de 20 KB para formulários.",
+  },
+  "compress-image-to-50kb": {
+    name: "Comprimir imagem para 50 KB",
+    shortDescription: "Um limite de foto comum em inscrições.",
+  },
+  "compress-image-to-100kb": {
+    name: "Comprimir imagem para 100 KB",
+    shortDescription: "Fotos e documentos nítidos abaixo de 100 KB.",
+  },
+  "compress-image-to-200kb": {
+    name: "Comprimir imagem para 200 KB",
+    shortDescription: "Fotos e documentos digitalizados abaixo de 200 KB.",
+  },
+  "compress-image-to-1mb": {
+    name: "Comprimir imagem para 1 MB",
+    shortDescription: "Fotos do celular abaixo de 1 MB, quase sempre em tamanho total.",
+  },
+
+  // ── Variantes: melhorar, espelhar, fundo (expansion.md) ──
+  "image-to-hd": {
+    name: "Converter imagem em HD",
+    shortDescription: "Transforme uma foto pequena ou em baixa resolução em HD.",
+  },
+  "unblur-image": {
+    name: "Tirar desfoque da foto",
+    shortDescription: "Deixe nítidas fotos levemente borradas com IA.",
+  },
+  "flip-image": {
+    name: "Espelhar imagem",
+    shortDescription: "Espelhe fotos na horizontal ou na vertical.",
+  },
+  "change-background-color": {
+    name: "Trocar fundo da foto",
+    shortDescription: "Fundo branco, azul ou vermelho para qualquer foto.",
+  },
+  "blur-background": {
+    name: "Desfocar fundo",
+    shortDescription: "Efeito retrato atrás de qualquer pessoa ou objeto.",
+  },
+  "passport-photo-maker": {
+    name: "Foto para documento",
+    shortDescription: "Fotos 3x4, de passaporte e visto, com folha para imprimir.",
+  },
+  "3x4-photo": {
+    name: "Foto 3x4 online",
+    shortDescription: "Foto 3 × 4 cm enquadrada e pronta para imprimir.",
+  },
+  "2x2-photo": {
+    name: "Foto 2x2 (visto americano)",
+    shortDescription: "Foto de 2 × 2 polegadas para passaporte e visto dos EUA.",
+  },
 };
 
 /**

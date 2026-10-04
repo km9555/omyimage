@@ -96,7 +96,6 @@ const content: ToolPageContent = {
   security:
     "Отрисовка выполняется на нашем сервере на headless Chromium с открытым кодом. Результат хранится лишь недолго за приватной ссылкой на скачивание и удаляется автоматически в течение часа. Мы никогда не передаём и не используем повторно ваше содержимое.",
 
-  rating: { value: "4.7", count: "356" },
 
   ui: {
     // HtmlToImageTool.tsx — module-scope VIEWPORTS and FORMATS

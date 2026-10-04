@@ -89,7 +89,6 @@ const content: ToolPageContent = {
   security:
     "Seus dados continuam privados. A decodificação de Base64 acontece inteiramente no seu navegador — nada é enviado a um servidor. Sem armazenamento e sem rastrear seus arquivos.",
 
-  rating: { value: "4.8", count: "254" },
 
   ui: {
     // Base64ToImageTool.tsx

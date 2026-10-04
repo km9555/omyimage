@@ -102,7 +102,6 @@ const content: ToolPageContent = {
   security:
     "Konversi HEIC berjalan di server kami dengan ImageMagick yang open-source. Hasilnya hanya disimpan sebentar di balik tautan unduhan pribadi dan dihapus otomatis dalam satu jam. Kami tidak pernah membagikan atau memakai ulang foto Anda.",
 
-  rating: { value: "4.9", count: "742" },
 
   ui: {
     "Please select HEIC or HEIF images.": "Pilih gambar HEIC atau HEIF.",

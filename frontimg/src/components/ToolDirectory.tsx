@@ -8,6 +8,7 @@ import { HomeLauncher } from "@/components/HomeLauncher";
 import { ToolCard } from "@/components/ToolCard";
 import { QuickAccessCard } from "@/components/QuickAccessCard";
 import { TOOLS } from "@/lib/tools";
+import { toolShippedIn } from "@/i18n/status";
 import { CATEGORY_PILLS as PILLS } from "@/lib/tool-categories";
 import { useFavoriteTools } from "@/lib/useToolPrefs";
 import { useLocale, useT } from "@/i18n/I18nScope";
@@ -53,12 +54,15 @@ export function ToolDirectory() {
   // `homeGrid !== false` keeps the long-tail format-pair converters off the
   // home page — they live on /image-converter. Without this the Convert pill
   // becomes forty near-identical cards.
+  // Variants (compress-image-to-50kb …) are cards too, but only where they
+  // ship — /id has no image-to-hd, and a card must not link out to English.
+  // Their priorities (101+) sort them after the main tools in every pill.
   const tools = useMemo(
     () =>
-      TOOLS.filter((t) => t.homeGrid !== false)
+      TOOLS.filter((t) => t.homeGrid !== false && (!t.parentId || toolShippedIn(t.id, locale)))
         .filter(pill.match)
         .sort((a, b) => a.priority - b.priority),
-    [pill],
+    [pill, locale],
   );
 
   return (

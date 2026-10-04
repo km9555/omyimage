@@ -8,7 +8,7 @@ import type { Dict } from "@/i18n/t";
  * so they read as the Russian pages they point at.
  *
  * The tool count is no longer written out anywhere: the English source now
- * interpolates `{n}` from LIVE_TOOL_COUNT, so the number cannot drift from the
+ * interpolates `{n}` from liveToolCount(), so the number cannot drift from the
  * registry again. Russian needs all three integer forms for it — see below.
  */
 export const ruContact: Dict = {

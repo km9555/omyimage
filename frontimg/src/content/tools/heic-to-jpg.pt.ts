@@ -95,7 +95,6 @@ const content: ToolPageContent = {
   security:
     "A conversão de HEIC roda no nosso servidor com o ImageMagick de código aberto. Os resultados ficam guardados só por pouco tempo, atrás de um link de download privado, e são excluídos automaticamente em até uma hora. Nunca compartilhamos nem reutilizamos suas fotos.",
 
-  rating: { value: "4.9", count: "742" },
 
   ui: {
     // HeicTool.tsx (shared with /heic-to-png — copy these there too)

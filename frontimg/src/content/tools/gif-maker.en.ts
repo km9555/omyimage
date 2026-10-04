@@ -84,8 +84,6 @@ const content: ToolPageContent = {
 
   security:
     "Your images stay private. The GIF is encoded entirely in your browser with the open-source gifenc library — and an imported GIF is decoded there too, with gifuct-js. Nothing is uploaded to a server. No storage, no tracking of your files.",
-
-  rating: { value: "4.8", count: "335" },
 };
 
 export default content;

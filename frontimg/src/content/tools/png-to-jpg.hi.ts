@@ -89,7 +89,6 @@ const content: ToolPageContent = {
   security:
     "आपकी इमेज निजी रहती हैं। PNG से JPG का कन्वर्ज़न पूरी तरह आपके ब्राउज़र में HTML canvas से होता है — कुछ भी नहीं भेजा जाता। कुछ भी सहेजा नहीं जाता और किसी फ़ाइल पर नज़र नहीं रखी जाती।",
 
-  rating: { value: "4.9", count: "688" },
 
   ui: {
     // Drop hint from app/png-to-jpg/page.tsx, translated inside ConvertTool.

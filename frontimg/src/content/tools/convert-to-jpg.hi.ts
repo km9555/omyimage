@@ -90,7 +90,6 @@ const content: ToolPageContent = {
   security:
     "आपकी इमेज निजी रहती हैं। JPG में बदलने का काम पूरी तरह आपके ब्राउज़र में HTML canvas से होता है — कुछ भी किसी सर्वर पर नहीं भेजा जाता। कुछ भी सहेजा नहीं जाता और किसी फ़ाइल पर नज़र नहीं रखी जाती।",
 
-  rating: { value: "4.9", count: "734" },
 
   ui: {
     // Drop hint from app/convert-to-jpg/page.tsx, translated inside ConvertTool.

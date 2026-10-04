@@ -101,7 +101,6 @@ const content: ToolPageContent = {
   security:
     "Ваши изображения остаются при вас. Мем собирается целиком в браузере через HTML canvas — на сервер ничего не отправляется. Ни хранения, ни слежки за вашими файлами.",
 
-  rating: { value: "4.9", count: "421" },
 
   ui: {
     // MemeTool.tsx — default captions, drawn INTO the image. Upper case is

@@ -201,6 +201,66 @@ export const ruTools: Record<string, LocalizedTool> = {
     name: "Улучшить качество фото",
     shortDescription: "Увеличьте снимок и поднимите резкость — без мыла и артефактов.",
   },
+
+  // ── Варианты: сжатие до заданного веса (expansion.md) ──
+  "reduce-image-size-in-kb": {
+    name: "Уменьшить вес фото в КБ",
+    shortDescription: "Уложите фото в любой лимит в КБ или МБ.",
+  },
+  "compress-image-to-20kb": {
+    name: "Сжать фото до 20 КБ",
+    shortDescription: "Фото и подпись меньше 20 КБ для анкет.",
+  },
+  "compress-image-to-50kb": {
+    name: "Сжать фото до 50 КБ",
+    shortDescription: "Частый лимит для фото в анкетах.",
+  },
+  "compress-image-to-100kb": {
+    name: "Сжать фото до 100 КБ",
+    shortDescription: "Чёткие фото и сканы меньше 100 КБ.",
+  },
+  "compress-image-to-200kb": {
+    name: "Сжать фото до 200 КБ",
+    shortDescription: "Фото и сканы документов меньше 200 КБ.",
+  },
+  "compress-image-to-1mb": {
+    name: "Сжать фото до 1 МБ",
+    shortDescription: "Фото с телефона меньше 1 МБ, обычно в полном размере.",
+  },
+
+  // ── Варианты: HD, отражение, фон (expansion.md) ──
+  "image-to-hd": {
+    name: "Фото в HD",
+    shortDescription: "Сделайте маленькое или нечёткое фото HD.",
+  },
+  "unblur-image": {
+    name: "Убрать размытие с фото",
+    shortDescription: "ИИ делает чётче слегка размытые фото.",
+  },
+  "flip-image": {
+    name: "Отразить фото",
+    shortDescription: "Зеркальное отражение по горизонтали или вертикали.",
+  },
+  "change-background-color": {
+    name: "Поменять цвет фона",
+    shortDescription: "Белый, синий или красный фон для любого фото.",
+  },
+  "blur-background": {
+    name: "Размыть фон",
+    shortDescription: "Эффект портрета за человеком или предметом.",
+  },
+  "passport-photo-maker": {
+    name: "Фото на документы",
+    shortDescription: "Фото на паспорт, визу и документы, с листом для печати.",
+  },
+  "3x4-photo": {
+    name: "Фото 3x4 на документы",
+    shortDescription: "Фото 3 × 4 см: кадрирование и лист для печати.",
+  },
+  "2x2-photo": {
+    name: "Фото 2x2 на визу США",
+    shortDescription: "Фото 2 × 2 дюйма для визы и паспорта США.",
+  },
 };
 
 /**

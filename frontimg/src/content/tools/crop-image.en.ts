@@ -104,8 +104,6 @@ const content: ToolPageContent = {
 
   security:
     "Your images stay private. Cropping is performed entirely in your browser with HTML canvas — nothing is ever uploaded to a server. When you close the tab, the image is gone from memory. No storage, no tracking of your files.",
-
-  rating: { value: "4.9", count: "512" },
 };
 
 export default content;

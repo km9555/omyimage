@@ -36,6 +36,8 @@ const content: ToolPageContent = {
   metaDescription:
     "Hapus background foto online gratis dengan AI: objek dipisahkan otomatis dan hasilnya PNG transparan. Cocok untuk foto produk dan pas foto — tanpa daftar, tanpa watermark.",
 
+  variantsHeading: "Ganti atau blur background",
+
   intro:
     "Hapus background foto hanya dengan satu klik. Alat ini memakai model AI sumber terbuka untuk mengenali objek utama — orang, produk, atau benda — lalu membuat semua latar belakangnya transparan. Hasilnya PNG bersih yang siap dipakai untuk toko online, presentasi, atau desain. Pemrosesan AI yang berat berjalan di server kami, dan hasilnya diunduh sebagai PNG transparan.",
 
@@ -107,9 +109,16 @@ const content: ToolPageContent = {
   security:
     "Pemrosesan berjalan di server kami menggunakan mesin sumber terbuka rembg. Hasilnya hanya disimpan sebentar di balik tautan unduhan pribadi dan terhapus otomatis dalam satu jam. Kami tidak pernah membagikan atau memakai ulang gambar Anda.",
 
-  rating: { value: "4.8", count: "974" },
 
   ui: {
+    "Background colour": "Warna latar",
+    "Blur background": "Blur background", // i18n-same — the loanword Indonesians type ("blur background foto")
+    "Blur strength": "Kekuatan blur",
+    "Change background": "Ganti background",
+    "Finding the subject…": "Mencari objek utama…",
+    "ID photo colours": "Warna pas foto",
+    "The first run finds the subject on our server; changing the blur afterwards happens in your browser, with no extra run.": "Proses pertama mencari objek utama di server kami; setelah itu, mengubah blur dilakukan di browser Anda tanpa memakai jatah proses lagi.",
+    "The first run removes the background on our server; changing the colour afterwards happens in your browser, with no extra run.": "Proses pertama menghapus background di server kami; setelah itu, mengganti warna dilakukan di browser Anda tanpa memakai jatah proses lagi.",
     "Remove background": "Hapus background",
     "Removing background…": "Menghapus background…",
     "or drop a JPG, PNG or WEBP here": "atau lepas JPG, PNG, atau WEBP di sini",

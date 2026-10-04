@@ -469,23 +469,41 @@ body:has([data-tool-active]) [data-tool-shell] {
   a file is loaded, so the crawler — which never gets past the empty state —
   still sees both.
 */
-body:has([data-tool-active]) [data-tool-shell] > nav[aria-label="Breadcrumb"],
+/*
+  Matched by data attributes, never by aria-label: the labels are translated,
+  so `nav[aria-label="Breadcrumb"]` only ever matched English pages and every
+  /pt /hi /ru /id tool kept its breadcrumbs and an unpadded "More tools".
+*/
+body:has([data-tool-active]) [data-tool-shell] > [data-breadcrumbs],
 body:has([data-tool-active]) [data-tool-shell] > header {
   display: none;
 }
-/* Related tools become a full-width tinted band with centred content. */
-body:has([data-tool-active]) [data-tool-shell] > section[aria-label="More tools"] {
+/*
+  The family strip ("Compress to an exact file size …") and related tools
+  become one full-width tinted band with centred content. Without this the
+  strip inherited the full-bleed shell's zero padding and sat flush against
+  the window edge, right under the workspace.
+*/
+body:has([data-tool-active]) [data-tool-shell] > [data-variant-links],
+body:has([data-tool-active]) [data-tool-shell] > [data-related-tools] {
   margin: 0;
   padding: var(--spacing-stack-lg) var(--spacing-margin-mobile);
   background-color: var(--color-surface-container-low);
   border-top: 1px solid var(--color-outline-variant);
 }
-body:has([data-tool-active]) [data-tool-shell] > section[aria-label="More tools"] > * {
+body:has([data-tool-active]) [data-tool-shell] > [data-variant-links] > *,
+body:has([data-tool-active]) [data-tool-shell] > [data-related-tools] > * {
   max-width: var(--container-content);
   margin-inline: auto;
 }
+/* Strip then cards: one band, the strip's own bottom padding as the gap. */
+body:has([data-tool-active]) [data-tool-shell] > [data-variant-links] + [data-related-tools] {
+  border-top: 0;
+  padding-top: 0;
+}
 @media (min-width: 768px) {
-  body:has([data-tool-active]) [data-tool-shell] > section[aria-label="More tools"] {
+  body:has([data-tool-active]) [data-tool-shell] > [data-variant-links],
+  body:has([data-tool-active]) [data-tool-shell] > [data-related-tools] {
     padding-inline: var(--spacing-gutter);
   }
 }

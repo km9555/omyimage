@@ -100,7 +100,6 @@ const content: ToolPageContent = {
   security:
     "रेंडरिंग हमारे सर्वर पर ओपन-सोर्स हेडलेस Chromium से होती है। नतीजा सिर्फ़ थोड़ी देर, एक निजी डाउनलोड लिंक के पीछे रखा जाता है और एक घंटे के भीतर अपने आप मिटा दिया जाता है। हम आपकी सामग्री कभी साझा नहीं करते और न दोबारा इस्तेमाल करते हैं।",
 
-  rating: { value: "4.7", count: "356" },
 
   ui: {
     // HtmlToImageTool.tsx — module-scope VIEWPORTS and FORMATS

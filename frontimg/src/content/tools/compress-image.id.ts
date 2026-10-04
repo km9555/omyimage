@@ -16,11 +16,10 @@ import type { ToolPageContent } from "@/content/tools/types";
  *
  * The Indonesia-specific section is `upload-limit`. «kompres foto 200kb» is a
  * query on its own because government recruitment (CPNS), school and campus
- * registration and job portals cap uploads at 100–500 KB. The tool has NO
- * target-size setting — it has quality, format and "Shrink large images" — so
- * the section explains how to land under a limit with those controls and
- * reading the size the tool reports, rather than promising a size box it does
- * not have.
+ * registration and job portals cap uploads at 100–500 KB. Since the tool
+ * expansion (2026-10) the tool HAS a target-size mode ("Berdasarkan ukuran
+ * file"), so the section points at it; the per-size pages (/id/kompres-foto-200kb
+ * …) carry the size-specific advice.
  */
 const content: ToolPageContent = {
   toolId: "compress-image",
@@ -33,6 +32,8 @@ const content: ToolPageContent = {
   metaTitle: "Kompres Foto Online Gratis — Kecilkan Ukuran JPG & PNG | oMyImage",
   metaDescription:
     "Kompres foto online gratis: perkecil ukuran JPG, PNG, dan WEBP tanpa penurunan kualitas yang terlihat, cocok untuk batas upload 100–200 KB. Sekaligus banyak, di browser, tanpa daftar.",
+
+  variantsHeading: "Kompres ke ukuran tertentu",
 
   intro:
     "File foto yang besar memperlambat situs, memenuhi penyimpanan, dan membuat lampiran email tertolak. Alat Kompres Foto ini memperkecil file JPG, PNG, dan WEBP langsung di browser Anda — ubah ke WEBP untuk ukuran terkecil, atur kualitasnya, dan bila perlu perkecil dimensi foto yang sangat besar. PNG dikompres dengan cara yang benar, yaitu dengan mengurangi jumlah warna disertai dithering, bukan sekadar disimpan ulang. Kompres satu foto atau banyak sekaligus, dan lihat dengan tepat berapa banyak yang dihemat.",
@@ -52,8 +53,8 @@ const content: ToolPageContent = {
       id: "upload-limit",
       body: [
         "Banyak formulir di Indonesia membatasi ukuran foto: pendaftaran CPNS, pendaftaran sekolah dan kampus, portal lowongan kerja, dan berbagai layanan pemerintah sering meminta pas foto atau scan di bawah 100 KB, 200 KB, atau 500 KB. Foto dari kamera ponsel biasanya 2–5 MB, jadi langsung ditolak.",
-        "Alat ini tidak meminta angka target — Anda mengatur kualitasnya, lalu alat menunjukkan ukuran hasilnya. Cara tercepat untuk mencapai batas: pilih format JPG, turunkan kualitas ke sekitar 60–70%, dan aktifkan Perkecil gambar besar dengan sisi maksimum 1000–1200 piksel. Untuk pas foto, dimensi 400–600 piksel sudah lebih dari cukup dan hasilnya hampir selalu di bawah 100 KB.",
-        "Kalau hasilnya masih sedikit di atas batas, turunkan kualitas 5–10 poin lagi dan kompres ulang dari foto aslinya — bukan dari hasil sebelumnya, karena kompresi berulang merusak kualitas lebih cepat.",
+        "Anda tidak perlu menebak-nebak kualitas: ubah pengaturan ke Berdasarkan ukuran file, ketik batasnya — misalnya 200 KB — atau ketuk salah satu ukuran yang tersedia. Setiap foto dikembalikan di bawah batas itu dengan kualitas tertinggi yang masih muat; dimensinya baru ikut dikecilkan kalau kualitas saja tidak cukup.",
+        "Untuk pas foto, dimensi 400–600 piksel sudah lebih dari cukup, jadi foto yang dipotong rapi dulu hampir selalu tetap tajam di bawah 100 KB. Selalu kompres dari foto aslinya — bukan dari hasil kompresi sebelumnya — karena kompresi berulang merusak kualitas lebih cepat.",
       ],
     },
     {
@@ -75,6 +76,15 @@ const content: ToolPageContent = {
       ],
     },
     {
+      heading: "Kompres sampai batas ukuran, bukan menebak kualitas",
+      id: "target-size",
+      body: [
+        "Penggeser kualitas menjawab pertanyaan yang salah ketika formulir menulis \"maksimal 100 KB\": Anda harus menebak angka, mengompres, mengecek ukurannya, lalu mencoba lagi. Mode Berdasarkan ukuran file mengambil alih tebakan itu — alat mencari kualitas tertinggi yang hasilnya masih muat, dan hanya kalau kualitas rendah pun masih terlalu besar, dimensi pikselnya ikut dikurangi.",
+        "Hasilnya selalu di bawah angka yang Anda ketik, bukan \"kira-kira\". Alat ini menghitung 1 KB sebagai 1.000 byte, jadi file untuk batas 50 KB juga lolos di formulir yang menghitung KB sebagai 1.024 byte. Kalau foto sudah di bawah batas dalam format yang dipilih, Anda mendapat file aslinya utuh, bukan salinan yang dikompres ulang tanpa perlu.",
+        "Batas yang paling sering dipakai punya halaman sendiri dengan saran khusus: 20 KB untuk tanda tangan, 50 KB untuk foto ujian, 100 KB dan 200 KB untuk pas foto dan scan dokumen, serta 1 MB untuk foto dari ponsel.",
+      ],
+    },
+    {
       heading: "Ketika foto tidak bisa dikompres lagi",
       id: "already-optimised",
       body: [
@@ -87,19 +97,19 @@ const content: ToolPageContent = {
   howToTitle: "Cara kompres foto",
   steps: [
     { title: "Unggah", description: "Pilih satu atau banyak foto JPG, PNG, atau WEBP, atau seret dan lepas ke sini." },
-    { title: "Pilih pengaturan", description: "Pilih format hasil dan kualitas, dan bila perlu perkecil foto yang sangat besar." },
+    { title: "Pilih pengaturan", description: "Pilih format hasil dan kualitas — atau pilih Berdasarkan ukuran file dan ketik batas seperti 200 KB." },
     { title: "Kompres & unduh", description: "Klik Kompres — satu foto langsung terunduh, beberapa foto diunduh bersama sebagai ZIP." },
   ],
 
   features: [
     { icon: "burst_mode", title: "Kompres sekaligus banyak", description: "Kompres puluhan foto sekaligus dan unduh semuanya dalam satu ZIP, masing-masing dengan keterangan berapa banyak yang dihemat." },
-    { icon: "tune", title: "Atur kualitas & format", description: "Ubah ke WEBP untuk file terkecil, atau pertahankan formatnya dan atur kualitas persis seperti yang Anda mau." },
+    { icon: "tune", title: "Kualitas, format, atau ukuran pasti", description: "Ubah ke WEBP untuk file terkecil, atur kualitas persis seperti yang Anda mau, atau ketik batas ukuran dan dapatkan file paling tajam yang muat." },
     { icon: "lock", title: "100% privat", description: "Kompresi berjalan di browser untuk hampir semua foto, dan foto-foto itu tidak pernah diunggah ke mana pun." },
   ],
 
   faqs: [
     { q: "Seberapa kecil foto saya nanti?", a: "Tergantung foto dan pengaturannya. Mengubah foto ke WEBP pada kualitas 70–80% sering memangkas ukuran 50–80% dengan perubahan yang hampir tidak terlihat, dan grafik PNG biasanya turun 60–80% pada kualitas bawaan." },
-    { q: "Bagaimana cara kompres foto di bawah 200 KB?", a: "Pilih JPG, turunkan kualitas ke sekitar 60–70%, dan aktifkan Perkecil gambar besar dengan sisi maksimum sekitar 1000–1200 piksel. Alat ini menunjukkan ukuran hasilnya; kalau masih di atas batas, turunkan kualitas sedikit lagi dan kompres ulang dari foto aslinya. Untuk pas foto, 400–600 piksel sudah cukup dan biasanya di bawah 100 KB." },
+    { q: "Bagaimana cara kompres foto di bawah 200 KB?", a: "Ubah pengaturan ke Berdasarkan ukuran file, ketik 200 KB (atau ketuk tombol 200 KB) lalu klik Kompres. Setiap foto keluar di bawah 200 KB dengan kualitas tertinggi yang masih muat; dimensinya hanya dikecilkan kalau kualitas saja tidak cukup. Pilih JPG kalau formulirnya hanya menerima JPG." },
     { q: "Bagaimana PNG dikompres?", a: "PNG tidak bisa membuang detail seperti JPG, jadi ia mengecil dengan cara lain: mengurangi jumlah warna yang dipakai gambar. Pada kualitas bawaan 70%, kami mengkuantisasi ke 128 warna dengan dithering, yang biasanya tidak terlihat pada ilustrasi, logo, dan tangkapan layar. Atur kualitas ke 95% atau lebih untuk menjaga PNG tetap lossless." },
     { q: "Format mana yang menghasilkan file terkecil?", a: "WEBP biasanya menghasilkan file terkecil pada kualitas yang sama, disusul JPG. PNG tetap pilihan terbaik untuk grafik bertepi tajam, warna datar, dan transparansi." },
     { q: "Apakah kompresi menurunkan kualitas?", a: "JPG dan WEBP bersifat lossy, jadi kualitas yang sangat rendah memunculkan artefak; PNG kehilangan warna, bukan detail. Kualitas bawaan 70% adalah keseimbangan yang baik; naikkan untuk foto yang penting." },
@@ -115,9 +125,26 @@ const content: ToolPageContent = {
   security:
     "Foto Anda tetap privat. Hampir semua foto dikompres sepenuhnya di browser dan tidak pernah meninggalkan perangkat Anda; hanya gambar yang sangat besar atau beresolusi sangat tinggi yang dikirim ke server kami, lalu langsung dihapus setelahnya. Tanpa penyimpanan, tanpa pelacakan file Anda.",
 
-  rating: { value: "4.9", count: "912" },
 
   ui: {
+    "By quality": "Berdasarkan kualitas",
+    "By file size": "Berdasarkan ukuran file",
+    "Compression mode": "Mode kompresi",
+    "Target size": "Ukuran maksimal",
+    "Unit": "Satuan",
+    "KB": "KB",
+    "MB": "MB",
+    "A KB here is 1,000 bytes, so the file passes forms that count a KB as 1,000 or as 1,024 bytes.": "Di sini 1 KB = 1.000 byte, jadi file lolos di formulir yang menghitung KB sebagai 1.000 maupun 1.024 byte.",
+    "JPG (best for forms)": "JPG (terbaik untuk formulir)",
+    "Each image gets the highest quality that fits under the limit. If that is still too big, its dimensions are reduced as well.": "Setiap foto mendapat kualitas tertinggi yang masih muat di bawah batas. Kalau masih terlalu besar, dimensinya ikut dikecilkan.",
+    "Enter a target size greater than zero.": "Masukkan ukuran lebih dari nol.",
+    "Every image is now under {size}.": "Semua foto sekarang di bawah {size}.",
+    "Some images could not get under {size}.": "Beberapa foto tidak bisa dikecilkan sampai di bawah {size}.",
+    "Every image will be compressed to under {size}.": "Setiap foto akan dikompres sampai di bawah {size}.",
+    "Set any target size in KB or MB after adding your images.": "Setelah menambahkan foto, atur ukuran berapa pun dalam KB atau MB.",
+    "already under {size} — kept original": "sudah di bawah {size} — file asli dipertahankan",
+    "could not get under {size}": "tidak bisa di bawah {size}",
+    "resized to {dims}": "diubah ke {dims}",
     "Compress": "Kompres",
     "Compressing…": "Mengompres…",
     "Compress & download": "Kompres & unduh",

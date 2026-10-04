@@ -88,7 +88,6 @@ const content: ToolPageContent = {
   security:
     "Suas imagens continuam privadas. A conversão para JPG acontece inteira no seu navegador com canvas HTML — nada é enviado a um servidor. Nada fica armazenado e nenhum arquivo é rastreado.",
 
-  rating: { value: "4.9", count: "734" },
 
   ui: {
     // Drop hint from app/convert-to-jpg/page.tsx, translated inside ConvertTool.

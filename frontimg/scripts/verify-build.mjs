@@ -68,8 +68,22 @@ for (let i = 0; i < idMatches.length; i++) {
   if (str("status") !== "live") continue;
   const slug = str("slug");
   if (!slug) continue;
-  tools.push({ slug, seoTitle: str("seoTitle") });
+  tools.push({ id: idMatches[i][1], slug, seoTitle: str("seoTitle"), parentId: str("parentId") });
 }
+
+// Variant families (parent + its variants), keyed by member id → parent id.
+// Variant pages are the doorway-page risk: eleven "compress to N KB" pages
+// that differ only in N are scaled content. Every page in a family is held to
+// the converter similarity ceiling against every other, per locale, and may
+// not share more than MAX_SHARED_FAQS questions with a sibling.
+const MAX_SHARED_FAQS = 3;
+const familyOf = new Map();
+for (const t of tools) {
+  if (!t.parentId) continue;
+  familyOf.set(t.id, t.parentId);
+  familyOf.set(t.parentId, t.parentId);
+}
+const familyPages = []; // { locale, family, label, sh, qs }
 if (tools.length === 0) {
   console.error("Parsed zero live tools from tools.ts — the parser needs updating.");
   process.exit(1);
@@ -181,6 +195,12 @@ for (const { slug, seoTitle } of tools) {
     const seo = /data-seo-content[\s\S]*$/.exec(html);
     prose.set(slug, shingles(strip(seo ? seo[0] : html)));
   }
+
+  const tool = tools.find((x) => x.slug === slug);
+  if (tool && familyOf.has(tool.id)) {
+    const seo = /data-seo-content[\s\S]*$/.exec(html);
+    familyPages.push({ locale: "en", family: familyOf.get(tool.id), label: slug, sh: shingles(strip(seo ? seo[0] : html)), qs: questions });
+  }
 }
 
 // ── Localized tool pages ────────────────────────────────────────────────────
@@ -261,6 +281,10 @@ for (const loc of localeList) {
       const seo = /data-seo-content[\s\S]*$/.exec(html);
       locProse.set(label, shingles(strip(seo ? seo[0] : html)));
     }
+    if (familyOf.has(id)) {
+      const seo = /data-seo-content[\s\S]*$/.exec(html);
+      familyPages.push({ locale: loc, family: familyOf.get(id), label, sh: shingles(strip(seo ? seo[0] : html)), qs: questions });
+    }
   }
   const le = [...locProse.entries()];
   for (let i = 0; i < le.length; i++) {
@@ -273,12 +297,46 @@ for (const loc of localeList) {
 }
 
 // ── Sitemap cross-check, both directions ────────────────────────────────────
+// /sitemap.xml is an index of one child per locale (/sitemaps/<loc>.xml). Each
+// child must exist, hold only its own locale's URLs, and together they must
+// match the emitted files in both directions.
 const smFile = join(out, "sitemap.xml");
 if (!existsSync(smFile)) {
   errors.push("out/sitemap.xml missing");
 } else {
-  const sm = readText(smFile);
-  const urls = [...sm.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+  const locsOf = (xml) => [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+  const index = readText(smFile);
+  const urls = [];
+  if (!/<sitemapindex[\s>]/.test(index)) {
+    errors.push("out/sitemap.xml is not a <sitemapindex> — the per-locale split is missing");
+    urls.push(...locsOf(index));
+  } else {
+    const children = locsOf(index);
+    const want = ["en", ...localeList].map((l) => `/sitemaps/${l}.xml`);
+    for (const w of want) {
+      if (!children.some((c) => c.endsWith(w))) errors.push(`sitemap index does not list ${w}`);
+    }
+    for (const child of children) {
+      const rel = child.replace(/^https?:\/\/[^/]+\//, "");
+      const file = join(out, rel);
+      if (!existsSync(file)) {
+        errors.push(`sitemap index lists ${child} but out/${rel} does not exist`);
+        continue;
+      }
+      const loc = /\/sitemaps\/([a-z]{2})\.xml$/.exec(child)?.[1];
+      const childUrls = locsOf(readText(file));
+      if (childUrls.length === 0) errors.push(`${rel} lists no URLs`);
+      for (const u of childUrls) {
+        const seg = u.replace(/^https?:\/\/[^/]+\/?/, "").split("/")[0];
+        const urlLoc = localeList.includes(seg) ? seg : "en";
+        if (urlLoc !== loc) errors.push(`${rel} lists ${u}, which belongs in sitemaps/${urlLoc}.xml`);
+      }
+      urls.push(...childUrls);
+    }
+    const dup = urls.filter((u, i) => urls.indexOf(u) !== i);
+    if (dup.length) errors.push(`URL(s) listed in more than one sitemap: ${[...new Set(dup)].join(", ")}`);
+    console.log(`Sitemap index: ${children.length} child file(s), ${urls.length} URL(s).`);
+  }
   for (const u of urls) {
     const path = u.replace(/^https?:\/\/[^/]+\//, "").replace(/\/$/, "");
     if (path === "") continue;
@@ -311,10 +369,33 @@ for (let i = 0; i < entries.length; i++) {
   }
 }
 
+// ── Variant families ────────────────────────────────────────────────────────
+let worstFamily = { pair: null, score: 0 };
+for (let i = 0; i < familyPages.length; i++) {
+  for (let j = i + 1; j < familyPages.length; j++) {
+    const a = familyPages[i];
+    const b = familyPages[j];
+    if (a.locale !== b.locale || a.family !== b.family) continue;
+    const score = jaccard(a.sh, b.sh);
+    if (score > worstFamily.score) worstFamily = { pair: `${a.label} ~ ${b.label}`, score };
+    if (score > MAX_SIMILARITY) {
+      errors.push(`near-duplicate variant copy: ${a.label} ~ ${b.label} = ${score.toFixed(2)} (max ${MAX_SIMILARITY})`);
+    }
+    const shared = a.qs.filter((q) => b.qs.includes(q));
+    if (shared.length > MAX_SHARED_FAQS) {
+      errors.push(`${a.label} and ${b.label} share ${shared.length} FAQ questions (max ${MAX_SHARED_FAQS}): ${shared.join(" | ")}`);
+    }
+  }
+}
+
 // ── Report ──────────────────────────────────────────────────────────────────
 console.log(`Checked ${tools.length} live pages (${prose.size} data-driven converters).`);
 if (worst.pair) {
   console.log(`Most similar converter pair: ${worst.pair} = ${worst.score.toFixed(3)}`);
+}
+console.log(`Checked ${familyPages.length} variant-family page(s).`);
+if (worstFamily.pair) {
+  console.log(`Most similar variant pair: ${worstFamily.pair} = ${worstFamily.score.toFixed(3)}`);
 }
 for (const w of warnings) console.log(`  warn  ${w}`);
 if (errors.length) {

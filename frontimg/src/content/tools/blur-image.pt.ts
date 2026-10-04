@@ -95,7 +95,6 @@ const content: ToolPageContent = {
   security:
     "Suas imagens continuam privadas. O desfoque acontece inteiramente no seu navegador com canvas HTML — nada é enviado a um servidor. Sem armazenamento e sem rastrear seus arquivos.",
 
-  rating: { value: "4.8", count: "276" },
 
   ui: {
     // BlurImageTool.tsx — module-scope FORMATS and STYLES

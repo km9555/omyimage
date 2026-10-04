@@ -86,8 +86,6 @@ const content: ToolPageContent = {
 
   security:
     "Your image stays private. Color sampling and palette extraction happen entirely in your browser with HTML canvas — nothing is uploaded to a server. No storage, no tracking of your files.",
-
-  rating: { value: "4.9", count: "401" },
 };
 
 export default content;

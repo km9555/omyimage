@@ -111,4 +111,50 @@ export const idAliases: Record<string, string[]> = {
     "hd foto", "foto hd", "memperjelas foto", "perjelas foto",
     "tingkatkan kualitas foto", "foto pecah", "foto blur jadi jelas", "upscale",
   ],
+
+  // Varian — kompres ke ukuran tertentu
+  "reduce-image-size-in-kb": [
+    "perkecil ukuran foto kb", "kecilkan ukuran foto", "ubah ukuran foto kb", "kompres foto kb",
+  ],
+  "compress-image-to-20kb": [
+    "kompres foto 20kb", "20 kb", "tanda tangan 20 kb",
+  ],
+  "compress-image-to-50kb": [
+    "kompres foto 50kb", "50 kb", "pas foto 50 kb",
+  ],
+  "compress-image-to-100kb": [
+    "kompres foto 100kb", "kompres jpg 100kb", "100 kb", "ubah ukuran foto 100kb",
+  ],
+  "compress-image-to-200kb": [
+    "kompres foto 200kb", "kompres jpg 200kb", "200 kb", "ubah ukuran foto 200kb",
+  ],
+  "compress-image-to-1mb": [
+    "kompres foto 1 mb", "kompres foto 1mb", "1 mb", "ubah foto jadi 1 mb",
+  ],
+
+  // Varian — HD, mirror, background
+  "image-to-hd": [
+    "jadikan foto hd", "foto hd", "jpg to hd",
+  ],
+  "unblur-image": [
+    "foto blur jadi jelas", "pertajam foto",
+  ],
+  "flip-image": [
+    "mirror foto", "balik foto", "membalik foto", "cermin foto",
+  ],
+  "change-background-color": [
+    "ganti background foto", "background merah", "background biru", "pas foto background merah", "ganti latar foto",
+  ],
+  "blur-background": [
+    "blur background foto", "foto blur background", "efek bokeh",
+  ],
+  "passport-photo-maker": [
+    "pas foto", "buat pas foto", "pas foto online", "foto paspor", "foto visa", "pas foto 4x6", "pas foto 2x3",
+  ],
+  "3x4-photo": [
+    "pas foto 3x4", "foto 3x4", "pas foto 3x4 background merah", "pas foto 3x4 background biru",
+  ],
+  "2x2-photo": [
+    "foto 2x2", "pas foto 2x2", "foto visa amerika", "foto paspor amerika",
+  ],
 };

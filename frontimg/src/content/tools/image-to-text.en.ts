@@ -123,8 +123,6 @@ const content: ToolPageContent = {
 
   security:
     "The main reading happens on our server: your image is uploaded over an encrypted HTTPS connection, the text is recognised, and the file is deleted straight after it has been read. It is not stored, indexed or used to train models. If the server can't be reached, recognition runs as WebAssembly inside the page instead and the image is not uploaded at all; the only network request in that case is for the generic recognition model, which carries no information about your image.",
-
-  rating: { value: "4.8", count: "726" },
 };
 
 export default content;

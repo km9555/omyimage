@@ -84,8 +84,6 @@ const content: ToolPageContent = {
 
   security:
     "Your image stays private. The entire editor runs in your browser with HTML canvas — nothing is uploaded to a server. No storage, no tracking of your files.",
-
-  rating: { value: "4.9", count: "612" },
 };
 
 export default content;

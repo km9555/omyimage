@@ -90,7 +90,6 @@ const content: ToolPageContent = {
   security:
     "Sua imagem continua privada. A codificação em Base64 acontece inteiramente no seu navegador — nada é enviado a um servidor. Sem armazenamento e sem rastrear seus arquivos.",
 
-  rating: { value: "4.8", count: "298" },
 
   ui: {
     // ImageToBase64Tool.tsx — module-scope TABS

@@ -95,7 +95,6 @@ const content: ToolPageContent = {
   security:
     "Sua foto continua privada. Os metadados EXIF são lidos inteiramente no seu navegador — nada é enviado a um servidor. Sem armazenamento e sem rastrear seus arquivos.",
 
-  rating: { value: "4.9", count: "312" },
 
   ui: {
     // MetadataTool.tsx — section titles (keys, translated at the render site)

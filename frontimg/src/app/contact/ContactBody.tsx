@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Icon } from "@/components/Icon";
 import { SITE } from "@/lib/site";
-import { LIVE_TOOL_COUNT } from "@/lib/tools";
+import { liveToolCount } from "@/lib/tools";
 import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
 import { getT, type Dict } from "@/i18n/t";
 import { localeHref } from "@/lib/i18n/links";
@@ -39,14 +39,14 @@ const CHANNELS = [
 ];
 
 /**
- * `vars` feeds the answer's `{n}` placeholders. Only the free/paid answer has
- * one today; it stays optional so the other five read as plain prose.
+ * `toolCount` marks the answer whose `{n}` is the live tool count — filled in
+ * at render time, because the count is per locale (liveToolCount).
  */
-const FAQS: { q: string; a: string; vars?: Record<string, string | number> }[] = [
+const FAQS: { q: string; a: string; toolCount?: true }[] = [
   {
     q: "Is oMyImage free?",
     a: "Yes. All {n} tools are free to use with no account. Paid plans are planned for larger files and more AI runs, but nothing is chargeable today.",
-    vars: { n: LIVE_TOOL_COUNT },
+    toolCount: true,
   },
   {
     q: "Are my images uploaded?",
@@ -138,7 +138,7 @@ export function ContactBody({
               className="rounded-xl border border-surface-variant bg-surface-container-lowest px-5 py-4"
             >
               <h3 className="text-body-md font-semibold text-primary mb-1.5">{t(f.q)}</h3>
-              <p className="text-body-md text-on-surface-variant leading-relaxed">{t(f.a, f.vars)}</p>
+              <p className="text-body-md text-on-surface-variant leading-relaxed">{t(f.a, f.toolCount ? { n: liveToolCount(locale) } : undefined)}</p>
             </div>
           ))}
         </div>

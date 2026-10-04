@@ -81,8 +81,6 @@ const content: ToolPageContent = {
 
   security:
     "Your images stay private. Grayscale conversion happens entirely in your browser with HTML canvas — nothing is uploaded to a server. No storage, no tracking of your files.",
-
-  rating: { value: "4.8", count: "318" },
 };
 
 export default content;

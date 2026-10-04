@@ -94,7 +94,6 @@ const content: ToolPageContent = {
   security:
     "Seu GIF continua privado. A extração dos quadros acontece inteiramente no seu navegador com a biblioteca de código aberto gifuct-js — nada é enviado a um servidor. Sem armazenamento e sem rastrear seus arquivos.",
 
-  rating: { value: "4.8", count: "228" },
 
   ui: {
     // GifToImagesTool.tsx

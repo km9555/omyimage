@@ -101,7 +101,6 @@ const content: ToolPageContent = {
   security:
     "Gambar Anda tetap privat. Konversi ke JPG berlangsung di browser Anda dengan HTML canvas. Pengecualiannya hanya gambar yang sangat besar atau beresolusi sangat tinggi: gambar itu diproses di server kami melalui koneksi terenkripsi dan langsung dihapus setelahnya. Tidak ada penyimpanan, tidak ada pelacakan file Anda.",
 
-  rating: { value: "4.9", count: "734" },
 
   ui: {
     "or drop PNG, WEBP, GIF or BMP images here": "atau letakkan gambar PNG, WEBP, GIF, atau BMP di sini",

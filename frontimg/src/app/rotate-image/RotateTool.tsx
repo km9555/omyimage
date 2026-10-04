@@ -46,13 +46,24 @@ function outMimeFor(file: File, fmt: Format): ExportMime {
   return t === "image/jpeg" || t === "image/webp" || t === "image/png" ? (t as ExportMime) : "image/png";
 }
 
-export function RotateTool() {
+/**
+ * Settings a variant page opens with (lib/tools.ts `preset`): flip-image opens
+ * with the horizontal mirror already on. Without one, /rotate-image is unchanged.
+ */
+export interface RotatePreset {
+  flipH?: boolean;
+  flipV?: boolean;
+}
+
+export function RotateTool({ preset }: { preset?: RotatePreset } = {}) {
   const t = useT();
   const formatBytes = useFormatBytes();
   const [items, setItems] = useState<Item[]>([]);
   const [angle, setAngle] = useState(0); // clockwise degrees, normalized 0..359
-  const [flipH, setFlipH] = useState(false);
-  const [flipV, setFlipV] = useState(false);
+  // The flip-image variant names its action after what it does.
+  const flipMode = !!(preset?.flipH || preset?.flipV);
+  const [flipH, setFlipH] = useState(preset?.flipH ?? false);
+  const [flipV, setFlipV] = useState(preset?.flipV ?? false);
   const [format, setFormat] = useState<Format>("original");
   const [quality, setQuality] = useState(0.92);
   const [bg, setBg] = useState<BgValue>({ transparent: true, color: "#ffffff" });
@@ -110,12 +121,12 @@ export function RotateTool() {
           const r = await rasterize(it.file, { mime, quality, background, rotate: angle, flipH, flipV, autoOrient: false });
           blob = r.blob;
         }
-        out.push({ ...it, result: { blob, size: blob.size, name: `${baseName(it.file.name)}_rotated.${mimeExt(mime)}` } });
+        out.push({ ...it, result: { blob, size: blob.size, name: `${baseName(it.file.name)}_${flipMode ? "flipped" : "rotated"}.${mimeExt(mime)}` } });
       }
       setItems(out);
       setDone(true);
       if (out.length === 1 && out[0].result) downloadBlob(out[0].result.blob, out[0].result.name);
-      else await zipAndDownload(out.map((o) => ({ name: o.result!.name, blob: o.result!.blob })), "omyimage_rotated.zip");
+      else await zipAndDownload(out.map((o) => ({ name: o.result!.name, blob: o.result!.blob })), flipMode ? "omyimage_flipped.zip" : "omyimage_rotated.zip");
       toast.success(out.length === 1 ? t("Rotated 1 image.") : t("Rotated {n} images.", { n: out.length }));
     } catch (err) {
       console.error(err);
@@ -182,9 +193,9 @@ export function RotateTool() {
           backLabel: t("Clear files"),
           settingsTitle: t("Rotate & flip"),
           cta: {
-            icon: "rotate_90_degrees_cw",
-            label: t("Rotate"),
-            busyLabel: t("Rotating…"),
+            icon: flipMode ? "flip" : "rotate_90_degrees_cw",
+            label: flipMode ? t("Flip") : t("Rotate"),
+            busyLabel: flipMode ? t("Flipping…") : t("Rotating…"),
             busy: isWorking,
             onClick: apply,
           },
@@ -218,13 +229,15 @@ export function RotateTool() {
             footer={
               <>
                 <RailNote>{t("90° steps straighten; the angle slider gives a custom tilt.")}</RailNote>
-                <RailAction onClick={apply} busy={isWorking} busyLabel={t("Rotating…")} icon="rotate_90_degrees_cw">
-                  {items.length > 1 ? t("Rotate {n} images", { n: items.length }) : t("Rotate & download")}
+                <RailAction onClick={apply} busy={isWorking} busyLabel={flipMode ? t("Flipping…") : t("Rotating…")} icon={flipMode ? "flip" : "rotate_90_degrees_cw"}>
+                  {flipMode
+                    ? items.length > 1 ? t("Flip {n} images", { n: items.length }) : t("Flip & download")
+                    : items.length > 1 ? t("Rotate {n} images", { n: items.length }) : t("Rotate & download")}
                 </RailAction>
                 {done && items.length > 1 && (
                   <RailSecondaryAction
                     icon="folder_zip"
-                    onClick={() => zipAndDownload(items.filter((i) => i.result).map((i) => ({ name: i.result!.name, blob: i.result!.blob })), "omyimage_rotated.zip")}
+                    onClick={() => zipAndDownload(items.filter((i) => i.result).map((i) => ({ name: i.result!.name, blob: i.result!.blob })), flipMode ? "omyimage_flipped.zip" : "omyimage_rotated.zip")}
                   >
                     {t("Download all (ZIP)")}
                   </RailSecondaryAction>

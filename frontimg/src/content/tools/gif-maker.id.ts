@@ -115,7 +115,6 @@ const content: ToolPageContent = {
   security:
     "Foto Anda tetap privat. GIF disusun sepenuhnya di browser Anda dengan pustaka open-source gifenc — dan GIF yang diimpor juga dibuka di sana, dengan gifuct-js. Tidak ada yang diunggah ke server. Tidak ada penyimpanan, tidak ada pelacakan file Anda.",
 
-  rating: { value: "4.8", count: "335" },
 
   ui: {
     // GifMakerTool.tsx — module-scope FIT_LABELS

@@ -108,7 +108,6 @@ const content: ToolPageContent = {
   security:
     "Gambar Anda tetap privat. Pengambilan warna dan ekstraksi palet berjalan sepenuhnya di browser Anda dengan HTML canvas — tidak ada yang diunggah ke server. Tidak ada penyimpanan, tidak ada pelacakan file Anda.",
 
-  rating: { value: "4.9", count: "401" },
 
   ui: {
     "Please select an image file.": "Pilih file gambar.",

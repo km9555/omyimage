@@ -37,8 +37,23 @@ if (served !== KEY) {
   process.exit(1);
 }
 
-const xml = await (await fetch(SITEMAP, { cache: "no-store" })).text();
-const all = [...new Set([...xml.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g)].map((m) => m[1]))];
+const locs = (xml) => [...xml.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g)].map((m) => m[1]);
+// /sitemap.xml is a sitemap INDEX since the tool expansion: follow it to the
+// per-locale children. A plain <urlset> (the pre-index shape) still works.
+const root = await (await fetch(SITEMAP, { cache: "no-store" })).text();
+let pageUrls = locs(root);
+if (/<sitemapindex[\s>]/.test(root)) {
+  pageUrls = [];
+  for (const child of locs(root)) {
+    const res = await fetch(child, { cache: "no-store" });
+    if (!res.ok) {
+      console.error(`Child sitemap ${child} returned HTTP ${res.status}.`);
+      process.exit(1);
+    }
+    pageUrls.push(...locs(await res.text()));
+  }
+}
+const all = [...new Set(pageUrls)];
 const urls = all.filter((u) => u.startsWith(`https://${HOST}/`) || u === `https://${HOST}`);
 if (!urls.length) {
   console.error(`No https://${HOST} URLs found in ${SITEMAP}`);

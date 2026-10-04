@@ -21,6 +21,8 @@ const content: ToolPageContent = {
   metaDescription:
     "Gire imagens online e grátis: rotacione 90°, 180° ou qualquer ângulo, espelhe e endireite fotos de lado. JPG, PNG, WEBP e GIF, em lote, no navegador e sem cadastro.",
 
+  variantsHeading: "Girar ou espelhar",
+
   intro:
     "Girar imagem resolve na hora aquela foto que aparece de lado ou um gráfico que precisa de um ângulo exato. A ferramenta Girar imagem do oMyImage gira de 90° em 90°, espelha ou aplica qualquer ângulo personalizado com prévia ao vivo — uma imagem ou um lote inteiro de uma vez. Escolha o formato de saída e o fundo, e baixe. Tudo acontece no seu navegador, então suas imagens continuam privadas.",
 
@@ -90,9 +92,12 @@ const content: ToolPageContent = {
   security:
     "Suas imagens continuam privadas. O giro acontece inteiro no seu navegador com canvas HTML — nada é enviado a um servidor. Nada fica armazenado e nenhum arquivo é rastreado.",
 
-  rating: { value: "4.9", count: "596" },
 
   ui: {
+    "Flip": "Espelhar",
+    "Flipping…": "Espelhando…",
+    "Flip & download": "Espelhar e baixar",
+    "Flip {n} images": "Espelhar {n} imagens",
     // RotateTool.tsx
     "Rotated 1 image.": "1 imagem girada.",
     "Rotated {n} images.": "{n} imagens giradas.",

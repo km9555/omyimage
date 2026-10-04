@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Breadcrumbs, type Crumb } from "@/components/Breadcrumbs";
 import { JsonLd } from "@/components/JsonLd";
 import { RelatedTools } from "@/components/RelatedTools";
+import { VariantLinks } from "@/components/VariantLinks";
 import { SeoContent } from "@/components/SeoContent";
 import { I18nScope } from "@/i18n/I18nScope";
 import { DEFAULT_LOCALE, LOCALE_TAG } from "@/i18n/config";
@@ -31,19 +32,25 @@ import type { ToolPageContent } from "@/content/tools/types";
  * for the same reason: English JSON-LD never carried it.
  */
 
-/** Home → category → tool. */
-export function toolCrumbs(content: ToolPageContent): Crumb[] {
-  const t = getT(content.locale);
+/** The last crumb's label: registry name in English, the module's h1 elsewhere. */
+function crumbLabelOf(content: ToolPageContent): string {
   const tool = TOOLS_BY_ID[content.toolId];
+  return (
+    content.crumbLabel ??
+    (content.locale === DEFAULT_LOCALE ? (tool?.name ?? content.name) : content.name)
+  );
+}
+
+/** Home → category → tool, or Home → category → parent → variant. */
+export function toolCrumbs(content: ToolPageContent, parent?: ToolPageContent): Crumb[] {
+  const t = getT(content.locale);
   const home = localeHome(content.locale);
   const hash = home === "/" ? "/" : home;
-  const last =
-    content.crumbLabel ??
-    (content.locale === DEFAULT_LOCALE ? (tool?.name ?? content.name) : content.name);
   return [
     { label: t("Home"), href: home },
     { label: content.category.label, href: `${hash}#cat-${content.category.id}` },
-    { label: last },
+    ...(parent ? [{ label: crumbLabelOf(parent), href: toolHref(parent.toolId, content.locale) }] : []),
+    { label: crumbLabelOf(content) },
   ];
 }
 
@@ -82,15 +89,6 @@ export function ToolSchemas({ content }: { content: ToolPageContent }) {
     operatingSystem: "All",
     applicationCategory: "MultimediaApplication",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-    ...(content.rating
-      ? {
-          aggregateRating: {
-            "@type": "AggregateRating",
-            ratingValue: content.rating.value,
-            ratingCount: content.rating.count,
-          },
-        }
-      : {}),
     description,
   };
   const howTo = {
@@ -116,19 +114,28 @@ export function ToolSchemas({ content }: { content: ToolPageContent }) {
 
 export function ToolPageShell({
   content,
+  parent,
   children,
 }: {
   content: ToolPageContent;
+  /**
+   * A VARIANT page's parent module, same locale (generated stubs pass it). The
+   * variant renders the parent's tool component, whose micro-copy lives in the
+   * PARENT's `ui` block — without merging it here every localized variant
+   * would silently show that component in English.
+   */
+  parent?: ToolPageContent;
   /** The tool component itself. */
   children: ReactNode;
 }) {
   const tool = TOOLS_BY_ID[content.toolId];
   const tagline = content.tagline ?? tool?.seoDescription;
+  const dict = parent ? { ...parent.ui, ...content.ui } : content.ui;
 
   return (
-    <I18nScope locale={content.locale} dict={content.ui}>
+    <I18nScope locale={content.locale} dict={dict}>
       <div data-tool-shell className="max-w-content mx-auto px-margin-mobile md:px-gutter pt-stack-md flex flex-col gap-stack-lg">
-        <Breadcrumbs items={toolCrumbs(content)} locale={content.locale} />
+        <Breadcrumbs items={toolCrumbs(content, parent)} locale={content.locale} />
         <header className="flex flex-col gap-stack-sm mt-2">
           <h1 className="text-display-lg-mobile md:text-display-lg text-primary">{content.name}</h1>
           {tagline && (
@@ -151,6 +158,14 @@ export function ToolPageShell({
         </header>
 
         {children}
+
+        {tool && (
+          <VariantLinks
+            tool={tool}
+            locale={content.locale}
+            heading={parent?.variantsHeading ?? content.variantsHeading}
+          />
+        )}
 
         {tool && <RelatedTools tools={relatedTools(tool, 4)} locale={content.locale} />}
       </div>

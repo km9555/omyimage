@@ -106,7 +106,6 @@ const content: ToolPageContent = {
   security:
     "Foto Anda tetap privat. Deteksi wajah maupun proses blur terjadi sepenuhnya di browser Anda — model open-source MediaPipe BlazeFace diunduh ke perangkat Anda dan dijalankan di sana, jadi tidak ada yang diunggah ke server kapan pun. Hasil sensornya permanen di file ekspor. Tidak ada penyimpanan, tidak ada pelacakan file Anda.",
 
-  rating: { value: "4.8", count: "389" },
 
   ui: {
     // BlurTool.tsx — module-scope TABS (translated at the render site)

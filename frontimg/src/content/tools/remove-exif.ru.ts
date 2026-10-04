@@ -101,7 +101,6 @@ const content: ToolPageContent = {
   security:
     "Ваши изображения остаются при вас. Стирание метаданных выполняется целиком в браузере — на сервер ничего не отправляется. Ни хранения, ни слежки за вашими файлами.",
 
-  rating: { value: "4.9", count: "377" },
 
   ui: {
     // RemoveExifTool.tsx — module-scope FORMATS

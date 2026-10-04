@@ -12,6 +12,8 @@ const content: ToolPageContent = {
     "Rotate and flip JPG, PNG, WEBP and GIF images online — 90° steps or any custom angle, with a live preview and batch support. Free, fast and 100% private in your browser.",
   category: { id: "optimize", label: "Optimize" },
 
+  variantsHeading: "Rotate or flip",
+
   intro:
     "Straighten a sideways photo or spin a graphic to exactly the angle you need. oMyImage's Rotate Image tool lets you turn images in 90° steps, flip them, or set any custom angle with a live preview — one image or a whole batch at once. Choose your output format and background, then download. It all happens in your browser, so your images stay private.",
 
@@ -79,8 +81,6 @@ const content: ToolPageContent = {
 
   security:
     "Your images stay private. Rotation happens entirely in your browser with HTML canvas — nothing is uploaded to a server. No storage, no tracking of your files.",
-
-  rating: { value: "4.9", count: "596" },
 };
 
 export default content;

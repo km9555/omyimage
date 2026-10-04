@@ -93,7 +93,6 @@ const content: ToolPageContent = {
   security:
     "Suas imagens continuam privadas. Os memes são montados inteiramente no seu navegador com canvas HTML — nada é enviado a um servidor. Sem armazenamento e sem rastrear seus arquivos.",
 
-  rating: { value: "4.9", count: "421" },
 
   ui: {
     // MemeTool.tsx — default captions, drawn INTO the image

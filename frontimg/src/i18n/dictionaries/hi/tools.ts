@@ -200,6 +200,66 @@ export const hiTools: Record<string, LocalizedTool> = {
     name: "इमेज की क्वालिटी बढ़ाएँ",
     shortDescription: "AI से 2×, 3×, 4× बड़ा करें और धुँधली फोटो साफ़ करें।",
   },
+
+  // ── वैरिएंट: तय साइज़ तक कंप्रेस (expansion.md) ──
+  "reduce-image-size-in-kb": {
+    name: "फोटो का साइज़ KB में कम करें",
+    shortDescription: "किसी भी फोटो को अपनी ज़रूरत के KB या MB में लाएँ।",
+  },
+  "compress-image-to-20kb": {
+    name: "इमेज 20 KB में कंप्रेस करें",
+    shortDescription: "फ़ॉर्म के लिए 20 KB से कम की फोटो और सिग्नेचर।",
+  },
+  "compress-image-to-50kb": {
+    name: "इमेज 50 KB में कंप्रेस करें",
+    shortDescription: "परीक्षा फ़ॉर्म में फोटो की सबसे आम सीमा।",
+  },
+  "compress-image-to-100kb": {
+    name: "इमेज 100 KB में कंप्रेस करें",
+    shortDescription: "100 KB से कम में साफ़ फोटो और स्कैन।",
+  },
+  "compress-image-to-200kb": {
+    name: "इमेज 200 KB में कंप्रेस करें",
+    shortDescription: "200 KB से कम में साफ़ फोटो और दस्तावेज़।",
+  },
+  "compress-image-to-1mb": {
+    name: "इमेज 1 MB में कंप्रेस करें",
+    shortDescription: "मोबाइल फोटो 1 MB से कम, ज़्यादातर पूरे साइज़ में।",
+  },
+
+  // ── वैरिएंट: HD, मिरर, बैकग्राउंड (expansion.md) ──
+  "image-to-hd": {
+    name: "इमेज को HD में बदलें",
+    shortDescription: "छोटी या कम रेज़ोल्यूशन वाली फोटो को HD बनाएँ।",
+  },
+  "unblur-image": {
+    name: "धुँधली फोटो साफ़ करें",
+    shortDescription: "हल्की धुँधली फोटो को AI से साफ़ करें।",
+  },
+  "flip-image": {
+    name: "इमेज फ़्लिप करें",
+    shortDescription: "फोटो को दाएँ-बाएँ या ऊपर-नीचे मिरर करें।",
+  },
+  "change-background-color": {
+    name: "बैकग्राउंड का रंग बदलें",
+    shortDescription: "किसी भी फोटो के लिए सफ़ेद, नीला या लाल बैकग्राउंड।",
+  },
+  "blur-background": {
+    name: "बैकग्राउंड ब्लर करें",
+    shortDescription: "किसी व्यक्ति या चीज़ के पीछे पोर्ट्रेट जैसा ब्लर।",
+  },
+  "passport-photo-maker": {
+    name: "पासपोर्ट साइज़ फोटो मेकर",
+    shortDescription: "पासपोर्ट, वीज़ा और ID फोटो, प्रिंट शीट के साथ।",
+  },
+  "3x4-photo": {
+    name: "3x4 फोटो मेकर",
+    shortDescription: "3 × 4 cm डॉक्यूमेंट फोटो, फ्रेम की हुई और प्रिंट के लिए तैयार।",
+  },
+  "2x2-photo": {
+    name: "2x2 फोटो मेकर",
+    shortDescription: "US पासपोर्ट, वीज़ा और OCI के लिए 2 × 2 इंच फोटो।",
+  },
 };
 
 /**

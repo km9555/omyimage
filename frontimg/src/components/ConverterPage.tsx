@@ -16,6 +16,7 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { JsonLd } from "@/components/JsonLd";
 import { RelatedTools } from "@/components/RelatedTools";
 import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
+import { toolPath } from "@/i18n/slugs";
 import { getT } from "@/i18n/t";
 import { localeHome, toolHref } from "@/lib/i18n/links";
 import { categoryNavLabel, toolName } from "@/lib/i18n/tool-labels";
@@ -52,7 +53,9 @@ export function ConverterPage({ slug, locale = DEFAULT_LOCALE }: { slug: string;
   const to = fmt(pair.to);
   const fromLabel = from.label;
   const toLabel = to.label;
-  const canonical = absoluteUrl(`/${tool.slug}`);
+  // The locale's own URL: this used to be `/${tool.slug}` on every locale, so
+  // a /pt converter's SoftwareApplication pointed at the English page.
+  const canonical = absoluteUrl(toolPath(tool.id, locale));
   const accent = toolColor(tool);
 
   const copy = pairCopy(pair, locale, {
@@ -87,11 +90,8 @@ export function ConverterPage({ slug, locale = DEFAULT_LOCALE }: { slug: string;
     operatingSystem: "All",
     applicationCategory: "MultimediaApplication",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: pair.rating.value,
-      ratingCount: pair.rating.count,
-    },
+    // No aggregateRating: the old per-pair figures were not collected from
+    // users, and Google treats invented ratings as spammy structured data.
     description: copy.seoDescription,
     // Same rule as the HowTo below and as ToolPageShell: only on translated
     // pages, so English markup is unchanged.

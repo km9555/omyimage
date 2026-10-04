@@ -108,7 +108,6 @@ const content: ToolPageContent = {
   security:
     "आपकी इमेज निजी रहती हैं। मीम पूरी तरह आपके ब्राउज़र में HTML canvas से बनते हैं — कुछ भी किसी सर्वर पर नहीं भेजा जाता। न कुछ सहेजा जाता है, न आपकी फ़ाइलों पर नज़र रखी जाती है।",
 
-  rating: { value: "4.9", count: "421" },
 
   ui: {
     // MemeTool.tsx — default captions, drawn INTO the image. Devanagari has

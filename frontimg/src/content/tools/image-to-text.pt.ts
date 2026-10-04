@@ -148,7 +148,6 @@ const content: ToolPageContent = {
   security:
     "A leitura principal acontece no nosso servidor: a imagem é enviada por uma conexão criptografada e excluída logo depois de lida, sem ser guardada, indexada ou usada para treinar modelos. Se o servidor não puder ser acessado, o reconhecimento roda no seu próprio dispositivo e a imagem não é enviada.",
 
-  rating: { value: "4.8", count: "726" },
 
   ui: {
     // ImageToTextTool.tsx

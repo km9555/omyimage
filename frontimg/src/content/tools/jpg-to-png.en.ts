@@ -77,8 +77,6 @@ const content: ToolPageContent = {
 
   security:
     "Your images stay private. JPG to PNG conversion happens entirely in your browser with HTML canvas — nothing is uploaded. No storage, no tracking of your files.",
-
-  rating: { value: "4.8", count: "503" },
 };
 
 export default content;

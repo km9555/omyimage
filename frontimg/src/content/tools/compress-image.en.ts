@@ -9,11 +9,13 @@ const content: ToolPageContent = {
   locale: "en",
   name: "Compress Image",
   tagline:
-    "Compress JPG, PNG and WEBP images online — shrink file size with quality control and batch support, see how much you saved. Free, fast and 100% private in your browser.",
+    "Compress JPG, PNG and WEBP images online — by quality, or straight to an exact size like 50KB or 100KB. Batch support, see how much you saved. Free, fast and private in your browser.",
   category: { id: "optimize", label: "Optimize" },
 
   intro:
-    "Big image files slow down websites, fill up storage and clog email attachments. oMyImage's Compress Image tool shrinks JPG, PNG and WEBP files right in your browser — convert to WEBP for the smallest size, control the quality, and optionally downscale very large photos. PNGs are compressed properly, by reducing colors with dithering rather than just re-saving them. Compress one image or a whole batch, and see exactly how much you saved.",
+    "Big image files slow down websites, fill up storage and clog email attachments — and upload forms reject them outright. oMyImage's Compress Image tool shrinks JPG, PNG and WEBP files right in your browser in two ways: by quality, where you convert to WEBP for the smallest size, set the quality and optionally downscale very large photos; or by file size, where you type a limit such as 50KB and get the sharpest image that fits under it. PNGs are compressed properly, by reducing colors with dithering rather than just re-saving them. Compress one image or a whole batch, and see exactly how much you saved.",
+
+  variantsHeading: "Compress to an exact file size",
 
   sections: [
     {
@@ -44,6 +46,15 @@ const content: ToolPageContent = {
       ],
     },
     {
+      heading: "Compressing to a size limit instead of a quality",
+      id: "target-size",
+      body: [
+        "A quality slider answers the wrong question when a form says \"maximum 100KB\": you would have to guess a setting, compress, check the size and try again. Switch the settings to By file size instead, type the limit, and the tool does the guessing for you — it searches for the highest quality whose output still fits, and only if even a low quality is too large does it also reduce the pixel dimensions.",
+        "The result is always under the number you typed, never \"about\" it. The tool counts a kilobyte as 1,000 bytes, so a file made for a 50KB limit also passes a form that counts a kilobyte as 1,024 bytes. If an image is already under the limit in the format you chose, you get it back untouched rather than a needlessly re-compressed copy.",
+        "The most common limits have their own pages with advice specific to them — signatures at 20KB, exam photos at 50KB, application photos and scans at 100KB and 200KB, and phone photos at 1MB.",
+      ],
+    },
+    {
       heading: "When your image will not compress further",
       id: "already-optimised",
       body: [
@@ -56,13 +67,13 @@ const content: ToolPageContent = {
   howToTitle: "How to compress an image",
   steps: [
     { title: "Upload", description: "Select one or many JPG, PNG or WEBP images, or drag and drop them in." },
-    { title: "Choose settings", description: "Pick an output format and quality, and optionally shrink very large images." },
+    { title: "Choose settings", description: "Pick an output format and quality — or switch to By file size and type a limit such as 50KB." },
     { title: "Compress & download", description: "Click Compress — one image downloads directly, several download together as a ZIP." },
   ],
 
   features: [
     { icon: "burst_mode", title: "Batch compression", description: "Compress dozens of images at once and download them all as a single ZIP, each showing how much was saved." },
-    { icon: "tune", title: "Quality & format control", description: "Convert to WEBP for the smallest files, or keep your format and dial in the exact quality you want." },
+    { icon: "tune", title: "Quality, format or exact size", description: "Convert to WEBP for the smallest files, dial in the exact quality you want, or type a size limit and get the sharpest file under it." },
     { icon: "lock", title: "100% private", description: "Compression runs in your browser for almost every photo, and those images are never uploaded anywhere." },
   ],
 
@@ -77,13 +88,12 @@ const content: ToolPageContent = {
     { q: "What quality setting should I use?", a: "70–80% is the right starting point for photographs on a website and is where most of the saving happens. Go to 90% or above for product photography, hero images and anything a customer will zoom into. Below about 60% you start to see blocking in skies and smooth gradients." },
     { q: "Does compressing an image reduce its dimensions?", a: "No. Compression changes how the pixels are stored, not how many there are — a 4000×3000 photo stays 4000×3000. If you also want fewer pixels, use the Resize tool, which is usually the bigger win for web images." },
     { q: "Will compression strip my EXIF data?", a: "Re-encoding drops most metadata, including camera settings and GPS coordinates, as a side effect. If removing that data is the actual goal, the EXIF Remover is the tool built for it and is explicit about what it clears." },
+    { q: "Can I compress an image to a specific size, like 50KB?", a: "Yes. Switch the settings to By file size, type the limit in KB or MB (or tap one of the common sizes) and compress. Every image comes back under that limit at the highest quality that fits, with its dimensions reduced only when quality alone cannot get it there." },
     { q: "Can I compress the same image twice?", a: "You can, but you should not. Each lossy pass discards detail permanently and the damage accumulates, so a twice-compressed JPG looks noticeably worse than one compressed once at the equivalent setting. Always start from the best original you have." },
   ],
 
   security:
     "Your images stay private. Almost every photo is compressed entirely in your browser and never leaves your device; only very large or very high-resolution images go to our server, where they are deleted straight after. No storage, no tracking of your files.",
-
-  rating: { value: "4.9", count: "912" },
 };
 
 export default content;

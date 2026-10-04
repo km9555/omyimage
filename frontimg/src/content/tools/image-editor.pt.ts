@@ -101,7 +101,6 @@ const content: ToolPageContent = {
   security:
     "Sua imagem continua privada. O editor inteiro roda no seu navegador com canvas HTML — nada é enviado a um servidor. Nada fica armazenado e nenhum arquivo é rastreado.",
 
-  rating: { value: "4.9", count: "612" },
 
   ui: {
     // AllInOneEditor.tsx

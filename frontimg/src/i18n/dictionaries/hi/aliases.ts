@@ -126,4 +126,50 @@ export const hiAliases: Record<string, string[]> = {
     "फोटो की क्वालिटी बढ़ाएं", "धुंधली फोटो साफ करें", "फोटो एचडी करें",
     "रेजोल्यूशन बढ़ाएं", "फोटो साफ करें", "पुरानी फोटो ठीक करें", "2x", "4x",
   ],
+
+  // वैरिएंट — तय साइज़ तक कंप्रेस
+  "reduce-image-size-in-kb": [
+    "फोटो का साइज kb में", "kb में फोटो", "photo resizer in kb", "फोटो रीसाइज़र kb", "केबी में साइज़ कम",
+  ],
+  "compress-image-to-20kb": [
+    "20 kb", "सिग्नेचर 20 kb", "फोटो 20 kb", "signature resize",
+  ],
+  "compress-image-to-50kb": [
+    "50 kb", "फोटो 50 kb", "फोटो 50 kb में",
+  ],
+  "compress-image-to-100kb": [
+    "100 kb", "फोटो 100 kb",
+  ],
+  "compress-image-to-200kb": [
+    "200 kb", "फोटो 200 kb",
+  ],
+  "compress-image-to-1mb": [
+    "1 mb", "फोटो 1 mb",
+  ],
+
+  // वैरिएंट — HD, मिरर, बैकग्राउंड
+  "image-to-hd": [
+    "फोटो hd करें", "photo hd kaise kare", "hd फोटो", "hd image converter", "फोटो को hd बनाएँ",
+  ],
+  "unblur-image": [
+    "धुँधली फोटो साफ़", "फोटो साफ़ करें", "unblur", "ब्लर हटाएँ",
+  ],
+  "flip-image": [
+    "मिरर इमेज", "फोटो उल्टा करें", "mirror image", "फोटो फ़्लिप",
+  ],
+  "change-background-color": [
+    "फोटो का बैकग्राउंड बदलें", "photo background change", "सफ़ेद बैकग्राउंड", "बैकग्राउंड रंग",
+  ],
+  "blur-background": [
+    "बैकग्राउंड ब्लर", "पोर्ट्रेट मोड", "blur background",
+  ],
+  "passport-photo-maker": [
+    "पासपोर्ट साइज़ फोटो", "पासपोर्ट फोटो", "passport size photo", "पासपोर्ट साइज फोटो", "फोटो प्रिंट शीट", "3.5 x 4.5 cm",
+  ],
+  "3x4-photo": [
+    "3x4 फोटो", "3 x 4 cm photo", "3x4 photo",
+  ],
+  "2x2-photo": [
+    "2x2 फोटो", "वीज़ा फोटो", "OCI फोटो", "2x2 photo", "us visa photo",
+  ],
 };

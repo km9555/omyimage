@@ -200,6 +200,52 @@ export const TOOL_ALIASES: Record<string, string[]> = {
     "hide face", "censor face", "pixelate face", "anonymize face", "blur people",
     "blur license plate", "privacy blur", "mask face", "obscure face",
   ],
+
+  // Variants — compress to a file size
+  "reduce-image-size-in-kb": [
+    "photo resizer in kb", "image size reducer in kb", "reduce photo size in kb", "resize image in kb", "kb converter", "image kb reducer", "photo kb",
+  ],
+  "compress-image-to-20kb": [
+    "20 kb", "20kb", "signature 20kb", "resize image to 20kb", "photo 20kb", "10 to 20 kb", "signature resize",
+  ],
+  "compress-image-to-50kb": [
+    "50 kb", "50kb", "resize image to 50kb", "photo 50kb", "jpg to 50kb", "under 50kb",
+  ],
+  "compress-image-to-100kb": [
+    "100 kb", "100kb", "resize image to 100kb", "jpg to 100kb", "under 100kb", "photo 100kb",
+  ],
+  "compress-image-to-200kb": [
+    "200 kb", "200kb", "resize image to 200kb", "under 200kb", "photo 200kb",
+  ],
+  "compress-image-to-1mb": [
+    "1 mb", "1mb", "under 1mb", "photo 1mb", "1 megabyte", "1000 kb",
+  ],
+
+  // Variants — upscale, rotate, remove-background
+  "image-to-hd": [
+    "hd image converter", "convert image to hd", "photo to hd", "hd photo", "image to 4k", "hd converter", "make image hd",
+  ],
+  "unblur-image": [
+    "unblur", "fix blurry photo", "sharpen image", "unpixelate", "depixelate", "make photo clear", "deblur",
+  ],
+  "flip-image": [
+    "mirror image", "mirror photo", "flip horizontally", "flip vertically", "reverse image", "unmirror selfie",
+  ],
+  "change-background-color": [
+    "photo background change", "white background", "change background", "blue background", "red background", "passport photo background", "background color",
+  ],
+  "blur-background": [
+    "portrait mode", "bokeh", "background blur", "blur behind", "depth effect", "blur photo background",
+  ],
+  "passport-photo-maker": [
+    "passport size photo", "passport photo", "id photo", "visa photo", "35x45", "photo for passport", "print sheet", "photo booth",
+  ],
+  "3x4-photo": [
+    "3x4", "3 x 4 cm", "3x4 cm photo", "document photo", "pas foto 3x4", "foto 3x4",
+  ],
+  "2x2-photo": [
+    "2x2", "2 x 2 inch", "us passport photo", "us visa photo", "oci photo", "600x600",
+  ],
 };
 
 /**

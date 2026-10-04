@@ -87,7 +87,6 @@ const content: ToolPageContent = {
   security:
     "Suas imagens continuam privadas. A conversão de JPG para PNG acontece inteira no seu navegador com canvas HTML — nada é enviado. Nada fica armazenado e nenhum arquivo é rastreado.",
 
-  rating: { value: "4.8", count: "503" },
 
   ui: {
     // Drop hint from app/jpg-to-png/page.tsx, translated inside ConvertTool.

@@ -99,7 +99,6 @@ const content: ToolPageContent = {
   security:
     "Ваше изображение остаётся при вас. Кодирование в Base64 выполняется целиком в браузере — на сервер ничего не отправляется. Ни хранения, ни слежки за вашими файлами.",
 
-  rating: { value: "4.8", count: "298" },
 
   ui: {
     // ImageToBase64Tool.tsx — module-scope TABS. These are code identifiers a

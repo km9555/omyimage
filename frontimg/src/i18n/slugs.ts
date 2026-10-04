@@ -99,6 +99,26 @@ const PT_TOOL_SLUGS: Record<string, string> = {
   // ── IA ───────────────────────────────────────────────────────────────
   "remove-background": "remover-fundo",
   "upscale-image": "melhorar-qualidade-imagem",
+
+  // ── Variants: compress-image to a file size (expansion.md §5) ─────────
+  "reduce-image-size-in-kb": "reduzir-tamanho-da-imagem-em-kb",
+  "compress-image-to-20kb": "comprimir-imagem-para-20kb",
+  "compress-image-to-50kb": "comprimir-imagem-para-50kb",
+  "compress-image-to-100kb": "comprimir-imagem-para-100kb",
+  "compress-image-to-200kb": "comprimir-imagem-para-200kb",
+  "compress-image-to-1mb": "comprimir-imagem-para-1mb",
+
+  // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
+  "image-to-hd": "imagem-em-hd",
+  "unblur-image": "tirar-desfoque-da-foto",
+  "flip-image": "espelhar-imagem",
+  "change-background-color": "trocar-fundo-da-foto",
+  "blur-background": "desfocar-fundo",
+
+  // ── Passport / ID photo maker and variants (expansion.md §5) ──────────
+  "passport-photo-maker": "foto-para-documento",
+  "3x4-photo": "foto-3x4",
+  "2x2-photo": "foto-2x2",
 };
 
 /** Hindi keeps the English slug — see the header. Authored, never derived. */
@@ -150,6 +170,26 @@ const HI_TOOL_SLUGS: Record<string, string> = {
   // ── AI ───────────────────────────────────────────────────────────────
   "remove-background": "remove-background",
   "upscale-image": "upscale-image",
+
+  // ── Variants: compress-image to a file size (expansion.md §5) ─────────
+  "reduce-image-size-in-kb": "reduce-image-size-in-kb",
+  "compress-image-to-20kb": "compress-image-to-20kb",
+  "compress-image-to-50kb": "compress-image-to-50kb",
+  "compress-image-to-100kb": "compress-image-to-100kb",
+  "compress-image-to-200kb": "compress-image-to-200kb",
+  "compress-image-to-1mb": "compress-image-to-1mb",
+
+  // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
+  "image-to-hd": "image-to-hd",
+  "unblur-image": "unblur-image",
+  "flip-image": "flip-image",
+  "change-background-color": "change-background-color",
+  "blur-background": "blur-background",
+
+  // ── Passport / ID photo maker and variants (expansion.md §5) ──────────
+  "passport-photo-maker": "passport-photo-maker",
+  "3x4-photo": "3x4-photo",
+  "2x2-photo": "2x2-photo",
 };
 
 /**
@@ -210,6 +250,26 @@ const RU_TOOL_SLUGS: Record<string, string> = {
   // ── AI ───────────────────────────────────────────────────────────────
   "remove-background": "remove-background",
   "upscale-image": "upscale-image",
+
+  // ── Variants: compress-image to a file size (expansion.md §5) ─────────
+  "reduce-image-size-in-kb": "reduce-image-size-in-kb",
+  "compress-image-to-20kb": "compress-image-to-20kb",
+  "compress-image-to-50kb": "compress-image-to-50kb",
+  "compress-image-to-100kb": "compress-image-to-100kb",
+  "compress-image-to-200kb": "compress-image-to-200kb",
+  "compress-image-to-1mb": "compress-image-to-1mb",
+
+  // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
+  "image-to-hd": "image-to-hd",
+  "unblur-image": "unblur-image",
+  "flip-image": "flip-image",
+  "change-background-color": "change-background-color",
+  "blur-background": "blur-background",
+
+  // ── Passport / ID photo maker and variants (expansion.md §5) ──────────
+  "passport-photo-maker": "passport-photo-maker",
+  "3x4-photo": "3x4-photo",
+  "2x2-photo": "2x2-photo",
 };
 
 /**
@@ -292,6 +352,26 @@ const ID_TOOL_SLUGS: Record<string, string> = {
   // ── AI ─────────────────────────────────────────────────────────────────
   "remove-background": "hapus-background",
   "upscale-image": "hd-foto",
+
+  // ── Variants: compress-image to a file size (expansion.md §5) ─────────
+  "reduce-image-size-in-kb": "perkecil-ukuran-foto-kb",
+  "compress-image-to-20kb": "kompres-foto-20kb",
+  "compress-image-to-50kb": "kompres-foto-50kb",
+  "compress-image-to-100kb": "kompres-foto-100kb",
+  "compress-image-to-200kb": "kompres-foto-200kb",
+  "compress-image-to-1mb": "kompres-foto-1mb",
+
+  // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
+  "image-to-hd": "jadikan-foto-hd",
+  "unblur-image": "foto-blur-jadi-jelas",
+  "flip-image": "mirror-foto",
+  "change-background-color": "ganti-background-foto",
+  "blur-background": "blur-background-foto",
+
+  // ── Passport / ID photo maker and variants (expansion.md §5) ──────────
+  "passport-photo-maker": "pas-foto",
+  "3x4-photo": "foto-3x4",
+  "2x2-photo": "pas-foto-2x2",
 };
 
 const TOOL_SLUGS: Record<TranslatedLocale, Record<string, string>> = {

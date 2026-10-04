@@ -6,6 +6,8 @@
  * Build tools ONE AT A TIME: set `status: "live"` only when a tool's page exists
  * and is verified. Everything else stays "planned" (renders as "Coming soon").
  */
+import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
+import { toolShippedIn } from "@/i18n/status";
 
 export type ToolStatus = "live" | "planned";
 export type Processing = "client" | "server" | "hybrid" | "ai";
@@ -49,7 +51,29 @@ export interface Tool {
    * submitted for indexing.
    */
   homeGrid?: boolean;
+  /**
+   * Makes this entry a VARIANT: its own page, URL and copy, running the parent
+   * tool's engine with `preset` applied ("Compress Image to 50KB" is
+   * compress-image with a 50 KB target). Variants are full tools everywhere
+   * — sitemap, slugs, status.ts, search, the home grid, the Tools menu — but
+   * only in a locale that ships them, and they stay out of `relatedTools()`;
+   * the family is linked by `<VariantLinks>` instead.
+   *
+   * The route stub is GENERATED (`npm run gen:variants`), which copies `preset`
+   * verbatim into `<ParentTool preset={…} />` — so keep it a one-line object
+   * literal, and TypeScript checks it against the parent component's prop.
+   */
+  parentId?: string;
+  preset?: ToolPreset;
+  /**
+   * Shows a "New" badge on the tool's card. Set on the 2026-10 expansion
+   * (expansion.md §5); remove the flags once they stop being news (~2027-01).
+   */
+  isNew?: boolean;
 }
+
+/** A variant's settings for its parent tool. One-line literal (see `Tool.parentId`). */
+export type ToolPreset = Readonly<Record<string, string | number | boolean>>;
 
 export const CATEGORIES: CategoryDef[] = [
   { id: "optimize", title: "Optimize & Compress", navLabel: "Optimize" },
@@ -71,9 +95,9 @@ export const TOOLS: Tool[] = [
     library: "Sharp",
     status: "live",
     priority: 1,
-    seoTitle: "Compress Image Online - Free | oMyImage",
+    seoTitle: "Compress Image Online — Free JPG, PNG & WEBP Compressor | oMyImage",
     seoDescription:
-      "Compress JPG, PNG and WEBP images online for free. Smart lossless and lossy compression with before/after sizes. No sign-up required. Fast and secure.",
+      "Compress JPG, PNG and WEBP images online for free — by quality, or to an exact size like 50KB or 100KB. Batch support, before/after sizes, no sign-up.",
     primaryKeyword: "compress image online free",
   },
   {
@@ -765,6 +789,281 @@ export const TOOLS: Tool[] = [
       "Extract the frames of an animated GIF online for free. Download every frame as PNG or JPG, bundled in a ZIP. Fast and 100% private in your browser.",
     primaryKeyword: "gif to images",
   },
+
+  // ── Variants (expansion.md §2) ─────────────────────────────────────────
+  // Each runs its parent's engine with `preset` applied, on its own URL with
+  // its own copy. Route stubs are generated: `npm run gen:variants`.
+  // compress-image family — target-size compression (lib/image/compress-to-size.ts).
+  {
+    id: "reduce-image-size-in-kb",
+    name: "Reduce Image Size in KB",
+    slug: "reduce-image-size-in-kb",
+    parentId: "compress-image",
+    preset: { mode: "target" },
+    categoryId: "optimize",
+    shortDescription: "Shrink a photo to any size you need in KB or MB.",
+    icon: "compress",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    isNew: true,
+    priority: 101,
+    seoTitle: "Reduce Image Size in KB — Photo Resizer in KB, Free | oMyImage",
+    seoDescription:
+      "Reduce image size in KB online for free. Type any limit — 20KB, 50KB, 100KB or 1MB — and get the sharpest JPG that fits. Batch, in your browser, no upload.",
+    primaryKeyword: "reduce image size in kb",
+  },
+  {
+    id: "compress-image-to-20kb",
+    name: "Compress Image to 20KB",
+    slug: "compress-image-to-20kb",
+    parentId: "compress-image",
+    preset: { targetKb: 20 },
+    categoryId: "optimize",
+    shortDescription: "Photos and signatures under 20KB for forms.",
+    icon: "compress",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    isNew: true,
+    priority: 102,
+    seoTitle: "Compress Image to 20KB — Photo & Signature, Free | oMyImage",
+    seoDescription:
+      "Compress a photo or signature to under 20KB online for free. A sharp JPG that passes exam and job-form limits, many files at once. Runs in your browser.",
+    primaryKeyword: "compress image to 20kb",
+  },
+  {
+    id: "compress-image-to-50kb",
+    name: "Compress Image to 50KB",
+    slug: "compress-image-to-50kb",
+    parentId: "compress-image",
+    preset: { targetKb: 50 },
+    categoryId: "optimize",
+    shortDescription: "The photo limit most exam forms set.",
+    icon: "compress",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    isNew: true,
+    priority: 103,
+    seoTitle: "Compress Image to 50KB Online — Free JPG Under 50KB | oMyImage",
+    seoDescription:
+      "Compress any photo to under 50KB online for free — the limit most exam and government forms set. The sharpest JPG that fits, batch support, no upload.",
+    primaryKeyword: "compress image to 50kb",
+  },
+  {
+    id: "compress-image-to-100kb",
+    name: "Compress Image to 100KB",
+    slug: "compress-image-to-100kb",
+    parentId: "compress-image",
+    preset: { targetKb: 100 },
+    categoryId: "optimize",
+    shortDescription: "Clear photos and scans under 100KB.",
+    icon: "compress",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    isNew: true,
+    priority: 104,
+    seoTitle: "Compress Image to 100KB Online — Free, Batch, Private | oMyImage",
+    seoDescription:
+      "Compress JPG, PNG or WEBP photos to under 100KB online for free. The highest quality that fits the limit, many images at once, processed in your browser.",
+    primaryKeyword: "compress image to 100kb",
+  },
+  {
+    id: "compress-image-to-200kb",
+    name: "Compress Image to 200KB",
+    slug: "compress-image-to-200kb",
+    parentId: "compress-image",
+    preset: { targetKb: 200 },
+    categoryId: "optimize",
+    shortDescription: "Sharp portraits and document scans under 200KB.",
+    icon: "compress",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    isNew: true,
+    priority: 105,
+    seoTitle: "Compress Image to 200KB Online — Keep Photos Sharp | oMyImage",
+    seoDescription:
+      "Compress photos and document scans to under 200KB online for free — for job portals, admissions and application forms. Highest quality that fits, no upload.",
+    primaryKeyword: "compress image to 200kb",
+  },
+  {
+    id: "compress-image-to-1mb",
+    name: "Compress Image to 1MB",
+    slug: "compress-image-to-1mb",
+    parentId: "compress-image",
+    preset: { targetKb: 1000 },
+    categoryId: "optimize",
+    shortDescription: "Phone photos under 1MB, usually at full size.",
+    icon: "compress",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    isNew: true,
+    priority: 106,
+    seoTitle: "Compress Image to 1MB Online — Free Photo Compressor | oMyImage",
+    seoDescription:
+      "Compress phone photos to under 1MB online for free, usually at full resolution. Fits upload limits on portals, email and chat apps. Private, in your browser.",
+    primaryKeyword: "compress image to 1mb",
+  },
+  // upscale-image family — the Real-ESRGAN endpoint, metered like its parent.
+  {
+    id: "image-to-hd",
+    name: "Image to HD",
+    slug: "image-to-hd",
+    parentId: "upscale-image",
+    preset: { scale: 2 },
+    categoryId: "ai",
+    shortDescription: "Turn a small or low-res photo into HD.",
+    icon: "hd",
+    processing: "ai",
+    library: "Real-ESRGAN",
+    status: "live",
+    isNew: true,
+    priority: 111,
+    seoTitle: "Convert Image to HD Online — Free HD Image Converter | oMyImage",
+    seoDescription:
+      "Convert a low-resolution image to HD online with AI — 2×, 3× or 4× the pixels, with sharper edges and cleaner detail. Free, no watermark, nothing to install.",
+    primaryKeyword: "hd image converter",
+  },
+  {
+    id: "unblur-image",
+    name: "Unblur Image",
+    slug: "unblur-image",
+    parentId: "upscale-image",
+    preset: { scale: 2 },
+    categoryId: "ai",
+    shortDescription: "Sharpen soft, slightly blurry photos with AI.",
+    icon: "auto_fix_high",
+    processing: "ai",
+    library: "Real-ESRGAN",
+    status: "live",
+    isNew: true,
+    priority: 112,
+    seoTitle: "Unblur Image Online — Sharpen Blurry Photos with AI | oMyImage",
+    seoDescription:
+      "Unblur an image online with AI: sharpen soft or slightly blurry photos while enlarging them 2–4×. Works best on mild blur and compression mush. Free, no watermark.",
+    primaryKeyword: "unblur image",
+  },
+  // rotate-image family.
+  {
+    id: "flip-image",
+    name: "Flip Image",
+    slug: "flip-image",
+    parentId: "rotate-image",
+    preset: { flipH: true },
+    categoryId: "optimize",
+    shortDescription: "Mirror photos horizontally or vertically.",
+    icon: "flip",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    isNew: true,
+    priority: 113,
+    seoTitle: "Flip Image Online — Mirror a Photo Horizontally, Free | oMyImage",
+    seoDescription:
+      "Flip an image horizontally or vertically online — mirror selfies, reversed text and product shots in one click. Batch, JPG/PNG/WEBP, 100% in your browser.",
+    primaryKeyword: "flip image",
+  },
+  // remove-background family — the rembg endpoint plus a browser composite.
+  {
+    id: "change-background-color",
+    name: "Change Background Color",
+    slug: "change-background-color",
+    parentId: "remove-background",
+    preset: { background: "color", color: "#FFFFFF" },
+    categoryId: "ai",
+    shortDescription: "White, blue or red backgrounds for any photo.",
+    icon: "format_color_fill",
+    processing: "ai",
+    library: "rembg",
+    status: "live",
+    isNew: true,
+    priority: 114,
+    seoTitle: "Change Photo Background Color Online — White, Blue, Red | oMyImage",
+    seoDescription:
+      "Change a photo's background to white, blue, red or any colour online with AI — made for passport and ID photos. One upload, then try every colour free.",
+    primaryKeyword: "change background color of photo",
+  },
+  {
+    id: "blur-background",
+    name: "Blur Background",
+    slug: "blur-background",
+    parentId: "remove-background",
+    preset: { background: "blur" },
+    categoryId: "ai",
+    shortDescription: "Portrait-mode blur behind any person or object.",
+    icon: "lens_blur",
+    processing: "ai",
+    library: "rembg",
+    status: "live",
+    isNew: true,
+    priority: 115,
+    seoTitle: "Blur Photo Background Online — Portrait Mode Effect | oMyImage",
+    seoDescription:
+      "Blur the background of any photo online with AI — keep the person or product sharp and soften everything behind it. Adjustable strength, free, no watermark.",
+    primaryKeyword: "blur background",
+  },
+
+  // ── New tools (expansion.md §5) ────────────────────────────────────────
+  {
+    id: "passport-photo-maker",
+    name: "Passport Size Photo Maker",
+    slug: "passport-photo-maker",
+    categoryId: "edit",
+    shortDescription: "Passport, visa & ID photos with print sheets.",
+    icon: "badge",
+    processing: "client",
+    library: "MediaPipe + Canvas",
+    status: "live",
+    isNew: true,
+    priority: 32,
+    seoTitle: "Passport Size Photo Maker Online — Free, Print-Ready | oMyImage",
+    seoDescription:
+      "Make passport size photos online free: auto face framing, 35×45 mm, 2×2 in, 3×4 cm and more, white or coloured background, 300-DPI print sheets. Private.",
+    primaryKeyword: "passport size photo maker",
+  },
+  // passport-photo-maker family.
+  {
+    id: "3x4-photo",
+    name: "3x4 Photo Maker",
+    slug: "3x4-photo",
+    parentId: "passport-photo-maker",
+    preset: { size: "3x4" },
+    categoryId: "edit",
+    shortDescription: "3 × 4 cm document photos, framed and print-ready.",
+    icon: "badge",
+    processing: "client",
+    library: "MediaPipe + Canvas",
+    status: "live",
+    isNew: true,
+    priority: 121,
+    seoTitle: "3x4 Photo Maker Online — 3 × 4 cm Document Photo, Free | oMyImage",
+    seoDescription:
+      "Make a 3x4 photo online free: the face is framed automatically at 3 × 4 cm, on a white or coloured background, with a print sheet of copies. In your browser.",
+    primaryKeyword: "3x4 photo",
+  },
+  {
+    id: "2x2-photo",
+    name: "2x2 Photo Maker",
+    slug: "2x2-photo",
+    parentId: "passport-photo-maker",
+    preset: { size: "2x2in" },
+    categoryId: "edit",
+    shortDescription: "2 × 2 inch photos for US passports and visas.",
+    icon: "badge",
+    processing: "client",
+    library: "MediaPipe + Canvas",
+    status: "live",
+    isNew: true,
+    priority: 122,
+    seoTitle: "2x2 Photo Maker Online — US Passport & Visa Size, Free | oMyImage",
+    seoDescription:
+      "Make a 2x2 inch photo online free for a US passport or visa: automatic face framing, white background, 300 DPI, and a 4×6 print sheet. Private, in your browser.",
+    primaryKeyword: "2x2 photo",
+  },
 ];
 
 /**
@@ -774,9 +1073,14 @@ export const TOOLS: Tool[] = [
  * releases, because nothing links a prose string to the registry.
  *
  * Counts `live` only — a "planned" entry renders as "Coming soon" and is not
- * a tool a visitor can use.
+ * a tool a visitor can use. Variants (compress-image-to-50kb …) count where
+ * they are shipped, because the home grid and the Tools menu show them as
+ * tools there: the number has to match the cards on the same site. That makes
+ * it per locale — /id has no image-to-hd, /hi no 3x4-photo.
  */
-export const LIVE_TOOL_COUNT: number = TOOLS.filter((t) => t.status === "live").length;
+export function liveToolCount(locale: Locale = DEFAULT_LOCALE): number {
+  return TOOLS.filter((t) => t.status === "live" && (!t.parentId || toolShippedIn(t.id, locale))).length;
+}
 
 // ── Lookups ──────────────────────────────────────────────────────────────
 export const TOOLS_BY_ID: Record<string, Tool> = Object.fromEntries(
@@ -812,10 +1116,30 @@ export function getTool(slug: string): Tool | undefined {
  * tools are preferred.
  */
 export function relatedTools(tool: Tool, n = 3): Tool[] {
-  const live = TOOLS.filter((t) => t.status === "live" && t.id !== tool.id);
-  const sameCat = live.filter((t) => t.categoryId === tool.categoryId);
-  const others = live.filter((t) => t.categoryId !== tool.categoryId);
+  // Variants never appear here (their family has its own link strip), and a
+  // variant page shows its parent's list, so adding a variant can't reshuffle
+  // the related tools on any existing page.
+  const base = tool.parentId ? (TOOLS_BY_ID[tool.parentId] ?? tool) : tool;
+  const live = TOOLS.filter((t) => t.status === "live" && t.id !== base.id && !t.parentId);
+  const sameCat = live.filter((t) => t.categoryId === base.categoryId);
+  const others = live.filter((t) => t.categoryId !== base.categoryId);
   return [...sameCat, ...others].slice(0, n);
+}
+
+/** Live variants of a tool, in registry order. */
+export function variantsOf(parentId: string): Tool[] {
+  return TOOLS.filter((t) => t.parentId === parentId && t.status === "live");
+}
+
+/**
+ * The family a tool belongs to — parent first, then its live variants — or an
+ * empty list when it has none (a tool with no variants has no family strip).
+ */
+export function toolFamily(tool: Tool): Tool[] {
+  const parent = tool.parentId ? TOOLS_BY_ID[tool.parentId] : tool;
+  if (!parent) return [];
+  const variants = variantsOf(parent.id);
+  return variants.length ? [parent, ...variants] : [];
 }
 
 // ── Brand colors ───────────────────────────────────────────────────────────
@@ -865,6 +1189,7 @@ const TOOL_COLORS: Record<string, string> = {
   "remove-exif": "#C55A52",
   "gif-maker": "#C56A9A",
   "gif-to-images": "#B85C8C",
+  "passport-photo-maker": "#4F7FB8",
 };
 
 const CATEGORY_COLORS: Record<string, string> = {

@@ -97,7 +97,6 @@ const content: ToolPageContent = {
   security:
     "आपकी इमेज निजी रहती हैं। जोड़ने का काम पूरी तरह आपके ब्राउज़र में HTML canvas से होता है — कुछ भी किसी सर्वर पर नहीं भेजा जाता। न कुछ सहेजा जाता है, न आपकी फ़ाइलों पर नज़र रखी जाती है।",
 
-  rating: { value: "4.8", count: "289" },
 
   ui: {
     // MergeTool.tsx — module-scope LAYOUTS

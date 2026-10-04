@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { Icon } from "@/components/Icon";
-import { toolColor } from "@/lib/tools";
+import { liveToolCount, toolColor } from "@/lib/tools";
 import { useLocale, useT } from "@/i18n/I18nScope";
 import { localeHome, toolHref } from "@/lib/i18n/links";
 import { toolName } from "@/lib/i18n/tool-labels";
@@ -124,7 +124,7 @@ export function NavToolsDropdown() {
             onMouseEnter={openMenu}
             onMouseLeave={scheduleClose}
             style={{ position: "fixed", top: pos.top, left: pos.left, width: pos.width }}
-            className="z-50 rounded-2xl border border-outline-variant bg-surface-container-lowest shadow-2xl"
+            className="z-50 max-h-[calc(100vh-6rem)] overflow-y-auto rounded-2xl border border-outline-variant bg-surface-container-lowest shadow-2xl"
           >
             {/* Top accent bar */}
             <div
@@ -156,7 +156,7 @@ export function NavToolsDropdown() {
                       </div>
 
                       <ul className="flex flex-col">
-                        {navSectionTools(sec).map((tool) => (
+                        {navSectionTools(sec, locale).map((tool) => (
                           <li key={tool.id}>
                             <Link
                               href={toolHref(tool, locale)}
@@ -195,7 +195,7 @@ export function NavToolsDropdown() {
 
             <div className="flex items-center justify-between rounded-b-2xl border-t border-outline-variant/40 bg-surface-container/40 px-5 py-3">
               <span className="text-label-sm text-on-surface-variant">
-                {t("40 free tools — no sign-up required")}
+                {t("{n} free tools — no sign-up required", { n: liveToolCount(locale) })}
               </span>
               <Link
                 href={`${localeHome(locale) === "/" ? "/" : localeHome(locale)}#tools`}

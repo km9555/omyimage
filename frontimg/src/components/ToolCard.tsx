@@ -25,6 +25,14 @@ export function ToolCard({ tool }: { tool: Tool }) {
         </span>
         <h3 className="text-body-md font-bold text-primary leading-tight">{toolName(tool, locale)}</h3>
       </div>
+      {/* A tag on the card's top edge, outside the text flow: inline beside
+          the <h3> it made long names wrap (uneven card heights) and ran into
+          the favourite heart. */}
+      {tool.isNew && (
+        <span className="absolute -top-2 left-3 rounded-full bg-secondary px-2 py-px text-[10px] font-bold uppercase tracking-wide text-on-secondary shadow-sm">
+          {t("New")}
+        </span>
+      )}
       <p className="mt-2 text-label-sm font-label-sm text-on-surface-variant leading-snug line-clamp-2 min-h-[2.5em]">
         {toolDescription(tool, locale)}
       </p>
@@ -48,7 +56,7 @@ export function ToolCard({ tool }: { tool: Tool }) {
   );
 
   const cardClass =
-    "group relative bg-surface-container-lowest border border-surface-variant rounded-lg p-4 flex flex-col items-stretch text-left ambient-shadow";
+    "group relative h-full bg-surface-container-lowest border border-surface-variant rounded-lg p-4 flex flex-col items-stretch text-left ambient-shadow";
 
   if (tool.status === "live") {
     return (

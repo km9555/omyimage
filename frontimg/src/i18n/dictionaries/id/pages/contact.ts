@@ -7,7 +7,7 @@ import type { Dict } from "@/i18n/t";
  * page names in the footer — those are links whose labels come from this file
  * so they read as the Indonesian pages they point at.
  *
- * {n} is the live tool count (LIVE_TOOL_COUNT); Indonesian does not inflect
+ * {n} is the live tool count (liveToolCount); Indonesian does not inflect
  * for number, so one form covers every count.
  *
  * ONE DELIBERATE DIFFERENCE from the English: the "Are my images uploaded?"

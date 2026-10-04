@@ -105,7 +105,6 @@ const content: ToolPageContent = {
   security:
     "Foto Anda tetap privat. Seluruh editor berjalan di browser Anda dengan kanvas HTML — tidak ada yang diunggah ke server. Tanpa penyimpanan, tanpa pelacakan file Anda.",
 
-  rating: { value: "4.9", count: "612" },
 
   ui: {
     "Please select an image file.": "Pilih file gambar.",

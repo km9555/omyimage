@@ -101,7 +101,6 @@ const content: ToolPageContent = {
   security:
     "HEIC का कन्वर्ज़न हमारे सर्वर पर ओपन-सोर्स ImageMagick से होता है। नतीजे सिर्फ़ थोड़ी देर, एक निजी डाउनलोड लिंक के पीछे रखे जाते हैं और एक घंटे के भीतर अपने आप मिटा दिए जाते हैं। हम आपकी फोटो कभी साझा नहीं करते और न दोबारा इस्तेमाल करते हैं।",
 
-  rating: { value: "4.9", count: "742" },
 
   ui: {
     // HeicTool.tsx (shared with /heic-to-png — copy these there too)

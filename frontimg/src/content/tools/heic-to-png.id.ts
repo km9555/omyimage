@@ -92,7 +92,6 @@ const content: ToolPageContent = {
   security:
     "Membuka HEIC tidak bisa dilakukan di browser — setiap dekoder JavaScript adalah libheif berlisensi LGPL, yang tidak bisa kami kirim ke perangkat Anda. Karena itu foto Anda dikirim ke server kami melalui koneksi HTTPS terenkripsi, dikonversi, lalu langsung dihapus. Foto tidak pernah disimpan, diindeks, atau dipakai untuk hal lain.",
 
-  rating: { value: "4.8", count: "563" },
 
   ui: {
     // HeicTool.tsx — the same keys as heic-to-jpg.id.ts (one shared component,

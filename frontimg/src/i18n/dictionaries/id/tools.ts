@@ -203,6 +203,66 @@ export const idTools: Record<string, LocalizedTool> = {
     name: "Jadikan Foto HD",
     shortDescription: "Perbesar dan pertajam foto dengan AI — 2×, 3×, atau 4×, detail dipulihkan.",
   },
+
+  // ── Varian: kompres ke ukuran tertentu (expansion.md) ──
+  "reduce-image-size-in-kb": {
+    name: "Perkecil Ukuran Foto dalam KB",
+    shortDescription: "Kecilkan foto ke ukuran KB atau MB yang Anda butuhkan.",
+  },
+  "compress-image-to-20kb": {
+    name: "Kompres Foto 20 KB",
+    shortDescription: "Foto dan tanda tangan di bawah 20 KB untuk formulir.",
+  },
+  "compress-image-to-50kb": {
+    name: "Kompres Foto 50 KB",
+    shortDescription: "Batas pas foto yang sering diminta formulir.",
+  },
+  "compress-image-to-100kb": {
+    name: "Kompres Foto 100 KB",
+    shortDescription: "Pas foto dan scan tetap jelas di bawah 100 KB.",
+  },
+  "compress-image-to-200kb": {
+    name: "Kompres Foto 200 KB",
+    shortDescription: "Pas foto dan scan dokumen di bawah 200 KB.",
+  },
+  "compress-image-to-1mb": {
+    name: "Kompres Foto 1 MB",
+    shortDescription: "Foto ponsel di bawah 1 MB, biasanya ukuran penuh.",
+  },
+
+  // ── Varian: HD, mirror, background (expansion.md) ──
+  "image-to-hd": {
+    name: "Ubah Foto ke HD",
+    shortDescription: "Ubah foto kecil atau beresolusi rendah menjadi HD.",
+  },
+  "unblur-image": {
+    name: "Foto Blur Jadi Jelas",
+    shortDescription: "Pertajam foto yang agak blur dengan AI.",
+  },
+  "flip-image": {
+    name: "Mirror Foto",
+    shortDescription: "Balik foto secara horizontal atau vertikal.",
+  },
+  "change-background-color": {
+    name: "Ganti Background Foto",
+    shortDescription: "Background merah, biru, atau putih untuk foto apa pun.",
+  },
+  "blur-background": {
+    name: "Blur Background Foto",
+    shortDescription: "Efek potret di belakang orang atau benda.",
+  },
+  "passport-photo-maker": {
+    name: "Pas Foto Online",
+    shortDescription: "Pas foto 3x4, 4x6, paspor dan visa, siap cetak.",
+  },
+  "3x4-photo": {
+    name: "Pas Foto 3x4",
+    shortDescription: "Pas foto 3 × 4 cm dengan latar merah, biru, atau putih.",
+  },
+  "2x2-photo": {
+    name: "Pas Foto 2x2 Inci",
+    shortDescription: "Foto 2 × 2 inci untuk paspor dan visa Amerika.",
+  },
 };
 
 /**

@@ -117,4 +117,50 @@ export const ptAliases: Record<string, string[]> = {
     "aumentar resolução", "melhorar foto", "foto em hd", "ampliar imagem",
     "deixar foto nítida", "tirar desfoque", "melhorar imagem com ia", "2x", "4x",
   ],
+
+  // Variantes — comprimir até um tamanho
+  "reduce-image-size-in-kb": [
+    "diminuir kb da foto", "reduzir kb", "diminuir tamanho da foto em kb", "comprimir imagem em kb",
+  ],
+  "compress-image-to-20kb": [
+    "comprimir imagem para 20kb", "20 kb", "assinatura 20 kb",
+  ],
+  "compress-image-to-50kb": [
+    "comprimir imagem para 50kb", "50 kb",
+  ],
+  "compress-image-to-100kb": [
+    "comprimir imagem para 100kb", "100 kb", "reduzir foto para 100kb",
+  ],
+  "compress-image-to-200kb": [
+    "comprimir imagem para 200kb", "200 kb",
+  ],
+  "compress-image-to-1mb": [
+    "comprimir imagem para 1mb", "1 mb", "comprimir foto 1mb",
+  ],
+
+  // Variantes — HD, espelhar, fundo
+  "image-to-hd": [
+    "imagem em hd", "foto em hd", "deixar foto em hd", "converter imagem em hd", "foto hd",
+  ],
+  "unblur-image": [
+    "tirar desfoque", "foto borrada", "despixelar imagem", "deixar foto nítida",
+  ],
+  "flip-image": [
+    "espelhar foto", "espelhar imagem", "inverter foto", "virar imagem", "efeito espelho",
+  ],
+  "change-background-color": [
+    "fundo branco foto", "trocar fundo", "mudar fundo da foto", "fundo azul", "fundo vermelho", "foto 3x4 fundo branco",
+  ],
+  "blur-background": [
+    "desfocar fundo da foto", "fundo desfocado", "modo retrato", "efeito bokeh",
+  ],
+  "passport-photo-maker": [
+    "foto para documento", "foto de passaporte", "foto para passaporte", "foto 5x7", "foto para rg", "foto para cnh", "foto de visto",
+  ],
+  "3x4-photo": [
+    "foto 3x4", "fazer foto 3x4", "foto 3x4 online", "foto 3 por 4", "foto para carteirinha",
+  ],
+  "2x2-photo": [
+    "foto 2x2", "foto visto americano", "foto passaporte americano", "2x2 polegadas",
+  ],
 };

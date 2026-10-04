@@ -12,6 +12,8 @@ const content: ToolPageContent = {
     "Enlarge and enhance images up to 4× with AI that adds real detail instead of blurring — it sharpens soft, noisy or compressed photos as it goes. Powered by open-source Real-ESRGAN.",
   category: { id: "ai", label: "Image AI" },
 
+  variantsHeading: "More ways to sharpen a photo",
+
   intro:
     "Make small or low-resolution images bigger without the blur. oMyImage's Upscale Image tool uses the open-source Real-ESRGAN model to enlarge photos up to 4×, reconstructing edges and textures so the result stays sharp. It runs on our server because the AI is compute-heavy, then downloads as a high-resolution image.",
 
@@ -82,8 +84,6 @@ const content: ToolPageContent = {
 
   security:
     "Upscaling runs on our server using the open-source Real-ESRGAN engine. Results are stored only briefly behind a private download link and auto-deleted within an hour. We never share or reuse your images.",
-
-  rating: { value: "4.8", count: "612" },
 };
 
 export default content;

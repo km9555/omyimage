@@ -131,7 +131,6 @@ const content: ToolPageContent = {
   security:
     "Pembacaan utama terjadi di server kami: gambar Anda diunggah melalui koneksi HTTPS terenkripsi, teksnya dikenali, lalu filenya langsung dihapus setelah dibaca. File tidak disimpan, tidak diindeks, dan tidak dipakai untuk melatih model. Kalau server tidak bisa dihubungi, pengenalan berjalan sebagai WebAssembly di dalam halaman dan gambar sama sekali tidak diunggah; satu-satunya permintaan jaringan dalam hal itu adalah untuk model pengenalan yang umum, yang tidak membawa informasi apa pun tentang gambar Anda.",
 
-  rating: { value: "4.8", count: "726" },
 
   ui: {
     "Please select a JPG, PNG, WEBP or BMP image.": "Pilih gambar JPG, PNG, WEBP, atau BMP.",

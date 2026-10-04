@@ -111,7 +111,6 @@ const content: ToolPageContent = {
   security:
     "Foto Anda tetap privat. Bingkai ditambahkan sepenuhnya di browser Anda dengan HTML canvas — tidak ada yang diunggah ke server. Tidak ada penyimpanan, tidak ada pelacakan file Anda.",
 
-  rating: { value: "4.8", count: "241" },
 
   ui: {
     // lib/image/frame FRAME_PRESETS. "White" is common.ts's «Putih».

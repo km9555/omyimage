@@ -85,8 +85,6 @@ const content: ToolPageContent = {
 
   security:
     "Your images stay private. Both the face detection and the blurring happen entirely in your browser — the open-source MediaPipe BlazeFace model is downloaded to your device and run there, so nothing is uploaded to a server at any point. The censored result is permanent in the exported file. No storage, no tracking of your files.",
-
-  rating: { value: "4.8", count: "389" },
 };
 
 export default content;

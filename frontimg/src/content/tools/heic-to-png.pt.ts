@@ -138,7 +138,6 @@ const content: ToolPageContent = {
   security:
     "A decodificação de HEIC não roda num navegador — todo decodificador em JavaScript é a libheif, sob licença LGPL, que não temos como entregar ao seu aparelho. Sua foto é, portanto, enviada ao nosso servidor por uma conexão HTTPS criptografada, convertida e excluída logo em seguida. Ela nunca é armazenada, indexada ou usada para mais nada.",
 
-  rating: { value: "4.8", count: "563" },
 
   ui: {
     // HeicTool.tsx — the same keys as heic-to-jpg.pt.ts (one shared component,

@@ -97,7 +97,6 @@ const content: ToolPageContent = {
   security:
     "Ваши изображения остаются при вас. Рамка добавляется целиком в браузере через HTML canvas — на сервер ничего не отправляется. Ни хранения, ни слежки за вашими файлами.",
 
-  rating: { value: "4.8", count: "241" },
 
   ui: {
     // lib/image/frame FRAME_PRESETS — these name «рамка», which is feminine,

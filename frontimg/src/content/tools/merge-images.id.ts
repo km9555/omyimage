@@ -96,7 +96,6 @@ const content: ToolPageContent = {
   security:
     "Foto Anda tetap privat. Penggabungan terjadi sepenuhnya di browser Anda dengan kanvas HTML — tidak ada yang diunggah ke server. Tanpa penyimpanan, tanpa pelacakan file Anda.",
 
-  rating: { value: "4.8", count: "289" },
 
   ui: {
     "Side by side": "Berdampingan",

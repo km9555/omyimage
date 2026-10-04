@@ -95,7 +95,6 @@ const content: ToolPageContent = {
   security:
     "Foto Anda tetap privat. Konversi ke hitam putih berlangsung sepenuhnya di browser Anda dengan HTML canvas — tidak ada yang diunggah ke server. Tidak ada penyimpanan, tidak ada pelacakan file Anda.",
 
-  rating: { value: "4.8", count: "318" },
 
   ui: {
     "Same as original": "Sama seperti aslinya",

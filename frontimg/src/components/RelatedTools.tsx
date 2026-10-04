@@ -18,7 +18,7 @@ export function RelatedTools({ tools, locale }: { tools: Tool[]; locale: Locale 
   if (tools.length === 0) return null;
   const t = getT(locale);
   return (
-    <section aria-label={t("More tools")} className="mt-4">
+    <section aria-label={t("More tools")} data-related-tools className="mt-4">
       <h2 className="text-headline-md font-semibold text-primary mb-stack-md">{t("More tools")}</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-stack-md">
         {tools.map((r) => (

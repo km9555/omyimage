@@ -12,6 +12,8 @@ const content: ToolPageContent = {
     "Remove the background from any image automatically with AI and download a clean, transparent PNG. Powered by open-source rembg.",
   category: { id: "ai", label: "Image AI" },
 
+  variantsHeading: "Replace or blur the background instead",
+
   intro:
     "Cut out the background of any photo in one click. oMyImage's Remove Background tool uses an open-source AI model to detect the subject — a person, product or object — and turn everything else transparent, giving you a clean PNG for stores, presentations and designs. Heavy AI work runs on our server; the result downloads as a transparent PNG.",
 
@@ -74,15 +76,13 @@ const content: ToolPageContent = {
     { q: "What kinds of images work best?", a: "A clear subject against a background it contrasts with. Portraits, products on a plain surface and pets all work well. The model struggles when subject and background share colours and tones — a grey cat on a grey sofa is genuinely hard." },
     { q: "Does it handle hair and fur?", a: "Reasonably well, and this is where background removal used to fail badly. Fine strands are the hardest case for any cut-out, so expect the model to get the overall shape right and to lose a few flyaway hairs at the edge. Good separation between subject and background helps enormously." },
     { q: "Why does the result have to be a PNG?", a: "Because transparency needs an alpha channel and JPG has none. If you saved the cut-out as a JPG the removed area would come back as solid white, which defeats the purpose. WEBP also supports transparency if you need a smaller file for the web." },
-    { q: "Can I put a new background behind the subject?", a: "Yes — once you have the transparent PNG, drop it into the Image Editor or the Add Border tool to composite it over a colour, or place it in any design tool. The cut-out is a normal PNG with transparency, so anything that understands PNG will work." },
+    { q: "Can I put a new background behind the subject?", a: "Yes. For a solid colour — white, blue or red for an ID photo — use Change Background Color, which puts the cut-out on any colour in one step. Blur Background keeps the subject and softens the original scene behind it. The transparent PNG from this page also works in any design tool." },
     { q: "Why does this one run on a server when other tools do not?", a: "Because it uses a neural network that is far too large to download into a browser tab. The model runs as a separate process on our machine, your image is sent over HTTPS, and both the upload and the result are deleted within the hour." },
     { q: "Can I remove backgrounds from several images at once?", a: "This tool takes one image at a time, because each run is a heavy model inference rather than a quick pixel operation. For a batch, process them one after another — each takes a few seconds." },
   ],
 
   security:
     "Processing runs on our server using the open-source rembg engine. Results are stored only briefly behind a private download link and auto-deleted within an hour. We never share or reuse your images.",
-
-  rating: { value: "4.8", count: "974" },
 };
 
 export default content;

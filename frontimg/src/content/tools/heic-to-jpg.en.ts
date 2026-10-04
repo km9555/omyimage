@@ -80,8 +80,6 @@ const content: ToolPageContent = {
 
   security:
     "HEIC conversion runs on our server using open-source ImageMagick. Results are stored only briefly behind a private download link and auto-deleted within an hour. We never share or reuse your photos.",
-
-  rating: { value: "4.9", count: "742" },
 };
 
 export default content;

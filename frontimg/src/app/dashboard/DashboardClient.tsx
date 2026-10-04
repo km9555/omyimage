@@ -12,6 +12,7 @@ import { useFavoriteTools, useRecentTools } from "@/lib/useToolPrefs";
 import { usePremiumUsage } from "@/lib/premium-usage";
 import { CATEGORY_PILLS as PILLS } from "@/lib/tool-categories";
 import { TOOLS } from "@/lib/tools";
+import { toolShippedIn } from "@/i18n/status";
 import { searchTools } from "@/lib/tool-search";
 import { planLabel, planAllowanceLabel, PLAN_MAX_UPLOAD_MB } from "@/lib/plan-limits";
 import { localeHome, localeHref } from "@/lib/i18n/links";
@@ -47,7 +48,11 @@ export function DashboardClient() {
   // Ranked, alias-aware search within the active pill; an empty query falls
   // back to priority order. Shared with the home page — see lib/tool-search.ts.
   const browseTools = useMemo(() => {
-    const pool = TOOLS.filter((tool) => tool.status === "live").filter(pill.match);
+    // Same pool as the home grid: variants included where the locale ships
+    // them, so the two directories never disagree.
+    const pool = TOOLS.filter(
+      (tool) => tool.status === "live" && (!tool.parentId || toolShippedIn(tool.id, locale)),
+    ).filter(pill.match);
     return searchTools(query, pool, locale);
   }, [pill, query, locale]);
 
