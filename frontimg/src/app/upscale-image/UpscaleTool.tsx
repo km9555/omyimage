@@ -5,7 +5,16 @@ import { useT } from "@/i18n/I18nScope";
 
 const SCALES = [2, 3, 4];
 
-export function UpscaleTool() {
+/**
+ * Settings a variant page opens with (lib/tools.ts `preset`): image-to-hd and
+ * unblur-image are this engine with their own copy. Without one, /upscale-image
+ * behaves exactly as before (2×).
+ */
+export interface UpscalePreset {
+  scale?: 2 | 3 | 4;
+}
+
+export function UpscaleTool({ preset }: { preset?: UpscalePreset } = {}) {
   const t = useT();
   return (
     <ServerImageTool
@@ -17,7 +26,7 @@ export function UpscaleTool() {
       actionLabel={t("Upscale")}
       processingLabel={t("Upscaling…")}
       compare
-      initialOptions={{ scale: 2 }}
+      initialOptions={{ scale: preset?.scale ?? 2 }}
       controls={(o, set) => (
         <div className="flex flex-col gap-1.5">
           <label className="text-label-sm font-label-sm text-on-surface-variant">{t("Scale factor")}</label>

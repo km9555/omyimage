@@ -227,6 +227,28 @@ export const ptTools: Record<string, LocalizedTool> = {
     name: "Comprimir imagem para 1 MB",
     shortDescription: "Fotos do celular abaixo de 1 MB, quase sempre em tamanho total.",
   },
+
+  // ── Variantes: melhorar, espelhar, fundo (expansion.md) ──
+  "image-to-hd": {
+    name: "Converter imagem em HD",
+    shortDescription: "Transforme uma foto pequena ou em baixa resolução em HD.",
+  },
+  "unblur-image": {
+    name: "Tirar desfoque da foto",
+    shortDescription: "Deixe nítidas fotos levemente borradas com IA.",
+  },
+  "flip-image": {
+    name: "Espelhar imagem",
+    shortDescription: "Espelhe fotos na horizontal ou na vertical.",
+  },
+  "change-background-color": {
+    name: "Trocar fundo da foto",
+    shortDescription: "Fundo branco, azul ou vermelho para qualquer foto.",
+  },
+  "blur-background": {
+    name: "Desfocar fundo",
+    shortDescription: "Efeito retrato atrás de qualquer pessoa ou objeto.",
+  },
 };
 
 /**

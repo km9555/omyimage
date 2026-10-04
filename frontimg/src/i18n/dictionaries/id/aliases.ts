@@ -131,4 +131,21 @@ export const idAliases: Record<string, string[]> = {
   "compress-image-to-1mb": [
     "kompres foto 1 mb", "kompres foto 1mb", "1 mb", "ubah foto jadi 1 mb",
   ],
+
+  // Varian — HD, mirror, background
+  "image-to-hd": [
+    "jadikan foto hd", "foto hd", "jpg to hd",
+  ],
+  "unblur-image": [
+    "foto blur jadi jelas", "pertajam foto",
+  ],
+  "flip-image": [
+    "mirror foto", "balik foto", "membalik foto", "cermin foto",
+  ],
+  "change-background-color": [
+    "ganti background foto", "background merah", "background biru", "pas foto background merah", "ganti latar foto",
+  ],
+  "blur-background": [
+    "blur background foto", "foto blur background", "efek bokeh",
+  ],
 };

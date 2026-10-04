@@ -146,4 +146,21 @@ export const hiAliases: Record<string, string[]> = {
   "compress-image-to-1mb": [
     "1 mb", "फोटो 1 mb",
   ],
+
+  // वैरिएंट — HD, मिरर, बैकग्राउंड
+  "image-to-hd": [
+    "फोटो hd करें", "photo hd kaise kare", "hd फोटो", "hd image converter", "फोटो को hd बनाएँ",
+  ],
+  "unblur-image": [
+    "धुँधली फोटो साफ़", "फोटो साफ़ करें", "unblur", "ब्लर हटाएँ",
+  ],
+  "flip-image": [
+    "मिरर इमेज", "फोटो उल्टा करें", "mirror image", "फोटो फ़्लिप",
+  ],
+  "change-background-color": [
+    "फोटो का बैकग्राउंड बदलें", "photo background change", "सफ़ेद बैकग्राउंड", "बैकग्राउंड रंग",
+  ],
+  "blur-background": [
+    "बैकग्राउंड ब्लर", "पोर्ट्रेट मोड", "blur background",
+  ],
 };

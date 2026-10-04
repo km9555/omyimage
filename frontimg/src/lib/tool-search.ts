@@ -220,6 +220,23 @@ export const TOOL_ALIASES: Record<string, string[]> = {
   "compress-image-to-1mb": [
     "1 mb", "1mb", "under 1mb", "photo 1mb", "1 megabyte", "1000 kb",
   ],
+
+  // Variants — upscale, rotate, remove-background
+  "image-to-hd": [
+    "hd image converter", "convert image to hd", "photo to hd", "hd photo", "image to 4k", "hd converter", "make image hd",
+  ],
+  "unblur-image": [
+    "unblur", "fix blurry photo", "sharpen image", "unpixelate", "depixelate", "make photo clear", "deblur",
+  ],
+  "flip-image": [
+    "mirror image", "mirror photo", "flip horizontally", "flip vertically", "reverse image", "unmirror selfie",
+  ],
+  "change-background-color": [
+    "photo background change", "white background", "change background", "blue background", "red background", "passport photo background", "background color",
+  ],
+  "blur-background": [
+    "portrait mode", "bokeh", "background blur", "blur behind", "depth effect", "blur photo background",
+  ],
 };
 
 /**

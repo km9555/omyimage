@@ -42,6 +42,7 @@ export function ServerImageTool({
   initialOptions = {},
   controls,
   note,
+  postProcess,
 }: {
   accent: string;
   icon: string;
@@ -60,6 +61,14 @@ export function ServerImageTool({
   initialOptions?: Record<string, unknown>;
   controls?: (o: Record<string, unknown>, set: (k: string, v: unknown) => void) => ReactNode;
   note?: ReactNode;
+  /**
+   * A browser-side step applied to the server's output — remove-background's
+   * colour and blur variants composite the cut-out here. It re-runs whenever
+   * the options change WITHOUT calling the server again, so trying five
+   * background colours costs one AI run, not five. Pass a stable function
+   * (module scope or useCallback): it is an effect dependency.
+   */
+  postProcess?: (raw: Blob, original: File, opts: Record<string, unknown>) => Promise<{ blob: Blob; name?: string }>;
 }) {
   const t = useT();
   const formatBytes = useFormatBytes();
@@ -70,6 +79,8 @@ export function ServerImageTool({
   const [inUrl, setInUrl] = useState<string | null>(null);
   const [opts, setOpts] = useState<Record<string, unknown>>(initialOptions);
   const [result, setResult] = useState<{ url: string; blob: Blob; name: string } | null>(null);
+  /** The server's own output, kept when a `postProcess` step derives `result` from it. */
+  const [raw, setRaw] = useState<{ blob: Blob; name: string } | null>(null);
   const [isWorking, setIsWorking] = useState(false);
 
   // One effect per URL, each owning only its own lifetime. These used to share a
@@ -92,8 +103,23 @@ export function ServerImageTool({
     const url = URL.createObjectURL(f);
     setInUrl(url);
     setResult(null);
+    setRaw(null);
     setFile(f);
   }, [t]);
+
+  // Derive the shown result from the server output whenever it or the options
+  // change. `alive` drops a slow composite that a newer one has overtaken.
+  useEffect(() => {
+    if (!postProcess || !raw || !file) return;
+    let alive = true;
+    postProcess(raw.blob, file, opts)
+      .then((out) => {
+        if (!alive) return;
+        setResult({ url: URL.createObjectURL(out.blob), blob: out.blob, name: out.name ?? raw.name });
+      })
+      .catch((err) => { if (alive) toast.error(translateError(err, t, "Processing failed.")); });
+    return () => { alive = false; };
+  }, [postProcess, raw, file, opts, t]);
 
   useHandoff(onFiles);
 
@@ -104,8 +130,12 @@ export function ServerImageTool({
     setIsWorking(true);
     try {
       const r = await processOnServer(endpoint, file, opts);
-      const url = URL.createObjectURL(r.blob);
-      setResult({ url, blob: r.blob, name: r.filename });
+      if (postProcess) {
+        setRaw({ blob: r.blob, name: r.filename });
+      } else {
+        const url = URL.createObjectURL(r.blob);
+        setResult({ url, blob: r.blob, name: r.filename });
+      }
       toast.success(t("Done — your image is ready."));
     } catch (err) {
       toast.error(translateError(err, t, "Processing failed."));
@@ -117,7 +147,7 @@ export function ServerImageTool({
   const reset = () => {
     // No manual revokes: setting these to null runs each effect's cleanup, which
     // is the single owner of those URLs.
-    setFile(null); setInUrl(null); setResult(null);
+    setFile(null); setInUrl(null); setResult(null); setRaw(null);
   };
 
   if (!file) {

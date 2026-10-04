@@ -3,6 +3,7 @@ import type { Locale } from "@/i18n/config";
 import { toolHref } from "@/lib/i18n/links";
 import { toolName } from "@/lib/i18n/tool-labels";
 import { toolFamily, type Tool } from "@/lib/tools";
+import { toolShippedIn } from "@/i18n/status";
 
 /**
  * The link strip that ties a variant family together: "Compress Image",
@@ -17,8 +18,11 @@ import { toolFamily, type Tool } from "@/lib/tools";
  * every existing page is unchanged until its first variant ships.
  */
 export function VariantLinks({ tool, locale, heading }: { tool: Tool; locale: Locale; heading?: string }) {
-  const family = toolFamily(tool);
-  if (family.length === 0) return null;
+  // Only members that exist in this locale: a variant deliberately not shipped
+  // somewhere (image-to-hd is not built for /id, where /id/hd-foto already IS
+  // that page) must not appear as a link back out to English.
+  const family = toolFamily(tool).filter((v) => toolShippedIn(v.id, locale));
+  if (family.length < 2) return null;
   const title = heading ?? toolName(family[0], locale);
 
   return (

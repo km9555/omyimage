@@ -35,6 +35,8 @@ const content: ToolPageContent = {
   metaDescription:
     "Jadikan foto HD online gratis: perbesar hingga 4× dan perjelas foto yang pecah atau buram dengan AI Real-ESRGAN. Tanpa daftar, tanpa watermark.",
 
+  variantsHeading: "Cara lain memperjelas foto",
+
   intro:
     "Jadikan foto kecil atau beresolusi rendah lebih besar tanpa jadi buram. Alat ini memakai model sumber terbuka Real-ESRGAN untuk memperbesar foto hingga 4×, sambil membangun ulang tepi dan tekstur sehingga hasilnya tetap tajam. Foto yang pecah, buram, atau kualitasnya turun karena kompresi ikut diperjelas dalam prosesnya. Alat ini berjalan di server kami karena AI-nya butuh komputasi berat, lalu hasilnya diunduh sebagai foto beresolusi tinggi.",
 

@@ -227,6 +227,28 @@ export const ruTools: Record<string, LocalizedTool> = {
     name: "Сжать фото до 1 МБ",
     shortDescription: "Фото с телефона меньше 1 МБ, обычно в полном размере.",
   },
+
+  // ── Варианты: HD, отражение, фон (expansion.md) ──
+  "image-to-hd": {
+    name: "Фото в HD",
+    shortDescription: "Сделайте маленькое или нечёткое фото HD.",
+  },
+  "unblur-image": {
+    name: "Убрать размытие с фото",
+    shortDescription: "ИИ делает чётче слегка размытые фото.",
+  },
+  "flip-image": {
+    name: "Отразить фото",
+    shortDescription: "Зеркальное отражение по горизонтали или вертикали.",
+  },
+  "change-background-color": {
+    name: "Поменять цвет фона",
+    shortDescription: "Белый, синий или красный фон для любого фото.",
+  },
+  "blur-background": {
+    name: "Размыть фон",
+    shortDescription: "Эффект портрета за человеком или предметом.",
+  },
 };
 
 /**

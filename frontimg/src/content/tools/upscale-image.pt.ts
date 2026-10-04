@@ -22,6 +22,8 @@ const content: ToolPageContent = {
   metaDescription:
     "Melhore a qualidade de fotos online e grátis com IA: aumente a resolução em 2×, 3× ou 4× sem borrar, recuperando bordas e texturas. JPG, PNG e WEBP, sem cadastro.",
 
+  variantsHeading: "Outras formas de melhorar a foto",
+
   intro:
     "Melhorar a qualidade da imagem é o que você precisa quando uma foto pequena ou de baixa resolução tem que ficar maior sem virar um borrão. A ferramenta Melhorar qualidade da imagem do oMyImage usa o modelo de código aberto Real-ESRGAN para ampliar fotos em até 4×, reconstruindo bordas e texturas para o resultado continuar nítido. Ela roda no nosso servidor, porque a IA exige muito processamento, e entrega uma imagem em alta resolução para baixar.",
 

@@ -137,4 +137,21 @@ export const ptAliases: Record<string, string[]> = {
   "compress-image-to-1mb": [
     "comprimir imagem para 1mb", "1 mb", "comprimir foto 1mb",
   ],
+
+  // Variantes — HD, espelhar, fundo
+  "image-to-hd": [
+    "imagem em hd", "foto em hd", "deixar foto em hd", "converter imagem em hd", "foto hd",
+  ],
+  "unblur-image": [
+    "tirar desfoque", "foto borrada", "despixelar imagem", "deixar foto nítida",
+  ],
+  "flip-image": [
+    "espelhar foto", "espelhar imagem", "inverter foto", "virar imagem", "efeito espelho",
+  ],
+  "change-background-color": [
+    "fundo branco foto", "trocar fundo", "mudar fundo da foto", "fundo azul", "fundo vermelho", "foto 3x4 fundo branco",
+  ],
+  "blur-background": [
+    "desfocar fundo da foto", "fundo desfocado", "modo retrato", "efeito bokeh",
+  ],
 };

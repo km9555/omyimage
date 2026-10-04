@@ -229,6 +229,28 @@ export const idTools: Record<string, LocalizedTool> = {
     name: "Kompres Foto 1 MB",
     shortDescription: "Foto ponsel di bawah 1 MB, biasanya ukuran penuh.",
   },
+
+  // ── Varian: HD, mirror, background (expansion.md) ──
+  "image-to-hd": {
+    name: "Ubah Foto ke HD",
+    shortDescription: "Ubah foto kecil atau beresolusi rendah menjadi HD.",
+  },
+  "unblur-image": {
+    name: "Foto Blur Jadi Jelas",
+    shortDescription: "Pertajam foto yang agak blur dengan AI.",
+  },
+  "flip-image": {
+    name: "Mirror Foto",
+    shortDescription: "Balik foto secara horizontal atau vertikal.",
+  },
+  "change-background-color": {
+    name: "Ganti Background Foto",
+    shortDescription: "Background merah, biru, atau putih untuk foto apa pun.",
+  },
+  "blur-background": {
+    name: "Blur Background Foto",
+    shortDescription: "Efek potret di belakang orang atau benda.",
+  },
 };
 
 /**

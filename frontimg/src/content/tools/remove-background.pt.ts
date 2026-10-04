@@ -23,6 +23,8 @@ const content: ToolPageContent = {
   metaDescription:
     "Remova o fundo de fotos online e grátis com IA. Recorte pessoas, produtos e objetos e baixe um PNG com fundo transparente, pronto para Mercado Livre e Shopee.",
 
+  variantsHeading: "Trocar ou desfocar o fundo",
+
   intro:
     "Remover o fundo de uma imagem agora leva um clique. A ferramenta Remover fundo do oMyImage usa um modelo de IA de código aberto para detectar o assunto principal — uma pessoa, um produto ou um objeto — e deixar todo o resto transparente, entregando um PNG limpo para lojas virtuais, apresentações e designs. O processamento pesado de IA roda no nosso servidor, e o resultado é baixado como PNG com fundo transparente.",
 
@@ -85,7 +87,7 @@ const content: ToolPageContent = {
     { q: "Que tipo de imagem funciona melhor?", a: "Um assunto bem definido sobre um fundo com o qual ele contrasta. Retratos, produtos sobre uma superfície lisa e animais de estimação funcionam bem. O modelo tem dificuldade quando assunto e fundo têm cores e tons parecidos — um gato cinza em um sofá cinza é realmente difícil." },
     { q: "Funciona com cabelo e pelos?", a: "Razoavelmente bem, e era exatamente aqui que a remoção de fundo costumava falhar feio. Fios finos são o caso mais difícil para qualquer recorte, então espere que o modelo acerte o formato geral e perca alguns fios soltos na borda. Uma boa separação entre assunto e fundo ajuda muito." },
     { q: "Por que o resultado precisa ser PNG?", a: "Porque a transparência precisa de um canal alfa, e o JPG não tem. Se você salvasse o recorte em JPG, a área removida voltaria como branco sólido, o que acaba com o propósito. O WEBP também aceita transparência, se você precisar de um arquivo menor para a web." },
-    { q: "Posso colocar um fundo novo atrás do assunto?", a: "Sim — com o PNG transparente em mãos, abra-o no Editor de fotos ou na ferramenta Adicionar borda para colocá-lo sobre uma cor, ou use em qualquer programa de design. O recorte é um PNG normal com transparência, então qualquer programa que entenda PNG funciona." },
+    { q: "Posso colocar um fundo novo atrás do assunto?", a: "Sim. Para uma cor sólida — branco, azul ou vermelho para foto de documento — use Trocar fundo da foto, que coloca o recorte sobre qualquer cor em um passo. Desfocar fundo mantém o assunto e desfoca a cena original atrás dele. O PNG transparente desta página também funciona em qualquer programa de design." },
     { q: "Por que esta ferramenta roda em um servidor e as outras não?", a: "Porque ela usa uma rede neural grande demais para ser baixada em uma aba do navegador. O modelo roda como um processo separado na nossa máquina, sua imagem é enviada por HTTPS, e tanto o envio quanto o resultado são excluídos em até uma hora." },
     { q: "Posso remover o fundo de várias imagens de uma vez?", a: "Esta ferramenta processa uma imagem por vez, porque cada execução é uma inferência pesada de modelo, e não uma operação rápida de pixels. Para um lote, processe uma depois da outra — cada uma leva alguns segundos." },
     { q: "Como deixar o fundo branco para o Mercado Livre ou a Shopee?", a: "Remova o fundo aqui para ter um PNG transparente e depois coloque-o sobre branco na ferramenta Adicionar borda ou no Editor de fotos, exportando em JPG. O resultado é o produto sobre um fundo branco puro, como os marketplaces pedem na foto principal." },
@@ -96,6 +98,14 @@ const content: ToolPageContent = {
 
 
   ui: {
+    "Background colour": "Cor do fundo",
+    "Blur background": "Desfocar fundo",
+    "Blur strength": "Intensidade do desfoque",
+    "Change background": "Trocar fundo",
+    "Finding the subject…": "Encontrando o assunto…",
+    "ID photo colours": "Cores para foto de documento",
+    "The first run finds the subject on our server; changing the blur afterwards happens in your browser, with no extra run.": "A primeira execução encontra o assunto no nosso servidor; depois disso, mudar o desfoque acontece no seu navegador, sem gastar outra execução.",
+    "The first run removes the background on our server; changing the colour afterwards happens in your browser, with no extra run.": "A primeira execução remove o fundo no nosso servidor; depois disso, trocar a cor acontece no seu navegador, sem gastar outra execução.",
     // RemoveBgTool.tsx (the rest of the chrome is ServerImageTool → common.ts)
     "Remove background": "Remover fundo",
     "Removing background…": "Removendo o fundo…",

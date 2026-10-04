@@ -107,6 +107,13 @@ const PT_TOOL_SLUGS: Record<string, string> = {
   "compress-image-to-100kb": "comprimir-imagem-para-100kb",
   "compress-image-to-200kb": "comprimir-imagem-para-200kb",
   "compress-image-to-1mb": "comprimir-imagem-para-1mb",
+
+  // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
+  "image-to-hd": "imagem-em-hd",
+  "unblur-image": "tirar-desfoque-da-foto",
+  "flip-image": "espelhar-imagem",
+  "change-background-color": "trocar-fundo-da-foto",
+  "blur-background": "desfocar-fundo",
 };
 
 /** Hindi keeps the English slug — see the header. Authored, never derived. */
@@ -166,6 +173,13 @@ const HI_TOOL_SLUGS: Record<string, string> = {
   "compress-image-to-100kb": "compress-image-to-100kb",
   "compress-image-to-200kb": "compress-image-to-200kb",
   "compress-image-to-1mb": "compress-image-to-1mb",
+
+  // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
+  "image-to-hd": "image-to-hd",
+  "unblur-image": "unblur-image",
+  "flip-image": "flip-image",
+  "change-background-color": "change-background-color",
+  "blur-background": "blur-background",
 };
 
 /**
@@ -234,6 +248,13 @@ const RU_TOOL_SLUGS: Record<string, string> = {
   "compress-image-to-100kb": "compress-image-to-100kb",
   "compress-image-to-200kb": "compress-image-to-200kb",
   "compress-image-to-1mb": "compress-image-to-1mb",
+
+  // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
+  "image-to-hd": "image-to-hd",
+  "unblur-image": "unblur-image",
+  "flip-image": "flip-image",
+  "change-background-color": "change-background-color",
+  "blur-background": "blur-background",
 };
 
 /**
@@ -324,6 +345,13 @@ const ID_TOOL_SLUGS: Record<string, string> = {
   "compress-image-to-100kb": "kompres-foto-100kb",
   "compress-image-to-200kb": "kompres-foto-200kb",
   "compress-image-to-1mb": "kompres-foto-1mb",
+
+  // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
+  "image-to-hd": "jadikan-foto-hd",
+  "unblur-image": "foto-blur-jadi-jelas",
+  "flip-image": "mirror-foto",
+  "change-background-color": "ganti-background-foto",
+  "blur-background": "blur-background-foto",
 };
 
 const TOOL_SLUGS: Record<TranslatedLocale, Record<string, string>> = {

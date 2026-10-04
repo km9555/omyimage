@@ -226,6 +226,28 @@ export const hiTools: Record<string, LocalizedTool> = {
     name: "इमेज 1 MB में कंप्रेस करें",
     shortDescription: "मोबाइल फोटो 1 MB से कम, ज़्यादातर पूरे साइज़ में।",
   },
+
+  // ── वैरिएंट: HD, मिरर, बैकग्राउंड (expansion.md) ──
+  "image-to-hd": {
+    name: "इमेज को HD में बदलें",
+    shortDescription: "छोटी या कम रेज़ोल्यूशन वाली फोटो को HD बनाएँ।",
+  },
+  "unblur-image": {
+    name: "धुँधली फोटो साफ़ करें",
+    shortDescription: "हल्की धुँधली फोटो को AI से साफ़ करें।",
+  },
+  "flip-image": {
+    name: "इमेज फ़्लिप करें",
+    shortDescription: "फोटो को दाएँ-बाएँ या ऊपर-नीचे मिरर करें।",
+  },
+  "change-background-color": {
+    name: "बैकग्राउंड का रंग बदलें",
+    shortDescription: "किसी भी फोटो के लिए सफ़ेद, नीला या लाल बैकग्राउंड।",
+  },
+  "blur-background": {
+    name: "बैकग्राउंड ब्लर करें",
+    shortDescription: "किसी व्यक्ति या चीज़ के पीछे पोर्ट्रेट जैसा ब्लर।",
+  },
 };
 
 /**

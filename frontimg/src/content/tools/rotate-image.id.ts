@@ -27,6 +27,8 @@ const content: ToolPageContent = {
   metaDescription:
     "Putar foto online gratis: per 90°, sudut berapa pun, atau balik horizontal dan vertikal — dan perbaiki foto yang miring saat diunggah. Sekaligus banyak, di browser, tanpa daftar.",
 
+  variantsHeading: "Putar atau mirror foto",
+
   intro:
     "Tegakkan foto yang miring ke samping, atau putar grafis ke sudut yang tepat. Alat Putar Foto ini memungkinkan Anda memutar gambar per 90°, membaliknya, atau mengatur sudut berapa pun dengan pratinjau langsung — satu foto atau banyak sekaligus. Pilih format hasil dan warna latarnya, lalu unduh. Semuanya terjadi di browser Anda, jadi foto Anda tetap privat.",
 
@@ -97,6 +99,10 @@ const content: ToolPageContent = {
 
 
   ui: {
+    "Flip": "Mirror",
+    "Flipping…": "Membalik…",
+    "Flip & download": "Mirror & unduh",
+    "Flip {n} images": "Mirror {n} foto",
     // RotateTool.tsx
     "Rotated 1 image.": "1 gambar berhasil diputar.",
     "Rotated {n} images.": "{n} gambar berhasil diputar.",

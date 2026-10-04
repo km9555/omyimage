@@ -78,6 +78,13 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "compress-image-to-100kb",
     "compress-image-to-200kb",
     "compress-image-to-1mb",
+    // Expansion 3A — engine variants (expansion.md §5)
+    "image-to-hd",
+    "unblur-image",
+    // Expansion 3A — engine variants (expansion.md §5)
+    "flip-image",
+    "change-background-color",
+    "blur-background",
   ],
   // Hindi — a PILOT: the home page, the 14 highest-value tools and the four
   // legal twins. The remaining 26 tools wait on Search Console data, because
@@ -145,6 +152,13 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "compress-image-to-100kb",
     "compress-image-to-200kb",
     "compress-image-to-1mb",
+    // Expansion 3A — engine variants (expansion.md §5)
+    "image-to-hd",
+    "unblur-image",
+    // Expansion 3A — engine variants (expansion.md §5)
+    "flip-image",
+    "change-background-color",
+    "blur-background",
   ],
   // Russian ships in batches ordered by Russian demand, which is NOT the pt/hi
   // order: "улучшить качество фото" outweighs "сжать фото" roughly ten to one,
@@ -217,6 +231,13 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "compress-image-to-100kb",
     "compress-image-to-200kb",
     "compress-image-to-1mb",
+    // Expansion 3A — engine variants (expansion.md §5)
+    "image-to-hd",
+    "unblur-image",
+    // Expansion 3A — engine variants (expansion.md §5)
+    "flip-image",
+    "change-background-color",
+    "blur-background",
   ],
   // Indonesian — batches of five, ordered by Indonesian search demand, which
   // is its own shape again (tracker-id.csv is the plan of record). Written
@@ -287,6 +308,10 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "compress-image-to-100kb",
     "compress-image-to-200kb",
     "compress-image-to-1mb",
+    // Expansion 3A — engine variants (expansion.md §5)
+    "flip-image",
+    "change-background-color",
+    "blur-background",
   ],
 };
 
