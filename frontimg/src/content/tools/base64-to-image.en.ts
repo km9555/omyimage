@@ -80,8 +80,6 @@ const content: ToolPageContent = {
 
   security:
     "Your data stays private. Base64 decoding happens entirely in your browser — nothing is uploaded to a server. No storage, no tracking of your files.",
-
-  rating: { value: "4.8", count: "254" },
 };
 
 export default content;

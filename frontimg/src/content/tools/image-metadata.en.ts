@@ -81,8 +81,6 @@ const content: ToolPageContent = {
 
   security:
     "Your photo stays private. EXIF metadata is read entirely in your browser — nothing is uploaded to a server. No storage, no tracking of your files.",
-
-  rating: { value: "4.9", count: "312" },
 };
 
 export default content;

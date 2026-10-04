@@ -82,8 +82,6 @@ const content: ToolPageContent = {
 
   security:
     "Your GIF stays private. Frame extraction happens entirely in your browser with the open-source gifuct-js library — nothing is uploaded to a server. No storage, no tracking of your files.",
-
-  rating: { value: "4.8", count: "228" },
 };
 
 export default content;

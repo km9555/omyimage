@@ -101,7 +101,6 @@ const content: ToolPageContent = {
   security:
     "Rendering berjalan di server kami dengan headless Chromium yang open-source. Hasilnya hanya disimpan sebentar di balik tautan unduhan pribadi dan dihapus otomatis dalam satu jam. Kami tidak pernah membagikan atau memakai ulang konten Anda.",
 
-  rating: { value: "4.7", count: "356" },
 
   ui: {
     // HtmlToImageTool.tsx — module-scope VIEWPORTS and FORMATS

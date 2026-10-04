@@ -82,8 +82,6 @@ const content: ToolPageContent = {
 
   security:
     "Your images stay private. Almost every photo is compressed entirely in your browser and never leaves your device; only very large or very high-resolution images go to our server, where they are deleted straight after. No storage, no tracking of your files.",
-
-  rating: { value: "4.9", count: "912" },
 };
 
 export default content;

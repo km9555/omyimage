@@ -96,7 +96,6 @@ const content: ToolPageContent = {
   security:
     "Ваши изображения остаются при вас. GIF кодируется целиком в браузере библиотекой с открытым кодом gifenc, а импортированный GIF разбирается там же, через gifuct-js. На сервер ничего не отправляется. Ни хранения, ни слежки за вашими файлами.",
 
-  rating: { value: "4.8", count: "335" },
 
   ui: {
     // GifMakerTool.tsx — module-scope FIT_LABELS

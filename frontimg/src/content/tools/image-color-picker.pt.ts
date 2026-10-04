@@ -96,7 +96,6 @@ const content: ToolPageContent = {
   security:
     "Sua imagem continua privada. A amostragem de cor e a extração da paleta acontecem inteiramente no seu navegador com canvas HTML — nada é enviado a um servidor. Sem armazenamento e sem rastrear seus arquivos.",
 
-  rating: { value: "4.9", count: "401" },
 
   ui: {
     // ColorPickerTool.tsx

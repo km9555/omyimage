@@ -81,8 +81,6 @@ const content: ToolPageContent = {
 
   security:
     "Your image stays private. Base64 encoding happens entirely in your browser — nothing is uploaded to a server. No storage, no tracking of your files.",
-
-  rating: { value: "4.8", count: "298" },
 };
 
 export default content;

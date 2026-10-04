@@ -49,7 +49,23 @@ export interface Tool {
    * submitted for indexing.
    */
   homeGrid?: boolean;
+  /**
+   * Makes this entry a VARIANT: its own page, URL and copy, running the parent
+   * tool's engine with `preset` applied ("Compress Image to 50KB" is
+   * compress-image with a 50 KB target). Variants are full tools everywhere
+   * else (sitemap, slugs, status.ts, search) but stay off the home grid and out
+   * of `relatedTools()`; the family is linked by `<VariantLinks>` instead.
+   *
+   * The route stub is GENERATED (`npm run gen:variants`), which copies `preset`
+   * verbatim into `<ParentTool preset={…} />` — so keep it a one-line object
+   * literal, and TypeScript checks it against the parent component's prop.
+   */
+  parentId?: string;
+  preset?: ToolPreset;
 }
+
+/** A variant's settings for its parent tool. One-line literal (see `Tool.parentId`). */
+export type ToolPreset = Readonly<Record<string, string | number | boolean>>;
 
 export const CATEGORIES: CategoryDef[] = [
   { id: "optimize", title: "Optimize & Compress", navLabel: "Optimize" },
@@ -812,10 +828,30 @@ export function getTool(slug: string): Tool | undefined {
  * tools are preferred.
  */
 export function relatedTools(tool: Tool, n = 3): Tool[] {
-  const live = TOOLS.filter((t) => t.status === "live" && t.id !== tool.id);
-  const sameCat = live.filter((t) => t.categoryId === tool.categoryId);
-  const others = live.filter((t) => t.categoryId !== tool.categoryId);
+  // Variants never appear here (their family has its own link strip), and a
+  // variant page shows its parent's list, so adding a variant can't reshuffle
+  // the related tools on any existing page.
+  const base = tool.parentId ? (TOOLS_BY_ID[tool.parentId] ?? tool) : tool;
+  const live = TOOLS.filter((t) => t.status === "live" && t.id !== base.id && !t.parentId);
+  const sameCat = live.filter((t) => t.categoryId === base.categoryId);
+  const others = live.filter((t) => t.categoryId !== base.categoryId);
   return [...sameCat, ...others].slice(0, n);
+}
+
+/** Live variants of a tool, in registry order. */
+export function variantsOf(parentId: string): Tool[] {
+  return TOOLS.filter((t) => t.parentId === parentId && t.status === "live");
+}
+
+/**
+ * The family a tool belongs to — parent first, then its live variants — or an
+ * empty list when it has none (a tool with no variants has no family strip).
+ */
+export function toolFamily(tool: Tool): Tool[] {
+  const parent = tool.parentId ? TOOLS_BY_ID[tool.parentId] : tool;
+  if (!parent) return [];
+  const variants = variantsOf(parent.id);
+  return variants.length ? [parent, ...variants] : [];
 }
 
 // ── Brand colors ───────────────────────────────────────────────────────────

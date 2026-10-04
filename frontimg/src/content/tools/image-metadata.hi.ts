@@ -103,7 +103,6 @@ const content: ToolPageContent = {
   security:
     "आपकी फोटो निजी रहती है। EXIF मेटाडेटा पूरी तरह आपके ब्राउज़र में पढ़ा जाता है — कुछ भी किसी सर्वर पर नहीं भेजा जाता। न कुछ सहेजा जाता है, न आपकी फ़ाइलों पर नज़र रखी जाती है।",
 
-  rating: { value: "4.9", count: "312" },
 
   ui: {
     // MetadataTool.tsx — section titles (keys, translated at the render site)

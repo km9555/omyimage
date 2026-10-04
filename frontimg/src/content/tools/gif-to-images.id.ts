@@ -97,7 +97,6 @@ const content: ToolPageContent = {
   security:
     "GIF Anda tetap privat. Pemecahan frame terjadi sepenuhnya di browser Anda dengan pustaka open-source gifuct-js — tidak ada yang diunggah ke server. Tidak ada penyimpanan, tidak ada pelacakan file Anda.",
 
-  rating: { value: "4.8", count: "228" },
 
   ui: {
     // GifToImagesTool.tsx

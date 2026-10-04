@@ -102,7 +102,6 @@ const content: ToolPageContent = {
   security:
     "Gambar Anda tetap privat. Meme disusun sepenuhnya di browser Anda dengan HTML canvas — tidak ada yang diunggah ke server. Tidak ada penyimpanan, tidak ada pelacakan file Anda.",
 
-  rating: { value: "4.9", count: "421" },
 
   ui: {
     // MemeTool.tsx — default captions, drawn INTO the image. Upper case is

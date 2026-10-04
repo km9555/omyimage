@@ -107,7 +107,6 @@ const content: ToolPageContent = {
   security:
     "Pemrosesan berjalan di server kami menggunakan mesin sumber terbuka rembg. Hasilnya hanya disimpan sebentar di balik tautan unduhan pribadi dan terhapus otomatis dalam satu jam. Kami tidak pernah membagikan atau memakai ulang gambar Anda.",
 
-  rating: { value: "4.8", count: "974" },
 
   ui: {
     "Remove background": "Hapus background",

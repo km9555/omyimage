@@ -84,8 +84,6 @@ const content: ToolPageContent = {
 
   security:
     "Your images stay private. The PDF is assembled entirely in your browser — nothing is uploaded to a server. No storage, no tracking of your files.",
-
-  rating: { value: "4.9", count: "655" },
 };
 
 export default content;

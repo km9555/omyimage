@@ -97,7 +97,6 @@ const content: ToolPageContent = {
   security:
     "Foto Anda tetap privat. Metadata EXIF dibaca sepenuhnya di browser Anda — tidak ada yang diunggah ke server. Tidak ada penyimpanan, tidak ada pelacakan file Anda.",
 
-  rating: { value: "4.9", count: "312" },
 
   ui: {
     // MetadataTool.tsx — section titles (keys, translated at the render site)

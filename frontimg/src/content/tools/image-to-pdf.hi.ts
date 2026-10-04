@@ -103,7 +103,6 @@ const content: ToolPageContent = {
   security:
     "आपकी इमेज निजी रहती हैं। PDF पूरी तरह आपके ब्राउज़र में बनता है — कुछ भी किसी सर्वर पर नहीं भेजा जाता। कुछ भी सहेजा नहीं जाता और किसी फ़ाइल पर नज़र नहीं रखी जाती।",
 
-  rating: { value: "4.9", count: "655" },
 
   ui: {
     // ImageToPdfTool.tsx + PagePreview.tsx

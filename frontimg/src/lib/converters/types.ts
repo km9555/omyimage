@@ -101,7 +101,5 @@ export interface ConverterPair {
   metadata: boolean;
   /** Extra search synonyms beyond name/keyword. */
   aliases?: string[];
-  /** SoftwareApplication JSON-LD rating. Kept per-pair so they are not clones. */
-  rating: { value: string; count: string };
   unique: PairUniqueCopy;
 }

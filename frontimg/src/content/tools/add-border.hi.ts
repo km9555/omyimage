@@ -100,7 +100,6 @@ const content: ToolPageContent = {
   security:
     "आपकी इमेज निजी रहती हैं। बॉर्डर पूरी तरह आपके ब्राउज़र में HTML canvas से लगाया जाता है — कुछ भी किसी सर्वर पर नहीं भेजा जाता। न कुछ सहेजा जाता है, न आपकी फ़ाइलों पर नज़र रखी जाती है।",
 
-  rating: { value: "4.8", count: "241" },
 
   ui: {
     // lib/image/frame FRAME_PRESETS

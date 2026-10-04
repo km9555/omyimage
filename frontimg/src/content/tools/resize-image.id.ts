@@ -179,7 +179,6 @@ const content: ToolPageContent = {
   security:
     "Foto Anda tetap milik Anda. Ukuran diubah sepenuhnya di browser — file tidak diunggah ke server. Pengecualiannya hanya foto dengan resolusi yang terlalu besar untuk tab browser: foto itu diproses di server kami melalui koneksi terenkripsi dan langsung dihapus setelahnya.",
 
-  rating: { value: "4.9", count: "803" },
 
   ui: {
     "Resize": "Ubah ukuran",

@@ -55,7 +55,8 @@ export function ToolDirectory() {
   // becomes forty near-identical cards.
   const tools = useMemo(
     () =>
-      TOOLS.filter((t) => t.homeGrid !== false)
+      // Variants (compress-image-to-50kb …) are linked from their parent page.
+      TOOLS.filter((t) => t.homeGrid !== false && !t.parentId)
         .filter(pill.match)
         .sort((a, b) => a.priority - b.priority),
     [pill],

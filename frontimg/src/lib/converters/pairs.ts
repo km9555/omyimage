@@ -31,7 +31,6 @@ export const CONVERTER_PAIRS: ConverterPair[] = [
     quality: false,
     metadata: true,
     aliases: ["webp2png", "open webp", "webp converter", "save webp as png"],
-    rating: { value: "4.8", count: "471" },
     unique: {
       intro:
         "WebP keeps pages fast, but it is still the format that will not open when you double-click it. Converting to PNG gives you a file every application understands, with the transparency intact and no quality lost along the way — because PNG is lossless, the pixels that come out are exactly the pixels that went in. Drop in one WebP or a hundred; everything is converted inside your browser.",
@@ -94,7 +93,6 @@ export const CONVERTER_PAIRS: ConverterPair[] = [
     quality: true,
     metadata: true,
     aliases: ["webp2jpg", "webp to jpeg", "save webp as jpg"],
-    rating: { value: "4.8", count: "612" },
     unique: {
       intro:
         "WebP is excellent on a web page and awkward everywhere else. Converting to JPG gives you the one image format that nothing refuses — email clients, print shops, photo frames, older phones, government upload forms. You choose the quality, and if the WebP has transparent areas you choose what colour fills them, because JPG cannot keep them.",
@@ -138,7 +136,6 @@ export const CONVERTER_PAIRS: ConverterPair[] = [
     quality: true,
     metadata: false,
     aliases: ["jpg2webp", "jpeg to webp", "compress jpg to webp", "webp for website"],
-    rating: { value: "4.9", count: "588" },
     unique: {
       intro:
         "Converting JPG to WebP is the single cheapest page-speed win most sites have left. The same photograph at the same apparent quality typically lands 25–35% smaller, and every current browser has supported the format since Safari joined in 2020. Set the quality, convert the whole folder at once, and get a ZIP back.",
@@ -183,7 +180,6 @@ export const CONVERTER_PAIRS: ConverterPair[] = [
     quality: true,
     metadata: false,
     aliases: ["png2webp", "shrink png", "webp with transparency"],
-    rating: { value: "4.8", count: "534" },
     unique: {
       intro:
         "PNG is honest but heavy. Converting to WebP keeps the transparency — the reason you were using PNG in the first place — while cutting the file to a fraction of its size. For logos, icons, UI screenshots and anything with an alpha channel that has to load quickly, this is usually the biggest single saving available.",
@@ -227,7 +223,6 @@ export const CONVERTER_PAIRS: ConverterPair[] = [
     quality: true,
     metadata: true,
     aliases: ["jfif2jpg", "jfif file", "change jfif to jpg", "open jfif", "jfif to jpeg"],
-    rating: { value: "4.9", count: "914" },
     unique: {
       intro:
         "You saved an image and Windows handed you a .jfif file that half your software refuses to open. Nothing is wrong with it — a JFIF is a perfectly ordinary JPEG with an unusual extension — but that is little comfort when the upload form rejects it. This converter reads the file and writes a clean .jpg that behaves the way you expected in the first place.",
@@ -272,7 +267,6 @@ export const CONVERTER_PAIRS: ConverterPair[] = [
     quality: false,
     metadata: false,
     aliases: ["gif2png", "gif frame to png", "static gif"],
-    rating: { value: "4.7", count: "398" },
     unique: {
       intro:
         "Converting a GIF to PNG lifts it out of a 256-colour palette into full colour, and gives you soft-edged transparency instead of GIF's hard on-or-off version. The output is lossless, so it becomes a proper working file you can edit and re-save without degrading. Animated GIFs convert to their first frame, since PNG holds a single image.",
@@ -316,7 +310,6 @@ export const CONVERTER_PAIRS: ConverterPair[] = [
     quality: true,
     metadata: false,
     aliases: ["gif2jpg", "gif to jpeg", "gif frame to jpg"],
-    rating: { value: "4.7", count: "356" },
     unique: {
       intro:
         "Turning a GIF into a JPG gives you a small, universally-accepted photo file. It is the right move when you need to attach, upload or print a still image and the GIF is either too large or simply not accepted. Transparent areas get filled with a colour you pick, and animated GIFs convert to their first frame.",
@@ -366,7 +359,6 @@ export const CONVERTER_PAIRS: ConverterPair[] = [
     quality: true,
     metadata: false,
     aliases: ["bmp2jpg", "bitmap to jpg", "bmp to jpeg", "shrink bmp"],
-    rating: { value: "4.8", count: "489" },
     unique: {
       intro:
         "BMP files are enormous because they are barely compressed at all — a 12-megapixel bitmap occupies around 36 MB where the same photograph as JPG is closer to 3 MB. Converting is the fastest way to make those files usable: attachable, uploadable, and openable on something other than Windows. You control the quality, and batches come back as a ZIP.",
@@ -411,7 +403,6 @@ export const CONVERTER_PAIRS: ConverterPair[] = [
     quality: true,
     metadata: true,
     aliases: ["avif2jpg", "open avif", "avif to jpeg", "convert avif"],
-    rating: { value: "4.8", count: "441" },
     unique: {
       intro:
         "AVIF is the most efficient image format in mainstream use and also the one your software is least likely to open. Converting to JPG trades that efficiency for the ability to actually use the file — in editors, on older phones, at a print shop, in anything built before about 2021. Your browser does the decoding, so nothing is uploaded.",
@@ -455,7 +446,6 @@ export const CONVERTER_PAIRS: ConverterPair[] = [
     quality: false,
     metadata: true,
     aliases: ["avif2png", "avif transparent", "avif to png lossless"],
-    rating: { value: "4.8", count: "377" },
     unique: {
       intro:
         "When an AVIF has a transparent background, PNG is the right destination rather than JPG. It keeps the alpha channel intact and stores the result losslessly, so what you get is exactly what the browser decoded — a clean working file you can drop into a design tool or edit repeatedly without further degradation.",

@@ -94,7 +94,6 @@ const content: ToolPageContent = {
   security:
     "Data Anda tetap privat. Decoding Base64 terjadi sepenuhnya di browser Anda — tidak ada yang diunggah ke server. Tidak ada penyimpanan, tidak ada pelacakan file Anda.",
 
-  rating: { value: "4.8", count: "254" },
 
   ui: {
     // Base64ToImageTool.tsx

@@ -4,9 +4,8 @@
  * the tool's own component; both are shared by every locale.
  *
  * One module per tool per locale: `src/content/tools/<toolId>.<locale>.ts`.
- * Ported from oMyPDF, plus the two fields oMyImage pages carry that oMyPDF's
- * do not (a per-page `rating`, and a tagline that may inherit the registry's
- * seoDescription).
+ * Ported from oMyPDF, plus a tagline that may inherit the registry's
+ * seoDescription, and `variantsHeading` for tools with variant pages.
  */
 import type { Locale } from "@/i18n/config";
 import type { Faq, Feature, HowToStep, SeoSection } from "@/components/SeoContent";
@@ -73,8 +72,17 @@ export interface ToolPageContent {
   schemaName?: string;
   /** HowTo schema name. Defaults to `howToTitle`. */
   howToSchemaName?: string;
-  /** AggregateRating. Identical in every locale — it is one product. */
-  rating?: { value: string; count: string };
+  // No `rating`: the AggregateRating every page used to carry (4.9 / 912) was
+  // never collected from users, and Google treats invented ratings as spammy
+  // structured data. Removed site-wide on 2026-10-04 — don't reintroduce one
+  // unless it is backed by real, visible reviews.
+
+  /**
+   * Heading of the variant link strip ("Compress to an exact size") on a
+   * PARENT tool's module. Variant pages read it from their parent's module, so
+   * only parents of a variant family need it. Falls back to the parent's name.
+   */
+  variantsHeading?: string;
 
   /**
    * This tool's micro-copy, keyed by the English source string. Supplied to

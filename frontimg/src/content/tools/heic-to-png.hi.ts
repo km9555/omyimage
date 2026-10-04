@@ -141,7 +141,6 @@ const content: ToolPageContent = {
   security:
     "HEIC की डिकोडिंग ब्राउज़र में नहीं चलती — JavaScript में मौजूद हर डिकोडर LGPL लाइसेंस वाली libheif है, जिसे हम आपके डिवाइस तक नहीं पहुँचा सकते। इसलिए आपकी फोटो एन्क्रिप्टेड HTTPS कनेक्शन से हमारे सर्वर पर भेजी जाती है, बदली जाती है और उसके तुरंत बाद मिटा दी जाती है। उसे कभी सहेजा, अनुक्रमित या किसी और काम में इस्तेमाल नहीं किया जाता।",
 
-  rating: { value: "4.8", count: "563" },
 
   ui: {
     // HeicTool.tsx — the same keys as heic-to-jpg.hi.ts (one shared component,

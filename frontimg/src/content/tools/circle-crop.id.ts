@@ -96,7 +96,6 @@ const content: ToolPageContent = {
   security:
     "Foto Anda tetap privat. Crop bulat terjadi sepenuhnya di browser Anda dengan HTML canvas — tidak ada yang diunggah ke server. Tidak ada penyimpanan, tidak ada pelacakan file Anda.",
 
-  rating: { value: "4.9", count: "352" },
 
   ui: {
     // CircleCropTool.tsx — module-scope FORMATS and OUTPUT_TARGETS

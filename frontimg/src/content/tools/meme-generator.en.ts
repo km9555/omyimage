@@ -82,8 +82,6 @@ const content: ToolPageContent = {
 
   security:
     "Your images stay private. Memes are rendered entirely in your browser with HTML canvas — nothing is uploaded to a server. No storage, no tracking of your files.",
-
-  rating: { value: "4.9", count: "421" },
 };
 
 export default content;

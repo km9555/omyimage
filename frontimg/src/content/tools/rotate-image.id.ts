@@ -95,7 +95,6 @@ const content: ToolPageContent = {
   security:
     "Foto Anda tetap privat. Pemutaran terjadi sepenuhnya di browser Anda dengan HTML canvas — tidak ada yang diunggah ke server. Tidak ada penyimpanan, tidak ada pelacakan file Anda.",
 
-  rating: { value: "4.9", count: "596" },
 
   ui: {
     // RotateTool.tsx

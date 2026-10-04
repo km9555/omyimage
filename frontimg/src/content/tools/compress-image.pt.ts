@@ -99,7 +99,6 @@ const content: ToolPageContent = {
   security:
     "Suas imagens continuam privadas. Quase todas as fotos são comprimidas inteiramente no seu navegador e nunca saem do seu dispositivo; só imagens muito grandes ou de altíssima resolução vão para o nosso servidor, onde são excluídas logo em seguida. Nada fica armazenado e nenhum arquivo é rastreado.",
 
-  rating: { value: "4.9", count: "912" },
 
   ui: {
     // CompressTool.tsx

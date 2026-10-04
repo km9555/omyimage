@@ -93,7 +93,6 @@ const content: ToolPageContent = {
   security:
     "आपकी इमेज निजी रहती है। Base64 एन्कोडिंग पूरी तरह आपके ब्राउज़र में होती है — कुछ भी किसी सर्वर पर नहीं भेजा जाता। न कुछ सहेजा जाता है, न आपकी फ़ाइलों पर नज़र रखी जाती है।",
 
-  rating: { value: "4.8", count: "298" },
 
   ui: {
     // ImageToBase64Tool.tsx — module-scope TABS

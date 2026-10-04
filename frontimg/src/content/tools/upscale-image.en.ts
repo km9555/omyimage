@@ -82,8 +82,6 @@ const content: ToolPageContent = {
 
   security:
     "Upscaling runs on our server using the open-source Real-ESRGAN engine. Results are stored only briefly behind a private download link and auto-deleted within an hour. We never share or reuse your images.",
-
-  rating: { value: "4.8", count: "612" },
 };
 
 export default content;

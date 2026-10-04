@@ -93,7 +93,6 @@ const content: ToolPageContent = {
   security:
     "Suas imagens continuam privadas. A junção acontece inteiramente no seu navegador com canvas HTML — nada é enviado a um servidor. Sem armazenamento e sem rastrear seus arquivos.",
 
-  rating: { value: "4.8", count: "289" },
 
   ui: {
     // MergeTool.tsx — module-scope LAYOUTS

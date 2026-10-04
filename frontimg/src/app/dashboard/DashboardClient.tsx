@@ -47,7 +47,11 @@ export function DashboardClient() {
   // Ranked, alias-aware search within the active pill; an empty query falls
   // back to priority order. Shared with the home page — see lib/tool-search.ts.
   const browseTools = useMemo(() => {
-    const pool = TOOLS.filter((tool) => tool.status === "live").filter(pill.match);
+    // Variants only surface for a search ("50kb"), so the browse grid stays
+    // one card per tool rather than a card per preset size.
+    const pool = TOOLS.filter((tool) => tool.status === "live" && (query.trim() !== "" || !tool.parentId)).filter(
+      pill.match,
+    );
     return searchTools(query, pool, locale);
   }, [pill, query, locale]);
 

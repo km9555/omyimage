@@ -124,8 +124,6 @@ const content: ToolPageContent = {
 
   security:
     "HEIC decoding cannot run in a browser — every JavaScript decoder is LGPL-licensed libheif, which we are not able to ship to your device. Your photo is therefore sent to our server over an encrypted HTTPS connection, converted, and deleted straight afterwards. It is never stored, indexed or used for anything else.",
-
-  rating: { value: "4.8", count: "563" },
 };
 
 export default content;

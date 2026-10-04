@@ -104,7 +104,6 @@ const content: ToolPageContent = {
   security:
     "आपकी इमेज निजी रहती है। पूरा एडिटर आपके ब्राउज़र में HTML canvas से चलता है — कुछ भी किसी सर्वर पर नहीं भेजा जाता। कुछ भी सहेजा नहीं जाता और किसी फ़ाइल पर नज़र नहीं रखी जाती।",
 
-  rating: { value: "4.9", count: "612" },
 
   ui: {
     // AllInOneEditor.tsx

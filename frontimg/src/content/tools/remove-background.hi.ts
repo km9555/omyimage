@@ -99,7 +99,6 @@ const content: ToolPageContent = {
   security:
     "प्रोसेसिंग हमारे सर्वर पर ओपन-सोर्स rembg इंजन से होती है। नतीजे सिर्फ़ थोड़ी देर, एक निजी डाउनलोड लिंक के पीछे रखे जाते हैं और एक घंटे के भीतर अपने आप मिटा दिए जाते हैं। हम आपकी इमेज कभी साझा नहीं करते और न दोबारा इस्तेमाल करते हैं।",
 
-  rating: { value: "4.8", count: "974" },
 
   ui: {
     // RemoveBgTool.tsx (the rest of the chrome is ServerImageTool → common.ts)

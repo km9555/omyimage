@@ -133,7 +133,6 @@ const content: ToolPageContent = {
   security:
     "Foto Anda tetap privat. Crop dilakukan sepenuhnya di browser Anda dengan HTML canvas — tidak ada yang pernah diunggah ke server. Saat Anda menutup tab, foto hilang dari memori. Tidak ada penyimpanan, tidak ada pelacakan file Anda.",
 
-  rating: { value: "4.9", count: "512" },
 
   ui: {
     "Couldn't read {name}.": "{name} tidak bisa dibaca.",

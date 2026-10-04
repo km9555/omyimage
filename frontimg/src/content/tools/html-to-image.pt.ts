@@ -96,7 +96,6 @@ const content: ToolPageContent = {
   security:
     "A renderização roda no nosso servidor com o Chromium headless de código aberto. O resultado fica guardado só por pouco tempo, atrás de um link de download privado, e é excluído automaticamente em até uma hora. Nunca compartilhamos nem reutilizamos o seu conteúdo.",
 
-  rating: { value: "4.7", count: "356" },
 
   ui: {
     // HtmlToImageTool.tsx — module-scope VIEWPORTS and FORMATS

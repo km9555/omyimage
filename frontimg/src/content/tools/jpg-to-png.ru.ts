@@ -92,7 +92,6 @@ const content: ToolPageContent = {
   security:
     "Ваши изображения остаются при вас. Конвертация JPG в PNG выполняется целиком в браузере через HTML canvas — на сервер ничего не отправляется. Ни хранения, ни слежки за вашими файлами.",
 
-  rating: { value: "4.8", count: "503" },
 
   ui: {
     // Drop hint from app/jpg-to-png/page.tsx, translated inside ConvertTool.

@@ -82,8 +82,6 @@ const content: ToolPageContent = {
 
   security:
     "Your images stay private. Metadata removal happens entirely in your browser — nothing is uploaded to a server. No storage, no tracking of your files.",
-
-  rating: { value: "4.9", count: "377" },
 };
 
 export default content;

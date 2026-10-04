@@ -98,7 +98,6 @@ const content: ToolPageContent = {
   security:
     "आपकी इमेज निजी रहती हैं। GIF पूरी तरह आपके ब्राउज़र में ओपन-सोर्स gifenc लाइब्रेरी से एन्कोड होता है — और आयात किया गया GIF भी वहीं, gifuct-js से डिकोड होता है। कुछ भी किसी सर्वर पर नहीं भेजा जाता। न कुछ सहेजा जाता है, न आपकी फ़ाइलों पर नज़र रखी जाती है।",
 
-  rating: { value: "4.8", count: "335" },
 
   ui: {
     // GifMakerTool.tsx — module-scope FIT_LABELS

@@ -90,7 +90,6 @@ const content: ToolPageContent = {
   security:
     "Suas imagens continuam privadas. O giro acontece inteiro no seu navegador com canvas HTML — nada é enviado a um servidor. Nada fica armazenado e nenhum arquivo é rastreado.",
 
-  rating: { value: "4.9", count: "596" },
 
   ui: {
     // RotateTool.tsx

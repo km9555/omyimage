@@ -79,8 +79,6 @@ const content: ToolPageContent = {
 
   security:
     "Your images stay private. Rotation happens entirely in your browser with HTML canvas — nothing is uploaded to a server. No storage, no tracking of your files.",
-
-  rating: { value: "4.9", count: "596" },
 };
 
 export default content;

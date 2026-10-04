@@ -94,7 +94,6 @@ const content: ToolPageContent = {
   security:
     "Gambar Anda tetap privat. Encoding Base64 terjadi sepenuhnya di browser Anda — tidak ada yang diunggah ke server. Tidak ada penyimpanan, tidak ada pelacakan file Anda.",
 
-  rating: { value: "4.8", count: "298" },
 
   ui: {
     // ImageToBase64Tool.tsx — module-scope TABS. Code identifiers a developer

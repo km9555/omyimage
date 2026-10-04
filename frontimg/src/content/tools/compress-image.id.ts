@@ -115,7 +115,6 @@ const content: ToolPageContent = {
   security:
     "Foto Anda tetap privat. Hampir semua foto dikompres sepenuhnya di browser dan tidak pernah meninggalkan perangkat Anda; hanya gambar yang sangat besar atau beresolusi sangat tinggi yang dikirim ke server kami, lalu langsung dihapus setelahnya. Tanpa penyimpanan, tanpa pelacakan file Anda.",
 
-  rating: { value: "4.9", count: "912" },
 
   ui: {
     "Compress": "Kompres",

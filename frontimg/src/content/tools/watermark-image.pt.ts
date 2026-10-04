@@ -99,7 +99,6 @@ const content: ToolPageContent = {
   security:
     "Suas imagens continuam privadas. A marca d'água é aplicada inteira no seu navegador com canvas HTML — nada é enviado a um servidor. Nada fica armazenado e nenhum arquivo é rastreado.",
 
-  rating: { value: "4.8", count: "564" },
 
   ui: {
     // WatermarkTool.tsx

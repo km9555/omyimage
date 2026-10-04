@@ -115,7 +115,6 @@ const content: ToolPageContent = {
   security:
     "Suas imagens continuam privadas. O recorte é feito inteiro no seu navegador com canvas HTML — nada é enviado a um servidor. Quando você fecha a aba, a imagem some da memória. Nada fica armazenado e nenhum arquivo é rastreado.",
 
-  rating: { value: "4.9", count: "512" },
 
   ui: {
     // CropTool.tsx

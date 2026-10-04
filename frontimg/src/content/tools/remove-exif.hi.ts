@@ -99,7 +99,6 @@ const content: ToolPageContent = {
   security:
     "आपकी इमेज निजी रहती हैं। मेटाडेटा हटाने का काम पूरी तरह आपके ब्राउज़र में होता है — कुछ भी किसी सर्वर पर नहीं भेजा जाता। न कुछ सहेजा जाता है, न आपकी फ़ाइलों पर नज़र रखी जाती है।",
 
-  rating: { value: "4.9", count: "377" },
 
   ui: {
     // RemoveExifTool.tsx — module-scope FORMATS

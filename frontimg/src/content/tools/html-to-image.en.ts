@@ -83,8 +83,6 @@ const content: ToolPageContent = {
 
   security:
     "Rendering runs on our server using open-source headless Chromium. Output is stored only briefly behind a private download link and auto-deleted within an hour. We never share or reuse your content.",
-
-  rating: { value: "4.7", count: "356" },
 };
 
 export default content;

@@ -97,7 +97,6 @@ const content: ToolPageContent = {
   security:
     "Suas imagens continuam privadas. Tanto a detecção de rostos quanto o desfoque acontecem inteiramente no seu navegador — o modelo de código aberto MediaPipe BlazeFace é baixado para o seu aparelho e roda ali, então nada é enviado a um servidor em momento nenhum. O resultado censurado é permanente no arquivo exportado. Sem armazenamento e sem rastrear seus arquivos.",
 
-  rating: { value: "4.8", count: "389" },
 
   ui: {
     // BlurTool.tsx — module-scope TABS (translated at the render site)

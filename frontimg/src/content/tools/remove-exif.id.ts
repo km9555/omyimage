@@ -100,7 +100,6 @@ const content: ToolPageContent = {
   security:
     "Foto Anda tetap privat. Penghapusan metadata terjadi sepenuhnya di browser Anda — tidak ada yang diunggah ke server. Tidak ada penyimpanan, tidak ada pelacakan file Anda.",
 
-  rating: { value: "4.9", count: "377" },
 
   ui: {
     // RemoveExifTool.tsx — module-scope FORMATS

@@ -94,7 +94,6 @@ const content: ToolPageContent = {
   security:
     "A melhoria de qualidade roda no nosso servidor com o motor de código aberto Real-ESRGAN. Os resultados ficam guardados só por pouco tempo, atrás de um link de download privado, e são excluídos automaticamente em até uma hora. Nunca compartilhamos nem reutilizamos suas imagens.",
 
-  rating: { value: "4.8", count: "612" },
 
   ui: {
     // UpscaleTool.tsx (the rest of the chrome is ServerImageTool → common.ts)

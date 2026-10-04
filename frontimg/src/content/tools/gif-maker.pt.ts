@@ -93,7 +93,6 @@ const content: ToolPageContent = {
   security:
     "Suas imagens continuam privadas. O GIF é codificado inteiramente no seu navegador com a biblioteca de código aberto gifenc — e um GIF importado também é decodificado ali, com a gifuct-js. Nada é enviado a um servidor. Sem armazenamento e sem rastrear seus arquivos.",
 
-  rating: { value: "4.8", count: "335" },
 
   ui: {
     // GifMakerTool.tsx — module-scope FIT_LABELS

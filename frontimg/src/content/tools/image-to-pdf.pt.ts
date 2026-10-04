@@ -99,7 +99,6 @@ const content: ToolPageContent = {
   security:
     "Suas imagens continuam privadas. O PDF é montado inteiro no seu navegador — nada é enviado a um servidor. Nada fica armazenado e nenhum arquivo é rastreado.",
 
-  rating: { value: "4.9", count: "655" },
 
   ui: {
     // ImageToPdfTool.tsx + PagePreview.tsx

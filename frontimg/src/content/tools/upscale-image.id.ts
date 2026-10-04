@@ -107,7 +107,6 @@ const content: ToolPageContent = {
   security:
     "Proses menjadikan foto HD berjalan di server kami menggunakan mesin sumber terbuka Real-ESRGAN. Hasilnya hanya disimpan sebentar di balik tautan unduhan pribadi dan terhapus otomatis dalam satu jam. Kami tidak pernah membagikan atau memakai ulang foto Anda.",
 
-  rating: { value: "4.8", count: "612" },
 
   ui: {
     "or drop a JPG, PNG or WEBP here": "atau lepas JPG, PNG, atau WEBP di sini",

@@ -98,7 +98,6 @@ const content: ToolPageContent = {
   security:
     "Ваш снимок остаётся при вас. Метаданные EXIF читаются целиком в браузере — на сервер ничего не отправляется. Ни хранения, ни слежки за вашими файлами.",
 
-  rating: { value: "4.9", count: "312" },
 
   ui: {
     // MetadataTool.tsx — section titles (keys, translated at the render site)

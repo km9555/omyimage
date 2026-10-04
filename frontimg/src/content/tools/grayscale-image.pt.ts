@@ -91,7 +91,6 @@ const content: ToolPageContent = {
   security:
     "Suas imagens continuam privadas. A conversão para preto e branco acontece inteiramente no seu navegador com canvas HTML — nada é enviado a um servidor. Sem armazenamento e sem rastrear seus arquivos.",
 
-  rating: { value: "4.8", count: "318" },
 
   ui: {
     // GrayscaleTool.tsx — module-scope FORMATS

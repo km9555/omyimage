@@ -106,7 +106,6 @@ const content: ToolPageContent = {
   security:
     "Foto Anda tetap privat. PDF disusun sepenuhnya di browser Anda — tidak ada yang diunggah ke server. Tanpa penyimpanan, tanpa pelacakan file Anda.",
 
-  rating: { value: "4.9", count: "655" },
 
   ui: {
     "or drop JPG, PNG, WEBP or GIF images here": "atau lepas gambar JPG, PNG, WEBP, atau GIF di sini",

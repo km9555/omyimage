@@ -96,7 +96,6 @@ const content: ToolPageContent = {
   security:
     "Ваши изображения остаются при вас. Обрезка в круг выполняется целиком в браузере через HTML canvas — на сервер ничего не отправляется. Ни хранения, ни слежки за вашими файлами.",
 
-  rating: { value: "4.9", count: "352" },
 
   ui: {
     // CircleCropTool.tsx — module-scope FORMATS and OUTPUT_TARGETS
