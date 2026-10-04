@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
+import { Wordmark } from "@/components/Wordmark";
 import { useLocale, useT } from "@/i18n/I18nScope";
 import type { TFunction } from "@/i18n/t";
 import { localeHome, localeHref } from "@/lib/i18n/links";
@@ -101,11 +102,7 @@ export function Footer() {
           <div className="col-span-2 sm:col-span-3 lg:col-span-1 flex flex-col gap-4">
             <Link href={localeHome(locale)} className="flex items-center gap-2 w-fit">
               <Logo className="h-9 w-9" />
-              {/* i18n-raw: brand wordmark */}
-              <span className="text-headline-md font-black tracking-tight">
-                <span className="text-primary">oMy</span>
-                <span className="text-secondary">Image</span>
-              </span>
+              <Wordmark className="text-headline-md" />
             </Link>
             <p className="text-body-sm text-on-surface-variant max-w-[220px] leading-relaxed">
               {t("Free online image tools — fast, private, and no sign-up required.")}

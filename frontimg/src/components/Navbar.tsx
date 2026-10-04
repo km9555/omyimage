@@ -5,6 +5,7 @@ import { Icon } from "@/components/Icon";
 import { useLocale, useT } from "@/i18n/I18nScope";
 import { localeHome, localeHref } from "@/lib/i18n/links";
 import { Logo } from "@/components/Logo";
+import { Wordmark } from "@/components/Wordmark";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { HeaderSearch } from "@/components/HeaderSearch";
 import { AppsMenu } from "@/components/AppsMenu";
@@ -38,11 +39,7 @@ export function Navbar() {
         <div className="flex items-center gap-4 lg:gap-gutter shrink-0">
           <Link href={localeHome(locale)} className="flex items-center gap-2">
             <Logo className="h-8 w-8" />
-            {/* i18n-raw: brand wordmark */}
-            <span className="text-headline-md font-black tracking-tight">
-              <span className="text-primary">oMy</span>
-              <span className="text-secondary">Image</span>
-            </span>
+            <Wordmark className="text-headline-md" />
           </Link>
 
           {/*

@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Icon } from "@/components/Icon";
 import { Logo } from "@/components/Logo";
+import { Wordmark } from "@/components/Wordmark";
 import { CreditsBadge } from "@/components/CreditsBadge";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { NAV_SECTIONS, navSectionTools } from "@/lib/nav-sections";
@@ -168,11 +169,7 @@ export function MobileMenu() {
               <div className="flex h-14 shrink-0 items-center justify-between gap-2 border-b border-outline-variant px-4">
                 <Link href={localeHome(locale)} onClick={close} className="flex min-w-0 items-center gap-2">
                   <Logo className="h-7 w-7 shrink-0" />
-                  {/* i18n-raw: brand wordmark */}
-                  <span className="truncate text-headline-md font-black tracking-tight">
-                    <span className="text-primary">oMy</span>
-                    <span className="text-secondary">Image</span>
-                  </span>
+                  <Wordmark className="text-headline-md" />
                 </Link>
                 <button
                   type="button"

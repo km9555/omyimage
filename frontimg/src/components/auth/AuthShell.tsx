@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
+import { Wordmark } from "@/components/Wordmark";
 
 /** Centered card layout shared by all auth pages, aligned to the site design. */
 export function AuthShell({
@@ -18,11 +19,7 @@ export function AuthShell({
       <div className="w-full max-w-md flex flex-col gap-stack-md">
         <Link href="/" className="flex items-center justify-center gap-2 mb-2">
           <Logo className="h-9 w-9" />
-          {/* i18n-raw: brand wordmark */}
-          <span className="text-headline-md font-black tracking-tight">
-            <span className="text-primary">oMy</span>
-            <span className="text-secondary">Image</span>
-          </span>
+          <Wordmark className="text-headline-md" />
         </Link>
 
         <div className="bg-surface-container-lowest border border-surface-variant rounded-xl ambient-shadow p-6 sm:p-8 flex flex-col gap-stack-md">

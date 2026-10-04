@@ -7,9 +7,10 @@ export function Logo({ className = "h-8 w-8" }: { className?: string }) {
       xmlns="http://www.w3.org/2000/svg"
       className={className}
       role="img"
-      // i18n-raw: brand name. A server component with no locale in scope; the
-      // wordmark next to it carries the accessible text on every page anyway.
-      aria-label="oMyImage logo"
+      // i18n-raw: brand name. A server component with no locale in scope. This
+      // is the brand link's accessible name: the <Wordmark> beside it is
+      // outlines marked aria-hidden, so it adds no text of its own.
+      aria-label="oMyImage"
     >
       <rect width="40" height="40" rx="11" fill="url(#omyimage-g1)" />
       <path
