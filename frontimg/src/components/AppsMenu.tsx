@@ -103,7 +103,7 @@ export function AppsMenu() {
                         onClick={() => close()}
                         className="flex w-full items-center gap-2.5 pl-11 pr-4 py-2 text-left text-body-sm transition-colors text-on-surface hover:bg-surface-container"
                       >
-                        <span className="text-base leading-none">{lang.flag}</span>
+                        <span className="flag-emoji text-base leading-none">{lang.flag}</span>
                         <span className="flex-1">{lang.label}</span>
                         {lang.code === locale && <Icon name="check" className="text-[16px] text-secondary" />}
                       </Link>
@@ -115,7 +115,7 @@ export function AppsMenu() {
                         disabled
                         className="flex w-full items-center gap-2.5 pl-11 pr-4 py-2 text-left text-body-sm transition-colors cursor-not-allowed text-on-surface-variant/50"
                       >
-                        <span className="text-base leading-none">{lang.flag}</span>
+                        <span className="flag-emoji text-base leading-none">{lang.flag}</span>
                         <span className="flex-1">{lang.label}</span>
                         <span className="rounded-full bg-surface-container px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-on-surface-variant/50">
                           {t("Soon")}

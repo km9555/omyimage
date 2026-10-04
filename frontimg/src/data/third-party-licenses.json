@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-10-03",
-  "count": 95,
+  "generatedAt": "2026-10-04",
+  "count": 96,
   "summary": {
-    "MIT": 72,
+    "MIT": 73,
     "MIT-0": 2,
     "Apache-2.0": 9,
     "CC-BY-4.0": 1,
@@ -214,6 +214,14 @@
       "author": "Isaac Z. Schlueter",
       "repository": "https://github.com/isaacs/core-util-is",
       "text": "Copyright Node.js contributors. All rights reserved.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to\ndeal in the Software without restriction, including without limitation the\nrights to use, copy, modify, merge, publish, distribute, sublicense, and/or\nsell copies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING\nFROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS\nIN THE SOFTWARE."
+    },
+    {
+      "name": "country-flag-emoji-polyfill",
+      "version": "0.1.10",
+      "license": "MIT",
+      "author": "Egbert Teeselink",
+      "repository": "https://github.com/talkjs/country-flag-emoji-polyfill",
+      "text": "## License for the Code (MIT)\r\n\r\nCopyright (c) 2022 TalkJS\r\n\r\nPermission is hereby granted, free of charge, to any person obtaining a copy\r\nof this software and associated documentation files (the \"Software\"), to deal\r\nin the Software without restriction, including without limitation the rights\r\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\r\ncopies of the Software, and to permit persons to whom the Software is\r\nfurnished to do so, subject to the following conditions:\r\n\r\nThe above copyright notice and this permission notice shall be included in all\r\ncopies or substantial portions of the Software.\r\n\r\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\r\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\r\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\r\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\r\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\r\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\r\nSOFTWARE.\r\n\r\n## License for the Visual Design\r\n\r\nThe Emoji art in the \"Twemoji Country Flags\" font comes from [Twemoji](https://twitter.github.io/twemoji),\r\nand is used and redistributed under the CC-BY-4.0 [license terms](https://github.com/twitter/twemoji#license)\r\noffered by the Twemoji project.\r\n\r\n### Creative Commons Attribution 4.0 International (CC BY 4.0)\r\nhttps://creativecommons.org/licenses/by/4.0/legalcode\r\nor for the human readable summary: https://creativecommons.org/licenses/by/4.0/\r\n\r\n\r\n#### You are free to:\r\n**Share** — copy and redistribute the material in any medium or format\r\n\r\n**Adapt** — remix, transform, and build upon the material for any purpose, even commercially.\r\n\r\nThe licensor cannot revoke these freedoms as long as you follow the license terms.\r\n\r\n\r\n#### Under the following terms:    \r\n**Attribution** — You must give appropriate credit, provide a link to the license,\r\nand indicate if changes were made.\r\nYou may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.\r\n\r\n**No additional restrictions** — You may not apply legal terms or **technological measures**\r\nthat legally restrict others from doing anything the license permits.\r\n\r\n#### Notices:\r\nYou do not have to comply with the license for elements of the material in the public domain\r\nor where your use is permitted by an applicable exception or limitation. No warranties are given.\r\nThe license may not give you all of the permissions necessary for your intended use.\r\nFor example, other rights such as publicity, privacy, or moral rights may limit how you use the material."
     },
     {
       "name": "css-tree",

@@ -289,10 +289,54 @@
   --color-surface-tint: #e8825a;
 }
 
+/* Country flags — self-hosted Twemoji Country Flags, as in oMyPDF (ca9e66b).
+
+   WINDOWS SHIPS NO FLAG GLYPHS. A flag emoji is a pair of regional-indicator
+   codepoints (🇬🇧 is U+1F1EC U+1F1E7), and Segoe UI Emoji deliberately carries
+   no flag for them, so Chrome and Edge on Windows draw the letters instead:
+   the language lists read "GB BR IN ID RU" on desktop while phones and Macs
+   showed real flags. It was never a layout or encoding bug — the glyphs simply
+   are not on the machine.
+
+   `unicode-range` is what makes this safe to put in the BASE stack rather than
+   behind a class. The face is only ever consulted for the 26 regional-indicator
+   codepoints, so it cannot affect Latin, Devanagari or anything else, it is
+   fetched only on a page that actually draws a flag, and any flag added
+   anywhere later is covered without remembering a class name. Kept LAST in
+   each stack for the same reason: it never wins a character that Inter, Noto
+   or the system font should be drawing.
+
+   The filename carries the file's md5 prefix, because public/_headers serves
+   /fonts/* immutable for a year. Regenerate by copying
+   node_modules/country-flag-emoji-polyfill/dist/TwemojiCountryFlags.woff2 and
+   renaming it to its new hash. The package is a production dependency purely
+   so scripts/generate-licenses.mjs attributes it: the artwork is Twemoji under
+   CC-BY-4.0, and attribution is a condition of that licence. Its JavaScript is
+   never imported. */
+@font-face {
+  font-family: "Country Flag Emoji";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/country-flags-a19faae0.woff2") format("woff2");
+  unicode-range: U+1F1E6-1F1FF;
+}
+
+/* Base stack AND an explicit class, because the base stack alone is not
+   enough: a typography token that sets `font-family` replaces the whole stack,
+   flag face included. Every flag sits under one — the language switcher's
+   button carries `font-label-sm`, and on phones every token is the system
+   stack (below) — so the flag spans would keep drawing letters with the face
+   loaded. oMyPDF found this only by reading the rendered page. Use the class
+   wherever a flag is drawn. */
+.flag-emoji {
+  font-family: "Country Flag Emoji", var(--font-inter), Arial, Helvetica, sans-serif;
+}
+
 body {
   background-color: var(--color-background);
   color: var(--color-on-background);
-  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif, "Country Flag Emoji";
   -webkit-font-smoothing: antialiased;
 }
 
@@ -313,7 +357,8 @@ body {
   }
 
   body {
-    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif,
+      "Country Flag Emoji";
   }
 }
 
@@ -342,7 +387,8 @@ body {
   :lang(hi) input,
   :lang(hi) textarea,
   :lang(hi) select {
-    font-family: var(--font-inter), var(--font-devanagari), Arial, Helvetica, sans-serif;
+    font-family: var(--font-inter), var(--font-devanagari), Arial, Helvetica, sans-serif,
+      "Country Flag Emoji";
   }
 }
 

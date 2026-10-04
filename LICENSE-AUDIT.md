@@ -80,6 +80,7 @@ only; never distributed to users.
 | Inter (via `next/font`) | SIL OFL-1.1 | Yes — woff2 served to browsers | Yes |
 | JetBrains Mono (via `next/font`) | SIL OFL-1.1 | Yes | Yes |
 | Material Symbols (Google Fonts CDN) | Apache-2.0 | Loaded from CDN | Yes |
+| Twemoji Country Flags (`country-flag-emoji-polyfill`, self-hosted woff2) | MIT (package) + CC-BY-4.0 (Twemoji artwork) | Yes — woff2 served to browsers | Yes, with attribution. The package is a production dependency so the generator reproduces its LICENSE.md, Twemoji credit included. Added 2026-10-04. |
 | rembg | MIT | No — server binary | Yes |
 | U²-Net model (rembg default) | Apache-2.0 | No | Yes |
 | Real-ESRGAN | BSD-3-Clause | No | Yes |
