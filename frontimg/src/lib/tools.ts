@@ -6,6 +6,8 @@
  * Build tools ONE AT A TIME: set `status: "live"` only when a tool's page exists
  * and is verified. Everything else stays "planned" (renders as "Coming soon").
  */
+import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
+import { toolShippedIn } from "@/i18n/status";
 
 export type ToolStatus = "live" | "planned";
 export type Processing = "client" | "server" | "hybrid" | "ai";
@@ -53,8 +55,9 @@ export interface Tool {
    * Makes this entry a VARIANT: its own page, URL and copy, running the parent
    * tool's engine with `preset` applied ("Compress Image to 50KB" is
    * compress-image with a 50 KB target). Variants are full tools everywhere
-   * else (sitemap, slugs, status.ts, search) but stay off the home grid and out
-   * of `relatedTools()`; the family is linked by `<VariantLinks>` instead.
+   * — sitemap, slugs, status.ts, search, the home grid, the Tools menu — but
+   * only in a locale that ships them, and they stay out of `relatedTools()`;
+   * the family is linked by `<VariantLinks>` instead.
    *
    * The route stub is GENERATED (`npm run gen:variants`), which copies `preset`
    * verbatim into `<ParentTool preset={…} />` — so keep it a one-line object
@@ -62,6 +65,11 @@ export interface Tool {
    */
   parentId?: string;
   preset?: ToolPreset;
+  /**
+   * Shows a "New" badge on the tool's card. Set on the 2026-10 expansion
+   * (expansion.md §5); remove the flags once they stop being news (~2027-01).
+   */
+  isNew?: boolean;
 }
 
 /** A variant's settings for its parent tool. One-line literal (see `Tool.parentId`). */
@@ -798,6 +806,7 @@ export const TOOLS: Tool[] = [
     processing: "client",
     library: "Canvas",
     status: "live",
+    isNew: true,
     priority: 101,
     seoTitle: "Reduce Image Size in KB — Photo Resizer in KB, Free | oMyImage",
     seoDescription:
@@ -816,6 +825,7 @@ export const TOOLS: Tool[] = [
     processing: "client",
     library: "Canvas",
     status: "live",
+    isNew: true,
     priority: 102,
     seoTitle: "Compress Image to 20KB — Photo & Signature, Free | oMyImage",
     seoDescription:
@@ -834,6 +844,7 @@ export const TOOLS: Tool[] = [
     processing: "client",
     library: "Canvas",
     status: "live",
+    isNew: true,
     priority: 103,
     seoTitle: "Compress Image to 50KB Online — Free JPG Under 50KB | oMyImage",
     seoDescription:
@@ -852,6 +863,7 @@ export const TOOLS: Tool[] = [
     processing: "client",
     library: "Canvas",
     status: "live",
+    isNew: true,
     priority: 104,
     seoTitle: "Compress Image to 100KB Online — Free, Batch, Private | oMyImage",
     seoDescription:
@@ -870,6 +882,7 @@ export const TOOLS: Tool[] = [
     processing: "client",
     library: "Canvas",
     status: "live",
+    isNew: true,
     priority: 105,
     seoTitle: "Compress Image to 200KB Online — Keep Photos Sharp | oMyImage",
     seoDescription:
@@ -888,6 +901,7 @@ export const TOOLS: Tool[] = [
     processing: "client",
     library: "Canvas",
     status: "live",
+    isNew: true,
     priority: 106,
     seoTitle: "Compress Image to 1MB Online — Free Photo Compressor | oMyImage",
     seoDescription:
@@ -907,6 +921,7 @@ export const TOOLS: Tool[] = [
     processing: "ai",
     library: "Real-ESRGAN",
     status: "live",
+    isNew: true,
     priority: 111,
     seoTitle: "Convert Image to HD Online — Free HD Image Converter | oMyImage",
     seoDescription:
@@ -925,6 +940,7 @@ export const TOOLS: Tool[] = [
     processing: "ai",
     library: "Real-ESRGAN",
     status: "live",
+    isNew: true,
     priority: 112,
     seoTitle: "Unblur Image Online — Sharpen Blurry Photos with AI | oMyImage",
     seoDescription:
@@ -944,6 +960,7 @@ export const TOOLS: Tool[] = [
     processing: "client",
     library: "Canvas",
     status: "live",
+    isNew: true,
     priority: 113,
     seoTitle: "Flip Image Online — Mirror a Photo Horizontally, Free | oMyImage",
     seoDescription:
@@ -963,6 +980,7 @@ export const TOOLS: Tool[] = [
     processing: "ai",
     library: "rembg",
     status: "live",
+    isNew: true,
     priority: 114,
     seoTitle: "Change Photo Background Color Online — White, Blue, Red | oMyImage",
     seoDescription:
@@ -981,6 +999,7 @@ export const TOOLS: Tool[] = [
     processing: "ai",
     library: "rembg",
     status: "live",
+    isNew: true,
     priority: 115,
     seoTitle: "Blur Photo Background Online — Portrait Mode Effect | oMyImage",
     seoDescription:
@@ -999,6 +1018,7 @@ export const TOOLS: Tool[] = [
     processing: "client",
     library: "MediaPipe + Canvas",
     status: "live",
+    isNew: true,
     priority: 32,
     seoTitle: "Passport Size Photo Maker Online — Free, Print-Ready | oMyImage",
     seoDescription:
@@ -1018,6 +1038,7 @@ export const TOOLS: Tool[] = [
     processing: "client",
     library: "MediaPipe + Canvas",
     status: "live",
+    isNew: true,
     priority: 121,
     seoTitle: "3x4 Photo Maker Online — 3 × 4 cm Document Photo, Free | oMyImage",
     seoDescription:
@@ -1036,6 +1057,7 @@ export const TOOLS: Tool[] = [
     processing: "client",
     library: "MediaPipe + Canvas",
     status: "live",
+    isNew: true,
     priority: 122,
     seoTitle: "2x2 Photo Maker Online — US Passport & Visa Size, Free | oMyImage",
     seoDescription:
@@ -1051,11 +1073,14 @@ export const TOOLS: Tool[] = [
  * releases, because nothing links a prose string to the registry.
  *
  * Counts `live` only — a "planned" entry renders as "Coming soon" and is not
- * a tool a visitor can use. Variants (compress-image-to-50kb …) are presets of
- * a tool already counted, and the home directory shows one card per tool, so
- * they don't inflate the number either.
+ * a tool a visitor can use. Variants (compress-image-to-50kb …) count where
+ * they are shipped, because the home grid and the Tools menu show them as
+ * tools there: the number has to match the cards on the same site. That makes
+ * it per locale — /id has no image-to-hd, /hi no 3x4-photo.
  */
-export const LIVE_TOOL_COUNT: number = TOOLS.filter((t) => t.status === "live" && !t.parentId).length;
+export function liveToolCount(locale: Locale = DEFAULT_LOCALE): number {
+  return TOOLS.filter((t) => t.status === "live" && (!t.parentId || toolShippedIn(t.id, locale))).length;
+}
 
 // ── Lookups ──────────────────────────────────────────────────────────────
 export const TOOLS_BY_ID: Record<string, Tool> = Object.fromEntries(

@@ -31,7 +31,7 @@ export function Breadcrumbs({ items, locale = DEFAULT_LOCALE }: { items: Crumb[]
   };
 
   return (
-    <nav aria-label={t("Breadcrumb")} className="text-label-sm font-label-sm text-on-surface-variant">
+    <nav aria-label={t("Breadcrumb")} data-breadcrumbs className="text-label-sm font-label-sm text-on-surface-variant">
       <ol className="flex flex-wrap items-center gap-1">
         {items.map((item, i) => {
           const isLast = i === items.length - 1;

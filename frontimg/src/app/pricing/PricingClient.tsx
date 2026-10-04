@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Icon } from "@/components/Icon";
 import { getRegionPrices, type PriceBook } from "@/lib/billing";
-import { LIVE_TOOL_COUNT } from "@/lib/tools";
+import { liveToolCount } from "@/lib/tools";
 import type { Locale } from "@/i18n/config";
 import { localeHome } from "@/lib/i18n/links";
 import { useLocale, useT } from "@/i18n/I18nScope";
@@ -360,7 +360,7 @@ export function PricingClient() {
                       {/* `n` is passed to every feature; only the tool-count
                           one has a `{n}` to spend it on, and interpolate
                           leaves the rest untouched. */}
-                      <span>{t(f, { n: LIVE_TOOL_COUNT })}</span>
+                      <span>{t(f, { n: liveToolCount(locale) })}</span>
                     </li>
                   ))}
                 </ul>
@@ -461,7 +461,7 @@ export function PricingClient() {
             {t("Start now — no card, no account.")}
           </h2>
           <p className="mt-3 text-body-lg text-on-surface-variant max-w-xl mx-auto">
-            {t("All {n} tools are free to use today. Paid plans will add headroom, not gatekeeping.", { n: LIVE_TOOL_COUNT })}
+            {t("All {n} tools are free to use today. Paid plans will add headroom, not gatekeeping.", { n: liveToolCount(locale) })}
           </p>
           <Link
             href={localeHome(locale)}

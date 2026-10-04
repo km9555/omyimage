@@ -16,6 +16,8 @@
  * tools.ts) so a section header never disagrees with the tool icons under it.
  */
 import { TOOLS_BY_ID, type Tool } from "@/lib/tools";
+import type { Locale } from "@/i18n/config";
+import { toolShippedIn } from "@/i18n/status";
 
 export interface NavSection {
   id: string;
@@ -33,7 +35,29 @@ export const NAV_SECTIONS: NavSection[] = [
     label: "Optimize Image",
     icon: "compress",
     color: "#4F9D69",
-    ids: ["compress-image", "resize-image", "crop-image", "rotate-image"],
+    ids: ["compress-image", "resize-image", "crop-image", "rotate-image", "flip-image"],
+  },
+  {
+    // Variants of compress-image (expansion.md §5): one row per target size.
+    id: "compress-size",
+    label: "Compress to Size",
+    icon: "photo_size_select_large",
+    color: "#4F9D69",
+    ids: [
+      "reduce-image-size-in-kb",
+      "compress-image-to-20kb",
+      "compress-image-to-50kb",
+      "compress-image-to-100kb",
+      "compress-image-to-200kb",
+      "compress-image-to-1mb",
+    ],
+  },
+  {
+    id: "photo-id",
+    label: "Passport & ID Photos",
+    icon: "badge",
+    color: "#4F7FB8",
+    ids: ["passport-photo-maker", "3x4-photo", "2x2-photo"],
   },
   {
     id: "edit",
@@ -45,7 +69,6 @@ export const NAV_SECTIONS: NavSection[] = [
       "watermark-image",
       "add-border",
       "circle-crop",
-      "passport-photo-maker",
       "blur-image",
       "grayscale-image",
       "merge-images",
@@ -63,7 +86,14 @@ export const NAV_SECTIONS: NavSection[] = [
     label: "Image AI",
     icon: "smart_toy",
     color: "#7B79C9",
-    ids: ["remove-background", "upscale-image"],
+    ids: [
+      "remove-background",
+      "upscale-image",
+      "image-to-hd",
+      "unblur-image",
+      "change-background-color",
+      "blur-background",
+    ],
   },
   {
     id: "privacy",
@@ -118,17 +148,25 @@ export const NAV_SECTIONS_BY_ID: Record<string, NavSection> = Object.fromEntries
 
 /**
  * Column layout for the 4-column desktop mega-menu, by section id.
- * Balanced by row count, not section count: column 3 carries two short
- * sections so it lands near column 1's eleven rows.
+ * Balanced by row count, not section count: every column lands on 12–14
+ * tool rows.
  */
 export const NAV_COLUMNS: string[][] = [
-  ["optimize", "edit"],
-  ["create", "ai", "privacy"],
-  ["convert-format", "convert-other"],
-  ["convert-camera"],
+  ["optimize", "compress-size", "photo-id"],
+  ["edit", "create", "privacy"],
+  ["ai", "convert-format"],
+  ["convert-other", "convert-camera"],
 ];
 
-/** Resolve a section's ids to live Tool objects, dropping anything unknown. */
-export function navSectionTools(section: NavSection): Tool[] {
-  return section.ids.map((id) => TOOLS_BY_ID[id]).filter((t): t is Tool => !!t);
+/**
+ * Resolve a section's ids to live Tool objects, dropping anything unknown.
+ * With a locale, a variant not shipped there is dropped too — image-to-hd is
+ * deliberately not built for /id (`/id/hd-foto` already is that page), and
+ * the menu must not link out to the English one. Regular tools keep their
+ * English fallback, as everywhere else.
+ */
+export function navSectionTools(section: NavSection, locale?: Locale): Tool[] {
+  return section.ids
+    .map((id) => TOOLS_BY_ID[id])
+    .filter((t): t is Tool => !!t && (!locale || !t.parentId || toolShippedIn(t.id, locale)));
 }

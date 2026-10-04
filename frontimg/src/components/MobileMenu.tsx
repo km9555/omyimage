@@ -287,7 +287,7 @@ export function MobileMenu() {
 
                             {isOpen && (
                               <div className="ml-4 flex flex-col border-l border-outline-variant/60 pl-2">
-                                {navSectionTools(section).map((tool) => (
+                                {navSectionTools(section, locale).map((tool) => (
                                   <ToolRow key={tool.id} tool={tool} onNavigate={close} />
                                 ))}
                               </div>

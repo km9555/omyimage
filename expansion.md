@@ -26,8 +26,12 @@ research behind it.
 
 1. `src/lib/tools.ts` — an entry with `parentId: "compress-image"` and
    `preset: { targetKb: 50 },` (ONE line; the generator copies it verbatim).
-   `homeGrid` is irrelevant: variants are excluded from the home grid,
-   `relatedTools()` and the dashboard browse grid automatically.
+   Variants show as cards in the home grid and dashboard and as rows in the
+   Tools menu (add the id to a section in `lib/nav-sections.ts`) — but only
+   in locales that ship them (`toolShippedIn`), so a page never links out to
+   an English variant. They stay out of `relatedTools()`. Set `isNew: true`
+   for the "New" badge; drop the flags once they stop being news (~2027-01).
+   Tool counts (`liveToolCount(locale)`) include them, per locale.
 2. The parent component accepts `preset?: …` and behaves exactly as before
    without it. TypeScript checks every generated literal against that prop.
 3. `npm run gen:variants` writes `src/app/<id>/page.tsx` and one route per
@@ -225,6 +229,16 @@ blur-screenshot (90–140/mo), exif-editor (≤ 390, KD 68), svg-to-gif, blur-gi
   selfie segmenter was dropped: its licence could not be verified.
   Gates: verify:build 304 sitemap URLs, 84 family pages, worst similarity
   still 0.542; i18n:verify 8/8 (ru 3x4 needed one more section).
+- **2026-10-04 — New tools made visible (user request).** Variants are now
+  cards in the home grid and dashboard (per-locale, after the main tools),
+  with a "New" tag on all 14 new tools; the Tools menu gained "Compress to
+  Size" and "Passport & ID Photos" sections plus the AI and flip variants,
+  rebalanced to 12–14 rows per column; tool counts are per locale (en 54,
+  pt/hi/ru 53, id 51). Tool-page fix: with a file loaded, the family strip
+  sat flush against the window edge — it now shares the tinted "More
+  tools" band. The band's CSS matched `aria-label="More tools"`, which is
+  translated, so it had never applied on /pt /hi /ru /id; it now keys on
+  `data-related-tools` / `data-breadcrumbs`.
 - **Deploys are paused pending the user's go-ahead.** 2A reached
   `staging` (preview) on 2026-10-04; a later step was blocked as a
   production-deploy risk, so 3A onwards is committed on
