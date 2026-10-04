@@ -201,6 +201,32 @@ export const ruTools: Record<string, LocalizedTool> = {
     name: "Улучшить качество фото",
     shortDescription: "Увеличьте снимок и поднимите резкость — без мыла и артефактов.",
   },
+
+  // ── Варианты: сжатие до заданного веса (expansion.md) ──
+  "reduce-image-size-in-kb": {
+    name: "Уменьшить вес фото в КБ",
+    shortDescription: "Уложите фото в любой лимит в КБ или МБ.",
+  },
+  "compress-image-to-20kb": {
+    name: "Сжать фото до 20 КБ",
+    shortDescription: "Фото и подпись меньше 20 КБ для анкет.",
+  },
+  "compress-image-to-50kb": {
+    name: "Сжать фото до 50 КБ",
+    shortDescription: "Частый лимит для фото в анкетах.",
+  },
+  "compress-image-to-100kb": {
+    name: "Сжать фото до 100 КБ",
+    shortDescription: "Чёткие фото и сканы меньше 100 КБ.",
+  },
+  "compress-image-to-200kb": {
+    name: "Сжать фото до 200 КБ",
+    shortDescription: "Фото и сканы документов меньше 200 КБ.",
+  },
+  "compress-image-to-1mb": {
+    name: "Сжать фото до 1 МБ",
+    shortDescription: "Фото с телефона меньше 1 МБ, обычно в полном размере.",
+  },
 };
 
 /**

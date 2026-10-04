@@ -26,6 +26,8 @@ const content: ToolPageContent = {
   metaDescription:
     "Comprima imagens JPG, PNG e WEBP online e grátis. Reduza o tamanho em KB sem perder qualidade, em lote e no seu navegador — sem cadastro e sem marca d'água.",
 
+  variantsHeading: "Comprimir para um tamanho exato",
+
   intro:
     "Comprimir imagem é a forma mais rápida de deixar fotos mais leves para sites, e-mail, WhatsApp e formulários com limite de tamanho. A ferramenta Comprimir imagem do oMyImage reduz arquivos JPG, PNG e WEBP direto no seu navegador: converta para WEBP para chegar ao menor tamanho, controle a qualidade e, se quiser, diminua as dimensões de fotos muito grandes. Os PNGs são comprimidos do jeito certo, reduzindo o número de cores com pontilhado em vez de apenas salvar de novo. Comprima uma imagem ou um lote inteiro e veja exatamente quanto você economizou.",
 
@@ -58,6 +60,15 @@ const content: ToolPageContent = {
       ],
     },
     {
+      heading: "Comprimir até um limite de tamanho, em vez de escolher a qualidade",
+      id: "target-size",
+      body: [
+        "Quando o formulário diz \"máximo de 100 KB\", o controle de qualidade responde à pergunta errada: você teria de chutar um valor, comprimir, conferir o tamanho e tentar de novo. Em vez disso, mude as configurações para Por tamanho do arquivo, digite o limite e deixe a ferramenta fazer as tentativas — ela procura a maior qualidade cujo resultado ainda cabe e, só se nem uma qualidade baixa couber, reduz também as dimensões em pixels.",
+        "O resultado fica sempre abaixo do número digitado, nunca \"mais ou menos\". A ferramenta conta 1 KB como 1.000 bytes, então um arquivo feito para um limite de 50 KB também passa em formulários que contam o KB como 1.024 bytes. Se a imagem já estiver abaixo do limite no formato escolhido, você recebe o arquivo original intacto, e não uma cópia recomprimida à toa.",
+        "Os limites mais comuns têm páginas próprias, com orientações específicas: assinaturas em 20 KB, fotos de concurso em 50 KB, fotos e documentos digitalizados em 100 KB e 200 KB, e fotos de celular em 1 MB.",
+      ],
+    },
+    {
       heading: "Quando a imagem não diminui mais",
       id: "already-optimised",
       body: [
@@ -70,13 +81,13 @@ const content: ToolPageContent = {
   howToTitle: "Como comprimir uma imagem",
   steps: [
     { title: "Envie", description: "Selecione uma ou várias imagens JPG, PNG ou WEBP, ou arraste e solte na área de envio." },
-    { title: "Escolha as configurações", description: "Escolha o formato de saída e a qualidade e, se quiser, diminua imagens muito grandes." },
+    { title: "Escolha as configurações", description: "Escolha o formato de saída e a qualidade — ou mude para Por tamanho do arquivo e digite um limite, como 100 KB." },
     { title: "Comprima e baixe", description: "Clique em Comprimir — uma imagem é baixada direto; várias chegam juntas em um arquivo ZIP." },
   ],
 
   features: [
     { icon: "burst_mode", title: "Compressão em lote", description: "Comprima dezenas de imagens de uma vez e baixe tudo em um único ZIP, vendo quanto cada arquivo economizou." },
-    { icon: "tune", title: "Controle de qualidade e formato", description: "Converta para WEBP para ter os menores arquivos, ou mantenha o formato e ajuste a qualidade exata que você quer." },
+    { icon: "tune", title: "Qualidade, formato ou tamanho exato", description: "Converta para WEBP para ter os menores arquivos, ajuste a qualidade exata que você quer ou digite um limite de tamanho e receba o arquivo mais nítido que cabe nele." },
     { icon: "lock", title: "100% privado", description: "A compressão roda no seu navegador para quase todas as fotos, e essas imagens nunca são enviadas a lugar nenhum." },
   ],
 
@@ -92,7 +103,7 @@ const content: ToolPageContent = {
     { q: "Comprimir uma imagem reduz as dimensões dela?", a: "Não. A compressão muda como os pixels são guardados, não quantos são — uma foto de 4000×3000 continua 4000×3000. Se você também quer menos pixels, use a ferramenta Redimensionar imagem, que costuma ser o ganho maior para imagens da web." },
     { q: "A compressão remove os dados EXIF?", a: "Recodificar a imagem descarta a maior parte dos metadados, incluindo as configurações da câmera e as coordenadas de GPS, como efeito colateral. Se o objetivo é justamente apagar esses dados, use o Removedor de EXIF, que foi feito para isso e mostra exatamente o que é apagado." },
     { q: "Posso comprimir a mesma imagem duas vezes?", a: "Pode, mas não deveria. Cada passagem com perdas descarta detalhes para sempre e o estrago se acumula, então um JPG comprimido duas vezes fica visivelmente pior do que um comprimido uma vez só na configuração equivalente. Sempre comece pelo melhor original que você tiver." },
-    { q: "Como diminuir uma foto para menos de 100 KB?", a: "Converta para JPG ou WEBP, marque \"Diminuir imagens grandes\" com um tamanho máximo de uns 1200 px e comece com a qualidade em 70%. A maioria das fotos de celular fica abaixo de 100 KB assim; se ainda passar, baixe a qualidade aos poucos ou reduza o tamanho máximo. É o caminho para portais e formulários que limitam o envio em KB." },
+    { q: "Como diminuir uma foto para menos de 100 KB?", a: "Mude as configurações para Por tamanho do arquivo, digite 100 KB (ou toque no atalho) e comprima. Cada foto volta abaixo de 100 KB com a maior qualidade que cabe nesse limite; as dimensões só diminuem se a qualidade sozinha não bastar. É o caminho para portais e formulários que limitam o envio em KB." },
     { q: "Comprimir ajuda a mandar fotos pelo WhatsApp sem perder qualidade?", a: "Ajuda a controlar o resultado. O WhatsApp recomprime por conta própria tudo o que é enviado como foto; se você já envia uma imagem bem comprimida, com as dimensões certas, ele tem menos o que estragar. Para preservar o original de verdade, envie como documento." },
   ],
 
@@ -101,6 +112,24 @@ const content: ToolPageContent = {
 
 
   ui: {
+    "By quality": "Por qualidade",
+    "By file size": "Por tamanho do arquivo",
+    "Compression mode": "Modo de compressão",
+    "Target size": "Tamanho máximo",
+    "Unit": "Unidade",
+    "KB": "KB",
+    "MB": "MB",
+    "A KB here is 1,000 bytes, so the file passes forms that count a KB as 1,000 or as 1,024 bytes.": "Aqui 1 KB = 1.000 bytes, então o arquivo passa em formulários que contam o KB como 1.000 ou como 1.024 bytes.",
+    "JPG (best for forms)": "JPG (o melhor para formulários)",
+    "Each image gets the highest quality that fits under the limit. If that is still too big, its dimensions are reduced as well.": "Cada imagem recebe a maior qualidade que cabe no limite. Se ainda ficar grande demais, as dimensões também são reduzidas.",
+    "Enter a target size greater than zero.": "Informe um tamanho maior que zero.",
+    "Every image is now under {size}.": "Todas as imagens agora têm menos de {size}.",
+    "Some images could not get under {size}.": "Algumas imagens não ficaram abaixo de {size}.",
+    "Every image will be compressed to under {size}.": "Cada imagem será comprimida para menos de {size}.",
+    "Set any target size in KB or MB after adding your images.": "Depois de adicionar as imagens, defina qualquer tamanho em KB ou MB.",
+    "already under {size} — kept original": "já tinha menos de {size} — original mantido",
+    "could not get under {size}": "não ficou abaixo de {size}",
+    "resized to {dims}": "redimensionada para {dims}",
     // CompressTool.tsx
     "Compress": "Comprimir",
     "Compressing…": "Comprimindo…",

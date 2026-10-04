@@ -21,6 +21,7 @@ import {
   type ExportMime,
 } from "@/lib/image/raster";
 import { compressPngCanvas, pngColorsForQuality } from "@/lib/image/png-compress";
+import { compressToSize, limitBytes } from "@/lib/image/compress-to-size";
 import { useHandoff } from "@/lib/tool-handoff";
 import { useFormatBytes, useT } from "@/i18n/I18nScope";
 import { translateError } from "@/i18n/errors";
@@ -34,7 +35,7 @@ type Format = "original" | ExportMime;
  * tried came out bigger, so the user gets their own bytes back untouched —
  * a compressor that hands back a larger file has failed at its one job.
  */
-type Outcome = "smaller" | "kept-original" | "no-gain";
+type Outcome = "smaller" | "kept-original" | "no-gain" | "missed-target";
 type Item = {
   id: string;
   file: File;
@@ -42,8 +43,48 @@ type Item = {
   w?: number;
   h?: number;
   processing?: boolean;
-  result?: { blob: Blob; size: number; name: string; outcome: Outcome; colors?: number };
+  result?: {
+    blob: Blob;
+    size: number;
+    name: string;
+    outcome: Outcome;
+    colors?: number;
+    /** Set when target-size mode had to reduce the pixel dimensions. */
+    resizedTo?: { w: number; h: number };
+  };
 };
+
+/**
+ * Settings a variant page opens with (lib/tools.ts `preset`, copied verbatim
+ * into the generated route). Without one the tool behaves exactly as on
+ * /compress-image: quality mode, nothing pre-set.
+ */
+export interface CompressPreset {
+  /** Open in target-size mode with this limit, in decimal KB (1000 = 1 MB). */
+  targetKb?: number;
+  /** Open in target-size mode with the limit left for the visitor to set. */
+  mode?: "target";
+}
+
+type Mode = "quality" | "target";
+type SizeUnit = "KB" | "MB";
+type TargetMime = "image/jpeg" | "image/webp";
+
+/** Quick picks in target mode — the limits upload forms actually use. */
+const TARGET_CHIPS: { value: number; unit: SizeUnit }[] = [
+  { value: 20, unit: "KB" },
+  { value: 50, unit: "KB" },
+  { value: 100, unit: "KB" },
+  { value: 200, unit: "KB" },
+  { value: 500, unit: "KB" },
+  { value: 1, unit: "MB" },
+];
+
+/** A preset's KB figure as the value/unit pair the inputs show. */
+function presetTarget(kb: number | undefined): { value: number; unit: SizeUnit } {
+  if (!kb) return { value: 100, unit: "KB" };
+  return kb >= 1000 && kb % 1000 === 0 ? { value: kb / 1000, unit: "MB" } : { value: kb, unit: "KB" };
+}
 
 // Labels translated at the render site (§4.2); keys in compress-image.<loc>.ts.
 const FORMATS: { label: string; value: Format }[] = [
@@ -62,7 +103,7 @@ function outMimeFor(file: File, fmt: Format): ExportMime {
   return t === "image/jpeg" || t === "image/webp" || t === "image/png" ? (t as ExportMime) : "image/png";
 }
 
-export function CompressTool() {
+export function CompressTool({ preset }: { preset?: CompressPreset } = {}) {
   const t = useT();
   const formatBytes = useFormatBytes();
   const [items, setItems] = useState<Item[]>([]);
@@ -73,6 +114,18 @@ export function CompressTool() {
   const [maxDim, setMaxDim] = useState(2000);
   const [isWorking, setIsWorking] = useState(false);
   const [done, setDone] = useState(false);
+
+  // Target-size mode ("compress to 50 KB"). See lib/image/compress-to-size.ts.
+  const presetMode: Mode = preset?.targetKb || preset?.mode === "target" ? "target" : "quality";
+  const initialTarget = presetTarget(preset?.targetKb);
+  const [mode, setMode] = useState<Mode>(presetMode);
+  const [targetValue, setTargetValue] = useState<number>(initialTarget.value);
+  const [targetUnit, setTargetUnit] = useState<SizeUnit>(initialTarget.unit);
+  const [targetMime, setTargetMime] = useState<TargetMime>("image/jpeg");
+  const targetBytes = limitBytes(targetValue, targetUnit);
+  /** "50 KB" in the page's language (the unit is translated: «50 КБ»). */
+  const sizeLabel = (value: number, unit: SizeUnit) => `${value} ${t(unit)}`;
+  const targetLabel = sizeLabel(targetValue, targetUnit);
 
   useEffect(() => () => { items.forEach((i) => URL.revokeObjectURL(i.url)); }, [items]);
 
@@ -105,8 +158,57 @@ export function CompressTool() {
   const showBg = items.some((it) => outMimeFor(it.file, format) === "image/jpeg");
   const pngColors = pngColorsForQuality(quality);
 
+  /**
+   * Target-size mode: every image comes back under `targetBytes`, at the
+   * highest quality (and, only if needed, the largest dimensions) that fits.
+   * A file that is already under the limit in the chosen format is handed back
+   * untouched — re-encoding it could only lose quality.
+   */
+  const compressAllToTarget = async () => {
+    if (!(targetBytes > 0)) { toast.error(t("Enter a target size greater than zero.")); return; }
+    setIsWorking(true);
+    setDone(false);
+    let processed = 0;
+    try {
+      for (const it of items) {
+        await new Promise((r) => setTimeout(r, 0));
+        setItems((prev) => prev.map((p) => (p.id === it.id ? { ...p, processing: true } : p)));
+
+        let result: NonNullable<Item["result"]>;
+        if (it.file.type === targetMime && it.file.size <= targetBytes) {
+          result = { blob: it.file, size: it.file.size, name: it.file.name, outcome: "kept-original" };
+        } else {
+          const r = await compressToSize(it.file, {
+            maxBytes: targetBytes,
+            mime: targetMime,
+            background: targetMime === "image/jpeg" ? resolveBg(bg) ?? "#ffffff" : null,
+          });
+          const resized = r.downscaled;
+          result = {
+            blob: r.blob,
+            size: r.blob.size,
+            name: `${baseName(it.file.name)}_${targetValue}${targetUnit.toLowerCase()}.${mimeExt(targetMime)}`,
+            outcome: r.met ? "smaller" : "missed-target",
+            resizedTo: resized ? { w: r.width, h: r.height } : undefined,
+          };
+        }
+        processed++;
+        setItems((prev) => prev.map((p) => (p.id === it.id ? { ...p, processing: false, result } : p)));
+      }
+      setDone(true);
+      toast.success(processed === 1 ? t("Processed 1 image.") : t("Processed {n} images.", { n: processed }));
+    } catch (err) {
+      console.error(err);
+      setItems((prev) => prev.map((p) => ({ ...p, processing: false })));
+      toast.error(translateError(err, t, "Compression failed."));
+    } finally {
+      setIsWorking(false);
+    }
+  };
+
   const compressAll = async () => {
     if (items.length === 0) return;
+    if (mode === "target") return compressAllToTarget();
     setIsWorking(true);
     setDone(false);
     const queue = items;
@@ -222,6 +324,7 @@ export function CompressTool() {
   const totalOut = useMemo(() => items.reduce((s, i) => s + (i.result?.size ?? 0), 0), [items]);
   const savedPct = totalIn > 0 && totalOut > 0 ? Math.round((1 - totalOut / totalIn) * 100) : 0;
   const keptCount = items.filter((i) => i.result?.outcome === "kept-original").length;
+  const missedCount = items.filter((i) => i.result?.outcome === "missed-target").length;
 
   const fieldCls = "w-full px-3 py-2.5 rounded-lg bg-surface-container-lowest border border-surface-variant focus:border-secondary focus:ring-1 focus:ring-secondary outline-none text-body-md text-primary";
 
@@ -230,6 +333,13 @@ export function CompressTool() {
       <section>
         <TopLoadingBar active={isWorking} />
         <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="compress" hint={t("or drop JPG, PNG or WEBP images here")} />
+        {presetMode === "target" && (
+          <p className="mt-3 text-center text-body-sm text-on-surface-variant">
+            {preset?.targetKb
+              ? t("Every image will be compressed to under {size}.", { size: targetLabel })
+              : t("Set any target size in KB or MB after adding your images.")}
+          </p>
+        )}
       </section>
     );
   }
@@ -252,7 +362,11 @@ export function CompressTool() {
           onReset={reset}
           title={t("Compression complete!")}
           subtitle={
-            savedPct > 0
+            mode === "target"
+              ? missedCount > 0
+                ? t("Some images could not get under {size}.", { size: targetLabel })
+                : t("Every image is now under {size}.", { size: targetLabel })
+              : savedPct > 0
               ? t("File size reduced by {pct}%", { pct: savedPct })
               : keptCount > 0
                 ? keptCount === 1
@@ -289,8 +403,16 @@ export function CompressTool() {
           {formatBytes(it.file.size)}
           {r && <><Icon name="arrow_forward" className="text-[13px] mx-1 align-middle" /><span className="text-on-surface font-semibold">{formatBytes(r.size)}</span></>}
           {r?.outcome === "smaller" && pct !== null && pct > 0 && <span className="ml-1.5 text-[11px] rounded px-1.5 py-0.5 font-semibold" style={{ backgroundColor: `${ACCENT}1A`, color: ACCENT }}>−{pct}%</span>}
-          {r?.outcome === "kept-original" && <span className="ml-1.5 text-[11px] rounded px-1.5 py-0.5 font-semibold bg-surface-container text-on-surface-variant">{t("already optimised — kept original")}</span>}
+          {r?.outcome === "kept-original" && (
+            <span className="ml-1.5 text-[11px] rounded px-1.5 py-0.5 font-semibold bg-surface-container text-on-surface-variant">
+              {mode === "target"
+                ? t("already under {size} — kept original", { size: targetLabel })
+                : t("already optimised — kept original")}
+            </span>
+          )}
           {r?.outcome === "no-gain" && <span className="ml-1.5 text-[11px] rounded px-1.5 py-0.5 font-semibold bg-error-container text-error">{t("no smaller output")}</span>}
+          {r?.outcome === "missed-target" && <span className="ml-1.5 text-[11px] rounded px-1.5 py-0.5 font-semibold bg-error-container text-error">{t("could not get under {size}", { size: targetLabel })}</span>}
+          {r?.resizedTo && <span className="ml-1.5 text-[11px] text-on-surface-variant/70">{t("resized to {dims}", { dims: `${r.resizedTo.w}×${r.resizedTo.h}` })}</span>}
           {r?.colors && <span className="ml-1.5 text-[11px] text-on-surface-variant/70">{t("{n} colors", { n: r.colors })}</span>}
         </>
       ),
@@ -341,7 +463,11 @@ export function CompressTool() {
                     component returns the ResultScreen above instead of this
                     workspace, so there is no post-compression state to word
                     this note for. */}
-                <RailNote>{t("WEBP usually gives the smallest files. Everything runs in your browser.")}</RailNote>
+                <RailNote>
+                  {mode === "target"
+                    ? t("Each image gets the highest quality that fits under the limit. If that is still too big, its dimensions are reduced as well.")
+                    : t("WEBP usually gives the smallest files. Everything runs in your browser.")}
+                </RailNote>
                 <RailAction onClick={compressAll} busy={isWorking} busyLabel={t("Compressing…")} icon="compress">
                   {items.length > 1
                     ? t("Compress {n} images", { n: items.length })
@@ -350,6 +476,70 @@ export function CompressTool() {
               </>
             }
           >
+          <div role="radiogroup" aria-label={t("Compression mode")} className="grid grid-cols-2 gap-1 rounded-lg bg-surface-container p-1">
+            {(["quality", "target"] as const).map((m) => (
+              <button
+                key={m}
+                type="button"
+                role="radio"
+                aria-checked={mode === m}
+                onClick={() => setMode(m)}
+                className={`rounded-md px-2 py-1.5 text-label-md font-semibold transition-colors ${mode === m ? "bg-surface-container-lowest text-primary shadow-sm" : "text-on-surface-variant hover:text-primary"}`}
+              >
+                {m === "quality" ? t("By quality") : t("By file size")}
+              </button>
+            ))}
+          </div>
+          {mode === "target" ? (
+            <>
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="compress-target" className="text-label-sm font-label-sm text-on-surface-variant">{t("Target size")}</label>
+                <div className="flex gap-2">
+                  <input
+                    id="compress-target"
+                    type="number"
+                    inputMode="decimal"
+                    min={1}
+                    step="any"
+                    value={Number.isFinite(targetValue) ? targetValue : ""}
+                    onChange={(e) => setTargetValue(parseFloat(e.target.value))}
+                    className={`${fieldCls.replace("w-full", "min-w-0 flex-1")} tabular-nums`}
+                  />
+                  <select value={targetUnit} onChange={(e) => setTargetUnit(e.target.value as SizeUnit)} className={`${fieldCls.replace("w-full", "w-20")} shrink-0`} aria-label={t("Unit")}>
+                    <option value="KB">{t("KB")}</option>
+                    <option value="MB">{t("MB")}</option>
+                  </select>
+                </div>
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {TARGET_CHIPS.map((c) => {
+                    const active = c.value === targetValue && c.unit === targetUnit;
+                    return (
+                      <button
+                        key={`${c.value}${c.unit}`}
+                        type="button"
+                        onClick={() => { setTargetValue(c.value); setTargetUnit(c.unit); }}
+                        className={`rounded-full border px-2.5 py-1 text-label-sm font-semibold tabular-nums transition-colors ${active ? "border-secondary bg-secondary/10 text-secondary" : "border-outline-variant/60 text-on-surface-variant hover:border-secondary hover:text-secondary"}`}
+                      >
+                        {sizeLabel(c.value, c.unit)}
+                      </button>
+                    );
+                  })}
+                </div>
+                <p className="text-label-sm font-label-sm text-on-surface-variant/70">
+                  {t("A KB here is 1,000 bytes, so the file passes forms that count a KB as 1,000 or as 1,024 bytes.")}
+                </p>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-label-sm font-label-sm text-on-surface-variant">{t("Output format")}</label>
+                <select value={targetMime} onChange={(e) => setTargetMime(e.target.value as TargetMime)} className={fieldCls}>
+                  <option value="image/jpeg">{t("JPG (best for forms)")}</option>
+                  <option value="image/webp">{t("WEBP (smallest)")}</option>
+                </select>
+              </div>
+              {targetMime === "image/jpeg" && <BackgroundPicker value={bg} onChange={setBg} allowTransparent={false} label={t("JPG background")} />}
+            </>
+          ) : (
+          <>
           <div className="flex flex-col gap-1.5">
             <label className="text-label-sm font-label-sm text-on-surface-variant">{t("Output format")}</label>
             <select value={format} onChange={(e) => setFormat(e.target.value as Format)} className={fieldCls}>
@@ -393,6 +583,8 @@ export function CompressTool() {
             )}
           </div>
           {showBg && <BackgroundPicker value={bg} onChange={setBg} allowTransparent={false} label={t("JPG background")} />}
+          </>
+          )}
           </SettingsRail>
         }
       />

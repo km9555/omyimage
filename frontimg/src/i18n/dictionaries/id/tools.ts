@@ -203,6 +203,32 @@ export const idTools: Record<string, LocalizedTool> = {
     name: "Jadikan Foto HD",
     shortDescription: "Perbesar dan pertajam foto dengan AI — 2×, 3×, atau 4×, detail dipulihkan.",
   },
+
+  // ── Varian: kompres ke ukuran tertentu (expansion.md) ──
+  "reduce-image-size-in-kb": {
+    name: "Perkecil Ukuran Foto dalam KB",
+    shortDescription: "Kecilkan foto ke ukuran KB atau MB yang Anda butuhkan.",
+  },
+  "compress-image-to-20kb": {
+    name: "Kompres Foto 20 KB",
+    shortDescription: "Foto dan tanda tangan di bawah 20 KB untuk formulir.",
+  },
+  "compress-image-to-50kb": {
+    name: "Kompres Foto 50 KB",
+    shortDescription: "Batas pas foto yang sering diminta formulir.",
+  },
+  "compress-image-to-100kb": {
+    name: "Kompres Foto 100 KB",
+    shortDescription: "Pas foto dan scan tetap jelas di bawah 100 KB.",
+  },
+  "compress-image-to-200kb": {
+    name: "Kompres Foto 200 KB",
+    shortDescription: "Pas foto dan scan dokumen di bawah 200 KB.",
+  },
+  "compress-image-to-1mb": {
+    name: "Kompres Foto 1 MB",
+    shortDescription: "Foto ponsel di bawah 1 MB, biasanya ukuran penuh.",
+  },
 };
 
 /**

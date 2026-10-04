@@ -94,7 +94,7 @@ the notes. hi/ru slugs equal the English one.
 
 | id (= en slug) | pt slug | id slug | Demand | Batch |
 |---|---|---|---|---|
-| reduce-image-size-in-kb *(variant: compress-image, free target)* | reduzir-tamanho-da-imagem-em-kb | kompres-foto-kb | IN 450K `photo resizer in kb` (KD 30) + 135K `reduce image size in kb` (KD 9) | 2A |
+| reduce-image-size-in-kb *(variant: compress-image, free target)* | reduzir-tamanho-da-imagem-em-kb | perkecil-ukuran-foto-kb | IN 450K `photo resizer in kb` (KD 30) + 135K `reduce image size in kb` (KD 9) | 2A |
 | compress-image-to-20kb | comprimir-imagem-para-20kb | kompres-foto-20kb | IN 90.5K `resize image to 20kb` + 49.5K | 2A |
 | compress-image-to-50kb | comprimir-imagem-para-50kb | kompres-foto-50kb | IN 90.5K (KD 0); ID 4.4K | 2A |
 | compress-image-to-100kb | comprimir-imagem-para-100kb | kompres-foto-100kb | IN 74K + 49.5K; ID 18.1K | 2A |
@@ -181,3 +181,20 @@ blur-screenshot (90–140/mo), exif-editor (≤ 390, KD 68), svg-to-gif, blur-gi
   variant families, `gen-variants.mjs` in prebuild, `ToolPageShell` parent
   support + `VariantLinks`, AggregateRating removed (151 modules + 10 pairs),
   ConverterPage JSON-LD `url` now the locale's own URL (was always English).
+- **2026-10-04 — Batch 2A shipped (6 tools × 5 locales = 30 pages).**
+  `src/lib/image/compress-to-size.ts`: binary search on quality in
+  [0.5, 0.95] (7 steps), then √-overshoot downscaling, last-resort qualities
+  below 0.5; decodes past-the-canvas-budget photos already downscaled
+  (`createImageBitmap` resize), so target mode never needs the server.
+  CompressTool gained "By quality / By file size" (`preset` prop:
+  `{ targetKb }` or `{ mode: "target" }`); with no preset it is unchanged.
+  Measured in the browser on worst-case noise photos: 4000×3000 → 49,925 B
+  (50 KB), 19,890 B (20 KB), 993,627 B at 3140×2355 (1 MB), WEBP 96,314 B
+  (100 KB); a 14 KB JPG was handed back untouched. Parent compress-image
+  copy updated in all five locales (the old copy told readers the tool had
+  no target size — /id said so in as many words). `LIVE_TOOL_COUNT` excludes
+  variants ("All 40 tools" stays true: one card per tool).
+  Gates: verify:build 270 sitemap URLs, 35 family pages, worst family
+  similarity 0.141 (ceiling 0.6). Russian copy runs ~20% shorter than
+  English for the same content — budget an extra FAQ or section per Russian
+  page to clear the 900-word floor.

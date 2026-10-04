@@ -126,4 +126,24 @@ export const hiAliases: Record<string, string[]> = {
     "फोटो की क्वालिटी बढ़ाएं", "धुंधली फोटो साफ करें", "फोटो एचडी करें",
     "रेजोल्यूशन बढ़ाएं", "फोटो साफ करें", "पुरानी फोटो ठीक करें", "2x", "4x",
   ],
+
+  // वैरिएंट — तय साइज़ तक कंप्रेस
+  "reduce-image-size-in-kb": [
+    "फोटो का साइज kb में", "kb में फोटो", "photo resizer in kb", "फोटो रीसाइज़र kb", "केबी में साइज़ कम",
+  ],
+  "compress-image-to-20kb": [
+    "20 kb", "सिग्नेचर 20 kb", "फोटो 20 kb", "signature resize",
+  ],
+  "compress-image-to-50kb": [
+    "50 kb", "फोटो 50 kb", "फोटो 50 kb में",
+  ],
+  "compress-image-to-100kb": [
+    "100 kb", "फोटो 100 kb",
+  ],
+  "compress-image-to-200kb": [
+    "200 kb", "फोटो 200 kb",
+  ],
+  "compress-image-to-1mb": [
+    "1 mb", "फोटो 1 mb",
+  ],
 };

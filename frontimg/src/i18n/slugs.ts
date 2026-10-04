@@ -99,6 +99,14 @@ const PT_TOOL_SLUGS: Record<string, string> = {
   // ── IA ───────────────────────────────────────────────────────────────
   "remove-background": "remover-fundo",
   "upscale-image": "melhorar-qualidade-imagem",
+
+  // ── Variants: compress-image to a file size (expansion.md §5) ─────────
+  "reduce-image-size-in-kb": "reduzir-tamanho-da-imagem-em-kb",
+  "compress-image-to-20kb": "comprimir-imagem-para-20kb",
+  "compress-image-to-50kb": "comprimir-imagem-para-50kb",
+  "compress-image-to-100kb": "comprimir-imagem-para-100kb",
+  "compress-image-to-200kb": "comprimir-imagem-para-200kb",
+  "compress-image-to-1mb": "comprimir-imagem-para-1mb",
 };
 
 /** Hindi keeps the English slug — see the header. Authored, never derived. */
@@ -150,6 +158,14 @@ const HI_TOOL_SLUGS: Record<string, string> = {
   // ── AI ───────────────────────────────────────────────────────────────
   "remove-background": "remove-background",
   "upscale-image": "upscale-image",
+
+  // ── Variants: compress-image to a file size (expansion.md §5) ─────────
+  "reduce-image-size-in-kb": "reduce-image-size-in-kb",
+  "compress-image-to-20kb": "compress-image-to-20kb",
+  "compress-image-to-50kb": "compress-image-to-50kb",
+  "compress-image-to-100kb": "compress-image-to-100kb",
+  "compress-image-to-200kb": "compress-image-to-200kb",
+  "compress-image-to-1mb": "compress-image-to-1mb",
 };
 
 /**
@@ -210,6 +226,14 @@ const RU_TOOL_SLUGS: Record<string, string> = {
   // ── AI ───────────────────────────────────────────────────────────────
   "remove-background": "remove-background",
   "upscale-image": "upscale-image",
+
+  // ── Variants: compress-image to a file size (expansion.md §5) ─────────
+  "reduce-image-size-in-kb": "reduce-image-size-in-kb",
+  "compress-image-to-20kb": "compress-image-to-20kb",
+  "compress-image-to-50kb": "compress-image-to-50kb",
+  "compress-image-to-100kb": "compress-image-to-100kb",
+  "compress-image-to-200kb": "compress-image-to-200kb",
+  "compress-image-to-1mb": "compress-image-to-1mb",
 };
 
 /**
@@ -292,6 +316,14 @@ const ID_TOOL_SLUGS: Record<string, string> = {
   // ── AI ─────────────────────────────────────────────────────────────────
   "remove-background": "hapus-background",
   "upscale-image": "hd-foto",
+
+  // ── Variants: compress-image to a file size (expansion.md §5) ─────────
+  "reduce-image-size-in-kb": "perkecil-ukuran-foto-kb",
+  "compress-image-to-20kb": "kompres-foto-20kb",
+  "compress-image-to-50kb": "kompres-foto-50kb",
+  "compress-image-to-100kb": "kompres-foto-100kb",
+  "compress-image-to-200kb": "kompres-foto-200kb",
+  "compress-image-to-1mb": "kompres-foto-1mb",
 };
 
 const TOOL_SLUGS: Record<TranslatedLocale, Record<string, string>> = {

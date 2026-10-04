@@ -87,9 +87,9 @@ export const TOOLS: Tool[] = [
     library: "Sharp",
     status: "live",
     priority: 1,
-    seoTitle: "Compress Image Online - Free | oMyImage",
+    seoTitle: "Compress Image Online — Free JPG, PNG & WEBP Compressor | oMyImage",
     seoDescription:
-      "Compress JPG, PNG and WEBP images online for free. Smart lossless and lossy compression with before/after sizes. No sign-up required. Fast and secure.",
+      "Compress JPG, PNG and WEBP images online for free — by quality, or to an exact size like 50KB or 100KB. Batch support, before/after sizes, no sign-up.",
     primaryKeyword: "compress image online free",
   },
   {
@@ -781,6 +781,119 @@ export const TOOLS: Tool[] = [
       "Extract the frames of an animated GIF online for free. Download every frame as PNG or JPG, bundled in a ZIP. Fast and 100% private in your browser.",
     primaryKeyword: "gif to images",
   },
+
+  // ── Variants (expansion.md §2) ─────────────────────────────────────────
+  // Each runs its parent's engine with `preset` applied, on its own URL with
+  // its own copy. Route stubs are generated: `npm run gen:variants`.
+  // compress-image family — target-size compression (lib/image/compress-to-size.ts).
+  {
+    id: "reduce-image-size-in-kb",
+    name: "Reduce Image Size in KB",
+    slug: "reduce-image-size-in-kb",
+    parentId: "compress-image",
+    preset: { mode: "target" },
+    categoryId: "optimize",
+    shortDescription: "Shrink a photo to any size you need in KB or MB.",
+    icon: "compress",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    priority: 101,
+    seoTitle: "Reduce Image Size in KB — Photo Resizer in KB, Free | oMyImage",
+    seoDescription:
+      "Reduce image size in KB online for free. Type any limit — 20KB, 50KB, 100KB or 1MB — and get the sharpest JPG that fits. Batch, in your browser, no upload.",
+    primaryKeyword: "reduce image size in kb",
+  },
+  {
+    id: "compress-image-to-20kb",
+    name: "Compress Image to 20KB",
+    slug: "compress-image-to-20kb",
+    parentId: "compress-image",
+    preset: { targetKb: 20 },
+    categoryId: "optimize",
+    shortDescription: "Photos and signatures under 20KB for forms.",
+    icon: "compress",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    priority: 102,
+    seoTitle: "Compress Image to 20KB — Photo & Signature, Free | oMyImage",
+    seoDescription:
+      "Compress a photo or signature to under 20KB online for free. A sharp JPG that passes exam and job-form limits, many files at once. Runs in your browser.",
+    primaryKeyword: "compress image to 20kb",
+  },
+  {
+    id: "compress-image-to-50kb",
+    name: "Compress Image to 50KB",
+    slug: "compress-image-to-50kb",
+    parentId: "compress-image",
+    preset: { targetKb: 50 },
+    categoryId: "optimize",
+    shortDescription: "The photo limit most exam forms set.",
+    icon: "compress",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    priority: 103,
+    seoTitle: "Compress Image to 50KB Online — Free JPG Under 50KB | oMyImage",
+    seoDescription:
+      "Compress any photo to under 50KB online for free — the limit most exam and government forms set. The sharpest JPG that fits, batch support, no upload.",
+    primaryKeyword: "compress image to 50kb",
+  },
+  {
+    id: "compress-image-to-100kb",
+    name: "Compress Image to 100KB",
+    slug: "compress-image-to-100kb",
+    parentId: "compress-image",
+    preset: { targetKb: 100 },
+    categoryId: "optimize",
+    shortDescription: "Clear photos and scans under 100KB.",
+    icon: "compress",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    priority: 104,
+    seoTitle: "Compress Image to 100KB Online — Free, Batch, Private | oMyImage",
+    seoDescription:
+      "Compress JPG, PNG or WEBP photos to under 100KB online for free. The highest quality that fits the limit, many images at once, processed in your browser.",
+    primaryKeyword: "compress image to 100kb",
+  },
+  {
+    id: "compress-image-to-200kb",
+    name: "Compress Image to 200KB",
+    slug: "compress-image-to-200kb",
+    parentId: "compress-image",
+    preset: { targetKb: 200 },
+    categoryId: "optimize",
+    shortDescription: "Sharp portraits and document scans under 200KB.",
+    icon: "compress",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    priority: 105,
+    seoTitle: "Compress Image to 200KB Online — Keep Photos Sharp | oMyImage",
+    seoDescription:
+      "Compress photos and document scans to under 200KB online for free — for job portals, admissions and application forms. Highest quality that fits, no upload.",
+    primaryKeyword: "compress image to 200kb",
+  },
+  {
+    id: "compress-image-to-1mb",
+    name: "Compress Image to 1MB",
+    slug: "compress-image-to-1mb",
+    parentId: "compress-image",
+    preset: { targetKb: 1000 },
+    categoryId: "optimize",
+    shortDescription: "Phone photos under 1MB, usually at full size.",
+    icon: "compress",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    priority: 106,
+    seoTitle: "Compress Image to 1MB Online — Free Photo Compressor | oMyImage",
+    seoDescription:
+      "Compress phone photos to under 1MB online for free, usually at full resolution. Fits upload limits on portals, email and chat apps. Private, in your browser.",
+    primaryKeyword: "compress image to 1mb",
+  },
 ];
 
 /**
@@ -790,9 +903,11 @@ export const TOOLS: Tool[] = [
  * releases, because nothing links a prose string to the registry.
  *
  * Counts `live` only — a "planned" entry renders as "Coming soon" and is not
- * a tool a visitor can use.
+ * a tool a visitor can use. Variants (compress-image-to-50kb …) are presets of
+ * a tool already counted, and the home directory shows one card per tool, so
+ * they don't inflate the number either.
  */
-export const LIVE_TOOL_COUNT: number = TOOLS.filter((t) => t.status === "live").length;
+export const LIVE_TOOL_COUNT: number = TOOLS.filter((t) => t.status === "live" && !t.parentId).length;
 
 // ── Lookups ──────────────────────────────────────────────────────────────
 export const TOOLS_BY_ID: Record<string, Tool> = Object.fromEntries(

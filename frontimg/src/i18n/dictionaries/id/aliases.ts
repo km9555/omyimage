@@ -111,4 +111,24 @@ export const idAliases: Record<string, string[]> = {
     "hd foto", "foto hd", "memperjelas foto", "perjelas foto",
     "tingkatkan kualitas foto", "foto pecah", "foto blur jadi jelas", "upscale",
   ],
+
+  // Varian — kompres ke ukuran tertentu
+  "reduce-image-size-in-kb": [
+    "perkecil ukuran foto kb", "kecilkan ukuran foto", "ubah ukuran foto kb", "kompres foto kb",
+  ],
+  "compress-image-to-20kb": [
+    "kompres foto 20kb", "20 kb", "tanda tangan 20 kb",
+  ],
+  "compress-image-to-50kb": [
+    "kompres foto 50kb", "50 kb", "pas foto 50 kb",
+  ],
+  "compress-image-to-100kb": [
+    "kompres foto 100kb", "kompres jpg 100kb", "100 kb", "ubah ukuran foto 100kb",
+  ],
+  "compress-image-to-200kb": [
+    "kompres foto 200kb", "kompres jpg 200kb", "200 kb", "ubah ukuran foto 200kb",
+  ],
+  "compress-image-to-1mb": [
+    "kompres foto 1 mb", "kompres foto 1mb", "1 mb", "ubah foto jadi 1 mb",
+  ],
 };

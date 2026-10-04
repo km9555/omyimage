@@ -200,6 +200,32 @@ export const hiTools: Record<string, LocalizedTool> = {
     name: "इमेज की क्वालिटी बढ़ाएँ",
     shortDescription: "AI से 2×, 3×, 4× बड़ा करें और धुँधली फोटो साफ़ करें।",
   },
+
+  // ── वैरिएंट: तय साइज़ तक कंप्रेस (expansion.md) ──
+  "reduce-image-size-in-kb": {
+    name: "फोटो का साइज़ KB में कम करें",
+    shortDescription: "किसी भी फोटो को अपनी ज़रूरत के KB या MB में लाएँ।",
+  },
+  "compress-image-to-20kb": {
+    name: "इमेज 20 KB में कंप्रेस करें",
+    shortDescription: "फ़ॉर्म के लिए 20 KB से कम की फोटो और सिग्नेचर।",
+  },
+  "compress-image-to-50kb": {
+    name: "इमेज 50 KB में कंप्रेस करें",
+    shortDescription: "परीक्षा फ़ॉर्म में फोटो की सबसे आम सीमा।",
+  },
+  "compress-image-to-100kb": {
+    name: "इमेज 100 KB में कंप्रेस करें",
+    shortDescription: "100 KB से कम में साफ़ फोटो और स्कैन।",
+  },
+  "compress-image-to-200kb": {
+    name: "इमेज 200 KB में कंप्रेस करें",
+    shortDescription: "200 KB से कम में साफ़ फोटो और दस्तावेज़।",
+  },
+  "compress-image-to-1mb": {
+    name: "इमेज 1 MB में कंप्रेस करें",
+    shortDescription: "मोबाइल फोटो 1 MB से कम, ज़्यादातर पूरे साइज़ में।",
+  },
 };
 
 /**

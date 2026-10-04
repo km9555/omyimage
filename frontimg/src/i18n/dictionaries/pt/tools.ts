@@ -201,6 +201,32 @@ export const ptTools: Record<string, LocalizedTool> = {
     name: "Melhorar qualidade da imagem",
     shortDescription: "Aumente e melhore com IA — 2×, 3×, 4× recuperando detalhes.",
   },
+
+  // ── Variantes: comprimir até um tamanho (expansion.md) ──
+  "reduce-image-size-in-kb": {
+    name: "Reduzir tamanho da imagem em KB",
+    shortDescription: "Diminua a foto para o tamanho em KB que você precisar.",
+  },
+  "compress-image-to-20kb": {
+    name: "Comprimir imagem para 20 KB",
+    shortDescription: "Fotos e assinaturas abaixo de 20 KB para formulários.",
+  },
+  "compress-image-to-50kb": {
+    name: "Comprimir imagem para 50 KB",
+    shortDescription: "Um limite de foto comum em inscrições.",
+  },
+  "compress-image-to-100kb": {
+    name: "Comprimir imagem para 100 KB",
+    shortDescription: "Fotos e documentos nítidos abaixo de 100 KB.",
+  },
+  "compress-image-to-200kb": {
+    name: "Comprimir imagem para 200 KB",
+    shortDescription: "Fotos e documentos digitalizados abaixo de 200 KB.",
+  },
+  "compress-image-to-1mb": {
+    name: "Comprimir imagem para 1 MB",
+    shortDescription: "Fotos do celular abaixo de 1 MB, quase sempre em tamanho total.",
+  },
 };
 
 /**

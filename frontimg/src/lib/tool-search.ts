@@ -200,6 +200,26 @@ export const TOOL_ALIASES: Record<string, string[]> = {
     "hide face", "censor face", "pixelate face", "anonymize face", "blur people",
     "blur license plate", "privacy blur", "mask face", "obscure face",
   ],
+
+  // Variants — compress to a file size
+  "reduce-image-size-in-kb": [
+    "photo resizer in kb", "image size reducer in kb", "reduce photo size in kb", "resize image in kb", "kb converter", "image kb reducer", "photo kb",
+  ],
+  "compress-image-to-20kb": [
+    "20 kb", "20kb", "signature 20kb", "resize image to 20kb", "photo 20kb", "10 to 20 kb", "signature resize",
+  ],
+  "compress-image-to-50kb": [
+    "50 kb", "50kb", "resize image to 50kb", "photo 50kb", "jpg to 50kb", "under 50kb",
+  ],
+  "compress-image-to-100kb": [
+    "100 kb", "100kb", "resize image to 100kb", "jpg to 100kb", "under 100kb", "photo 100kb",
+  ],
+  "compress-image-to-200kb": [
+    "200 kb", "200kb", "resize image to 200kb", "under 200kb", "photo 200kb",
+  ],
+  "compress-image-to-1mb": [
+    "1 mb", "1mb", "under 1mb", "photo 1mb", "1 megabyte", "1000 kb",
+  ],
 };
 
 /**
