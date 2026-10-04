@@ -18,14 +18,12 @@ const quickLinks = [
   { label: "Compress Image", href: "/compress-image" },
   { label: "Resize Image",   href: "/resize-image" },
   { label: "Crop Image",     href: "/crop-image" },
-  { label: "Blog",           href: "/blog" },
 ];
 
 /*
   A client component because it sits in the root layout, which cannot see the
   URL: labels are translated and hrefs rewritten per locale at render, like the
-  rest of the chrome. /blog is English-only by decision, so localeHref leaves
-  it unchanged.
+  rest of the chrome. The blog is linked from the footer, not the header.
 */
 export function Navbar() {
   const t = useT();

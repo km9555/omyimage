@@ -22,7 +22,7 @@ triggers a fresh build.
 - `components/BlogTags.tsx` renders the tag chips (amber, teal and sky). The `.blog-body` styles live in `app/globals.css`.
 - `app/admin/blog/` is the editor, with a live preview and image upload.
 - `lib/auth/useRequireAdmin.ts` provides the client-side admin gate.
-- The blog is linked from `sitemap.ts` (only once at least one post exists), the Navbar quick links (at `xl` widths), the MobileMenu and the Footer.
+- The blog is linked from `sitemap.ts` (only once at least one post exists) and the Footer. It was taken out of the header (Navbar quick links and MobileMenu) on 2026-10-04 at the owner's request.
 
 ## Going live (one-time)
 
