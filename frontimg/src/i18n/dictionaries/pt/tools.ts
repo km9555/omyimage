@@ -249,6 +249,18 @@ export const ptTools: Record<string, LocalizedTool> = {
     name: "Desfocar fundo",
     shortDescription: "Efeito retrato atrás de qualquer pessoa ou objeto.",
   },
+  "passport-photo-maker": {
+    name: "Foto para documento",
+    shortDescription: "Fotos 3x4, de passaporte e visto, com folha para imprimir.",
+  },
+  "3x4-photo": {
+    name: "Foto 3x4 online",
+    shortDescription: "Foto 3 × 4 cm enquadrada e pronta para imprimir.",
+  },
+  "2x2-photo": {
+    name: "Foto 2x2 (visto americano)",
+    shortDescription: "Foto de 2 × 2 polegadas para passaporte e visto dos EUA.",
+  },
 };
 
 /**

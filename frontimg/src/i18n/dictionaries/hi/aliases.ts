@@ -163,4 +163,13 @@ export const hiAliases: Record<string, string[]> = {
   "blur-background": [
     "बैकग्राउंड ब्लर", "पोर्ट्रेट मोड", "blur background",
   ],
+  "passport-photo-maker": [
+    "पासपोर्ट साइज़ फोटो", "पासपोर्ट फोटो", "passport size photo", "पासपोर्ट साइज फोटो", "फोटो प्रिंट शीट", "3.5 x 4.5 cm",
+  ],
+  "3x4-photo": [
+    "3x4 फोटो", "3 x 4 cm photo", "3x4 photo",
+  ],
+  "2x2-photo": [
+    "2x2 फोटो", "वीज़ा फोटो", "OCI फोटो", "2x2 photo", "us visa photo",
+  ],
 };

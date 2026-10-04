@@ -987,6 +987,61 @@ export const TOOLS: Tool[] = [
       "Blur the background of any photo online with AI — keep the person or product sharp and soften everything behind it. Adjustable strength, free, no watermark.",
     primaryKeyword: "blur background",
   },
+
+  // ── New tools (expansion.md §5) ────────────────────────────────────────
+  {
+    id: "passport-photo-maker",
+    name: "Passport Size Photo Maker",
+    slug: "passport-photo-maker",
+    categoryId: "edit",
+    shortDescription: "Passport, visa & ID photos with print sheets.",
+    icon: "badge",
+    processing: "client",
+    library: "MediaPipe + Canvas",
+    status: "live",
+    priority: 32,
+    seoTitle: "Passport Size Photo Maker Online — Free, Print-Ready | oMyImage",
+    seoDescription:
+      "Make passport size photos online free: auto face framing, 35×45 mm, 2×2 in, 3×4 cm and more, white or coloured background, 300-DPI print sheets. Private.",
+    primaryKeyword: "passport size photo maker",
+  },
+  // passport-photo-maker family.
+  {
+    id: "3x4-photo",
+    name: "3x4 Photo Maker",
+    slug: "3x4-photo",
+    parentId: "passport-photo-maker",
+    preset: { size: "3x4" },
+    categoryId: "edit",
+    shortDescription: "3 × 4 cm document photos, framed and print-ready.",
+    icon: "badge",
+    processing: "client",
+    library: "MediaPipe + Canvas",
+    status: "live",
+    priority: 121,
+    seoTitle: "3x4 Photo Maker Online — 3 × 4 cm Document Photo, Free | oMyImage",
+    seoDescription:
+      "Make a 3x4 photo online free: the face is framed automatically at 3 × 4 cm, on a white or coloured background, with a print sheet of copies. In your browser.",
+    primaryKeyword: "3x4 photo",
+  },
+  {
+    id: "2x2-photo",
+    name: "2x2 Photo Maker",
+    slug: "2x2-photo",
+    parentId: "passport-photo-maker",
+    preset: { size: "2x2in" },
+    categoryId: "edit",
+    shortDescription: "2 × 2 inch photos for US passports and visas.",
+    icon: "badge",
+    processing: "client",
+    library: "MediaPipe + Canvas",
+    status: "live",
+    priority: 122,
+    seoTitle: "2x2 Photo Maker Online — US Passport & Visa Size, Free | oMyImage",
+    seoDescription:
+      "Make a 2x2 inch photo online free for a US passport or visa: automatic face framing, white background, 300 DPI, and a 4×6 print sheet. Private, in your browser.",
+    primaryKeyword: "2x2 photo",
+  },
 ];
 
 /**
@@ -1109,6 +1164,7 @@ const TOOL_COLORS: Record<string, string> = {
   "remove-exif": "#C55A52",
   "gif-maker": "#C56A9A",
   "gif-to-images": "#B85C8C",
+  "passport-photo-maker": "#4F7FB8",
 };
 
 const CATEGORY_COLORS: Record<string, string> = {

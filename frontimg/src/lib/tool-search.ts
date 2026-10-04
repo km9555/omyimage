@@ -237,6 +237,15 @@ export const TOOL_ALIASES: Record<string, string[]> = {
   "blur-background": [
     "portrait mode", "bokeh", "background blur", "blur behind", "depth effect", "blur photo background",
   ],
+  "passport-photo-maker": [
+    "passport size photo", "passport photo", "id photo", "visa photo", "35x45", "photo for passport", "print sheet", "photo booth",
+  ],
+  "3x4-photo": [
+    "3x4", "3 x 4 cm", "3x4 cm photo", "document photo", "pas foto 3x4", "foto 3x4",
+  ],
+  "2x2-photo": [
+    "2x2", "2 x 2 inch", "us passport photo", "us visa photo", "oci photo", "600x600",
+  ],
 };
 
 /**

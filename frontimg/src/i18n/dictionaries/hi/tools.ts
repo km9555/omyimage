@@ -248,6 +248,18 @@ export const hiTools: Record<string, LocalizedTool> = {
     name: "बैकग्राउंड ब्लर करें",
     shortDescription: "किसी व्यक्ति या चीज़ के पीछे पोर्ट्रेट जैसा ब्लर।",
   },
+  "passport-photo-maker": {
+    name: "पासपोर्ट साइज़ फोटो मेकर",
+    shortDescription: "पासपोर्ट, वीज़ा और ID फोटो, प्रिंट शीट के साथ।",
+  },
+  "3x4-photo": {
+    name: "3x4 फोटो मेकर",
+    shortDescription: "3 × 4 cm डॉक्यूमेंट फोटो, फ्रेम की हुई और प्रिंट के लिए तैयार।",
+  },
+  "2x2-photo": {
+    name: "2x2 फोटो मेकर",
+    shortDescription: "US पासपोर्ट, वीज़ा और OCI के लिए 2 × 2 इंच फोटो।",
+  },
 };
 
 /**

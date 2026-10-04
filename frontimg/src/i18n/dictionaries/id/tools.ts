@@ -251,6 +251,18 @@ export const idTools: Record<string, LocalizedTool> = {
     name: "Blur Background Foto",
     shortDescription: "Efek potret di belakang orang atau benda.",
   },
+  "passport-photo-maker": {
+    name: "Pas Foto Online",
+    shortDescription: "Pas foto 3x4, 4x6, paspor dan visa, siap cetak.",
+  },
+  "3x4-photo": {
+    name: "Pas Foto 3x4",
+    shortDescription: "Pas foto 3 × 4 cm dengan latar merah, biru, atau putih.",
+  },
+  "2x2-photo": {
+    name: "Pas Foto 2x2 Inci",
+    shortDescription: "Foto 2 × 2 inci untuk paspor dan visa Amerika.",
+  },
 };
 
 /**

@@ -87,6 +87,7 @@ const TOOL_INPUTS: Record<string, ToolInput> = {
   // ── AI (server) ─────────────────────────────────────────────────────────
   "remove-background": { kinds: COMMON, single: true },
   "upscale-image": { kinds: COMMON, single: true },
+  "passport-photo-maker": { kinds: COMMON, single: true },
   "blur-face": { kinds: COMMON, single: true },
 };
 

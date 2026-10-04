@@ -114,6 +114,11 @@ const PT_TOOL_SLUGS: Record<string, string> = {
   "flip-image": "espelhar-imagem",
   "change-background-color": "trocar-fundo-da-foto",
   "blur-background": "desfocar-fundo",
+
+  // ── Passport / ID photo maker and variants (expansion.md §5) ──────────
+  "passport-photo-maker": "foto-para-documento",
+  "3x4-photo": "foto-3x4",
+  "2x2-photo": "foto-2x2",
 };
 
 /** Hindi keeps the English slug — see the header. Authored, never derived. */
@@ -180,6 +185,11 @@ const HI_TOOL_SLUGS: Record<string, string> = {
   "flip-image": "flip-image",
   "change-background-color": "change-background-color",
   "blur-background": "blur-background",
+
+  // ── Passport / ID photo maker and variants (expansion.md §5) ──────────
+  "passport-photo-maker": "passport-photo-maker",
+  "3x4-photo": "3x4-photo",
+  "2x2-photo": "2x2-photo",
 };
 
 /**
@@ -255,6 +265,11 @@ const RU_TOOL_SLUGS: Record<string, string> = {
   "flip-image": "flip-image",
   "change-background-color": "change-background-color",
   "blur-background": "blur-background",
+
+  // ── Passport / ID photo maker and variants (expansion.md §5) ──────────
+  "passport-photo-maker": "passport-photo-maker",
+  "3x4-photo": "3x4-photo",
+  "2x2-photo": "2x2-photo",
 };
 
 /**
@@ -352,6 +367,11 @@ const ID_TOOL_SLUGS: Record<string, string> = {
   "flip-image": "mirror-foto",
   "change-background-color": "ganti-background-foto",
   "blur-background": "blur-background-foto",
+
+  // ── Passport / ID photo maker and variants (expansion.md §5) ──────────
+  "passport-photo-maker": "pas-foto",
+  "3x4-photo": "foto-3x4",
+  "2x2-photo": "pas-foto-2x2",
 };
 
 const TOOL_SLUGS: Record<TranslatedLocale, Record<string, string>> = {

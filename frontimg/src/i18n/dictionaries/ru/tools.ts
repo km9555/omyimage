@@ -249,6 +249,18 @@ export const ruTools: Record<string, LocalizedTool> = {
     name: "Размыть фон",
     shortDescription: "Эффект портрета за человеком или предметом.",
   },
+  "passport-photo-maker": {
+    name: "Фото на документы",
+    shortDescription: "Фото на паспорт, визу и документы, с листом для печати.",
+  },
+  "3x4-photo": {
+    name: "Фото 3x4 на документы",
+    shortDescription: "Фото 3 × 4 см: кадрирование и лист для печати.",
+  },
+  "2x2-photo": {
+    name: "Фото 2x2 на визу США",
+    shortDescription: "Фото 2 × 2 дюйма для визы и паспорта США.",
+  },
 };
 
 /**

@@ -1,4 +1,4 @@
-# oMyImage tool expansion — playbook and page plan
+# oMyImage tool expansion — playbook and page plan | | |
 
 Started 2026-10-04 on branch `feat/tool-expansion` (cut from `main` at 8ab7967).
 Goal: close the gap with **bulkpictools.com** (Nuxt, 10 locales, ~119 tool
@@ -127,11 +127,11 @@ the notes. hi/ru slugs equal the English one.
 
 ### Phase 4 — photo ID, print and DPI
 
-| id | pt | id | Demand |
-|---|---|---|---|
-| passport-photo-maker *(new: face-guided crop, bg colour, print sheet)* | foto-para-documento | pas-foto | IN 301K + 550K `passport size photo` (KD 40) |
-| 3x4-photo *(variant)* | foto-3x4 | pas-foto-3x4 | BR 90.5K (KD 0); ID 33.1K + 27.1K; RU 2.4K |
-| 2x2-photo *(variant)* | foto-2x2 | pas-foto-2x2 | US 2.4K |
+| id | pt | id | Demand | Notes |
+|---|---|---|---|---|
+| passport-photo-maker *(new: face-guided crop, bg colour, print sheet)* | foto-para-documento | pas-foto | IN 301K + 550K `passport size photo` (KD 40) | 4A, all locales. Opens on 3 × 4 cm in /pt and /id. |
+| 3x4-photo *(variant)* | foto-3x4 | foto-3x4 | BR 90.5K (KD 0); ID 33.1K + 27.1K; RU 2.4K | 4A: en, pt, ru, id. Not /hi (no demand). |
+| 2x2-photo *(variant)* | foto-2x2 | pas-foto-2x2 | US 2.4K | 4A: en, hi (US visa / OCI). Slugs reserved elsewhere. |
 | dpi-converter *(new)* | alterar-dpi-da-imagem | ubah-dpi-foto | IN 27.1K, US 5.4K |
 | dpi-checker *(new)* | verificar-dpi-da-imagem | cek-dpi-foto | IN 3.6K, US 2.9K |
 | resize-image-in-cm *(resize, cm/inch mode)* | redimensionar-imagem-em-cm | ubah-ukuran-foto-cm | IN 22.2K (KD 0) + 9.9K |
@@ -198,3 +198,34 @@ blur-screenshot (90–140/mo), exif-editor (≤ 390, KD 68), svg-to-gif, blur-gi
   similarity 0.141 (ceiling 0.6). Russian copy runs ~20% shorter than
   English for the same content — budget an extra FAQ or section per Russian
   page to clear the 900-word floor.
+- **2026-10-04 — Batch 3A (reordered ahead of 2B–2D by demand), 23 pages.**
+  image-to-hd and unblur-image (upscale; not in /id — /id/hd-foto is that
+  page), flip-image (rotate, flipH; actions and file names say "flip"),
+  change-background-color and blur-background (remove-background + browser
+  composite, `lib/image/composite.ts`; `ServerImageTool.postProcess` re-runs
+  on option changes without another metered call). `VariantLinks` lists only
+  members shipped in the page's locale. Server-tool pages render ~150 fewer
+  words of tool chrome than client tools, so their copy needs ~1,000 words of
+  its own in ru/id. Worst family similarity 0.542 (ru change-background ~
+  blur-background — same engine, same privacy text); keep an eye on it.
+- **2026-10-04 — Batch 4A: passport and ID photos, 11 pages.**
+  passport-photo-maker (all five locales) with variants 3x4-photo (en, pt,
+  ru, id) and 2x2-photo (en, hi). Everything but the background runs in the
+  browser: MediaPipe BlazeFace finds the face, `lib/image/id-photo.ts` turns
+  the face box into a crop (crown-to-chin ≈ box × 1.45, the head filling
+  the size's share of the height), renders at 300 DPI and tiles 4×6 in / A4
+  sheets with cut lines; `lib/image/dpi.ts` writes JFIF/EXIF and PNG pHYs
+  density without re-encoding. A max-KB limit runs `compressToSize` and
+  lowers the DPI label in proportion, so a downscaled file still prints at
+  the document size (measured: 20 KB → 369 × 474 at 268 DPI = 35 × 44.9
+  mm). "Change colour" reuses the remove-background endpoint once (one
+  metered run) and composites every colour locally. With the original
+  background kept, the crop is slid inside the photo (no white band) and
+  the page says so; a new colour fills the gap instead. The browser-only
+  selfie segmenter was dropped: its licence could not be verified.
+  Gates: verify:build 304 sitemap URLs, 84 family pages, worst similarity
+  still 0.542; i18n:verify 8/8 (ru 3x4 needed one more section).
+- **Deploys are paused pending the user's go-ahead.** 2A reached
+  `staging` (preview) on 2026-10-04; a later step was blocked as a
+  production-deploy risk, so 3A onwards is committed on
+  `feat/tool-expansion` locally and not pushed.

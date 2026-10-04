@@ -154,4 +154,13 @@ export const ptAliases: Record<string, string[]> = {
   "blur-background": [
     "desfocar fundo da foto", "fundo desfocado", "modo retrato", "efeito bokeh",
   ],
+  "passport-photo-maker": [
+    "foto para documento", "foto de passaporte", "foto para passaporte", "foto 5x7", "foto para rg", "foto para cnh", "foto de visto",
+  ],
+  "3x4-photo": [
+    "foto 3x4", "fazer foto 3x4", "foto 3x4 online", "foto 3 por 4", "foto para carteirinha",
+  ],
+  "2x2-photo": [
+    "foto 2x2", "foto visto americano", "foto passaporte americano", "2x2 polegadas",
+  ],
 };

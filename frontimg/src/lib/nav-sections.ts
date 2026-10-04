@@ -45,6 +45,7 @@ export const NAV_SECTIONS: NavSection[] = [
       "watermark-image",
       "add-border",
       "circle-crop",
+      "passport-photo-maker",
       "blur-image",
       "grayscale-image",
       "merge-images",

@@ -148,4 +148,13 @@ export const idAliases: Record<string, string[]> = {
   "blur-background": [
     "blur background foto", "foto blur background", "efek bokeh",
   ],
+  "passport-photo-maker": [
+    "pas foto", "buat pas foto", "pas foto online", "foto paspor", "foto visa", "pas foto 4x6", "pas foto 2x3",
+  ],
+  "3x4-photo": [
+    "pas foto 3x4", "foto 3x4", "pas foto 3x4 background merah", "pas foto 3x4 background biru",
+  ],
+  "2x2-photo": [
+    "foto 2x2", "pas foto 2x2", "foto visa amerika", "foto paspor amerika",
+  ],
 };
