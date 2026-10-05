@@ -299,6 +299,26 @@ export const ruTools: Record<string, LocalizedTool> = {
     name: "PNG в ICO",
     shortDescription: "Favicon.ico и значки Windows из картинки.",
   },
+  "youtube-thumbnail-resizer": {
+    name: "Превью для YouTube",
+    shortDescription: "Любая картинка в превью YouTube 1280 × 720.",
+  },
+  "whatsapp-dp-resizer": {
+    name: "Аватарка для WhatsApp",
+    shortDescription: "Фото целиком в квадратной аватарке, без обрезки.",
+  },
+  "linkedin-banner-resizer": {
+    name: "Обложка для LinkedIn",
+    shortDescription: "Любая картинка в обложку LinkedIn 1584 × 396.",
+  },
+  "facebook-cover-resizer": {
+    name: "Обложка для Facebook",
+    shortDescription: "Любая картинка в обложку Facebook 851 × 315.",
+  },
+  "discord-banner-resizer": {
+    name: "Баннер для Discord",
+    shortDescription: "Размеры баннеров профиля и сервера Discord.",
+  },
 
   // ── Варианты: HD, отражение, фон (expansion.md) ──
   "image-to-hd": {

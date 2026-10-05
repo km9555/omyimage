@@ -28,6 +28,7 @@ const content: ToolPageContent = {
   tagline:
     "Задайте размер в пикселях или процентах, выберите готовый формат для соцсетей или документов — пропорции сохранятся. Пачкой, бесплатно и прямо в браузере.",
   category: { id: "optimize", label: "Оптимизация" },
+  variantsHeading: "Размеры для соцсетей",
 
   metaTitle: "Изменить размер фото онлайн бесплатно — в пикселях и процентах | oMyImage",
   metaDescription:
@@ -258,6 +259,9 @@ const content: ToolPageContent = {
     "Post image": "Картинка к посту",
     "Company logo": "Логотип компании",
     "Channel icon": "Значок канала",
+    "Profile banner": "Баннер профиля",
+    "Server banner": "Баннер сервера",
+    "Server icon": "Значок сервера",
     "Channel art": "Шапка канала",
     "Thumbnail": "Превью",
     "Standard pin": "Обычный пин",

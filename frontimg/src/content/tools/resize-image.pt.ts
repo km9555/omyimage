@@ -21,6 +21,7 @@ const content: ToolPageContent = {
   tagline:
     "Redimensione imagens JPG, PNG, WEBP e GIF online — por pixels exatos ou porcentagem, com proporção travada, tamanhos prontos para redes sociais e em lote. Grátis, rápido e 100% privado no seu navegador.",
   category: { id: "optimize", label: "Otimizar" },
+  variantsHeading: "Redimensionar para uma rede social",
 
   metaTitle: "Redimensionar imagem online grátis — em pixels ou % | oMyImage",
   metaDescription:
@@ -175,6 +176,9 @@ const content: ToolPageContent = {
     "Post image": "Imagem do post",
     "Company logo": "Logo da empresa",
     "Channel icon": "Ícone do canal",
+    "Profile banner": "Banner do perfil",
+    "Server banner": "Banner do servidor",
+    "Server icon": "Ícone do servidor",
     "Channel art": "Banner do canal",
     "Thumbnail": "Miniatura",
     "Standard pin": "Pin padrão",

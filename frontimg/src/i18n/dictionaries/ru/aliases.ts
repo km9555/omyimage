@@ -212,6 +212,21 @@ export const ruAliases: Record<string, string[]> = {
   "png-to-ico": [
     "создать favicon", "картинку в ico", "сделать иконку", "конвертер ico", "png в ico онлайн",
   ],
+  "youtube-thumbnail-resizer": [
+    "размер превью youtube", "обложка для видео youtube", "значок видео youtube", "1280x720",
+  ],
+  "whatsapp-dp-resizer": [
+    "аватарка whatsapp без обрезки", "фото на аву whatsapp", "размер аватарки whatsapp", "ава ватсап",
+  ],
+  "linkedin-banner-resizer": [
+    "размер обложки linkedin", "фон профиля linkedin", "баннер linkedin", "1584x396",
+  ],
+  "facebook-cover-resizer": [
+    "размер обложки facebook", "обложка фейсбук", "баннер facebook", "851x315",
+  ],
+  "discord-banner-resizer": [
+    "размер баннера discord", "баннер профиля discord", "баннер сервера discord", "иконка сервера discord",
+  ],
 
   // Варианты — HD, отражение, фон
   "image-to-hd": [

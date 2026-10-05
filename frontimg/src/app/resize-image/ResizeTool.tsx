@@ -112,16 +112,38 @@ function workingMime(file: File): ExportMime {
   return "image/png";
 }
 
-export function ResizeTool() {
+/**
+ * Opens the tool in Social media mode on one platform size — the
+ * youtube-thumbnail-resizer / whatsapp-dp-resizer … variants. Without it the
+ * tool starts in By pixels exactly as before.
+ */
+export interface ResizePreset {
+  /** `SOCIAL_PLATFORMS` id. */
+  platform: string;
+  /** The preset's English label within that platform, e.g. "Thumbnail". */
+  preset: string;
+  fit?: FitMode;
+  format?: Format;
+}
+
+/** The platform and preset index a ResizePreset names, or the first of each. */
+function socialStart(preset?: ResizePreset) {
+  const p = SOCIAL_PLATFORMS.find((x) => x.id === preset?.platform) ?? SOCIAL_PLATFORMS[0];
+  const i = Math.max(0, p.presets.findIndex((x) => x.label === preset?.preset));
+  return { platform: p, index: i, size: p.presets[i] };
+}
+
+export function ResizeTool({ preset }: { preset?: ResizePreset } = {}) {
   const t = useT();
   const formatBytes = useFormatBytes();
+  const start = socialStart(preset);
   const [items, setItems] = useState<Item[]>([]);
-  const [mode, setMode] = useState<Mode>("pixels");
+  const [mode, setMode] = useState<Mode>(preset ? "social" : "pixels");
   const [widthStr, setWidthStr] = useState("");
   const [heightStr, setHeightStr] = useState("");
   const [keepAspect, setKeepAspect] = useState(true);
   const [percentStr, setPercentStr] = useState("50");
-  const [format, setFormat] = useState<Format>("original");
+  const [format, setFormat] = useState<Format>(preset?.format ?? "original");
   const [quality, setQuality] = useState(0.92);
   const [bg, setBg] = useState<BgValue>({ transparent: false, color: "#ffffff" });
   const [isWorking, setIsWorking] = useState(false);
@@ -133,11 +155,11 @@ export function ResizeTool() {
   const [editingId, setEditingId] = useState<string | null>(null);
 
   // Social media mode.
-  const [platformId, setPlatformId] = useState(SOCIAL_PLATFORMS[0].id);
-  const [presetKey, setPresetKey] = useState("0");
-  const [socialW, setSocialW] = useState(String(SOCIAL_PLATFORMS[0].presets[0].w));
-  const [socialH, setSocialH] = useState(String(SOCIAL_PLATFORMS[0].presets[0].h));
-  const [fit, setFit] = useState<FitMode>("cover");
+  const [platformId, setPlatformId] = useState(start.platform.id);
+  const [presetKey, setPresetKey] = useState(String(start.index));
+  const [socialW, setSocialW] = useState(String(start.size.w));
+  const [socialH, setSocialH] = useState(String(start.size.h));
+  const [fit, setFit] = useState<FitMode>(preset?.fit ?? "cover");
 
   /*
     Revoke preview URLs on UNMOUNT only — the ref-mirror pattern from

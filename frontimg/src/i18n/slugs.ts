@@ -125,6 +125,11 @@ const PT_TOOL_SLUGS: Record<string, string> = {
   "convert-to-webp": "converter-para-webp",
   "svg-to-png": "svg-para-png",
   "png-to-ico": "png-para-ico",
+  "youtube-thumbnail-resizer": "redimensionar-thumbnail-youtube",
+  "whatsapp-dp-resizer": "foto-de-perfil-whatsapp",
+  "linkedin-banner-resizer": "redimensionar-capa-linkedin",
+  "facebook-cover-resizer": "redimensionar-capa-facebook",
+  "discord-banner-resizer": "redimensionar-banner-discord",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "imagem-em-hd",
@@ -214,6 +219,11 @@ const HI_TOOL_SLUGS: Record<string, string> = {
   "convert-to-webp": "convert-to-webp",
   "svg-to-png": "svg-to-png",
   "png-to-ico": "png-to-ico",
+  "youtube-thumbnail-resizer": "youtube-thumbnail-resizer",
+  "whatsapp-dp-resizer": "whatsapp-dp-resizer",
+  "linkedin-banner-resizer": "linkedin-banner-resizer",
+  "facebook-cover-resizer": "facebook-cover-resizer",
+  "discord-banner-resizer": "discord-banner-resizer",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "image-to-hd",
@@ -312,6 +322,11 @@ const RU_TOOL_SLUGS: Record<string, string> = {
   "convert-to-webp": "convert-to-webp",
   "svg-to-png": "svg-to-png",
   "png-to-ico": "png-to-ico",
+  "youtube-thumbnail-resizer": "youtube-thumbnail-resizer",
+  "whatsapp-dp-resizer": "whatsapp-dp-resizer",
+  "linkedin-banner-resizer": "linkedin-banner-resizer",
+  "facebook-cover-resizer": "facebook-cover-resizer",
+  "discord-banner-resizer": "discord-banner-resizer",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "image-to-hd",
@@ -432,6 +447,11 @@ const ID_TOOL_SLUGS: Record<string, string> = {
   "convert-to-webp": "ubah-foto-ke-webp",
   "svg-to-png": "svg-ke-png",
   "png-to-ico": "png-ke-ico",
+  "youtube-thumbnail-resizer": "ubah-ukuran-thumbnail-youtube",
+  "whatsapp-dp-resizer": "foto-profil-wa-full",
+  "linkedin-banner-resizer": "ubah-ukuran-banner-linkedin",
+  "facebook-cover-resizer": "ubah-ukuran-sampul-facebook",
+  "discord-banner-resizer": "ubah-ukuran-banner-discord",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "jadikan-foto-hd",

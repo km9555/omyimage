@@ -191,6 +191,21 @@ export const ptAliases: Record<string, string[]> = {
   "png-to-ico": [
     "gerador de favicon", "imagem para ico", "criar ícone", "favicon ico", "jpg para ico",
   ],
+  "youtube-thumbnail-resizer": [
+    "tamanho thumbnail youtube", "miniatura youtube", "capa de vídeo youtube", "1280x720",
+  ],
+  "whatsapp-dp-resizer": [
+    "foto de perfil whatsapp sem cortar", "foto inteira whatsapp", "tamanho foto perfil whatsapp", "dp whatsapp",
+  ],
+  "linkedin-banner-resizer": [
+    "tamanho capa linkedin", "banner linkedin", "foto de fundo linkedin", "1584x396",
+  ],
+  "facebook-cover-resizer": [
+    "tamanho capa facebook", "foto de capa facebook", "banner facebook", "851x315",
+  ],
+  "discord-banner-resizer": [
+    "tamanho banner discord", "banner de perfil discord", "banner de servidor discord", "ícone servidor discord",
+  ],
 
   // Variantes — HD, espelhar, fundo
   "image-to-hd": [

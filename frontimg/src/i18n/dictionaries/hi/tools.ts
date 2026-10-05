@@ -298,6 +298,26 @@ export const hiTools: Record<string, LocalizedTool> = {
     name: "PNG से ICO",
     shortDescription: "वेबसाइट के लिए favicon.ico और Windows आइकन बनाएँ।",
   },
+  "youtube-thumbnail-resizer": {
+    name: "YouTube थंबनेल रीसाइज़र",
+    shortDescription: "किसी भी इमेज को 1280 × 720 YouTube थंबनेल बनाएँ।",
+  },
+  "whatsapp-dp-resizer": {
+    name: "WhatsApp DP रीसाइज़र",
+    shortDescription: "पूरी फोटो को बिना काटे चौकोर WhatsApp DP में फ़िट करें।",
+  },
+  "linkedin-banner-resizer": {
+    name: "LinkedIn बैनर रीसाइज़र",
+    shortDescription: "किसी भी इमेज को 1584 × 396 LinkedIn बैनर बनाएँ।",
+  },
+  "facebook-cover-resizer": {
+    name: "Facebook कवर रीसाइज़र",
+    shortDescription: "किसी भी इमेज को 851 × 315 Facebook कवर बनाएँ।",
+  },
+  "discord-banner-resizer": {
+    name: "Discord बैनर रीसाइज़र",
+    shortDescription: "Discord प्रोफ़ाइल और सर्वर बैनर के साइज़।",
+  },
 
   // ── वैरिएंट: HD, मिरर, बैकग्राउंड (expansion.md) ──
   "image-to-hd": {

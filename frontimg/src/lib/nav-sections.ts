@@ -96,6 +96,14 @@ export const NAV_SECTIONS: NavSection[] = [
     ],
   },
   {
+    // Variants of resize-image (expansion.md §5): one row per platform size.
+    id: "social-sizes",
+    label: "Social Media Sizes",
+    icon: "aspect_ratio",
+    color: "#4B8FC7",
+    ids: ["youtube-thumbnail-resizer", "whatsapp-dp-resizer", "linkedin-banner-resizer", "facebook-cover-resizer", "discord-banner-resizer"],
+  },
+  {
     id: "privacy",
     label: "Privacy & Info",
     icon: "lock",
@@ -155,9 +163,9 @@ export const NAV_SECTIONS_BY_ID: Record<string, NavSection> = Object.fromEntries
  */
 export const NAV_COLUMNS: string[][] = [
   ["optimize", "compress-size", "photo-id"],
-  ["edit", "create", "privacy"],
+  ["edit", "create", "social-sizes"],
   ["ai", "convert-format"],
-  ["convert-other", "convert-camera"],
+  ["convert-other", "convert-camera", "privacy"],
 ];
 
 /**

@@ -200,6 +200,21 @@ export const hiAliases: Record<string, string[]> = {
   "png-to-ico": [
     "png to ico", "favicon generator", "आइकन बनाएँ", "ico converter", "image to ico",
   ],
+  "youtube-thumbnail-resizer": [
+    "youtube thumbnail size", "थंबनेल साइज़", "youtube thumbnail resize", "1280x720",
+  ],
+  "whatsapp-dp-resizer": [
+    "whatsapp dp size", "dp without crop", "full dp whatsapp", "व्हाट्सएप डीपी",
+  ],
+  "linkedin-banner-resizer": [
+    "linkedin banner size", "linkedin background photo", "लिंक्डइन बैनर", "1584x396",
+  ],
+  "facebook-cover-resizer": [
+    "facebook cover photo size", "fb cover", "फेसबुक कवर फोटो", "851x315",
+  ],
+  "discord-banner-resizer": [
+    "discord banner size", "discord profile banner", "discord server banner", "डिस्कॉर्ड बैनर",
+  ],
 
   // वैरिएंट — HD, मिरर, बैकग्राउंड
   "image-to-hd": [

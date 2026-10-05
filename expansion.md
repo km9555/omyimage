@@ -127,7 +127,7 @@ the notes. hi/ru slugs equal the English one.
 | convert-to-webp *(ConvertTool)* | converter-para-webp | ubah-foto-ke-webp | IN 6.6K, US 2.4K, BR 1.6K | 3B |
 | svg-to-png *(new tool)* | svg-para-png | svg-ke-png | US 40.5K, IN 40.5K (KD 9) | 3B. Not a converter pair: needs scale/width/background. `lib/image/svg-raster.ts`. |
 | png-to-ico *(new tool)* | png-para-ico | png-ke-ico | US 18.1K, IN 12.1K, BR 2.9K | 3B. There was NO ICO encoder (only GIF) — written in `lib/image/ico.ts`. |
-| youtube-thumbnail-resizer · whatsapp-dp-resizer · linkedin-banner-resizer · facebook-cover-resizer · discord-banner-resizer *(resize)* | … | … | `youtube thumbnail size` IN 49.5K / US 27.1K; `whatsapp dp size` IN 33.1K; LinkedIn 12.1K/9.9K; FB cover US 9.9K; Discord banner US 8.1K | social-presets.ts (+ Discord) |
+| youtube-thumbnail-resizer · whatsapp-dp-resizer · linkedin-banner-resizer · facebook-cover-resizer · discord-banner-resizer *(resize)* | redimensionar-thumbnail-youtube · foto-de-perfil-whatsapp · redimensionar-capa-linkedin · redimensionar-capa-facebook · redimensionar-banner-discord | ubah-ukuran-thumbnail-youtube · foto-profil-wa-full · ubah-ukuran-banner-linkedin · ubah-ukuran-sampul-facebook · ubah-ukuran-banner-discord | `youtube thumbnail size` IN 49.5K / US 27.1K; `whatsapp dp size` IN 33.1K; LinkedIn 12.1K/9.9K; FB cover US 9.9K; Discord banner US 8.1K | 3C. /ru ships only YouTube + WhatsApp — LinkedIn, Facebook and Discord are blocked in Russia. |
 
 ### Phase 4 — photo ID, print and DPI
 
@@ -321,6 +321,28 @@ blur-screenshot (90–140/mo), exif-editor (≤ 390, KD 68), svg-to-gif, blur-gi
     convert-to-jpg in the registry, so they now lead "More tools" on
     convert-category pages, replacing JPG to PNG / HEIC to PNG there.
   - verify:build 394 URLs.
+- **2026-10-05 — Batch 3C: YouTube thumbnail, WhatsApp DP, LinkedIn banner,
+  Facebook cover, Discord banner — 22 pages.**
+  - **Variants of resize-image.** ResizeTool takes
+    `preset: { platform, preset, fit?, format? }`, opening in Social media mode
+    on that platform size. Plain /resize-image still opens in By pixels.
+  - **Per-page defaults:**
+    - YouTube and Facebook default to JPG: a 1280 × 720 PNG can exceed
+      YouTube's 2 MB limit.
+    - WhatsApp defaults to Pad (the "full DP without crop" query).
+    - Discord was added to `social-presets.ts`: profile banner 600 × 240,
+      server banner 960 × 540, server icon 512 × 512, profile 128 × 128.
+  - **Sizes were re-checked on 2026-10-05:**
+    - YouTube: 1280 × 720, min width 640, under 2 MB, verified channel.
+    - LinkedIn: 1584 × 396, under 8 MB; company covers 1128 × 191.
+    - Facebook: 851 × 315; shown 820 × 312 on desktop and 640 × 360 on phones;
+      minimum 400 × 150; under 100 KB recommended.
+    - Discord: banners are minimums, under 10 MB.
+    - WhatsApp: no official size. 500 × 500 is common; 192 × 192 is only the
+      "usually cited" minimum, and the copy says so.
+  - **Nav:** a new "Social Media Sizes" section. Privacy moved to column 4
+    to rebalance the columns.
+  - verify:build 416 URLs, 181 family pages, worst pair still 0.542.
 - **Deploys need the user's go-ahead.** 2A, 3A, 4A and the visibility fix
   went live on 2026-10-04 (merge 505e680 into `main`, then `npm run
   indexnow`). Later batches are committed on `feat/tool-expansion` and

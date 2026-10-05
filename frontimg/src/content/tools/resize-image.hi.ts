@@ -25,6 +25,7 @@ const content: ToolPageContent = {
   tagline:
     "JPG, PNG, WEBP और GIF इमेज ऑनलाइन रीसाइज़ करें — फोटो का साइज़ बदलें, पिक्सल में या प्रतिशत में, अनुपात बरक़रार रखते हुए, सोशल मीडिया के तैयार साइज़ के साथ और एक साथ कई फ़ाइलों में। मुफ़्त, तेज़ और पूरी तरह आपके ब्राउज़र में।",
   category: { id: "optimize", label: "ऑप्टिमाइज़" },
+  variantsHeading: "सोशल मीडिया के साइज़ में बदलें",
 
   metaTitle: "इमेज रीसाइज़ करें — फोटो का साइज़ बदलें, पिक्सल या % में | oMyImage",
   metaDescription:
@@ -188,6 +189,9 @@ const content: ToolPageContent = {
     "Post image": "पोस्ट की इमेज",
     "Company logo": "कंपनी का लोगो",
     "Channel icon": "चैनल आइकन",
+    "Profile banner": "प्रोफ़ाइल बैनर",
+    "Server banner": "सर्वर बैनर",
+    "Server icon": "सर्वर आइकन",
     "Channel art": "चैनल बैनर",
     "Thumbnail": "थंबनेल",
     "Standard pin": "सामान्य पिन",

@@ -274,6 +274,21 @@ export const TOOL_ALIASES: Record<string, string[]> = {
   "png-to-ico": [
     "png2ico", "ico converter", "favicon generator", "image to ico", "jpg to ico", "favicon.ico", "icon maker",
   ],
+  "youtube-thumbnail-resizer": [
+    "youtube thumbnail size", "thumbnail resizer", "1280x720", "youtube thumbnail maker", "resize image for youtube",
+  ],
+  "whatsapp-dp-resizer": [
+    "whatsapp dp size", "whatsapp profile picture", "dp without crop", "full dp for whatsapp", "whatsapp dp maker",
+  ],
+  "linkedin-banner-resizer": [
+    "linkedin banner size", "linkedin background photo", "1584x396", "linkedin cover photo", "linkedin header",
+  ],
+  "facebook-cover-resizer": [
+    "facebook cover photo size", "fb cover", "851x315", "facebook banner", "facebook cover maker",
+  ],
+  "discord-banner-resizer": [
+    "discord banner size", "discord profile banner", "discord server banner", "600x240", "discord server icon",
+  ],
 
   // Variants — upscale, rotate, remove-background
   "image-to-hd": [

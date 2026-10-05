@@ -301,6 +301,26 @@ export const idTools: Record<string, LocalizedTool> = {
     name: "PNG ke ICO",
     shortDescription: "Buat favicon .ico dan ikon Windows.",
   },
+  "youtube-thumbnail-resizer": {
+    name: "Ubah Ukuran Thumbnail YouTube",
+    shortDescription: "Ubah gambar apa pun jadi thumbnail YouTube 1280 × 720.",
+  },
+  "whatsapp-dp-resizer": {
+    name: "Foto Profil WA Full",
+    shortDescription: "Foto utuh di profil WA persegi, tanpa terpotong.",
+  },
+  "linkedin-banner-resizer": {
+    name: "Ubah Ukuran Banner LinkedIn",
+    shortDescription: "Ubah gambar apa pun jadi banner LinkedIn 1584 × 396.",
+  },
+  "facebook-cover-resizer": {
+    name: "Ubah Ukuran Sampul Facebook",
+    shortDescription: "Ubah gambar apa pun jadi sampul Facebook 851 × 315.",
+  },
+  "discord-banner-resizer": {
+    name: "Ubah Ukuran Banner Discord",
+    shortDescription: "Ukuran banner profil dan server Discord.",
+  },
 
   // ── Varian: HD, mirror, background (expansion.md) ──
   "image-to-hd": {

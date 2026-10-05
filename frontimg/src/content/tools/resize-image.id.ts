@@ -32,6 +32,7 @@ const content: ToolPageContent = {
   tagline:
     "Ubah ukuran foto JPG, PNG, WEBP, dan GIF secara online — dalam piksel, persen, atau ukuran siap pakai untuk media sosial, dengan rasio aspek yang terjaga dan banyak foto sekaligus. Gratis, cepat, dan privat di browser Anda.",
   category: { id: "optimize", label: "Optimasi" },
+  variantsHeading: "Ubah ukuran untuk media sosial",
 
   metaTitle: "Ubah Ukuran Foto Online Gratis — Resize Foto dalam Piksel atau % | oMyImage",
   metaDescription:
@@ -249,6 +250,9 @@ const content: ToolPageContent = {
     "Post image": "Gambar postingan",
     "Company logo": "Logo perusahaan",
     "Channel icon": "Ikon channel",
+    "Profile banner": "Banner profil",
+    "Server banner": "Banner server",
+    "Server icon": "Ikon server",
     "Channel art": "Banner channel",
     "Thumbnail": "Thumbnail", // i18n-same — YouTube's own Indonesian UI says thumbnail
     "Standard pin": "Pin standar",

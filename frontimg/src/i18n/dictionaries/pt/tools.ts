@@ -299,6 +299,26 @@ export const ptTools: Record<string, LocalizedTool> = {
     name: "PNG para ICO",
     shortDescription: "Crie favicons .ico e ícones do Windows.",
   },
+  "youtube-thumbnail-resizer": {
+    name: "Redimensionar Thumbnail do YouTube",
+    shortDescription: "Qualquer imagem no tamanho de thumbnail: 1280 × 720.",
+  },
+  "whatsapp-dp-resizer": {
+    name: "Foto de Perfil do WhatsApp",
+    shortDescription: "A foto inteira num perfil quadrado, sem cortar.",
+  },
+  "linkedin-banner-resizer": {
+    name: "Redimensionar Capa do LinkedIn",
+    shortDescription: "Qualquer imagem como capa do LinkedIn: 1584 × 396.",
+  },
+  "facebook-cover-resizer": {
+    name: "Redimensionar Capa do Facebook",
+    shortDescription: "Qualquer imagem como capa do Facebook: 851 × 315.",
+  },
+  "discord-banner-resizer": {
+    name: "Redimensionar Banner do Discord",
+    shortDescription: "Banners de perfil e de servidor do Discord.",
+  },
 
   // ── Variantes: melhorar, espelhar, fundo (expansion.md) ──
   "image-to-hd": {

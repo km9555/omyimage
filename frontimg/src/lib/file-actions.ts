@@ -41,6 +41,11 @@ const TOOL_INPUTS: Record<string, ToolInput> = {
   // ── Optimize ────────────────────────────────────────────────────────────
   "compress-image": { kinds: COMMON },
   "resize-image": { kinds: COMMON_GIF_BMP },
+  "youtube-thumbnail-resizer": { kinds: COMMON_GIF_BMP },
+  "whatsapp-dp-resizer": { kinds: COMMON_GIF_BMP },
+  "linkedin-banner-resizer": { kinds: COMMON_GIF_BMP },
+  "facebook-cover-resizer": { kinds: COMMON_GIF_BMP },
+  "discord-banner-resizer": { kinds: COMMON_GIF_BMP },
   "crop-image": { kinds: COMMON_GIF_BMP, single: true },
   "rotate-image": { kinds: COMMON_GIF_BMP },
   "remove-exif": { kinds: COMMON },

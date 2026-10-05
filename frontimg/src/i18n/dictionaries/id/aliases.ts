@@ -185,6 +185,21 @@ export const idAliases: Record<string, string[]> = {
   "png-to-ico": [
     "buat favicon", "gambar ke ico", "ubah ke ico", "membuat ikon", "jpg ke ico",
   ],
+  "youtube-thumbnail-resizer": [
+    "ukuran thumbnail youtube", "thumbnail yt", "sampul video youtube", "1280x720",
+  ],
+  "whatsapp-dp-resizer": [
+    "pp wa full", "foto profil wa tanpa crop", "pp wa tidak terpotong", "ukuran foto profil whatsapp",
+  ],
+  "linkedin-banner-resizer": [
+    "ukuran banner linkedin", "foto latar linkedin", "sampul linkedin", "1584x396",
+  ],
+  "facebook-cover-resizer": [
+    "ukuran sampul facebook", "foto sampul fb", "cover facebook", "851x315",
+  ],
+  "discord-banner-resizer": [
+    "ukuran banner discord", "banner profil discord", "banner server discord", "ikon server discord",
+  ],
 
   // Varian — HD, mirror, background
   "image-to-hd": [
