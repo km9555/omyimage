@@ -137,6 +137,21 @@ export const ptAliases: Record<string, string[]> = {
   "compress-image-to-1mb": [
     "comprimir imagem para 1mb", "1 mb", "comprimir foto 1mb",
   ],
+  "compress-image-to-10kb": [
+    "comprimir imagem para 10kb", "10 kb", "assinatura 10kb",
+  ],
+  "compress-image-to-30kb": [
+    "comprimir imagem para 30kb", "30 kb", "foto 30kb",
+  ],
+  "compress-image-to-300kb": [
+    "comprimir imagem para 300kb", "300 kb", "reduzir foto para 300kb",
+  ],
+  "compress-image-to-500kb": [
+    "comprimir imagem para 500kb", "500 kb", "reduzir foto para 500kb",
+  ],
+  "compress-image-to-2mb": [
+    "comprimir imagem para 2mb", "2 mb", "reduzir foto para 2mb",
+  ],
 
   // Variantes — HD, espelhar, fundo
   "image-to-hd": [

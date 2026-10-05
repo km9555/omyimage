@@ -169,6 +169,14 @@ English-only blog guides linking into the families ("make a photo exactly
 "GIF size limits"), then submit the per-locale child sitemaps in Search
 Console / Bing / Yandex and run `npm run indexnow`.
 
+**Navigation cleanup — LAST step, after every phase (user, 2026-10-05).**
+The variant cards on the home grid ("Compress Image to 20KB", "…50KB", …)
+and the "Compress to Size" rows in the Tools menu read as repetition. Once
+all phases are done, take the variants OFF the home grid, its tabs and the
+Tools menu (desktop + mobile), and surface them another way. Until then new
+variants are NOT added to `NAV_SECTIONS` (2B onward), so there is less to
+undo; the home grid picks them up automatically and that is fine for now.
+
 ### Not building
 
 Competitor pages with no demand in any of our markets or no fit: app
@@ -239,7 +247,19 @@ blur-screenshot (90–140/mo), exif-editor (≤ 390, KD 68), svg-to-gif, blur-gi
   tools" band. The band's CSS matched `aria-label="More tools"`, which is
   translated, so it had never applied on /pt /hi /ru /id; it now keys on
   `data-related-tools` / `data-breadcrumbs`.
-- **Deploys are paused pending the user's go-ahead.** 2A reached
-  `staging` (preview) on 2026-10-04; a later step was blocked as a
-  production-deploy risk, so 3A onwards is committed on
-  `feat/tool-expansion` locally and not pushed.
+- **2026-10-05 — Batch 2B: 10 KB, 30 KB, 300 KB, 500 KB, 2 MB, 25 pages.**
+  All five locales. Registry order (and so the family strip) runs by size;
+  priorities renumbered: compress family 101–111, 3A 121–125, 4A 131–132.
+  Not added to `NAV_SECTIONS` (see Phase 8 navigation cleanup). Each size
+  has its own angle so the family stays apart: 10 KB signatures / thumb
+  impressions, 30 KB face-first photos + KB-vs-KiB, 300 KB documents + PDF,
+  500 KB screenshots / web / email, 2 MB the PHP 2M default + printing.
+  Measured: portrait 176,561 B → 9,978 B at 227 × 284 (10 KB); worst-case
+  noise 4000 × 3000, 6.96 MB → 1,974,335 B at full size (2 MB). Copy
+  first claimed "150 × 190 px" for a 10 KB photo — corrected to 200 × 250.
+  Russian and Indonesian again needed an extra section/FAQ for the floor.
+  verify:build 329 URLs, 109 family pages, worst pair still 0.542.
+- **Deploys need the user's go-ahead.** 2A, 3A, 4A and the visibility fix
+  went live on 2026-10-04 (merge 505e680 into `main`, then `npm run
+  indexnow`). Later batches are committed on `feat/tool-expansion` and
+  pushed / merged only when the user says so.

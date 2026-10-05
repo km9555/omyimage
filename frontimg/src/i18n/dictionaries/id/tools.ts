@@ -229,6 +229,26 @@ export const idTools: Record<string, LocalizedTool> = {
     name: "Kompres Foto 1 MB",
     shortDescription: "Foto ponsel di bawah 1 MB, biasanya ukuran penuh.",
   },
+  "compress-image-to-10kb": {
+    name: "Kompres Foto 10 KB",
+    shortDescription: "Tanda tangan dan foto kecil di bawah 10 KB.",
+  },
+  "compress-image-to-30kb": {
+    name: "Kompres Foto 30 KB",
+    shortDescription: "Pas foto formulir di bawah 30 KB, wajah tetap jelas.",
+  },
+  "compress-image-to-300kb": {
+    name: "Kompres Foto 300 KB",
+    shortDescription: "Foto dan scan dokumen di bawah 300 KB.",
+  },
+  "compress-image-to-500kb": {
+    name: "Kompres Foto 500 KB",
+    shortDescription: "Foto, scan, dan screenshot di bawah 500 KB.",
+  },
+  "compress-image-to-2mb": {
+    name: "Kompres Foto 2 MB",
+    shortDescription: "Foto besar dari HP di bawah 2 MB.",
+  },
 
   // ── Varian: HD, mirror, background (expansion.md) ──
   "image-to-hd": {

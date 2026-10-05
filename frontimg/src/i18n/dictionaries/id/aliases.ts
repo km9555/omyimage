@@ -131,6 +131,21 @@ export const idAliases: Record<string, string[]> = {
   "compress-image-to-1mb": [
     "kompres foto 1 mb", "kompres foto 1mb", "1 mb", "ubah foto jadi 1 mb",
   ],
+  "compress-image-to-10kb": [
+    "kompres foto 10kb", "10 kb", "tanda tangan 10kb",
+  ],
+  "compress-image-to-30kb": [
+    "kompres foto 30kb", "30 kb",
+  ],
+  "compress-image-to-300kb": [
+    "kompres foto 300kb", "kompres jpg 300kb", "300 kb", "ubah ukuran foto 300kb",
+  ],
+  "compress-image-to-500kb": [
+    "kompres foto 500kb", "kompres jpg 500kb", "500 kb", "ubah ukuran foto 500kb",
+  ],
+  "compress-image-to-2mb": [
+    "kompres foto 2mb", "2 mb", "kompres foto jadi 2mb",
+  ],
 
   // Varian — HD, mirror, background
   "image-to-hd": [

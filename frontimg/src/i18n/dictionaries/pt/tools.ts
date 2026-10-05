@@ -227,6 +227,26 @@ export const ptTools: Record<string, LocalizedTool> = {
     name: "Comprimir imagem para 1 MB",
     shortDescription: "Fotos do celular abaixo de 1 MB, quase sempre em tamanho total.",
   },
+  "compress-image-to-10kb": {
+    name: "Comprimir imagem para 10 KB",
+    shortDescription: "Assinaturas e fotos pequenas abaixo de 10 KB.",
+  },
+  "compress-image-to-30kb": {
+    name: "Comprimir imagem para 30 KB",
+    shortDescription: "Fotos de formulário abaixo de 30 KB, rosto nítido.",
+  },
+  "compress-image-to-300kb": {
+    name: "Comprimir imagem para 300 KB",
+    shortDescription: "Fotos e documentos abaixo de 300 KB, sem perder a leitura.",
+  },
+  "compress-image-to-500kb": {
+    name: "Comprimir imagem para 500 KB",
+    shortDescription: "Fotos, documentos e prints abaixo de 500 KB.",
+  },
+  "compress-image-to-2mb": {
+    name: "Comprimir imagem para 2 MB",
+    shortDescription: "Fotos grandes do celular abaixo de 2 MB.",
+  },
 
   // ── Variantes: melhorar, espelhar, fundo (expansion.md) ──
   "image-to-hd": {

@@ -220,6 +220,21 @@ export const TOOL_ALIASES: Record<string, string[]> = {
   "compress-image-to-1mb": [
     "1 mb", "1mb", "under 1mb", "photo 1mb", "1 megabyte", "1000 kb",
   ],
+  "compress-image-to-10kb": [
+    "10 kb", "10kb", "resize image to 10kb", "under 10kb", "signature 10kb", "thumb impression",
+  ],
+  "compress-image-to-30kb": [
+    "30 kb", "30kb", "resize image to 30kb", "under 30kb", "photo 30kb",
+  ],
+  "compress-image-to-300kb": [
+    "300 kb", "300kb", "resize image to 300kb", "under 300kb",
+  ],
+  "compress-image-to-500kb": [
+    "500 kb", "500kb", "resize image to 500kb", "under 500kb", "half mb",
+  ],
+  "compress-image-to-2mb": [
+    "2 mb", "2mb", "resize image to 2mb", "under 2mb", "2000kb",
+  ],
 
   // Variants — upscale, rotate, remove-background
   "image-to-hd": [

@@ -227,6 +227,26 @@ export const ruTools: Record<string, LocalizedTool> = {
     name: "Сжать фото до 1 МБ",
     shortDescription: "Фото с телефона меньше 1 МБ, обычно в полном размере.",
   },
+  "compress-image-to-10kb": {
+    name: "Сжать фото до 10 КБ",
+    shortDescription: "Подписи и маленькие фото меньше 10 КБ.",
+  },
+  "compress-image-to-30kb": {
+    name: "Сжать фото до 30 КБ",
+    shortDescription: "Фото для анкет меньше 30 КБ, лицо остаётся чётким.",
+  },
+  "compress-image-to-300kb": {
+    name: "Сжать фото до 300 КБ",
+    shortDescription: "Фото и сканы меньше 300 КБ, текст читается.",
+  },
+  "compress-image-to-500kb": {
+    name: "Сжать фото до 500 КБ",
+    shortDescription: "Фото, сканы и скриншоты меньше 500 КБ.",
+  },
+  "compress-image-to-2mb": {
+    name: "Сжать фото до 2 МБ",
+    shortDescription: "Большие фото с телефона меньше 2 МБ.",
+  },
 
   // ── Варианты: HD, отражение, фон (expansion.md) ──
   "image-to-hd": {

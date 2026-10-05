@@ -107,6 +107,11 @@ const PT_TOOL_SLUGS: Record<string, string> = {
   "compress-image-to-100kb": "comprimir-imagem-para-100kb",
   "compress-image-to-200kb": "comprimir-imagem-para-200kb",
   "compress-image-to-1mb": "comprimir-imagem-para-1mb",
+  "compress-image-to-10kb": "comprimir-imagem-para-10kb",
+  "compress-image-to-30kb": "comprimir-imagem-para-30kb",
+  "compress-image-to-300kb": "comprimir-imagem-para-300kb",
+  "compress-image-to-500kb": "comprimir-imagem-para-500kb",
+  "compress-image-to-2mb": "comprimir-imagem-para-2mb",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "imagem-em-hd",
@@ -178,6 +183,11 @@ const HI_TOOL_SLUGS: Record<string, string> = {
   "compress-image-to-100kb": "compress-image-to-100kb",
   "compress-image-to-200kb": "compress-image-to-200kb",
   "compress-image-to-1mb": "compress-image-to-1mb",
+  "compress-image-to-10kb": "compress-image-to-10kb",
+  "compress-image-to-30kb": "compress-image-to-30kb",
+  "compress-image-to-300kb": "compress-image-to-300kb",
+  "compress-image-to-500kb": "compress-image-to-500kb",
+  "compress-image-to-2mb": "compress-image-to-2mb",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "image-to-hd",
@@ -258,6 +268,11 @@ const RU_TOOL_SLUGS: Record<string, string> = {
   "compress-image-to-100kb": "compress-image-to-100kb",
   "compress-image-to-200kb": "compress-image-to-200kb",
   "compress-image-to-1mb": "compress-image-to-1mb",
+  "compress-image-to-10kb": "compress-image-to-10kb",
+  "compress-image-to-30kb": "compress-image-to-30kb",
+  "compress-image-to-300kb": "compress-image-to-300kb",
+  "compress-image-to-500kb": "compress-image-to-500kb",
+  "compress-image-to-2mb": "compress-image-to-2mb",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "image-to-hd",
@@ -360,6 +375,11 @@ const ID_TOOL_SLUGS: Record<string, string> = {
   "compress-image-to-100kb": "kompres-foto-100kb",
   "compress-image-to-200kb": "kompres-foto-200kb",
   "compress-image-to-1mb": "kompres-foto-1mb",
+  "compress-image-to-10kb": "kompres-foto-10kb",
+  "compress-image-to-30kb": "kompres-foto-30kb",
+  "compress-image-to-300kb": "kompres-foto-300kb",
+  "compress-image-to-500kb": "kompres-foto-500kb",
+  "compress-image-to-2mb": "kompres-foto-2mb",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "jadikan-foto-hd",

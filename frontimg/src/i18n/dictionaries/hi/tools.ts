@@ -226,6 +226,26 @@ export const hiTools: Record<string, LocalizedTool> = {
     name: "इमेज 1 MB में कंप्रेस करें",
     shortDescription: "मोबाइल फोटो 1 MB से कम, ज़्यादातर पूरे साइज़ में।",
   },
+  "compress-image-to-10kb": {
+    name: "इमेज 10 KB में कंप्रेस करें",
+    shortDescription: "10 KB से कम में सिग्नेचर और अंगूठे का निशान।",
+  },
+  "compress-image-to-30kb": {
+    name: "इमेज 30 KB में कंप्रेस करें",
+    shortDescription: "30 KB से कम में फ़ॉर्म फोटो, चेहरा साफ़।",
+  },
+  "compress-image-to-300kb": {
+    name: "इमेज 300 KB में कंप्रेस करें",
+    shortDescription: "300 KB से कम में फोटो और स्कैन, पढ़ने लायक़ टेक्स्ट।",
+  },
+  "compress-image-to-500kb": {
+    name: "इमेज 500 KB में कंप्रेस करें",
+    shortDescription: "500 KB से कम में लगभग ओरिजिनल क्वालिटी।",
+  },
+  "compress-image-to-2mb": {
+    name: "इमेज 2 MB में कंप्रेस करें",
+    shortDescription: "बड़ी मोबाइल फोटो 2 MB से कम में।",
+  },
 
   // ── वैरिएंट: HD, मिरर, बैकग्राउंड (expansion.md) ──
   "image-to-hd": {
