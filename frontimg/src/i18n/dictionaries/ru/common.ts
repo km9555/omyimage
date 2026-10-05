@@ -61,7 +61,7 @@ export const ruCommon: Record<string, string> = {
   "New": "Новинка",
   "Compress to Size": "Сжать до размера",
   "Passport & ID Photos": "Фото на документы",
-  "Social Media Sizes": "Размеры для соцсетей",
+  "Print & Social Sizes": "Размеры для печати и соцсетей",
   "Browse all tools": "Все инструменты",
   "Browse tools": "Смотреть инструменты",
   "All tools": "Все инструменты",

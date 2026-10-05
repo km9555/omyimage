@@ -319,6 +319,18 @@ export const ruTools: Record<string, LocalizedTool> = {
     name: "Баннер для Discord",
     shortDescription: "Размеры баннеров профиля и сервера Discord.",
   },
+  "dpi-converter": {
+    name: "Изменить DPI",
+    shortDescription: "DPI 300, 200 или любой другой — без потери качества.",
+  },
+  "dpi-checker": {
+    name: "Узнать DPI",
+    shortDescription: "DPI изображения и размер при печати.",
+  },
+  "resize-image-in-cm": {
+    name: "Размер фото в см",
+    shortDescription: "Точный размер в сантиметрах, миллиметрах или дюймах.",
+  },
 
   // ── Варианты: HD, отражение, фон (expansion.md) ──
   "image-to-hd": {

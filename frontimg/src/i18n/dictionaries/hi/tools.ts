@@ -318,6 +318,18 @@ export const hiTools: Record<string, LocalizedTool> = {
     name: "Discord बैनर रीसाइज़र",
     shortDescription: "Discord प्रोफ़ाइल और सर्वर बैनर के साइज़।",
   },
+  "dpi-converter": {
+    name: "DPI कन्वर्टर",
+    shortDescription: "इमेज का DPI 300, 200 या किसी भी वैल्यू पर बदलें, बिना क्वालिटी खोए।",
+  },
+  "dpi-checker": {
+    name: "DPI चेकर",
+    shortDescription: "इमेज का DPI और प्रिंट साइज़ देखें।",
+  },
+  "resize-image-in-cm": {
+    name: "इमेज को cm में रीसाइज़ करें",
+    shortDescription: "इमेज को cm, mm या इंच में सटीक साइज़ में बदलें।",
+  },
 
   // ── वैरिएंट: HD, मिरर, बैकग्राउंड (expansion.md) ──
   "image-to-hd": {

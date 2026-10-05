@@ -289,6 +289,15 @@ export const TOOL_ALIASES: Record<string, string[]> = {
   "discord-banner-resizer": [
     "discord banner size", "discord profile banner", "discord server banner", "600x240", "discord server icon",
   ],
+  "dpi-converter": [
+    "change dpi", "300 dpi", "convert image to 300 dpi", "dpi changer", "increase dpi", "200 dpi", "set dpi",
+  ],
+  "dpi-checker": [
+    "check dpi", "image dpi", "what is the dpi of my image", "dpi finder", "find dpi", "image resolution checker",
+  ],
+  "resize-image-in-cm": [
+    "resize in cm", "cm to pixels", "resize image in inches", "print size", "resize in mm", "photo size in cm",
+  ],
 
   // Variants — upscale, rotate, remove-background
   "image-to-hd": [

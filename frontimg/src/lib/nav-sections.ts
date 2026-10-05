@@ -35,7 +35,7 @@ export const NAV_SECTIONS: NavSection[] = [
     label: "Optimize Image",
     icon: "compress",
     color: "#4F9D69",
-    ids: ["compress-image", "resize-image", "crop-image", "rotate-image", "flip-image", "signature-resizer"],
+    ids: ["compress-image", "resize-image", "crop-image", "rotate-image", "flip-image", "signature-resizer", "dpi-converter"],
   },
   {
     // Variants of compress-image (expansion.md §5): one row per target size.
@@ -96,19 +96,19 @@ export const NAV_SECTIONS: NavSection[] = [
     ],
   },
   {
-    // Variants of resize-image (expansion.md §5): one row per platform size.
+    // Variants of resize-image (expansion.md §5): print size, then one row per platform size.
     id: "social-sizes",
-    label: "Social Media Sizes",
+    label: "Print & Social Sizes",
     icon: "aspect_ratio",
     color: "#4B8FC7",
-    ids: ["youtube-thumbnail-resizer", "whatsapp-dp-resizer", "linkedin-banner-resizer", "facebook-cover-resizer", "discord-banner-resizer"],
+    ids: ["resize-image-in-cm", "youtube-thumbnail-resizer", "whatsapp-dp-resizer", "linkedin-banner-resizer", "facebook-cover-resizer", "discord-banner-resizer"],
   },
   {
     id: "privacy",
     label: "Privacy & Info",
     icon: "lock",
     color: "#C55A52",
-    ids: ["blur-face", "remove-exif", "image-metadata"],
+    ids: ["blur-face", "remove-exif", "image-metadata", "dpi-checker"],
   },
   {
     id: "convert-format",

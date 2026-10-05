@@ -32,7 +32,7 @@ const content: ToolPageContent = {
   tagline:
     "Ubah ukuran foto JPG, PNG, WEBP, dan GIF secara online — dalam piksel, persen, atau ukuran siap pakai untuk media sosial, dengan rasio aspek yang terjaga dan banyak foto sekaligus. Gratis, cepat, dan privat di browser Anda.",
   category: { id: "optimize", label: "Optimasi" },
-  variantsHeading: "Ubah ukuran untuk media sosial",
+  variantsHeading: "Ubah ukuran untuk cetak atau media sosial",
 
   metaTitle: "Ubah Ukuran Foto Online Gratis — Resize Foto dalam Piksel atau % | oMyImage",
   metaDescription:
@@ -253,6 +253,18 @@ const content: ToolPageContent = {
     "Profile banner": "Banner profil",
     "Server banner": "Banner server",
     "Server icon": "Ikon server",
+    // Print size mode (ResizeTool; PRINT_UNITS and MODES are module scope)
+    "Print size": "Ukuran cetak",
+    "Unit": "Satuan",
+    "cm": "cm", // i18n-same
+    "mm": "mm", // i18n-same
+    "in": "inci",
+    "Width ({unit})": "Lebar ({unit})",
+    "Height ({unit})": "Tinggi ({unit})",
+    "Resolution (DPI)": "Resolusi (DPI)",
+    "Pixels = size × DPI. 300 DPI is the usual quality for printed photos.": "Piksel = ukuran × DPI. 300 DPI adalah kualitas umum untuk foto cetak.",
+    "WEBP can't store a DPI — choose JPG or PNG so the file keeps its print size.": "WEBP tidak bisa menyimpan DPI — pilih JPG atau PNG agar file tetap punya ukuran cetak.",
+    "{dpi} DPI": "{dpi} DPI", // i18n-same
     "Channel art": "Banner channel",
     "Thumbnail": "Thumbnail", // i18n-same — YouTube's own Indonesian UI says thumbnail
     "Standard pin": "Pin standar",

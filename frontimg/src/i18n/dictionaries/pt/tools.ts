@@ -319,6 +319,18 @@ export const ptTools: Record<string, LocalizedTool> = {
     name: "Redimensionar Banner do Discord",
     shortDescription: "Banners de perfil e de servidor do Discord.",
   },
+  "dpi-converter": {
+    name: "Alterar DPI da Imagem",
+    shortDescription: "Mude o DPI para 300, 200 ou outro valor, sem perder qualidade.",
+  },
+  "dpi-checker": {
+    name: "Verificar DPI da Imagem",
+    shortDescription: "Veja o DPI de uma imagem e o tamanho de impressão.",
+  },
+  "resize-image-in-cm": {
+    name: "Redimensionar Imagem em cm",
+    shortDescription: "Redimensione para um tamanho exato em cm, mm ou polegadas.",
+  },
 
   // ── Variantes: melhorar, espelhar, fundo (expansion.md) ──
   "image-to-hd": {

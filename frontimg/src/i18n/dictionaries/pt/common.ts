@@ -36,7 +36,7 @@ export const ptCommon: Record<string, string> = {
   "New": "Novo",
   "Compress to Size": "Comprimir por tamanho",
   "Passport & ID Photos": "Fotos para documento",
-  "Social Media Sizes": "Tamanhos para redes sociais",
+  "Print & Social Sizes": "Impressão e redes sociais",
   "Browse all tools": "Ver todas as ferramentas",
   "Browse tools": "Explorar ferramentas",
   "All tools": "Todas as ferramentas",

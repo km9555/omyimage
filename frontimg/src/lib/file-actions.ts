@@ -41,6 +41,7 @@ const TOOL_INPUTS: Record<string, ToolInput> = {
   // ── Optimize ────────────────────────────────────────────────────────────
   "compress-image": { kinds: COMMON },
   "resize-image": { kinds: COMMON_GIF_BMP },
+  "resize-image-in-cm": { kinds: COMMON_GIF_BMP },
   "youtube-thumbnail-resizer": { kinds: COMMON_GIF_BMP },
   "whatsapp-dp-resizer": { kinds: COMMON_GIF_BMP },
   "linkedin-banner-resizer": { kinds: COMMON_GIF_BMP },
@@ -98,6 +99,8 @@ const TOOL_INPUTS: Record<string, ToolInput> = {
   "upscale-image": { kinds: COMMON, single: true },
   "passport-photo-maker": { kinds: COMMON, single: true },
   "signature-resizer": { kinds: COMMON, single: true },
+  "dpi-converter": { kinds: COMMON_GIF_BMP },
+  "dpi-checker": { kinds: COMMON_GIF_BMP },
   "blur-face": { kinds: COMMON, single: true },
 };
 

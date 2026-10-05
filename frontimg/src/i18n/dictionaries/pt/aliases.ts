@@ -206,6 +206,15 @@ export const ptAliases: Record<string, string[]> = {
   "discord-banner-resizer": [
     "tamanho banner discord", "banner de perfil discord", "banner de servidor discord", "ícone servidor discord",
   ],
+  "dpi-converter": [
+    "mudar dpi", "converter para 300 dpi", "aumentar dpi", "alterar resolução dpi",
+  ],
+  "dpi-checker": [
+    "ver dpi da imagem", "descobrir dpi", "qual o dpi da foto", "verificar resolução",
+  ],
+  "resize-image-in-cm": [
+    "redimensionar em cm", "tamanho em centímetros", "foto em cm", "cm para pixels",
+  ],
 
   // Variantes — HD, espelhar, fundo
   "image-to-hd": [

@@ -117,6 +117,25 @@ export const TOOLS: Tool[] = [
     primaryKeyword: "resize image without losing quality",
   },
   {
+    id: "resize-image-in-cm",
+    name: "Resize Image in cm",
+    slug: "resize-image-in-cm",
+    parentId: "resize-image",
+    preset: { mode: "print", unit: "cm", dpi: 300 },
+    categoryId: "optimize",
+    shortDescription: "Resize images to an exact size in cm, mm or inches.",
+    icon: "straighten",
+    processing: "client",
+    library: "Pica / Sharp",
+    status: "live",
+    isNew: true,
+    priority: 173,
+    seoTitle: "Resize Image in cm Online — Exact Print Size, Free | oMyImage",
+    seoDescription:
+      "Resize an image to an exact size in centimetres, millimetres or inches at 300 DPI or any DPI, with the DPI saved in the file. Free, in your browser, no upload.",
+    primaryKeyword: "resize image in cm",
+  },
+  {
     id: "youtube-thumbnail-resizer",
     name: "YouTube Thumbnail Resizer",
     slug: "youtube-thumbnail-resizer",
@@ -1452,6 +1471,40 @@ export const TOOLS: Tool[] = [
       "Resize your signature online free: white background, trimmed edges, 140×60 px or cm sizes and 10–20 KB for exam and job forms. In your browser, no upload.",
     primaryKeyword: "signature resize",
   },
+  {
+    id: "dpi-converter",
+    name: "DPI Converter",
+    slug: "dpi-converter",
+    categoryId: "optimize",
+    shortDescription: "Change image DPI to 300, 200 or any value, no quality loss.",
+    icon: "high_quality",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    isNew: true,
+    priority: 171,
+    seoTitle: "Change DPI of Image to 300 Online — Free DPI Converter | oMyImage",
+    seoDescription:
+      "Change the DPI of JPG and PNG images to 300, 200, 72 or any value online for free. Only the DPI label changes, so quality stays identical. Batch, no upload.",
+    primaryKeyword: "change dpi of image",
+  },
+  {
+    id: "dpi-checker",
+    name: "DPI Checker",
+    slug: "dpi-checker",
+    categoryId: "optimize",
+    shortDescription: "Check an image's DPI and the size it prints at.",
+    icon: "info",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    isNew: true,
+    priority: 172,
+    seoTitle: "Check Image DPI Online — Free DPI Checker | oMyImage",
+    seoDescription:
+      "Check the DPI of JPG, PNG, BMP and WEBP images online for free, and see the size they print at and the largest sharp print size. In your browser, no upload.",
+    primaryKeyword: "check image dpi",
+  },
   // passport-photo-maker family.
   {
     id: "3x4-photo",
@@ -1622,6 +1675,8 @@ const TOOL_COLORS: Record<string, string> = {
   "gif-to-images": "#B85C8C",
   "passport-photo-maker": "#4F7FB8",
   "signature-resizer": "#5A6FB0",
+  "dpi-converter": "#5B7FA6",
+  "dpi-checker": "#4C7DA8",
 };
 
 const CATEGORY_COLORS: Record<string, string> = {

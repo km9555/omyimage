@@ -101,6 +101,9 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "linkedin-banner-resizer",
     "facebook-cover-resizer",
     "discord-banner-resizer",
+    "dpi-converter",
+    "dpi-checker",
+    "resize-image-in-cm",
     // Expansion 3A — engine variants (expansion.md §5)
     "image-to-hd",
     "unblur-image",
@@ -200,6 +203,9 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "linkedin-banner-resizer",
     "facebook-cover-resizer",
     "discord-banner-resizer",
+    "dpi-converter",
+    "dpi-checker",
+    "resize-image-in-cm",
     // Expansion 3A — engine variants (expansion.md §5)
     "image-to-hd",
     "unblur-image",
@@ -301,6 +307,9 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "png-to-ico",
     "youtube-thumbnail-resizer",
     "whatsapp-dp-resizer",
+    "dpi-converter",
+    "dpi-checker",
+    "resize-image-in-cm",
     // Expansion 3A — engine variants (expansion.md §5)
     "image-to-hd",
     "unblur-image",
@@ -403,6 +412,9 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "linkedin-banner-resizer",
     "facebook-cover-resizer",
     "discord-banner-resizer",
+    "dpi-converter",
+    "dpi-checker",
+    "resize-image-in-cm",
     // Expansion 3A — engine variants (expansion.md §5)
     "flip-image",
     "change-background-color",

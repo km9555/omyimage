@@ -49,7 +49,7 @@ export const hiCommon: Record<string, string> = {
   "New": "नया",
   "Compress to Size": "तय साइज़ में कंप्रेस",
   "Passport & ID Photos": "पासपोर्ट और ID फोटो",
-  "Social Media Sizes": "सोशल मीडिया साइज़",
+  "Print & Social Sizes": "प्रिंट और सोशल मीडिया साइज़",
   "Browse all tools": "सभी टूल देखें",
   "Browse tools": "टूल देखें",
   "All tools": "सभी टूल",

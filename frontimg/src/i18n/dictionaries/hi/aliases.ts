@@ -215,6 +215,15 @@ export const hiAliases: Record<string, string[]> = {
   "discord-banner-resizer": [
     "discord banner size", "discord profile banner", "discord server banner", "डिस्कॉर्ड बैनर",
   ],
+  "dpi-converter": [
+    "change dpi", "300 dpi", "dpi बदलें", "convert image to 300 dpi",
+  ],
+  "dpi-checker": [
+    "check dpi", "image dpi", "dpi कैसे देखें", "dpi checker",
+  ],
+  "resize-image-in-cm": [
+    "resize image in cm", "cm to pixel", "फोटो साइज़ cm में", "resize in inches",
+  ],
 
   // वैरिएंट — HD, मिरर, बैकग्राउंड
   "image-to-hd": [

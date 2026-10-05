@@ -28,7 +28,7 @@ const content: ToolPageContent = {
   tagline:
     "Задайте размер в пикселях или процентах, выберите готовый формат для соцсетей или документов — пропорции сохранятся. Пачкой, бесплатно и прямо в браузере.",
   category: { id: "optimize", label: "Оптимизация" },
-  variantsHeading: "Размеры для соцсетей",
+  variantsHeading: "Размеры для печати и соцсетей",
 
   metaTitle: "Изменить размер фото онлайн бесплатно — в пикселях и процентах | oMyImage",
   metaDescription:
@@ -262,6 +262,18 @@ const content: ToolPageContent = {
     "Profile banner": "Баннер профиля",
     "Server banner": "Баннер сервера",
     "Server icon": "Значок сервера",
+    // Print size mode (ResizeTool; PRINT_UNITS and MODES are module scope)
+    "Print size": "Размер печати",
+    "Unit": "Единицы",
+    "cm": "см",
+    "mm": "мм",
+    "in": "дюймы",
+    "Width ({unit})": "Ширина ({unit})",
+    "Height ({unit})": "Высота ({unit})",
+    "Resolution (DPI)": "Разрешение (DPI)",
+    "Pixels = size × DPI. 300 DPI is the usual quality for printed photos.": "Пиксели = размер × DPI. 300 DPI — обычное качество для печати фото.",
+    "WEBP can't store a DPI — choose JPG or PNG so the file keeps its print size.": "WEBP не хранит DPI — выберите JPG или PNG, чтобы файл сохранил размер печати.",
+    "{dpi} DPI": "{dpi} DPI", // i18n-same
     "Channel art": "Шапка канала",
     "Thumbnail": "Превью",
     "Standard pin": "Обычный пин",

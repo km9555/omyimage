@@ -50,7 +50,7 @@ export const idCommon: Record<string, string> = {
   "New": "Baru",
   "Compress to Size": "Kompres ke Ukuran",
   "Passport & ID Photos": "Pas Foto & Foto Dokumen",
-  "Social Media Sizes": "Ukuran Media Sosial",
+  "Print & Social Sizes": "Ukuran Cetak & Media Sosial",
   "Browse all tools": "Lihat semua alat",
   "Browse tools": "Lihat alat",
   "All tools": "Semua alat",

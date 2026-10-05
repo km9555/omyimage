@@ -130,6 +130,9 @@ const PT_TOOL_SLUGS: Record<string, string> = {
   "linkedin-banner-resizer": "redimensionar-capa-linkedin",
   "facebook-cover-resizer": "redimensionar-capa-facebook",
   "discord-banner-resizer": "redimensionar-banner-discord",
+  "dpi-converter": "alterar-dpi-da-imagem",
+  "dpi-checker": "verificar-dpi-da-imagem",
+  "resize-image-in-cm": "redimensionar-imagem-em-cm",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "imagem-em-hd",
@@ -224,6 +227,9 @@ const HI_TOOL_SLUGS: Record<string, string> = {
   "linkedin-banner-resizer": "linkedin-banner-resizer",
   "facebook-cover-resizer": "facebook-cover-resizer",
   "discord-banner-resizer": "discord-banner-resizer",
+  "dpi-converter": "dpi-converter",
+  "dpi-checker": "dpi-checker",
+  "resize-image-in-cm": "resize-image-in-cm",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "image-to-hd",
@@ -327,6 +333,9 @@ const RU_TOOL_SLUGS: Record<string, string> = {
   "linkedin-banner-resizer": "linkedin-banner-resizer",
   "facebook-cover-resizer": "facebook-cover-resizer",
   "discord-banner-resizer": "discord-banner-resizer",
+  "dpi-converter": "dpi-converter",
+  "dpi-checker": "dpi-checker",
+  "resize-image-in-cm": "resize-image-in-cm",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "image-to-hd",
@@ -452,6 +461,9 @@ const ID_TOOL_SLUGS: Record<string, string> = {
   "linkedin-banner-resizer": "ubah-ukuran-banner-linkedin",
   "facebook-cover-resizer": "ubah-ukuran-sampul-facebook",
   "discord-banner-resizer": "ubah-ukuran-banner-discord",
+  "dpi-converter": "ubah-dpi-foto",
+  "dpi-checker": "cek-dpi-foto",
+  "resize-image-in-cm": "ubah-ukuran-foto-cm",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "jadikan-foto-hd",

@@ -200,6 +200,15 @@ export const idAliases: Record<string, string[]> = {
   "discord-banner-resizer": [
     "ukuran banner discord", "banner profil discord", "banner server discord", "ikon server discord",
   ],
+  "dpi-converter": [
+    "ubah dpi", "300 dpi", "ganti dpi foto", "dpi converter",
+  ],
+  "dpi-checker": [
+    "cek dpi", "lihat dpi foto", "dpi gambar", "cara cek dpi",
+  ],
+  "resize-image-in-cm": [
+    "ubah ukuran foto cm", "ukuran foto dalam cm", "cm ke piksel", "ukuran cetak foto",
+  ],
 
   // Varian — HD, mirror, background
   "image-to-hd": [

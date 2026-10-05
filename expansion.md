@@ -136,9 +136,9 @@ the notes. hi/ru slugs equal the English one.
 | passport-photo-maker *(new: face-guided crop, bg colour, print sheet)* | foto-para-documento | pas-foto | IN 301K + 550K `passport size photo` (KD 40) | 4A, all locales. Opens on 3 × 4 cm in /pt and /id. |
 | 3x4-photo *(variant)* | foto-3x4 | foto-3x4 | BR 90.5K (KD 0); ID 33.1K + 27.1K; RU 2.4K | 4A: en, pt, ru, id. Not /hi (no demand). |
 | 2x2-photo *(variant)* | foto-2x2 | pas-foto-2x2 | US 2.4K | 4A: en, hi (US visa / OCI). Slugs reserved elsewhere. |
-| dpi-converter *(new)* | alterar-dpi-da-imagem | ubah-dpi-foto | IN 27.1K, US 5.4K |
-| dpi-checker *(new)* | verificar-dpi-da-imagem | cek-dpi-foto | IN 3.6K, US 2.9K |
-| resize-image-in-cm *(resize, cm/inch mode)* | redimensionar-imagem-em-cm | ubah-ukuran-foto-cm | IN 22.2K (KD 0) + 9.9K |
+| dpi-converter *(new)* | alterar-dpi-da-imagem | ubah-dpi-foto | IN 27.1K, US 5.4K | 4B, all locales. `DpiTool mode="convert"`. |
+| dpi-checker *(new)* | verificar-dpi-da-imagem | cek-dpi-foto | IN 3.6K, US 2.9K | 4B, all locales. Same component, `mode="check"`; its content modules reuse the converter's `ui`. |
+| resize-image-in-cm *(resize, cm/inch mode)* | redimensionar-imagem-em-cm | ubah-ukuran-foto-cm | IN 22.2K (KD 0) + 9.9K | 4B, all locales. New "Print size" mode in ResizeTool (also on /resize-image). |
 
 ### Phase 5 — GIF suite (US-led) · engine: `src/lib/gif/`
 
@@ -343,6 +343,37 @@ blur-screenshot (90–140/mo), exif-editor (≤ 390, KD 68), svg-to-gif, blur-gi
   - **Nav:** a new "Social Media Sizes" section. Privacy moved to column 4
     to rebalance the columns.
   - verify:build 416 URLs, 181 family pages, worst pair still 0.542.
+- **2026-10-05 — Batch 4B: dpi-converter, dpi-checker, resize-image-in-cm —
+  15 pages.**
+  - **`lib/image/dpi.ts` now also READS** BMP (header pixels-per-metre), WebP
+    (its EXIF chunk) and GIF (always "none"). Writing stays JPEG/PNG.
+  - **DpiTool:**
+    - The converter rewrites only the density field. WEBP/GIF/BMP are made
+      into lossless PNG first.
+    - The checker shows stored DPI and where it lives, the print size, and
+      the sharp size at 300 DPI.
+    - "Change DPI" hands the files to the converter (`stashFiles`).
+    - DpiTool lives in app/dpi-converter, so the keys checker files its
+      strings under dpi-converter. dpi-checker modules do `ui: converter.ui`
+      (the HeicTool rule: a route only has its own tool's ui in scope).
+  - **ResizeTool "Print size" mode** (4th segment, the modes are now 2 × 2):
+    - cm/mm/in plus DPI. Prefilled from the first image's print size.
+    - Switching unit converts the boxes; accepts "4,5".
+    - JPG/PNG output gets the DPI; files are named `name_3.5x4.5cm.jpg`.
+  - **Measured:**
+    - PNG got a pHYs chunk (11811 ppm) right after IHDR, +21 bytes.
+    - The canvas JPG's JFIF went from units 0 to units 1, 300 DPI.
+    - WEBP and BMP → PNG at 300 DPI.
+    - A 2400 × 3000 photo at 72 DPI reads 84.7 × 105.8 cm, sharp size
+      20.3 × 25.4 cm.
+    - 3.5 × "4,5" cm at 300 DPI → 413 × 531 px.
+  - **Copy fix during review:** "10 × 15 cm (4 × 6 inch)" claimed one pixel
+    size for both. They differ: 1181 × 1772 vs 1200 × 1800. Indonesian 4R
+    is 4 × 6 in.
+  - **Nav:** "Social Media Sizes" renamed "Print & Social Sizes" (resize-in-cm
+    leads it). DPI Converter is in Optimize, DPI Checker in Privacy & Info.
+  - **Build:** run in the `_wt-base` worktree, because the user's own dev
+    server held :3002.
 - **Deploys need the user's go-ahead.** 2A, 3A, 4A and the visibility fix
   went live on 2026-10-04 (merge 505e680 into `main`, then `npm run
   indexnow`). Later batches are committed on `feat/tool-expansion` and

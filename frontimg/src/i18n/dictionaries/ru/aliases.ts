@@ -227,6 +227,15 @@ export const ruAliases: Record<string, string[]> = {
   "discord-banner-resizer": [
     "размер баннера discord", "баннер профиля discord", "баннер сервера discord", "иконка сервера discord",
   ],
+  "dpi-converter": [
+    "изменить dpi", "300 dpi", "поменять разрешение dpi", "dpi фото",
+  ],
+  "dpi-checker": [
+    "узнать dpi", "проверить dpi", "какое dpi у картинки", "разрешение изображения",
+  ],
+  "resize-image-in-cm": [
+    "размер фото в см", "изменить размер в сантиметрах", "см в пиксели", "размер для печати",
+  ],
 
   // Варианты — HD, отражение, фон
   "image-to-hd": [

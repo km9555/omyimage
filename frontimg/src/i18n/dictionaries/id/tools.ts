@@ -321,6 +321,18 @@ export const idTools: Record<string, LocalizedTool> = {
     name: "Ubah Ukuran Banner Discord",
     shortDescription: "Ukuran banner profil dan server Discord.",
   },
+  "dpi-converter": {
+    name: "Ubah DPI Foto",
+    shortDescription: "Ubah DPI ke 300, 200, atau nilai lain tanpa menurunkan kualitas.",
+  },
+  "dpi-checker": {
+    name: "Cek DPI Foto",
+    shortDescription: "Lihat DPI gambar dan ukuran cetaknya.",
+  },
+  "resize-image-in-cm": {
+    name: "Ubah Ukuran Foto dalam cm",
+    shortDescription: "Ubah ukuran foto ke cm, mm, atau inci yang tepat.",
+  },
 
   // ── Varian: HD, mirror, background (expansion.md) ──
   "image-to-hd": {

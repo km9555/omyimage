@@ -25,7 +25,7 @@ const content: ToolPageContent = {
   tagline:
     "JPG, PNG, WEBP और GIF इमेज ऑनलाइन रीसाइज़ करें — फोटो का साइज़ बदलें, पिक्सल में या प्रतिशत में, अनुपात बरक़रार रखते हुए, सोशल मीडिया के तैयार साइज़ के साथ और एक साथ कई फ़ाइलों में। मुफ़्त, तेज़ और पूरी तरह आपके ब्राउज़र में।",
   category: { id: "optimize", label: "ऑप्टिमाइज़" },
-  variantsHeading: "सोशल मीडिया के साइज़ में बदलें",
+  variantsHeading: "प्रिंट या सोशल मीडिया के साइज़ में बदलें",
 
   metaTitle: "इमेज रीसाइज़ करें — फोटो का साइज़ बदलें, पिक्सल या % में | oMyImage",
   metaDescription:
@@ -192,6 +192,18 @@ const content: ToolPageContent = {
     "Profile banner": "प्रोफ़ाइल बैनर",
     "Server banner": "सर्वर बैनर",
     "Server icon": "सर्वर आइकन",
+    // Print size mode (ResizeTool; PRINT_UNITS and MODES are module scope)
+    "Print size": "प्रिंट साइज़",
+    "Unit": "इकाई",
+    "cm": "cm", // i18n-same
+    "mm": "mm", // i18n-same
+    "in": "इंच",
+    "Width ({unit})": "चौड़ाई ({unit})",
+    "Height ({unit})": "ऊँचाई ({unit})",
+    "Resolution (DPI)": "रेज़ोल्यूशन (DPI)",
+    "Pixels = size × DPI. 300 DPI is the usual quality for printed photos.": "पिक्सल = साइज़ × DPI. फोटो प्रिंट के लिए 300 DPI आम क्वालिटी है।",
+    "WEBP can't store a DPI — choose JPG or PNG so the file keeps its print size.": "WEBP में DPI नहीं रखा जा सकता — प्रिंट साइज़ बनाए रखने के लिए JPG या PNG चुनें।",
+    "{dpi} DPI": "{dpi} DPI", // i18n-same
     "Channel art": "चैनल बैनर",
     "Thumbnail": "थंबनेल",
     "Standard pin": "सामान्य पिन",
