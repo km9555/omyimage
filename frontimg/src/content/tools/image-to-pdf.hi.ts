@@ -24,6 +24,7 @@ const content: ToolPageContent = {
   tagline:
     "JPG, PNG और WEBP फोटो को एक ही PDF में जोड़ें — पन्नों का क्रम बदलें और साइज़, दिशा, लेआउट व हाशिया चुनें। मुफ़्त, तेज़ और पूरी तरह आपके ब्राउज़र में।",
   category: { id: "convert", label: "कन्वर्ट" },
+  variantsHeading: "तय साइज़ से छोटे PDF में बदलें",
 
   metaTitle: "इमेज से PDF बनाएँ — JPG और PNG को एक PDF में, मुफ़्त | oMyImage",
   metaDescription:
@@ -150,6 +151,17 @@ const content: ToolPageContent = {
     "Contain": "समाएँ",
     "Cover": "भरें",
     "Stretch": "खींचें",
+    // ImageToPdfTool.tsx — size limit (jpg-to-pdf-under-N-kb)
+    "Already under {size} — no compression needed.": "पहले से {size} से कम — कंप्रेस करने की ज़रूरत नहीं पड़ी।",
+    "Could not get the PDF under {size} — this is the smallest it can be.": "PDF को {size} से कम नहीं किया जा सका — यह सबसे छोटा संभव साइज़ है।",
+    "Enter a size greater than zero.": "शून्य से बड़ा साइज़ डालें।",
+    "Images are compressed only as much as needed for the whole PDF to fit.": "इमेज उतनी ही कंप्रेस होती हैं जितना पूरे PDF को लिमिट में लाने के लिए ज़रूरी हो।",
+    "KB": "KB",
+    "MB": "MB",
+    "Maximum PDF size": "PDF का अधिकतम साइज़",
+    "PDF size: {size}": "PDF साइज़: {size}",
+    "The PDF will be kept under {size}.": "PDF {size} से कम रखा जाएगा।",
+    "Unit": "इकाई",
   },
 };
 

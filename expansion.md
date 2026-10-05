@@ -276,6 +276,22 @@ blur-screenshot (90–140/mo), exif-editor (≤ 390, KD 68), svg-to-gif, blur-gi
   and 709 × 236 at 10,957 B for 6 × 2 cm. Side effect, kept: Signature
   Resizer joins "More tools" on resize / crop / rotate / flip pages.
   verify:build 354 URLs, 129 family pages, worst pair 0.542.
+- **2026-10-05 — Batch 2D: jpg-to-pdf-under-100 / 200 / 300 / 500 KB —
+  20 pages.** `lib/pdf/pdf-under-size.ts` limits the WHOLE PDF, not each
+  image. It builds once and returns that file untouched if it already fits.
+  Otherwise it measures the PDF overhead, splits the rest of the budget by
+  image area, runs each image through compressToSize (JPEG on the page
+  fill), rebuilds, and tightens at most 4 times. A starting
+  `maxDimension` derived from 0.05 B/px cut 3 dense pages from 41 s to
+  ~1 s. ImageToPdfTool takes `preset.maxKb`: an editable KB/MB limit field
+  in the rail, a dropzone note, "Already under / could not get under"
+  toasts, a `_200kb.pdf` filename, and no 10 MB nudge. Plain
+  /image-to-pdf is unchanged. Measured: 3 dense synthetic 3000 × 4000
+  pages → 192 KB, each ~592 × 790; a 3 KB limit gives 2,863 B. The copy
+  first claimed ~1100 × 1550 per page; that was corrected to the measured
+  ~800 × 1100 at 100 KB per page and ~600 × 800 at 65 KB. Russian 300/500
+  KB and Portuguese 500 KB needed one more FAQ for the 900-word floor.
+  verify:build 374 URLs, 154 family pages, worst pair 0.542.
 - **Deploys need the user's go-ahead.** 2A, 3A, 4A and the visibility fix
   went live on 2026-10-04 (merge 505e680 into `main`, then `npm run
   indexnow`). Later batches are committed on `feat/tool-expansion` and

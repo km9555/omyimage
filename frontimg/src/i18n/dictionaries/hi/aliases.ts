@@ -176,6 +176,18 @@ export const hiAliases: Record<string, string[]> = {
   "signature-resizer": [
     "सिग्नेचर रीसाइज़", "signature resize", "सिग्नेचर 10 से 20 kb", "signature 20kb",
   ],
+  "jpg-to-pdf-under-100kb": [
+    "jpg to pdf 100kb", "pdf 100 kb", "jpg से pdf 100 kb",
+  ],
+  "jpg-to-pdf-under-200kb": [
+    "jpg to pdf 200kb", "pdf 200 kb", "jpg से pdf 200 kb",
+  ],
+  "jpg-to-pdf-under-300kb": [
+    "jpg to pdf 300kb", "pdf 300 kb", "jpg से pdf 300 kb",
+  ],
+  "jpg-to-pdf-under-500kb": [
+    "jpg to pdf 500kb", "pdf 500 kb", "jpg से pdf 500 kb",
+  ],
 
   // वैरिएंट — HD, मिरर, बैकग्राउंड
   "image-to-hd": [

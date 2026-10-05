@@ -267,6 +267,22 @@ export const ruTools: Record<string, LocalizedTool> = {
     name: "Изменить размер подписи",
     shortDescription: "Очистить, обрезать и уменьшить подпись.",
   },
+  "jpg-to-pdf-under-100kb": {
+    name: "JPG в PDF до 100 КБ",
+    shortDescription: "Одностраничный PDF до 100 КБ для строгих форм.",
+  },
+  "jpg-to-pdf-under-200kb": {
+    name: "JPG в PDF до 200 КБ",
+    shortDescription: "Справки и сканы в одном PDF до 200 КБ.",
+  },
+  "jpg-to-pdf-under-300kb": {
+    name: "JPG в PDF до 300 КБ",
+    shortDescription: "Многостраничные документы в PDF до 300 КБ.",
+  },
+  "jpg-to-pdf-under-500kb": {
+    name: "JPG в PDF до 500 КБ",
+    shortDescription: "Длинные документы в одном PDF до 500 КБ.",
+  },
 
   // ── Варианты: HD, отражение, фон (expansion.md) ──
   "image-to-hd": {

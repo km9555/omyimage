@@ -167,6 +167,18 @@ export const ptAliases: Record<string, string[]> = {
   "signature-resizer": [
     "redimensionar assinatura", "assinatura digitalizada", "assinatura fundo branco", "assinatura 20kb",
   ],
+  "jpg-to-pdf-under-100kb": [
+    "jpg para pdf 100kb", "pdf 100kb", "converter jpg em pdf até 100kb",
+  ],
+  "jpg-to-pdf-under-200kb": [
+    "jpg para pdf 200kb", "pdf 200kb", "converter jpg em pdf até 200kb",
+  ],
+  "jpg-to-pdf-under-300kb": [
+    "jpg para pdf 300kb", "pdf 300kb", "converter jpg em pdf até 300kb",
+  ],
+  "jpg-to-pdf-under-500kb": [
+    "jpg para pdf 500kb", "pdf 500kb", "converter jpg em pdf até 500kb",
+  ],
 
   // Variantes — HD, espelhar, fundo
   "image-to-hd": [

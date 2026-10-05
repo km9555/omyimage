@@ -88,6 +88,10 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "compress-image-to-150kb",
     "increase-image-size-in-kb",
     "signature-resizer",
+    "jpg-to-pdf-under-100kb",
+    "jpg-to-pdf-under-200kb",
+    "jpg-to-pdf-under-300kb",
+    "jpg-to-pdf-under-500kb",
     // Expansion 3A — engine variants (expansion.md §5)
     "image-to-hd",
     "unblur-image",
@@ -174,6 +178,10 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "compress-image-to-150kb",
     "increase-image-size-in-kb",
     "signature-resizer",
+    "jpg-to-pdf-under-100kb",
+    "jpg-to-pdf-under-200kb",
+    "jpg-to-pdf-under-300kb",
+    "jpg-to-pdf-under-500kb",
     // Expansion 3A — engine variants (expansion.md §5)
     "image-to-hd",
     "unblur-image",
@@ -265,6 +273,10 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "compress-image-to-150kb",
     "increase-image-size-in-kb",
     "signature-resizer",
+    "jpg-to-pdf-under-100kb",
+    "jpg-to-pdf-under-200kb",
+    "jpg-to-pdf-under-300kb",
+    "jpg-to-pdf-under-500kb",
     // Expansion 3A — engine variants (expansion.md §5)
     "image-to-hd",
     "unblur-image",
@@ -354,6 +366,10 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "compress-image-to-150kb",
     "increase-image-size-in-kb",
     "signature-resizer",
+    "jpg-to-pdf-under-100kb",
+    "jpg-to-pdf-under-200kb",
+    "jpg-to-pdf-under-300kb",
+    "jpg-to-pdf-under-500kb",
     // Expansion 3A — engine variants (expansion.md §5)
     "flip-image",
     "change-background-color",

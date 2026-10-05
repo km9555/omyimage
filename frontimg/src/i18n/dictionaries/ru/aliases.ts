@@ -188,6 +188,18 @@ export const ruAliases: Record<string, string[]> = {
   "signature-resizer": [
     "подпись", "размер подписи", "фото подписи", "подпись на белом фоне",
   ],
+  "jpg-to-pdf-under-100kb": [
+    "jpg в pdf 100 кб", "pdf до 100 кб", "фото в pdf 100 кб",
+  ],
+  "jpg-to-pdf-under-200kb": [
+    "jpg в pdf 200 кб", "pdf до 200 кб", "фото в pdf 200 кб",
+  ],
+  "jpg-to-pdf-under-300kb": [
+    "jpg в pdf 300 кб", "pdf до 300 кб", "фото в pdf 300 кб",
+  ],
+  "jpg-to-pdf-under-500kb": [
+    "jpg в pdf 500 кб", "pdf до 500 кб", "фото в pdf 500 кб",
+  ],
 
   // Варианты — HD, отражение, фон
   "image-to-hd": [

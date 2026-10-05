@@ -269,6 +269,22 @@ export const idTools: Record<string, LocalizedTool> = {
     name: "Ubah Ukuran Tanda Tangan",
     shortDescription: "Bersihkan, potong, dan ubah ukuran tanda tangan.",
   },
+  "jpg-to-pdf-under-100kb": {
+    name: "JPG ke PDF di Bawah 100 KB",
+    shortDescription: "PDF satu halaman di bawah 100 KB untuk formulir.",
+  },
+  "jpg-to-pdf-under-200kb": {
+    name: "JPG ke PDF di Bawah 200 KB",
+    shortDescription: "Sertifikat dan scan dalam satu PDF di bawah 200 KB.",
+  },
+  "jpg-to-pdf-under-300kb": {
+    name: "JPG ke PDF di Bawah 300 KB",
+    shortDescription: "Dokumen beberapa halaman dalam PDF di bawah 300 KB.",
+  },
+  "jpg-to-pdf-under-500kb": {
+    name: "JPG ke PDF di Bawah 500 KB",
+    shortDescription: "Dokumen panjang dalam satu PDF di bawah 500 KB.",
+  },
 
   // ── Varian: HD, mirror, background (expansion.md) ──
   "image-to-hd": {

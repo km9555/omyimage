@@ -267,6 +267,22 @@ export const ptTools: Record<string, LocalizedTool> = {
     name: "Redimensionar assinatura",
     shortDescription: "Limpe, recorte e redimensione a sua assinatura.",
   },
+  "jpg-to-pdf-under-100kb": {
+    name: "JPG para PDF até 100 KB",
+    shortDescription: "PDF de uma página até 100 KB para formulários.",
+  },
+  "jpg-to-pdf-under-200kb": {
+    name: "JPG para PDF até 200 KB",
+    shortDescription: "Certificados e documentos num PDF até 200 KB.",
+  },
+  "jpg-to-pdf-under-300kb": {
+    name: "JPG para PDF até 300 KB",
+    shortDescription: "PDFs de várias páginas até 300 KB.",
+  },
+  "jpg-to-pdf-under-500kb": {
+    name: "JPG para PDF até 500 KB",
+    shortDescription: "Documentos longos num PDF até 500 KB.",
+  },
 
   // ── Variantes: melhorar, espelhar, fundo (expansion.md) ──
   "image-to-hd": {

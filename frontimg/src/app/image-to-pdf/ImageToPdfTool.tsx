@@ -24,6 +24,8 @@ import {
   type ImagesPerPage,
   type ImageInput,
 } from "@/lib/pdf/images-to-pdf";
+import { imagesToPdfUnderSize } from "@/lib/pdf/pdf-under-size";
+import { limitBytes } from "@/lib/image/compress-to-size";
 import { stashFiles, useHandoff } from "@/lib/tool-handoff";
 import { useFormatBytes, useLocale, useT } from "@/i18n/I18nScope";
 import { translateError } from "@/i18n/errors";
@@ -83,6 +85,19 @@ const FIT_LABELS: Record<FitMode, string> = {
   cover: "Cover",
   stretch: "Stretch",
 };
+
+/**
+ * Settings a variant page opens with (lib/tools.ts `preset`): the
+ * jpg-to-pdf-under-200kb family sets `maxKb`, which adds a "Maximum PDF size"
+ * field and recompresses the images only as much as the whole PDF needs.
+ * Without a preset the tool behaves exactly as on /image-to-pdf.
+ */
+export interface ImageToPdfPreset {
+  /** Size limit for the finished PDF, in decimal KB. */
+  maxKb?: number;
+}
+
+type SizeUnit = "KB" | "MB";
 
 let counter = 0;
 const uid = () => `f${Date.now()}_${counter++}`;
@@ -147,7 +162,7 @@ async function normalize(file: File): Promise<ImageInput> {
   };
 }
 
-export function ImageToPdfTool() {
+export function ImageToPdfTool({ preset }: { preset?: ImageToPdfPreset } = {}) {
   const t = useT();
   const router = useRouter();
   const locale = useLocale();
@@ -160,6 +175,12 @@ export function ImageToPdfTool() {
   const [margin, setMargin] = useState(24);
   const [bg, setBg] = useState<BgValue>({ transparent: false, color: "#ffffff" });
   const [isWorking, setIsWorking] = useState(false);
+  // Size-limited mode — only on the jpg-to-pdf-under-N-kb pages.
+  const sizeMode = !!preset?.maxKb;
+  const [limitValue, setLimitValue] = useState<number>(preset?.maxKb ?? 200);
+  const [limitUnit, setLimitUnit] = useState<SizeUnit>("KB");
+  const maxBytes = limitBytes(limitValue, limitUnit);
+  const limitLabel = `${limitValue} ${t(limitUnit)}`;
 
   /*
     Revoke preview URLs on UNMOUNT only.
@@ -245,11 +266,22 @@ export function ImageToPdfTool() {
 
   const buildPdf = async () => {
     if (items.length === 0) return;
+    if (sizeMode && !(maxBytes > 0)) { toast.error(t("Enter a size greater than zero.")); return; }
     setIsWorking(true);
     try {
-      const inputs = await Promise.all(items.map((it) => normalize(it.file)));
-      const bytes = await imagesToPdf(inputs, opts);
-      const name = items.length === 1 ? `${baseName(items[0].file.name)}.pdf` : "omyimage.pdf";
+      let bytes: Uint8Array;
+      let name = items.length === 1 ? `${baseName(items[0].file.name)}.pdf` : "omyimage.pdf";
+      if (sizeMode) {
+        const r = await imagesToPdfUnderSize(items.map((it) => it.file), normalize, opts, maxBytes);
+        bytes = r.bytes;
+        name = name.replace(/\.pdf$/, `_${limitValue}${limitUnit.toLowerCase()}.pdf`);
+        if (!r.met) toast(t("Could not get the PDF under {size} — this is the smallest it can be.", { size: limitLabel }));
+        else if (!r.recompressed) toast(t("Already under {size} — no compression needed.", { size: limitLabel }));
+        else toast(t("PDF size: {size}", { size: formatBytes(bytes.length) }));
+      } else {
+        const inputs = await Promise.all(items.map((it) => normalize(it.file)));
+        bytes = await imagesToPdf(inputs, opts);
+      }
       downloadBlob(new Blob([bytes as BlobPart], { type: "application/pdf" }), name);
       const pages = Math.ceil(items.length / imagesPerPage);
       toast.success(pages === 1 ? t("Created a PDF with 1 page.") : t("Created a PDF with {n} pages.", { n: pages }));
@@ -266,6 +298,11 @@ export function ImageToPdfTool() {
       <section>
         <TopLoadingBar active={isWorking} />
         <Dropzone onFiles={addFiles} accept={ACCEPT} accent={ACCENT} icon="picture_as_pdf" hint={t("or drop JPG, PNG, WEBP or GIF images here")} />
+        {sizeMode && (
+          <p className="mt-3 text-center text-body-sm text-on-surface-variant">
+            {t("The PDF will be kept under {size}.", { size: limitLabel })}
+          </p>
+        )}
       </section>
     );
   }
@@ -366,7 +403,32 @@ export function ImageToPdfTool() {
               </>
             }
           >
-            {totalIn > NUDGE_BYTES && (
+            {sizeMode && (
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="pdf-max-size" className="text-label-sm font-label-sm text-on-surface-variant">{t("Maximum PDF size")}</label>
+                <div className="flex gap-2">
+                  <input
+                    id="pdf-max-size"
+                    type="number"
+                    inputMode="decimal"
+                    min={1}
+                    step="any"
+                    value={Number.isFinite(limitValue) ? limitValue : ""}
+                    onChange={(e) => setLimitValue(parseFloat(e.target.value))}
+                    className={`${fieldCls.replace("w-full", "min-w-0 flex-1")} tabular-nums`}
+                  />
+                  <select value={limitUnit} onChange={(e) => setLimitUnit(e.target.value as SizeUnit)} className={`${fieldCls.replace("w-full", "w-20")} shrink-0`} aria-label={t("Unit")}>
+                    <option value="KB">{t("KB")}</option>
+                    <option value="MB">{t("MB")}</option>
+                  </select>
+                </div>
+                <p className="text-label-sm font-label-sm text-on-surface-variant/70">
+                  {t("Images are compressed only as much as needed for the whole PDF to fit.")}
+                </p>
+              </div>
+            )}
+
+            {!sizeMode && totalIn > NUDGE_BYTES && (
               <div className="flex flex-col gap-2 rounded-lg border border-outline-variant/40 bg-surface-bright p-3.5">
                 <p className="flex items-start gap-2.5 text-label-sm font-label-sm text-on-surface-variant">
                   <Icon name="info" className="mt-0.5 shrink-0 text-[18px]" style={{ color: ACCENT }} />

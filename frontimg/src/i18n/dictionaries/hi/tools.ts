@@ -266,6 +266,22 @@ export const hiTools: Record<string, LocalizedTool> = {
     name: "सिग्नेचर रीसाइज़र",
     shortDescription: "सिग्नेचर साफ़ करें, क्रॉप करें और 10–20 KB में लाएँ।",
   },
+  "jpg-to-pdf-under-100kb": {
+    name: "JPG से PDF, 100 KB से कम",
+    shortDescription: "सख़्त फ़ॉर्म के लिए 100 KB से कम का एक पेज वाला PDF।",
+  },
+  "jpg-to-pdf-under-200kb": {
+    name: "JPG से PDF, 200 KB से कम",
+    shortDescription: "सर्टिफ़िकेट और स्कैन 200 KB से कम के एक PDF में।",
+  },
+  "jpg-to-pdf-under-300kb": {
+    name: "JPG से PDF, 300 KB से कम",
+    shortDescription: "कई पेज वाले दस्तावेज़ 300 KB से कम के PDF में।",
+  },
+  "jpg-to-pdf-under-500kb": {
+    name: "JPG से PDF, 500 KB से कम",
+    shortDescription: "लंबे दस्तावेज़ 500 KB से कम के एक PDF में।",
+  },
 
   // ── वैरिएंट: HD, मिरर, बैकग्राउंड (expansion.md) ──
   "image-to-hd": {

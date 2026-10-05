@@ -11,6 +11,7 @@ const content: ToolPageContent = {
   tagline:
     "Convert JPG, PNG and WEBP images into a single PDF online — reorder pages, choose page size, orientation, layout and margins. Free, fast and 100% private in your browser.",
   category: { id: "convert", label: "Convert" },
+  variantsHeading: "Convert to a PDF under a size limit",
 
   intro:
     "Need to send a set of photos or scans as one document? oMyImage's Image to PDF tool combines your JPG, PNG and WEBP images into a single PDF. Reorder the pages, fit each page to its image or pick A4, Letter, Legal, A3 or A5, place up to nine images per page, and set the fit, margin and background. Everything is assembled in your browser, so your images stay private.",

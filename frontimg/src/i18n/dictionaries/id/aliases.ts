@@ -161,6 +161,18 @@ export const idAliases: Record<string, string[]> = {
   "signature-resizer": [
     "tanda tangan", "ubah ukuran tanda tangan", "tanda tangan background putih", "scan tanda tangan",
   ],
+  "jpg-to-pdf-under-100kb": [
+    "jpg ke pdf 100kb", "pdf 100 kb", "ubah jpg ke pdf 100kb",
+  ],
+  "jpg-to-pdf-under-200kb": [
+    "jpg ke pdf 200kb", "pdf 200 kb", "ubah jpg ke pdf 200kb",
+  ],
+  "jpg-to-pdf-under-300kb": [
+    "jpg ke pdf 300kb", "pdf 300 kb", "ubah jpg ke pdf 300kb",
+  ],
+  "jpg-to-pdf-under-500kb": [
+    "jpg ke pdf 500kb", "pdf 500 kb", "ubah jpg ke pdf 500kb",
+  ],
 
   // Varian — HD, mirror, background
   "image-to-hd": [

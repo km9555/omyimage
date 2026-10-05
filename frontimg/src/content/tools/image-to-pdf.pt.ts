@@ -20,6 +20,7 @@ const content: ToolPageContent = {
   tagline:
     "Junte imagens JPG, PNG e WEBP em um único PDF online — reordene as páginas e escolha tamanho, orientação, layout e margens. Grátis, rápido e 100% privado no seu navegador.",
   category: { id: "convert", label: "Converter" },
+  variantsHeading: "Converter para PDF com limite de tamanho",
 
   metaTitle: "Converter imagem para PDF online grátis — JPG e PNG em PDF | oMyImage",
   metaDescription:
@@ -153,6 +154,17 @@ const content: ToolPageContent = {
     "Contain": "Conter",
     "Cover": "Cobrir",
     "Stretch": "Esticar",
+    // ImageToPdfTool.tsx — size limit (jpg-to-pdf-under-N-kb)
+    "Already under {size} — no compression needed.": "Já está abaixo de {size} — nada precisou ser comprimido.",
+    "Could not get the PDF under {size} — this is the smallest it can be.": "Não foi possível deixar o PDF abaixo de {size} — este é o menor tamanho possível.",
+    "Enter a size greater than zero.": "Digite um tamanho maior que zero.",
+    "Images are compressed only as much as needed for the whole PDF to fit.": "As imagens são comprimidas só o necessário para o PDF inteiro caber.",
+    "KB": "KB",
+    "MB": "MB",
+    "Maximum PDF size": "Tamanho máximo do PDF",
+    "PDF size: {size}": "Tamanho do PDF: {size}",
+    "The PDF will be kept under {size}.": "O PDF vai ficar abaixo de {size}.",
+    "Unit": "Unidade",
   },
 };
 

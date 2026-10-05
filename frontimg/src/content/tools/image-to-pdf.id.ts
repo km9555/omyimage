@@ -28,6 +28,7 @@ const content: ToolPageContent = {
   tagline:
     "Ubah foto JPG, PNG, dan WEBP menjadi satu file PDF secara online — atur urutan halaman, ukuran kertas, orientasi, tata letak, dan margin. Gratis, cepat, dan privat di browser Anda.",
   category: { id: "convert", label: "Konversi" },
+  variantsHeading: "Ubah ke PDF dengan batas ukuran",
 
   metaTitle: "JPG ke PDF Online Gratis — Ubah Foto ke PDF | oMyImage",
   metaDescription:
@@ -154,6 +155,17 @@ const content: ToolPageContent = {
     "Contain": "Muat",
     "Cover": "Penuhi",
     "Stretch": "Regangkan",
+    // ImageToPdfTool.tsx — size limit (jpg-to-pdf-under-N-kb)
+    "Already under {size} — no compression needed.": "Sudah di bawah {size} — tidak perlu dikompres.",
+    "Could not get the PDF under {size} — this is the smallest it can be.": "PDF tidak bisa dibuat di bawah {size} — ini ukuran terkecil yang bisa dicapai.",
+    "Enter a size greater than zero.": "Masukkan ukuran lebih dari nol.",
+    "Images are compressed only as much as needed for the whole PDF to fit.": "Gambar hanya dikompres seperlunya agar seluruh PDF muat.",
+    "KB": "KB",
+    "MB": "MB",
+    "Maximum PDF size": "Ukuran maksimum PDF",
+    "PDF size: {size}": "Ukuran PDF: {size}",
+    "The PDF will be kept under {size}.": "PDF akan dibuat di bawah {size}.",
+    "Unit": "Satuan",
   },
 };
 

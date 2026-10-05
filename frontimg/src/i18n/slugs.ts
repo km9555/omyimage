@@ -117,6 +117,10 @@ const PT_TOOL_SLUGS: Record<string, string> = {
   "compress-image-to-150kb": "comprimir-imagem-para-150kb",
   "increase-image-size-in-kb": "aumentar-tamanho-da-imagem-em-kb",
   "signature-resizer": "redimensionar-assinatura",
+  "jpg-to-pdf-under-100kb": "jpg-para-pdf-ate-100kb",
+  "jpg-to-pdf-under-200kb": "jpg-para-pdf-ate-200kb",
+  "jpg-to-pdf-under-300kb": "jpg-para-pdf-ate-300kb",
+  "jpg-to-pdf-under-500kb": "jpg-para-pdf-ate-500kb",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "imagem-em-hd",
@@ -198,6 +202,10 @@ const HI_TOOL_SLUGS: Record<string, string> = {
   "compress-image-to-150kb": "compress-image-to-150kb",
   "increase-image-size-in-kb": "increase-image-size-in-kb",
   "signature-resizer": "signature-resizer",
+  "jpg-to-pdf-under-100kb": "jpg-to-pdf-under-100kb",
+  "jpg-to-pdf-under-200kb": "jpg-to-pdf-under-200kb",
+  "jpg-to-pdf-under-300kb": "jpg-to-pdf-under-300kb",
+  "jpg-to-pdf-under-500kb": "jpg-to-pdf-under-500kb",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "image-to-hd",
@@ -288,6 +296,10 @@ const RU_TOOL_SLUGS: Record<string, string> = {
   "compress-image-to-150kb": "compress-image-to-150kb",
   "increase-image-size-in-kb": "increase-image-size-in-kb",
   "signature-resizer": "signature-resizer",
+  "jpg-to-pdf-under-100kb": "jpg-to-pdf-under-100kb",
+  "jpg-to-pdf-under-200kb": "jpg-to-pdf-under-200kb",
+  "jpg-to-pdf-under-300kb": "jpg-to-pdf-under-300kb",
+  "jpg-to-pdf-under-500kb": "jpg-to-pdf-under-500kb",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "image-to-hd",
@@ -400,6 +412,10 @@ const ID_TOOL_SLUGS: Record<string, string> = {
   "compress-image-to-150kb": "kompres-foto-150kb",
   "increase-image-size-in-kb": "perbesar-ukuran-foto-kb",
   "signature-resizer": "ubah-ukuran-tanda-tangan",
+  "jpg-to-pdf-under-100kb": "jpg-ke-pdf-100kb",
+  "jpg-to-pdf-under-200kb": "jpg-ke-pdf-200kb",
+  "jpg-to-pdf-under-300kb": "jpg-ke-pdf-300kb",
+  "jpg-to-pdf-under-500kb": "jpg-ke-pdf-500kb",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "jadikan-foto-hd",

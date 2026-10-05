@@ -250,6 +250,18 @@ export const TOOL_ALIASES: Record<string, string[]> = {
   "signature-resizer": [
     "signature resize", "signature resizer", "resize signature", "signature 10 to 20 kb", "signature 20kb", "signature white background", "scan signature",
   ],
+  "jpg-to-pdf-under-100kb": [
+    "jpg to pdf 100kb", "pdf under 100kb", "image to pdf 100kb", "pdf 100 kb",
+  ],
+  "jpg-to-pdf-under-200kb": [
+    "jpg to pdf 200kb", "pdf under 200kb", "image to pdf 200kb", "pdf 200 kb",
+  ],
+  "jpg-to-pdf-under-300kb": [
+    "jpg to pdf 300kb", "pdf under 300kb", "image to pdf 300kb", "pdf 300 kb",
+  ],
+  "jpg-to-pdf-under-500kb": [
+    "jpg to pdf 500kb", "pdf under 500kb", "image to pdf 500kb", "pdf 500 kb",
+  ],
 
   // Variants — upscale, rotate, remove-background
   "image-to-hd": [
