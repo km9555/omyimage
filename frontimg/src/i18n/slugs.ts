@@ -112,6 +112,11 @@ const PT_TOOL_SLUGS: Record<string, string> = {
   "compress-image-to-300kb": "comprimir-imagem-para-300kb",
   "compress-image-to-500kb": "comprimir-imagem-para-500kb",
   "compress-image-to-2mb": "comprimir-imagem-para-2mb",
+  "compress-image-to-15kb": "comprimir-imagem-para-15kb",
+  "compress-image-to-40kb": "comprimir-imagem-para-40kb",
+  "compress-image-to-150kb": "comprimir-imagem-para-150kb",
+  "increase-image-size-in-kb": "aumentar-tamanho-da-imagem-em-kb",
+  "signature-resizer": "redimensionar-assinatura",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "imagem-em-hd",
@@ -188,6 +193,11 @@ const HI_TOOL_SLUGS: Record<string, string> = {
   "compress-image-to-300kb": "compress-image-to-300kb",
   "compress-image-to-500kb": "compress-image-to-500kb",
   "compress-image-to-2mb": "compress-image-to-2mb",
+  "compress-image-to-15kb": "compress-image-to-15kb",
+  "compress-image-to-40kb": "compress-image-to-40kb",
+  "compress-image-to-150kb": "compress-image-to-150kb",
+  "increase-image-size-in-kb": "increase-image-size-in-kb",
+  "signature-resizer": "signature-resizer",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "image-to-hd",
@@ -273,6 +283,11 @@ const RU_TOOL_SLUGS: Record<string, string> = {
   "compress-image-to-300kb": "compress-image-to-300kb",
   "compress-image-to-500kb": "compress-image-to-500kb",
   "compress-image-to-2mb": "compress-image-to-2mb",
+  "compress-image-to-15kb": "compress-image-to-15kb",
+  "compress-image-to-40kb": "compress-image-to-40kb",
+  "compress-image-to-150kb": "compress-image-to-150kb",
+  "increase-image-size-in-kb": "increase-image-size-in-kb",
+  "signature-resizer": "signature-resizer",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "image-to-hd",
@@ -380,6 +395,11 @@ const ID_TOOL_SLUGS: Record<string, string> = {
   "compress-image-to-300kb": "kompres-foto-300kb",
   "compress-image-to-500kb": "kompres-foto-500kb",
   "compress-image-to-2mb": "kompres-foto-2mb",
+  "compress-image-to-15kb": "kompres-foto-15kb",
+  "compress-image-to-40kb": "kompres-foto-40kb",
+  "compress-image-to-150kb": "kompres-foto-150kb",
+  "increase-image-size-in-kb": "perbesar-ukuran-foto-kb",
+  "signature-resizer": "ubah-ukuran-tanda-tangan",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "jadikan-foto-hd",

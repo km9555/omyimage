@@ -152,6 +152,21 @@ export const ptAliases: Record<string, string[]> = {
   "compress-image-to-2mb": [
     "comprimir imagem para 2mb", "2 mb", "reduzir foto para 2mb",
   ],
+  "compress-image-to-15kb": [
+    "comprimir imagem para 15kb", "15 kb",
+  ],
+  "compress-image-to-40kb": [
+    "comprimir imagem para 40kb", "40 kb",
+  ],
+  "compress-image-to-150kb": [
+    "comprimir imagem para 150kb", "150 kb",
+  ],
+  "increase-image-size-in-kb": [
+    "aumentar tamanho da imagem", "aumentar kb da foto", "aumentar tamanho da foto em kb",
+  ],
+  "signature-resizer": [
+    "redimensionar assinatura", "assinatura digitalizada", "assinatura fundo branco", "assinatura 20kb",
+  ],
 
   // Variantes — HD, espelhar, fundo
   "image-to-hd": [

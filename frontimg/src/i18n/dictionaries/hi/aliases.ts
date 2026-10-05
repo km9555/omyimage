@@ -161,6 +161,21 @@ export const hiAliases: Record<string, string[]> = {
   "compress-image-to-2mb": [
     "2 mb", "फोटो 2 mb",
   ],
+  "compress-image-to-15kb": [
+    "15 kb", "फोटो 15 kb",
+  ],
+  "compress-image-to-40kb": [
+    "40 kb", "फोटो 40 kb",
+  ],
+  "compress-image-to-150kb": [
+    "150 kb", "फोटो 150 kb",
+  ],
+  "increase-image-size-in-kb": [
+    "इमेज साइज़ बढ़ाएँ", "फोटो का kb बढ़ाएँ", "increase image size", "increase kb",
+  ],
+  "signature-resizer": [
+    "सिग्नेचर रीसाइज़", "signature resize", "सिग्नेचर 10 से 20 kb", "signature 20kb",
+  ],
 
   // वैरिएंट — HD, मिरर, बैकग्राउंड
   "image-to-hd": [

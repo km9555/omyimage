@@ -35,7 +35,7 @@ export const NAV_SECTIONS: NavSection[] = [
     label: "Optimize Image",
     icon: "compress",
     color: "#4F9D69",
-    ids: ["compress-image", "resize-image", "crop-image", "rotate-image", "flip-image"],
+    ids: ["compress-image", "resize-image", "crop-image", "rotate-image", "flip-image", "signature-resizer"],
   },
   {
     // Variants of compress-image (expansion.md §5): one row per target size.

@@ -259,6 +259,23 @@ blur-screenshot (90–140/mo), exif-editor (≤ 390, KD 68), svg-to-gif, blur-gi
   first claimed "150 × 190 px" for a 10 KB photo — corrected to 200 × 250.
   Russian and Indonesian again needed an extra section/FAQ for the floor.
   verify:build 329 URLs, 109 family pages, worst pair still 0.542.
+- **2026-10-05 — Batch 2C: 15 / 40 / 150 KB, increase-image-size-in-kb,
+  signature-resizer — 25 pages.** `growToSize` (compress-to-size.ts) makes
+  files bigger honestly: top JPG quality, then up to 4× the sides, then — only
+  if still short — an empty JPEG COM block (`padJpeg`), reported as
+  `padded`. MINIMUMS count 1 KB = 1,024 B (`minimumBytes`), maximums 1,000 B,
+  so both ends hold under either reading (found in testing: a 140 × 60
+  signature padded to exactly 10,000 B would fail a 1,024-counting form).
+  Increase mode is a CompressTool preset (`mode: "increase"`), invisible on
+  /compress-image. Signature Resizer (`lib/image/signature.ts`, a real tool,
+  in the menu's Optimize section): local paper levelling against a
+  32-px blur, ink trim with speck-proof projections, fit onto 140 × 60 px /
+  4 × 2 cm / 6 × 2 cm (300 DPI) / custom, KB range via compressToSize +
+  growToSize. Measured: 7 KB photo → 72,466 B at 244 × 306 (50–80 KB range);
+  shadowed 1600 × 1200 signature photo → clean 140 × 60 at 10,240 B (padded)
+  and 709 × 236 at 10,957 B for 6 × 2 cm. Side effect, kept: Signature
+  Resizer joins "More tools" on resize / crop / rotate / flip pages.
+  verify:build 354 URLs, 129 family pages, worst pair 0.542.
 - **Deploys need the user's go-ahead.** 2A, 3A, 4A and the visibility fix
   went live on 2026-10-04 (merge 505e680 into `main`, then `npm run
   indexnow`). Later batches are committed on `feat/tool-expansion` and

@@ -249,6 +249,26 @@ export const idTools: Record<string, LocalizedTool> = {
     name: "Kompres Foto 2 MB",
     shortDescription: "Foto besar dari HP di bawah 2 MB.",
   },
+  "compress-image-to-15kb": {
+    name: "Kompres Foto 15 KB",
+    shortDescription: "Tanda tangan dan foto kecil di bawah 15 KB.",
+  },
+  "compress-image-to-40kb": {
+    name: "Kompres Foto 40 KB",
+    shortDescription: "Pas foto formulir di bawah 40 KB, tetap jelas.",
+  },
+  "compress-image-to-150kb": {
+    name: "Kompres Foto 150 KB",
+    shortDescription: "Foto dan halaman tulisan tangan di bawah 150 KB.",
+  },
+  "increase-image-size-in-kb": {
+    name: "Perbesar Ukuran Foto (KB)",
+    shortDescription: "Buat foto minimal 10, 20, atau 50 KB.",
+  },
+  "signature-resizer": {
+    name: "Ubah Ukuran Tanda Tangan",
+    shortDescription: "Bersihkan, potong, dan ubah ukuran tanda tangan.",
+  },
 
   // ── Varian: HD, mirror, background (expansion.md) ──
   "image-to-hd": {

@@ -146,6 +146,21 @@ export const idAliases: Record<string, string[]> = {
   "compress-image-to-2mb": [
     "kompres foto 2mb", "2 mb", "kompres foto jadi 2mb",
   ],
+  "compress-image-to-15kb": [
+    "kompres foto 15kb", "15 kb",
+  ],
+  "compress-image-to-40kb": [
+    "kompres foto 40kb", "40 kb",
+  ],
+  "compress-image-to-150kb": [
+    "kompres foto 150kb", "150 kb",
+  ],
+  "increase-image-size-in-kb": [
+    "perbesar ukuran foto", "menambah ukuran foto kb", "memperbesar kb foto",
+  ],
+  "signature-resizer": [
+    "tanda tangan", "ubah ukuran tanda tangan", "tanda tangan background putih", "scan tanda tangan",
+  ],
 
   // Varian — HD, mirror, background
   "image-to-hd": [

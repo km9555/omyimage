@@ -814,6 +814,25 @@ export const TOOLS: Tool[] = [
     primaryKeyword: "reduce image size in kb",
   },
   {
+    id: "increase-image-size-in-kb",
+    name: "Increase Image Size in KB",
+    slug: "increase-image-size-in-kb",
+    parentId: "compress-image",
+    preset: { mode: "increase" },
+    categoryId: "optimize",
+    shortDescription: "Make a photo at least 10, 20 or 50KB for forms.",
+    icon: "photo_size_select_large",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    isNew: true,
+    priority: 102,
+    seoTitle: "Increase Image Size in KB Online — Free, No Upload | oMyImage",
+    seoDescription:
+      "Increase a photo's file size in KB online for free — for forms that need at least 10, 20 or 50KB. Quality goes up, not down. In your browser, nothing uploaded.",
+    primaryKeyword: "increase image size in kb",
+  },
+  {
     id: "compress-image-to-10kb",
     name: "Compress Image to 10KB",
     slug: "compress-image-to-10kb",
@@ -826,11 +845,30 @@ export const TOOLS: Tool[] = [
     library: "Canvas",
     status: "live",
     isNew: true,
-    priority: 102,
+    priority: 103,
     seoTitle: "Compress Image to 10KB Online — Signature & Small Photo | oMyImage",
     seoDescription:
       "Compress a signature, thumb impression or small photo to under 10KB online for free — for exam and job forms with the tightest limits. In your browser, no upload.",
     primaryKeyword: "compress image to 10kb",
+  },
+  {
+    id: "compress-image-to-15kb",
+    name: "Compress Image to 15KB",
+    slug: "compress-image-to-15kb",
+    parentId: "compress-image",
+    preset: { targetKb: 15 },
+    categoryId: "optimize",
+    shortDescription: "Signatures and small photos under 15KB.",
+    icon: "compress",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    isNew: true,
+    priority: 104,
+    seoTitle: "Compress Image to 15KB Online — Signature & Photo, Free | oMyImage",
+    seoDescription:
+      "Compress a signature or a small photo to under 15KB online for free — for exam and job forms with a 15KB limit. Clearest result that fits, no upload.",
+    primaryKeyword: "compress image to 15kb",
   },
   {
     id: "compress-image-to-20kb",
@@ -845,7 +883,7 @@ export const TOOLS: Tool[] = [
     library: "Canvas",
     status: "live",
     isNew: true,
-    priority: 103,
+    priority: 105,
     seoTitle: "Compress Image to 20KB — Photo & Signature, Free | oMyImage",
     seoDescription:
       "Compress a photo or signature to under 20KB online for free. A sharp JPG that passes exam and job-form limits, many files at once. Runs in your browser.",
@@ -864,11 +902,30 @@ export const TOOLS: Tool[] = [
     library: "Canvas",
     status: "live",
     isNew: true,
-    priority: 104,
+    priority: 106,
     seoTitle: "Compress Image to 30KB Online — Photo for Forms, Free | oMyImage",
     seoDescription:
       "Compress a photo to under 30KB online for free — for exam, admission and job forms that cap the photo at 30KB. Clear faces, exact limit, no upload.",
     primaryKeyword: "compress image to 30kb",
+  },
+  {
+    id: "compress-image-to-40kb",
+    name: "Compress Image to 40KB",
+    slug: "compress-image-to-40kb",
+    parentId: "compress-image",
+    preset: { targetKb: 40 },
+    categoryId: "optimize",
+    shortDescription: "Form photos under 40KB, safely inside 20–50KB ranges.",
+    icon: "compress",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    isNew: true,
+    priority: 107,
+    seoTitle: "Compress Image to 40KB Online — Clear Form Photos | oMyImage",
+    seoDescription:
+      "Compress a photo to under 40KB online for free — for application forms with a 40KB or 20–50KB photo limit. Sharp face, exact limit, nothing uploaded.",
+    primaryKeyword: "compress image to 40kb",
   },
   {
     id: "compress-image-to-50kb",
@@ -883,7 +940,7 @@ export const TOOLS: Tool[] = [
     library: "Canvas",
     status: "live",
     isNew: true,
-    priority: 105,
+    priority: 108,
     seoTitle: "Compress Image to 50KB Online — Free JPG Under 50KB | oMyImage",
     seoDescription:
       "Compress any photo to under 50KB online for free — the limit most exam and government forms set. The sharpest JPG that fits, batch support, no upload.",
@@ -902,11 +959,30 @@ export const TOOLS: Tool[] = [
     library: "Canvas",
     status: "live",
     isNew: true,
-    priority: 106,
+    priority: 109,
     seoTitle: "Compress Image to 100KB Online — Free, Batch, Private | oMyImage",
     seoDescription:
       "Compress JPG, PNG or WEBP photos to under 100KB online for free. The highest quality that fits the limit, many images at once, processed in your browser.",
     primaryKeyword: "compress image to 100kb",
+  },
+  {
+    id: "compress-image-to-150kb",
+    name: "Compress Image to 150KB",
+    slug: "compress-image-to-150kb",
+    parentId: "compress-image",
+    preset: { targetKb: 150 },
+    categoryId: "optimize",
+    shortDescription: "Photos and handwritten pages under 150KB, readable.",
+    icon: "compress",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    isNew: true,
+    priority: 110,
+    seoTitle: "Compress Image to 150KB Online — Photos and Pages | oMyImage",
+    seoDescription:
+      "Compress photos and handwritten or printed pages to under 150KB online for free — for portals with a 150KB cap. Highest quality that fits, batch, no upload.",
+    primaryKeyword: "compress image to 150kb",
   },
   {
     id: "compress-image-to-200kb",
@@ -921,7 +997,7 @@ export const TOOLS: Tool[] = [
     library: "Canvas",
     status: "live",
     isNew: true,
-    priority: 107,
+    priority: 111,
     seoTitle: "Compress Image to 200KB Online — Keep Photos Sharp | oMyImage",
     seoDescription:
       "Compress photos and document scans to under 200KB online for free — for job portals, admissions and application forms. Highest quality that fits, no upload.",
@@ -940,7 +1016,7 @@ export const TOOLS: Tool[] = [
     library: "Canvas",
     status: "live",
     isNew: true,
-    priority: 108,
+    priority: 112,
     seoTitle: "Compress Image to 300KB Online — Photos & Scans, Free | oMyImage",
     seoDescription:
       "Compress photos and document scans to under 300KB online for free — for registration, scholarship and job portals. Sharp text, whole batches, no upload.",
@@ -959,7 +1035,7 @@ export const TOOLS: Tool[] = [
     library: "Canvas",
     status: "live",
     isNew: true,
-    priority: 109,
+    priority: 113,
     seoTitle: "Compress Image to 500KB Online — Keep Full Detail, Free | oMyImage",
     seoDescription:
       "Compress photos, A4 scans and screenshots to under 500KB online for free — near-original quality for portals, email and websites. Private, no upload.",
@@ -978,7 +1054,7 @@ export const TOOLS: Tool[] = [
     library: "Canvas",
     status: "live",
     isNew: true,
-    priority: 110,
+    priority: 114,
     seoTitle: "Compress Image to 1MB Online — Free Photo Compressor | oMyImage",
     seoDescription:
       "Compress phone photos to under 1MB online for free, usually at full resolution. Fits upload limits on portals, email and chat apps. Private, in your browser.",
@@ -997,7 +1073,7 @@ export const TOOLS: Tool[] = [
     library: "Canvas",
     status: "live",
     isNew: true,
-    priority: 111,
+    priority: 115,
     seoTitle: "Compress Image to 2MB Online — Full-Resolution Photos | oMyImage",
     seoDescription:
       "Compress large phone and camera photos to under 2MB online for free, usually at full resolution — for upload limits on websites, forms and email. Private.",
@@ -1119,6 +1195,23 @@ export const TOOLS: Tool[] = [
     seoDescription:
       "Make passport size photos online free: auto face framing, 35×45 mm, 2×2 in, 3×4 cm and more, white or coloured background, 300-DPI print sheets. Private.",
     primaryKeyword: "passport size photo maker",
+  },
+  {
+    id: "signature-resizer",
+    name: "Signature Resizer",
+    slug: "signature-resizer",
+    categoryId: "optimize",
+    shortDescription: "Clean, trim and resize a signature to 10–20KB.",
+    icon: "draw",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    isNew: true,
+    priority: 33,
+    seoTitle: "Signature Resize Online — 10 to 20 KB, Clean and Free | oMyImage",
+    seoDescription:
+      "Resize your signature online free: white background, trimmed edges, 140×60 px or cm sizes and 10–20 KB for exam and job forms. In your browser, no upload.",
+    primaryKeyword: "signature resize",
   },
   // passport-photo-maker family.
   {
@@ -1285,6 +1378,7 @@ const TOOL_COLORS: Record<string, string> = {
   "gif-maker": "#C56A9A",
   "gif-to-images": "#B85C8C",
   "passport-photo-maker": "#4F7FB8",
+  "signature-resizer": "#5A6FB0",
 };
 
 const CATEGORY_COLORS: Record<string, string> = {

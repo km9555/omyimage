@@ -247,6 +247,26 @@ export const ptTools: Record<string, LocalizedTool> = {
     name: "Comprimir imagem para 2 MB",
     shortDescription: "Fotos grandes do celular abaixo de 2 MB.",
   },
+  "compress-image-to-15kb": {
+    name: "Comprimir imagem para 15 KB",
+    shortDescription: "Assinaturas e fotos pequenas abaixo de 15 KB.",
+  },
+  "compress-image-to-40kb": {
+    name: "Comprimir imagem para 40 KB",
+    shortDescription: "Fotos de formulário abaixo de 40 KB, nítidas.",
+  },
+  "compress-image-to-150kb": {
+    name: "Comprimir imagem para 150 KB",
+    shortDescription: "Fotos e páginas manuscritas abaixo de 150 KB.",
+  },
+  "increase-image-size-in-kb": {
+    name: "Aumentar tamanho da imagem em KB",
+    shortDescription: "Deixe uma foto com pelo menos 10, 20 ou 50 KB.",
+  },
+  "signature-resizer": {
+    name: "Redimensionar assinatura",
+    shortDescription: "Limpe, recorte e redimensione a sua assinatura.",
+  },
 
   // ── Variantes: melhorar, espelhar, fundo (expansion.md) ──
   "image-to-hd": {
