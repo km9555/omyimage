@@ -109,6 +109,8 @@ export const NAV_SECTIONS: NavSection[] = [
     color: "#4B8FC7",
     ids: [
       "convert-to-jpg",
+      "convert-to-png",
+      "convert-to-webp",
       "jpg-to-png",
       "png-to-jpg",
       "jpg-to-webp",
@@ -123,7 +125,7 @@ export const NAV_SECTIONS: NavSection[] = [
     label: "Convert To & From",
     icon: "import_export",
     color: "#4B8FC7",
-    ids: ["image-to-pdf", "image-to-text", "image-to-base64", "base64-to-image", "gif-to-images"],
+    ids: ["image-to-pdf", "image-to-text", "svg-to-png", "png-to-ico", "image-to-base64", "base64-to-image", "gif-to-images"],
   },
   {
     id: "convert-camera",

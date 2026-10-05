@@ -285,6 +285,22 @@ export const idTools: Record<string, LocalizedTool> = {
     name: "JPG ke PDF di Bawah 500 KB",
     shortDescription: "Dokumen panjang dalam satu PDF di bawah 500 KB.",
   },
+  "convert-to-png": {
+    name: "Ubah Foto ke PNG",
+    shortDescription: "JPG, WEBP, GIF, dan BMP → PNG.",
+  },
+  "convert-to-webp": {
+    name: "Ubah Foto ke WEBP",
+    shortDescription: "JPG, PNG, GIF, dan BMP → WEBP.",
+  },
+  "svg-to-png": {
+    name: "SVG ke PNG",
+    shortDescription: "Ubah vektor SVG jadi PNG tajam di ukuran apa pun.",
+  },
+  "png-to-ico": {
+    name: "PNG ke ICO",
+    shortDescription: "Buat favicon .ico dan ikon Windows.",
+  },
 
   // ── Varian: HD, mirror, background (expansion.md) ──
   "image-to-hd": {

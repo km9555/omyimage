@@ -121,6 +121,10 @@ const PT_TOOL_SLUGS: Record<string, string> = {
   "jpg-to-pdf-under-200kb": "jpg-para-pdf-ate-200kb",
   "jpg-to-pdf-under-300kb": "jpg-para-pdf-ate-300kb",
   "jpg-to-pdf-under-500kb": "jpg-para-pdf-ate-500kb",
+  "convert-to-png": "converter-para-png",
+  "convert-to-webp": "converter-para-webp",
+  "svg-to-png": "svg-para-png",
+  "png-to-ico": "png-para-ico",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "imagem-em-hd",
@@ -206,6 +210,10 @@ const HI_TOOL_SLUGS: Record<string, string> = {
   "jpg-to-pdf-under-200kb": "jpg-to-pdf-under-200kb",
   "jpg-to-pdf-under-300kb": "jpg-to-pdf-under-300kb",
   "jpg-to-pdf-under-500kb": "jpg-to-pdf-under-500kb",
+  "convert-to-png": "convert-to-png",
+  "convert-to-webp": "convert-to-webp",
+  "svg-to-png": "svg-to-png",
+  "png-to-ico": "png-to-ico",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "image-to-hd",
@@ -300,6 +308,10 @@ const RU_TOOL_SLUGS: Record<string, string> = {
   "jpg-to-pdf-under-200kb": "jpg-to-pdf-under-200kb",
   "jpg-to-pdf-under-300kb": "jpg-to-pdf-under-300kb",
   "jpg-to-pdf-under-500kb": "jpg-to-pdf-under-500kb",
+  "convert-to-png": "convert-to-png",
+  "convert-to-webp": "convert-to-webp",
+  "svg-to-png": "svg-to-png",
+  "png-to-ico": "png-to-ico",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "image-to-hd",
@@ -416,6 +428,10 @@ const ID_TOOL_SLUGS: Record<string, string> = {
   "jpg-to-pdf-under-200kb": "jpg-ke-pdf-200kb",
   "jpg-to-pdf-under-300kb": "jpg-ke-pdf-300kb",
   "jpg-to-pdf-under-500kb": "jpg-ke-pdf-500kb",
+  "convert-to-png": "ubah-foto-ke-png",
+  "convert-to-webp": "ubah-foto-ke-webp",
+  "svg-to-png": "svg-ke-png",
+  "png-to-ico": "png-ke-ico",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "jadikan-foto-hd",

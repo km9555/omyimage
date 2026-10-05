@@ -179,6 +179,18 @@ export const ptAliases: Record<string, string[]> = {
   "jpg-to-pdf-under-500kb": [
     "jpg para pdf 500kb", "pdf 500kb", "converter jpg em pdf até 500kb",
   ],
+  "convert-to-png": [
+    "converter para png", "transformar em png", "mudar formato para png", "imagem para png",
+  ],
+  "convert-to-webp": [
+    "converter para webp", "transformar em webp", "imagem para webp", "mudar formato para webp",
+  ],
+  "svg-to-png": [
+    "converter svg", "svg em png", "vetor para png", "exportar svg como png",
+  ],
+  "png-to-ico": [
+    "gerador de favicon", "imagem para ico", "criar ícone", "favicon ico", "jpg para ico",
+  ],
 
   // Variantes — HD, espelhar, fundo
   "image-to-hd": [

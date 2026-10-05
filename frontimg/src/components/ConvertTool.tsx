@@ -30,7 +30,7 @@ import {
 import { useHandoff } from "@/lib/tool-handoff";
 import { kindOf, type FileKind } from "@/lib/file-actions";
 import { useFormatBytes, useT } from "@/i18n/I18nScope";
-import { translateError } from "@/i18n/errors";
+import { I18nError, translateError } from "@/i18n/errors";
 
 export interface ConvertConfig {
   accent: string;
@@ -227,6 +227,12 @@ export function ConvertTool({ config }: { config: ConvertConfig }) {
             autoOrient,
           });
           blob = r.blob;
+          /* A browser that cannot ENCODE the target hands back a PNG instead of
+             failing — Safari does this for WebP. Saving that as .webp would be
+             a mislabelled file, so say so rather than download it. */
+          if (blob.type && blob.type !== targetMime) {
+            throw new I18nError("Your browser cannot save {format} images. Try Chrome, Edge or Firefox.", { format: targetLabel });
+          }
         }
         if (keepMeta && (keepMeta.exif || keepMeta.xmp)) {
           /* The server's pipeline() calls .rotate() unconditionally, so its

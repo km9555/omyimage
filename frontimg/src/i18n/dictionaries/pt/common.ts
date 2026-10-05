@@ -349,6 +349,11 @@ export const ptCommon: Record<string, string> = {
   "No image selected.": "Nenhuma imagem selecionada.",
   "The server did not start the job. Please try again.": "O servidor não iniciou a tarefa. Tente novamente.",
   "Timed out waiting for the server to finish.": "Tempo esgotado esperando o servidor terminar.",
+  "Your browser cannot save {format} images. Try Chrome, Edge or Firefox.": "Seu navegador não consegue salvar imagens {format}. Use o Chrome, o Edge ou o Firefox.",
+  "This file is not a valid SVG.": "Este arquivo não é um SVG válido.",
+  "This size is too large for your browser — try a smaller scale.": "Este tamanho é grande demais para o seu navegador — escolha uma escala menor.",
+  "This SVG could not be drawn. It may use features browsers do not render as an image.": "Não foi possível desenhar este SVG. Ele pode usar recursos que os navegadores não exibem como imagem.",
+  "Your browser blocks exporting this SVG because it contains embedded HTML.": "Seu navegador bloqueia a exportação deste SVG porque ele contém HTML incorporado.",
   // …and the backend's own user-facing sentences (backend/src/routes/image).
   "Upload an image.": "Envie uma imagem.",
   "This file is too large.": "Este arquivo é grande demais.",

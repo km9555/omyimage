@@ -366,6 +366,11 @@ export const hiCommon: Record<string, string> = {
   "No image selected.": "कोई इमेज नहीं चुनी गई।",
   "The server did not start the job. Please try again.": "सर्वर ने काम शुरू नहीं किया। फिर कोशिश करें।",
   "Timed out waiting for the server to finish.": "सर्वर के पूरा होने का इंतज़ार करते-करते समय ख़त्म हो गया।",
+  "Your browser cannot save {format} images. Try Chrome, Edge or Firefox.": "आपका ब्राउज़र {format} इमेज सेव नहीं कर सकता। Chrome, Edge या Firefox आज़माएँ।",
+  "This file is not a valid SVG.": "यह फ़ाइल सही SVG नहीं है।",
+  "This size is too large for your browser — try a smaller scale.": "यह साइज़ आपके ब्राउज़र के लिए बहुत बड़ा है — छोटा स्केल चुनें।",
+  "This SVG could not be drawn. It may use features browsers do not render as an image.": "यह SVG बनाया नहीं जा सका। इसमें ऐसी चीज़ें हो सकती हैं जिन्हें ब्राउज़र इमेज के रूप में नहीं दिखाते।",
+  "Your browser blocks exporting this SVG because it contains embedded HTML.": "इस SVG में एम्बेड किया हुआ HTML है, इसलिए आपका ब्राउज़र इसे एक्सपोर्ट नहीं करने देता।",
   // …and the backend's own user-facing sentences (backend/src/routes/image).
   "Upload an image.": "एक इमेज अपलोड करें।",
   "This file is too large.": "यह फ़ाइल बहुत बड़ी है।",

@@ -282,6 +282,22 @@ export const hiTools: Record<string, LocalizedTool> = {
     name: "JPG से PDF, 500 KB से कम",
     shortDescription: "लंबे दस्तावेज़ 500 KB से कम के एक PDF में।",
   },
+  "convert-to-png": {
+    name: "PNG में बदलें",
+    shortDescription: "JPG, WEBP, GIF और BMP → PNG.",
+  },
+  "convert-to-webp": {
+    name: "WEBP में बदलें",
+    shortDescription: "JPG, PNG, GIF और BMP → WEBP.",
+  },
+  "svg-to-png": {
+    name: "SVG से PNG",
+    shortDescription: "SVG वेक्टर को किसी भी साइज़ में साफ़ PNG बनाएँ।",
+  },
+  "png-to-ico": {
+    name: "PNG से ICO",
+    shortDescription: "वेबसाइट के लिए favicon.ico और Windows आइकन बनाएँ।",
+  },
 
   // ── वैरिएंट: HD, मिरर, बैकग्राउंड (expansion.md) ──
   "image-to-hd": {

@@ -200,6 +200,18 @@ export const ruAliases: Record<string, string[]> = {
   "jpg-to-pdf-under-500kb": [
     "jpg в pdf 500 кб", "pdf до 500 кб", "фото в pdf 500 кб",
   ],
+  "convert-to-png": [
+    "конвертировать в png", "перевести в png", "сделать png", "картинку в png",
+  ],
+  "convert-to-webp": [
+    "конвертировать в webp", "перевести в webp", "сделать webp", "картинку в webp",
+  ],
+  "svg-to-png": [
+    "конвертер svg", "перевести svg в png", "svg в картинку", "svg в png онлайн",
+  ],
+  "png-to-ico": [
+    "создать favicon", "картинку в ico", "сделать иконку", "конвертер ico", "png в ico онлайн",
+  ],
 
   // Варианты — HD, отражение, фон
   "image-to-hd": [

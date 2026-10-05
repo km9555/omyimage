@@ -283,6 +283,22 @@ export const ptTools: Record<string, LocalizedTool> = {
     name: "JPG para PDF até 500 KB",
     shortDescription: "Documentos longos num PDF até 500 KB.",
   },
+  "convert-to-png": {
+    name: "Converter para PNG",
+    shortDescription: "JPG, WEBP, GIF e BMP → PNG.",
+  },
+  "convert-to-webp": {
+    name: "Converter para WEBP",
+    shortDescription: "JPG, PNG, GIF e BMP → WEBP.",
+  },
+  "svg-to-png": {
+    name: "SVG para PNG",
+    shortDescription: "Vetores SVG em PNG nítido, em qualquer tamanho.",
+  },
+  "png-to-ico": {
+    name: "PNG para ICO",
+    shortDescription: "Crie favicons .ico e ícones do Windows.",
+  },
 
   // ── Variantes: melhorar, espelhar, fundo (expansion.md) ──
   "image-to-hd": {

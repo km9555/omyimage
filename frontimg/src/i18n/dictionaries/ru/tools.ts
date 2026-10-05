@@ -283,6 +283,22 @@ export const ruTools: Record<string, LocalizedTool> = {
     name: "JPG в PDF до 500 КБ",
     shortDescription: "Длинные документы в одном PDF до 500 КБ.",
   },
+  "convert-to-png": {
+    name: "Конвертировать в PNG",
+    shortDescription: "JPG, WEBP, GIF и BMP — в PNG без потерь.",
+  },
+  "convert-to-webp": {
+    name: "Конвертировать в WEBP",
+    shortDescription: "JPG, PNG, GIF и BMP — в лёгкий WEBP для сайта.",
+  },
+  "svg-to-png": {
+    name: "SVG в PNG",
+    shortDescription: "Векторный SVG в чёткий PNG любого размера.",
+  },
+  "png-to-ico": {
+    name: "PNG в ICO",
+    shortDescription: "Favicon.ico и значки Windows из картинки.",
+  },
 
   // ── Варианты: HD, отражение, фон (expansion.md) ──
   "image-to-hd": {

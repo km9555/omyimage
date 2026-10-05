@@ -386,6 +386,11 @@ export const ruCommon: Record<string, string> = {
   "The server did not start the job. Please try again.":
     "Сервер не начал обработку. Попробуйте ещё раз.",
   "Timed out waiting for the server to finish.": "Сервер не ответил вовремя.",
+  "Your browser cannot save {format} images. Try Chrome, Edge or Firefox.": "Ваш браузер не умеет сохранять изображения {format}. Попробуйте Chrome, Edge или Firefox.",
+  "This file is not a valid SVG.": "Этот файл не является корректным SVG.",
+  "This size is too large for your browser — try a smaller scale.": "Этот размер слишком велик для вашего браузера — выберите масштаб поменьше.",
+  "This SVG could not be drawn. It may use features browsers do not render as an image.": "Не удалось отрисовать этот SVG. Возможно, в нём есть элементы, которые браузеры не показывают как изображение.",
+  "Your browser blocks exporting this SVG because it contains embedded HTML.": "Браузер не даёт экспортировать этот SVG, потому что в нём есть встроенный HTML.",
   "Upload an image.": "Загрузите изображение.",
   "This file is too large.": "Этот файл слишком большой.",
   "Too many processing requests. Please wait a moment.":

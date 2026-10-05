@@ -173,6 +173,18 @@ export const idAliases: Record<string, string[]> = {
   "jpg-to-pdf-under-500kb": [
     "jpg ke pdf 500kb", "pdf 500 kb", "ubah jpg ke pdf 500kb",
   ],
+  "convert-to-png": [
+    "konversi ke png", "ubah ke png", "jadikan png", "gambar ke png",
+  ],
+  "convert-to-webp": [
+    "konversi ke webp", "ubah ke webp", "jadikan webp", "gambar ke webp",
+  ],
+  "svg-to-png": [
+    "konversi svg", "ubah svg jadi png", "svg ke gambar", "svg ke png online",
+  ],
+  "png-to-ico": [
+    "buat favicon", "gambar ke ico", "ubah ke ico", "membuat ikon", "jpg ke ico",
+  ],
 
   // Varian — HD, mirror, background
   "image-to-hd": [

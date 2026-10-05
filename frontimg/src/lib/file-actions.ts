@@ -47,6 +47,8 @@ const TOOL_INPUTS: Record<string, ToolInput> = {
 
   // ── Convert ─────────────────────────────────────────────────────────────
   "convert-to-jpg": { kinds: ["png", "webp", "gif", "bmp"] },
+  "convert-to-png": { kinds: ["jpeg", "webp", "gif", "bmp"] },
+  "convert-to-webp": { kinds: ["jpeg", "png", "gif", "bmp"] },
   "jpg-to-png": { kinds: ["jpeg"] },
   "png-to-jpg": { kinds: ["png"] },
   "webp-to-png": { kinds: ["webp"] },
@@ -68,6 +70,8 @@ const TOOL_INPUTS: Record<string, ToolInput> = {
   "image-to-pdf": { kinds: COMMON_GIF_BMP },
   "image-to-base64": { kinds: [...COMMON_GIF_BMP, "svg", "avif"], single: true },
   "image-to-text": { kinds: [...COMMON, "bmp"], single: true },
+  "svg-to-png": { kinds: ["svg"] },
+  "png-to-ico": { kinds: [...COMMON_GIF_BMP, "svg"], single: true },
 
   // ── Edit & create ───────────────────────────────────────────────────────
   "add-border": { kinds: COMMON },

@@ -123,10 +123,10 @@ the notes. hi/ru slugs equal the English one.
 | flip-image *(rotate)* | espelhar-imagem | mirror-foto | US 22.2K + mirror 18.1K; IN 22.2K | pt "inverter imagem" is ambiguous (also = invert colours) → slug espelhar. |
 | change-background-color *(remove-background)* | trocar-fundo-da-foto | ganti-background-foto | ID 135K (KD 0); IN 450K `photo background change`; BR 8.1K `fundo branco foto` | Server tool already exists; metered like its parent. |
 | blur-background *(remove-background)* | desfocar-fundo | blur-background-foto | IN 74K, US 9.9K, BR 2.9K | |
-| convert-to-png *(ConvertTool)* | converter-para-png | ubah-ke-png | US 14.8K, IN 18.1K+12.1K, BR 8.1K | hand-built like convert-to-jpg |
-| convert-to-webp | converter-para-webp | ubah-ke-webp | IN 6.6K, US 2.4K, BR 1.6K | |
-| svg-to-png *(pair)* | svg-para-png | svg-ke-png | US 40.5K, IN 40.5K (KD 9) | |
-| png-to-ico *(pair)* | png-para-ico | png-ke-ico | US 18.1K, IN 12.1K, BR 2.9K | ICO encoder exists. |
+| convert-to-png *(ConvertTool)* | converter-para-png | ubah-foto-ke-png | US 14.8K, IN 18.1K+12.1K, BR 8.1K | 3B. Hand-built like convert-to-jpg; id slug follows `ubah-foto-ke-jpg`. |
+| convert-to-webp *(ConvertTool)* | converter-para-webp | ubah-foto-ke-webp | IN 6.6K, US 2.4K, BR 1.6K | 3B |
+| svg-to-png *(new tool)* | svg-para-png | svg-ke-png | US 40.5K, IN 40.5K (KD 9) | 3B. Not a converter pair: needs scale/width/background. `lib/image/svg-raster.ts`. |
+| png-to-ico *(new tool)* | png-para-ico | png-ke-ico | US 18.1K, IN 12.1K, BR 2.9K | 3B. There was NO ICO encoder (only GIF) — written in `lib/image/ico.ts`. |
 | youtube-thumbnail-resizer · whatsapp-dp-resizer · linkedin-banner-resizer · facebook-cover-resizer · discord-banner-resizer *(resize)* | … | … | `youtube thumbnail size` IN 49.5K / US 27.1K; `whatsapp dp size` IN 33.1K; LinkedIn 12.1K/9.9K; FB cover US 9.9K; Discord banner US 8.1K | social-presets.ts (+ Discord) |
 
 ### Phase 4 — photo ID, print and DPI
@@ -292,6 +292,35 @@ blur-screenshot (90–140/mo), exif-editor (≤ 390, KD 68), svg-to-gif, blur-gi
   ~800 × 1100 at 100 KB per page and ~600 × 800 at 65 KB. Russian 300/500
   KB and Portuguese 500 KB needed one more FAQ for the 900-word floor.
   verify:build 374 URLs, 154 family pages, worst pair 0.542.
+- **2026-10-05 — Batch 3B: convert-to-png, convert-to-webp, svg-to-png,
+  png-to-ico — 20 pages.**
+  - **Convert to PNG / WEBP:** ConvertTool pages, hand-built like
+    convert-to-jpg.
+  - **ICO encoder (`lib/image/ico.ts`):** the plan said one existed; it did
+    not.
+    - Sizes under 256 are 32-bit BGRA DIBs (bottom-up, height doubled, AND
+      mask); 256 is stored as PNG, as Windows does.
+    - Small sizes come from step-halving with high-quality smoothing.
+  - **SVG (`lib/image/svg-raster.ts`):** draws through `<img>` (no scripts,
+    no external fetches).
+    - It sets the TARGET width/height on the root before drawing, so 4× is a
+      real 4× rendering. A viewBox is added when one is missing.
+    - A file with no size at all is 300 × 150, and the tool says so.
+    - Output is capped at 8192 px.
+  - **Safari WEBP fix (ConvertTool, all WEBP pages incl. jpg-to-webp and
+    png-to-webp):** Safari cannot encode WEBP from a canvas and silently
+    returns a PNG. That PNG used to download as `.webp`; it now throws "Your
+    browser cannot save {format} images…".
+  - **Measured in the browser:**
+    - SVG 24 × 24 at 4× → 96 × 96; a viewBox-only SVG at width 1200 →
+      1200 × 600; no viewBox, 40 × 20 at 2× → 80 × 40, scaled, not cropped.
+    - ICO: 7 entries with contiguous offsets, decoded by Chrome, orientation
+      correct at every size.
+    - WEBP: a 339 KB PNG → 6 KB, with transparency kept.
+  - **Side effect, kept:** Convert to PNG / WEBP sit right after
+    convert-to-jpg in the registry, so they now lead "More tools" on
+    convert-category pages, replacing JPG to PNG / HEIC to PNG there.
+  - verify:build 394 URLs.
 - **Deploys need the user's go-ahead.** 2A, 3A, 4A and the visibility fix
   went live on 2026-10-04 (merge 505e680 into `main`, then `npm run
   indexnow`). Later batches are committed on `feat/tool-expansion` and

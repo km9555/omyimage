@@ -188,6 +188,18 @@ export const hiAliases: Record<string, string[]> = {
   "jpg-to-pdf-under-500kb": [
     "jpg to pdf 500kb", "pdf 500 kb", "jpg से pdf 500 kb",
   ],
+  "convert-to-png": [
+    "पीएनजी में बदलें", "png में बदलें", "convert to png", "image to png",
+  ],
+  "convert-to-webp": [
+    "वेबपी में बदलें", "webp में बदलें", "convert to webp", "image to webp",
+  ],
+  "svg-to-png": [
+    "svg to png", "एसवीजी से पीएनजी", "svg converter", "svg को png में बदलें",
+  ],
+  "png-to-ico": [
+    "png to ico", "favicon generator", "आइकन बनाएँ", "ico converter", "image to ico",
+  ],
 
   // वैरिएंट — HD, मिरर, बैकग्राउंड
   "image-to-hd": [

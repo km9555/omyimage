@@ -92,6 +92,10 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "jpg-to-pdf-under-200kb",
     "jpg-to-pdf-under-300kb",
     "jpg-to-pdf-under-500kb",
+    "convert-to-png",
+    "convert-to-webp",
+    "svg-to-png",
+    "png-to-ico",
     // Expansion 3A — engine variants (expansion.md §5)
     "image-to-hd",
     "unblur-image",
@@ -182,6 +186,10 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "jpg-to-pdf-under-200kb",
     "jpg-to-pdf-under-300kb",
     "jpg-to-pdf-under-500kb",
+    "convert-to-png",
+    "convert-to-webp",
+    "svg-to-png",
+    "png-to-ico",
     // Expansion 3A — engine variants (expansion.md §5)
     "image-to-hd",
     "unblur-image",
@@ -277,6 +285,10 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "jpg-to-pdf-under-200kb",
     "jpg-to-pdf-under-300kb",
     "jpg-to-pdf-under-500kb",
+    "convert-to-png",
+    "convert-to-webp",
+    "svg-to-png",
+    "png-to-ico",
     // Expansion 3A — engine variants (expansion.md §5)
     "image-to-hd",
     "unblur-image",
@@ -370,6 +382,10 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "jpg-to-pdf-under-200kb",
     "jpg-to-pdf-under-300kb",
     "jpg-to-pdf-under-500kb",
+    "convert-to-png",
+    "convert-to-webp",
+    "svg-to-png",
+    "png-to-ico",
     // Expansion 3A — engine variants (expansion.md §5)
     "flip-image",
     "change-background-color",

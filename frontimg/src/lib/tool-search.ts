@@ -262,6 +262,18 @@ export const TOOL_ALIASES: Record<string, string[]> = {
   "jpg-to-pdf-under-500kb": [
     "jpg to pdf 500kb", "pdf under 500kb", "image to pdf 500kb", "pdf 500 kb",
   ],
+  "convert-to-png": [
+    "image to png", "to png", "change format to png", "make png", "png converter", "jpg to png converter",
+  ],
+  "convert-to-webp": [
+    "image to webp", "to webp", "webp converter", "make webp", "convert images to webp", "webp for website",
+  ],
+  "svg-to-png": [
+    "svg2png", "svg converter", "vector to png", "svg to image", "export svg as png", "svg to png high resolution",
+  ],
+  "png-to-ico": [
+    "png2ico", "ico converter", "favicon generator", "image to ico", "jpg to ico", "favicon.ico", "icon maker",
+  ],
 
   // Variants — upscale, rotate, remove-background
   "image-to-hd": [
