@@ -104,6 +104,8 @@ const TOOL_INPUTS: Record<string, ToolInput> = {
   "glitch-effect": { kinds: COMMON },
   "round-corners": { kinds: COMMON },
   "merge-images": { kinds: COMMON },
+  "split-image": { kinds: COMMON },
+  "image-overlay": { kinds: COMMON },
   "watermark-image": { kinds: COMMON },
   "gif-maker": { kinds: COMMON_GIF_BMP },
   "image-editor": { kinds: COMMON_GIF_BMP, single: true },

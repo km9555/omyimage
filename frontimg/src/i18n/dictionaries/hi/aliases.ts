@@ -287,6 +287,12 @@ export const hiAliases: Record<string, string[]> = {
   "round-corners": [
     "round corners", "rounded corners image", "कोने गोल करें",
   ],
+  "split-image": [
+    "split image", "image splitter", "फोटो के हिस्से करें", "फोटो काटें",
+  ],
+  "image-overlay": [
+    "overlay images", "photo on photo", "फोटो के ऊपर फोटो", "डबल एक्सपोज़र",
+  ],
 
   // वैरिएंट — HD, मिरर, बैकग्राउंड
   "image-to-hd": [
@@ -312,5 +318,8 @@ export const hiAliases: Record<string, string[]> = {
   ],
   "2x2-photo": [
     "2x2 फोटो", "वीज़ा फोटो", "OCI फोटो", "2x2 photo", "us visa photo",
+  ],
+  "instagram-grid-maker": [
+    "instagram grid maker", "instagram grid", "ग्रिड पोस्ट", "पैनोरमा कैरोसेल",
   ],
 };

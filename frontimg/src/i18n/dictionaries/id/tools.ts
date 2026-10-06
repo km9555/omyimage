@@ -417,6 +417,14 @@ export const idTools: Record<string, LocalizedTool> = {
     name: "Sudut Melengkung",
     shortDescription: "Buat sudut gambar melengkung dengan tepi transparan.",
   },
+  "split-image": {
+    name: "Split Foto",
+    shortDescription: "Potong gambar jadi beberapa bagian sama besar atau ubin.",
+  },
+  "image-overlay": {
+    name: "Overlay Foto",
+    shortDescription: "Tumpuk satu gambar di atas gambar lain, dengan opasitas dan blend.",
+  },
 
   // ── Varian: HD, mirror, background (expansion.md) ──
   "image-to-hd": {
@@ -450,6 +458,10 @@ export const idTools: Record<string, LocalizedTool> = {
   "2x2-photo": {
     name: "Pas Foto 2x2 Inci",
     shortDescription: "Foto 2 × 2 inci untuk paspor dan visa Amerika.",
+  },
+  "instagram-grid-maker": {
+    name: "Grid Instagram",
+    shortDescription: "Ubah satu foto jadi grid atau carousel Instagram.",
   },
 };
 

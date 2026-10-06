@@ -415,6 +415,14 @@ export const ruTools: Record<string, LocalizedTool> = {
     name: "Скруглить углы",
     shortDescription: "Скруглите углы изображения с прозрачными краями.",
   },
+  "split-image": {
+    name: "Разрезать изображение",
+    shortDescription: "Разрежьте картинку на равные части или плитки.",
+  },
+  "image-overlay": {
+    name: "Наложение изображений",
+    shortDescription: "Наложите одну картинку на другую с прозрачностью и смешиванием.",
+  },
 
   // ── Варианты: HD, отражение, фон (expansion.md) ──
   "image-to-hd": {
@@ -448,6 +456,10 @@ export const ruTools: Record<string, LocalizedTool> = {
   "2x2-photo": {
     name: "Фото 2x2 на визу США",
     shortDescription: "Фото 2 × 2 дюйма для визы и паспорта США.",
+  },
+  "instagram-grid-maker": {
+    name: "Сетка для Instagram",
+    shortDescription: "Превратите одно фото в сетку или карусель для Instagram.",
   },
 };
 

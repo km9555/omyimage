@@ -174,6 +174,14 @@ export const TOOL_ALIASES: Record<string, string[]> = {
     "combine images", "join images", "stitch images", "collage",
     "images side by side", "photo grid", "concatenate images", "merge photos",
   ],
+  "split-image": [
+    "image splitter", "cut image into pieces", "divide image", "split photo in half",
+    "image grid cutter", "tile image", "slice image",
+  ],
+  "image-overlay": [
+    "overlay images", "put image on image", "superimpose", "blend images", "double exposure",
+    "transparent overlay", "layer photos",
+  ],
   "gif-maker": [
     "make gif", "create gif", "animated gif", "images to gif", "photos to gif",
     "gif creator", "animation from images",
@@ -386,6 +394,10 @@ export const TOOL_ALIASES: Record<string, string[]> = {
   ],
   "2x2-photo": [
     "2x2", "2 x 2 inch", "us passport photo", "us visa photo", "oci photo", "600x600",
+  ],
+  "instagram-grid-maker": [
+    "instagram grid", "grid maker", "split photo for instagram", "instagram puzzle",
+    "panorama carousel", "3x3 grid instagram",
   ],
 };
 

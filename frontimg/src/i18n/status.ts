@@ -125,6 +125,8 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "image-brightness",
     "glitch-effect",
     "round-corners",
+    "split-image",
+    "image-overlay",
     // Expansion 3A — engine variants (expansion.md §5)
     "image-to-hd",
     "unblur-image",
@@ -134,6 +136,8 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     // Expansion 4A — passport and ID photos (expansion.md §5)
     "passport-photo-maker",
     "3x4-photo",
+    // Expansion 6B — split-image family (expansion.md §5)
+    "instagram-grid-maker",
   ],
   // Hindi — a PILOT: the home page, the 14 highest-value tools and the four
   // legal twins. The remaining 26 tools wait on Search Console data, because
@@ -248,6 +252,8 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "image-brightness",
     "glitch-effect",
     "round-corners",
+    "split-image",
+    "image-overlay",
     // Expansion 3A — engine variants (expansion.md §5)
     "image-to-hd",
     "unblur-image",
@@ -257,6 +263,8 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     // Expansion 4A — passport and ID photos (expansion.md §5)
     "passport-photo-maker",
     "2x2-photo",
+    // Expansion 6B — split-image family (expansion.md §5)
+    "instagram-grid-maker",
   ],
   // Russian ships in batches ordered by Russian demand, which is NOT the pt/hi
   // order: "улучшить качество фото" outweighs "сжать фото" roughly ten to one,
@@ -373,6 +381,8 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "image-brightness",
     "glitch-effect",
     "round-corners",
+    "split-image",
+    "image-overlay",
     // Expansion 3A — engine variants (expansion.md §5)
     "image-to-hd",
     "unblur-image",
@@ -382,6 +392,8 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     // Expansion 4A — passport and ID photos (expansion.md §5)
     "passport-photo-maker",
     "3x4-photo",
+    // Expansion 6B — split-image family (expansion.md §5)
+    "instagram-grid-maker",
   ],
   // Indonesian — batches of five, ordered by Indonesian search demand, which
   // is its own shape again (tracker-id.csv is the plan of record). Written
@@ -499,6 +511,8 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "image-brightness",
     "glitch-effect",
     "round-corners",
+    "split-image",
+    "image-overlay",
     // Expansion 3A — engine variants (expansion.md §5)
     "flip-image",
     "change-background-color",
@@ -506,6 +520,8 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     // Expansion 4A — passport and ID photos (expansion.md §5)
     "passport-photo-maker",
     "3x4-photo",
+    // Expansion 6B — split-image family (expansion.md §5)
+    "instagram-grid-maker",
   ],
 };
 

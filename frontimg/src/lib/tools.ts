@@ -1404,6 +1404,40 @@ export const TOOLS: Tool[] = [
       "Round the corners of images online for free: pick the radius and which corners, keep the edges transparent as PNG or fill them with a colour. In your browser, no upload.",
     primaryKeyword: "round corners image",
   },
+  {
+    id: "split-image",
+    name: "Split Image",
+    slug: "split-image",
+    categoryId: "edit",
+    shortDescription: "Cut a picture into a grid of equal parts or tiles.",
+    icon: "view_column",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    isNew: true,
+    priority: 206,
+    seoTitle: "Split Image Online — Cut a Picture into Equal Parts, Free | oMyImage",
+    seoDescription:
+      "Split an image into equal parts online for free: two halves, a 3×3 grid, or tiles of any pixel size. Every piece in one ZIP. In your browser, no upload.",
+    primaryKeyword: "split image",
+  },
+  {
+    id: "image-overlay",
+    name: "Image Overlay",
+    slug: "image-overlay",
+    categoryId: "edit",
+    shortDescription: "Put one picture on top of another, with opacity and blend modes.",
+    icon: "layers",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    isNew: true,
+    priority: 207,
+    seoTitle: "Overlay Images Online — Put One Picture on Another, Free | oMyImage",
+    seoDescription:
+      "Overlay one image on another online for free: drag, resize and rotate it, set the opacity and pick a blend mode like multiply or screen. In your browser, no upload.",
+    primaryKeyword: "image overlay",
+  },
 
   // ── Variants (expansion.md §2) ─────────────────────────────────────────
   // Each runs its parent's engine with `preset` applied, on its own URL with
@@ -1901,6 +1935,26 @@ export const TOOLS: Tool[] = [
       "Make a 2x2 inch photo online free for a US passport or visa: automatic face framing, white background, 300 DPI, and a 4×6 print sheet. Private, in your browser.",
     primaryKeyword: "2x2 photo",
   },
+  // split-image family.
+  {
+    id: "instagram-grid-maker",
+    name: "Instagram Grid Maker",
+    slug: "instagram-grid-maker",
+    parentId: "split-image",
+    preset: { mode: "instagram" },
+    categoryId: "edit",
+    shortDescription: "Turn one photo into a seamless Instagram grid or carousel.",
+    icon: "photo_library",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    isNew: true,
+    priority: 133,
+    seoTitle: "Instagram Grid Maker — Split a Photo into Grid Posts, Free | oMyImage",
+    seoDescription:
+      "Split one photo into Instagram profile-grid posts (3:4, 4:5 or square) or a seamless panorama carousel, sized for Instagram and numbered in posting order. Free, in your browser.",
+    primaryKeyword: "instagram grid maker",
+  },
 ];
 
 /**
@@ -2083,6 +2137,9 @@ const TOOL_COLORS: Record<string, string> = {
   "image-brightness": "#C2A04A",
   "glitch-effect": "#9A5FB0",
   "round-corners": "#6F8FB0",
+  "split-image": "#4F8FA8",
+  "image-overlay": "#8C6FB0",
+  "instagram-grid-maker": "#C1567E",
   "passport-photo-maker": "#4F7FB8",
   "signature-resizer": "#5A6FB0",
   "dpi-converter": "#5B7FA6",

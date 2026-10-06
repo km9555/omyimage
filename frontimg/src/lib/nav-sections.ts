@@ -71,6 +71,8 @@ export const NAV_SECTIONS: NavSection[] = [
       "circle-crop",
       "round-corners",
       "merge-images",
+      "split-image",
+      "image-overlay",
     ],
   },
   {

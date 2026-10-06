@@ -272,6 +272,12 @@ export const idAliases: Record<string, string[]> = {
   "round-corners": [
     "sudut bulat", "rounded corner", "melengkungkan sudut foto",
   ],
+  "split-image": [
+    "split foto", "potong foto jadi beberapa bagian", "bagi foto", "potong gambar jadi dua",
+  ],
+  "image-overlay": [
+    "overlay foto", "tumpuk foto", "gabung foto transparan", "double exposure",
+  ],
 
   // Varian — HD, mirror, background
   "image-to-hd": [
@@ -297,5 +303,8 @@ export const idAliases: Record<string, string[]> = {
   ],
   "2x2-photo": [
     "foto 2x2", "pas foto 2x2", "foto visa amerika", "foto paspor amerika",
+  ],
+  "instagram-grid-maker": [
+    "grid instagram", "potong foto untuk instagram", "feed puzzle", "carousel panorama",
   ],
 };

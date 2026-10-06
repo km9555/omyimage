@@ -415,6 +415,14 @@ export const ptTools: Record<string, LocalizedTool> = {
     name: "Arredondar cantos",
     shortDescription: "Deixe os cantos das imagens arredondados, com bordas transparentes.",
   },
+  "split-image": {
+    name: "Dividir imagem",
+    shortDescription: "Corte uma imagem em partes iguais ou em blocos.",
+  },
+  "image-overlay": {
+    name: "Sobrepor imagens",
+    shortDescription: "Coloque uma imagem sobre outra, com opacidade e mesclagem.",
+  },
 
   // ── Variantes: melhorar, espelhar, fundo (expansion.md) ──
   "image-to-hd": {
@@ -448,6 +456,10 @@ export const ptTools: Record<string, LocalizedTool> = {
   "2x2-photo": {
     name: "Foto 2x2 (visto americano)",
     shortDescription: "Foto de 2 × 2 polegadas para passaporte e visto dos EUA.",
+  },
+  "instagram-grid-maker": {
+    name: "Dividir foto para Instagram",
+    shortDescription: "Transforme uma foto em grade ou carrossel do Instagram.",
   },
 };
 

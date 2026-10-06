@@ -414,6 +414,14 @@ export const hiTools: Record<string, LocalizedTool> = {
     name: "राउंड कॉर्नर",
     shortDescription: "इमेज के कोने गोल करें, ट्रांसपेरेंट किनारों के साथ।",
   },
+  "split-image": {
+    name: "इमेज स्प्लिट करें",
+    shortDescription: "इमेज को बराबर हिस्सों या टाइल्स में काटें।",
+  },
+  "image-overlay": {
+    name: "इमेज ओवरले",
+    shortDescription: "एक फोटो के ऊपर दूसरी लगाएँ — ओपेसिटी और ब्लेंड मोड के साथ।",
+  },
 
   // ── वैरिएंट: HD, मिरर, बैकग्राउंड (expansion.md) ──
   "image-to-hd": {
@@ -447,6 +455,10 @@ export const hiTools: Record<string, LocalizedTool> = {
   "2x2-photo": {
     name: "2x2 फोटो मेकर",
     shortDescription: "US पासपोर्ट, वीज़ा और OCI के लिए 2 × 2 इंच फोटो।",
+  },
+  "instagram-grid-maker": {
+    name: "Instagram ग्रिड मेकर",
+    shortDescription: "एक फोटो से Instagram ग्रिड या कैरोसेल बनाएँ।",
   },
 };
 

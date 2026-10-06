@@ -154,6 +154,8 @@ const PT_TOOL_SLUGS: Record<string, string> = {
   "image-brightness": "ajustar-brilho-da-imagem",
   "glitch-effect": "efeito-glitch",
   "round-corners": "arredondar-cantos-da-imagem",
+  "split-image": "dividir-imagem",
+  "image-overlay": "sobrepor-imagens",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "imagem-em-hd",
@@ -166,6 +168,7 @@ const PT_TOOL_SLUGS: Record<string, string> = {
   "passport-photo-maker": "foto-para-documento",
   "3x4-photo": "foto-3x4",
   "2x2-photo": "foto-2x2",
+  "instagram-grid-maker": "dividir-foto-para-instagram",
 };
 
 /** Hindi keeps the English slug — see the header. Authored, never derived. */
@@ -272,6 +275,8 @@ const HI_TOOL_SLUGS: Record<string, string> = {
   "image-brightness": "image-brightness",
   "glitch-effect": "glitch-effect",
   "round-corners": "round-corners",
+  "split-image": "split-image",
+  "image-overlay": "image-overlay",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "image-to-hd",
@@ -284,6 +289,7 @@ const HI_TOOL_SLUGS: Record<string, string> = {
   "passport-photo-maker": "passport-photo-maker",
   "3x4-photo": "3x4-photo",
   "2x2-photo": "2x2-photo",
+  "instagram-grid-maker": "instagram-grid-maker",
 };
 
 /**
@@ -399,6 +405,8 @@ const RU_TOOL_SLUGS: Record<string, string> = {
   "image-brightness": "image-brightness",
   "glitch-effect": "glitch-effect",
   "round-corners": "round-corners",
+  "split-image": "split-image",
+  "image-overlay": "image-overlay",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "image-to-hd",
@@ -411,6 +419,7 @@ const RU_TOOL_SLUGS: Record<string, string> = {
   "passport-photo-maker": "passport-photo-maker",
   "3x4-photo": "3x4-photo",
   "2x2-photo": "2x2-photo",
+  "instagram-grid-maker": "instagram-grid-maker",
 };
 
 /**
@@ -548,6 +557,8 @@ const ID_TOOL_SLUGS: Record<string, string> = {
   "image-brightness": "atur-kecerahan-foto",
   "glitch-effect": "efek-glitch-foto",
   "round-corners": "sudut-melengkung-foto",
+  "split-image": "split-foto",
+  "image-overlay": "overlay-foto",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "jadikan-foto-hd",
@@ -560,6 +571,7 @@ const ID_TOOL_SLUGS: Record<string, string> = {
   "passport-photo-maker": "pas-foto",
   "3x4-photo": "foto-3x4",
   "2x2-photo": "pas-foto-2x2",
+  "instagram-grid-maker": "grid-instagram",
 };
 
 const TOOL_SLUGS: Record<TranslatedLocale, Record<string, string>> = {

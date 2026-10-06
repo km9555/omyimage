@@ -170,8 +170,8 @@ round-corners (IN 1.9K, US 1.3K) · image-brightness (IN 1.3K, US 1.6K contrast)
 - **6A (done 2026-10-06, all locales):** invert-image, pixelate-image,
   image-brightness, glitch-effect, round-corners — one shared `FxTool`.
   New "Filters & Effects" menu section (`EFFECTS_SUITE`).
-- **6B (next):** split-image, instagram-grid-maker (split variant, not in the
-  menu), image-overlay.
+- **6B (done 2026-10-06, all locales):** split-image, instagram-grid-maker
+  (split variant, not in the menu), image-overlay. This completes Phase 6.
 
 ### Phase 7 — in-browser inpainting (onnxruntime-web + MI-GAN)
 
@@ -613,6 +613,53 @@ blur-screenshot (90–140/mo), exif-editor (≤ 390, KD 68), svg-to-gif, blur-gi
   - **Snapshot diff vs the html-to-image fix: 25 pages**, all expected —
     blur-image and grayscale-image moved onto the effects ring, and home,
     pricing and contact went from 96 to 101 tools. verify:build: 536 URLs.
+- **2026-10-06 — Batch 6B: split-image, instagram-grid-maker, image-overlay —
+  15 pages.**
+  - **`lib/image/split.ts`:**
+    - `gridPieces` uses rounded edges, so uneven sizes differ by at most 1 px.
+    - `tilePieces` cuts fixed-size tiles from the top left; the last row and
+      column take the remainder. `MAX_PIECES` is 400.
+    - `igWindow` / `igPieces` crop the largest window of the layout's shape
+      (cols × rw : rows × rh), slid by fx/fy. Pieces are IG_WIDTH (1080) wide,
+      or narrower when the photo has fewer pixels — never upscaled.
+    - `postNumber`: a profile grid posts bottom-right first.
+  - **SplitTool** (`app/split-image/`) — batch, equal grid (presets
+    2×1 … 4×4, up to 20×20) or tile size; preview lines and numbers; a
+    Pieces panel to download single pieces; a ZIP with one folder per image.
+    Files are named `_rX_cY`.
+  - **Instagram mode** (`preset: { mode: "instagram" }`, one photo) —
+    profile grid (3 columns × 1–5 rows; 3:4 by default, 4:5, 1:1) or
+    carousel (2–10 slides, 4:5 / 1:1). Drag or sliders frame the photo; the
+    unused part is shaded. JPG/PNG output. Files are `_post-N` (in posting
+    order) or `_slide-N`. The copy is written to the January 2025 change to
+    3:4 grid thumbnails, and says to use 4:5 if the app crops 3:4 uploads.
+  - **`lib/image/overlay.ts` + OverlayTool** (`app/image-overlay/`):
+    - Background + top image, with "Place freely" (drag, arrow keys, size
+      as % of the background width, rotation ±180°, 9 snap positions) or
+      "Cover everything".
+    - Opacity and eight canvas blend modes; Swap images.
+    - "Hold to see the original" hides the top layer. Output is the
+      background's size and format.
+    - Dropping two files sets both layers.
+    - The position labels are called inline with `t()` — module-scope
+      labels are invisible to i18n-keys.
+  - **English plural rule:** `t()` has no plural forms in English, so "1
+    piece" is its own key next to "{n} pieces" (ru carries |one / |few).
+  - **Measured (browser):**
+    - Split 300 × 200 at 3 × 3 → pieces 100×67/66/67, all 60 000 pixels
+      exact. 128 px tiles → 128/128/44 × 128/72, all exact.
+    - A 2-image batch ZIP has `a/…` and `b/…` folders.
+    - Instagram 1 row × 3 of a 4000 × 3000 gradient → 1080 × 1440 posts,
+      centre colours as predicted (±1 JPG), seams matching. Drag moved fy
+      by the computed amount. A 4-slide carousel → 1000 × 1250 (4:5) /
+      1000 × 1000 (1:1), not upscaled.
+    - Overlay 70 % red on gray → (217,38,38). Multiply → (128,0,0).
+      Bottom-right snap is flush at (399,299). 90° rotation covers exactly
+      x 280–360. Cover fills the frame. Swap gives a 100 × 50 result.
+  - **Nav:** split-image and image-overlay join Edit (8 rows; column 2 = 23
+    rows). instagram-grid-maker stays out of the menu, per the Phase 8 note.
+  - **Snapshot diff vs 6A: 15 pages**, only home, pricing and contact
+    (101 → 104 tools); no related ring moved. verify:build: 551 URLs.
 - **Deploys need the user's go-ahead.** 2A, 3A, 4A and the visibility fix
   went live on 2026-10-04 (merge 505e680 into `main`, then `npm run
   indexnow`). Later batches are committed on `feat/tool-expansion` and

@@ -278,6 +278,12 @@ export const ptAliases: Record<string, string[]> = {
   "round-corners": [
     "cantos arredondados", "borda arredondada", "arredondar imagem", "png cantos arredondados",
   ],
+  "split-image": [
+    "dividir imagem", "cortar imagem em partes", "dividir foto ao meio", "cortar foto em pedaços", "quebra-cabeça de foto",
+  ],
+  "image-overlay": [
+    "sobrepor imagens", "colocar foto em cima de outra", "juntar fotos com transparência", "dupla exposição", "mesclar imagens",
+  ],
 
   // Variantes — HD, espelhar, fundo
   "image-to-hd": [
@@ -303,5 +309,8 @@ export const ptAliases: Record<string, string[]> = {
   ],
   "2x2-photo": [
     "foto 2x2", "foto visto americano", "foto passaporte americano", "2x2 polegadas",
+  ],
+  "instagram-grid-maker": [
+    "grade instagram", "dividir foto instagram", "feed quebra-cabeça", "carrossel panorâmico", "grid instagram",
   ],
 };
