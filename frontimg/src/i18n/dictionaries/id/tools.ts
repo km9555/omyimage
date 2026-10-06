@@ -333,6 +333,26 @@ export const idTools: Record<string, LocalizedTool> = {
     name: "Ubah Ukuran Foto dalam cm",
     shortDescription: "Ubah ukuran foto ke cm, mm, atau inci yang tepat.",
   },
+  "video-to-gif": {
+    name: "Video ke GIF",
+    shortDescription: "Ubah potongan video MP4, WEBM, atau MOV jadi GIF.",
+  },
+  "gif-compressor": {
+    name: "Kompres GIF",
+    shortDescription: "Perkecil GIF animasi tanpa kehilangan frame.",
+  },
+  "gif-resizer": {
+    name: "Ubah Ukuran GIF",
+    shortDescription: "Ubah ukuran GIF animasi dengan semua frame tetap ada.",
+  },
+  "gif-to-mp4": {
+    name: "GIF ke MP4",
+    shortDescription: "Ubah GIF jadi video MP4 yang ringan.",
+  },
+  "webp-to-gif": {
+    name: "WEBP ke GIF",
+    shortDescription: "Ubah WEBP animasi jadi GIF.",
+  },
 
   // ── Varian: HD, mirror, background (expansion.md) ──
   "image-to-hd": {

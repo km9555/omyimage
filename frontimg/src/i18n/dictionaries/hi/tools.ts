@@ -330,6 +330,26 @@ export const hiTools: Record<string, LocalizedTool> = {
     name: "इमेज को cm में रीसाइज़ करें",
     shortDescription: "इमेज को cm, mm या इंच में सटीक साइज़ में बदलें।",
   },
+  "video-to-gif": {
+    name: "वीडियो से GIF",
+    shortDescription: "MP4, WEBM या MOV वीडियो के हिस्से को GIF बनाएँ।",
+  },
+  "gif-compressor": {
+    name: "GIF कंप्रेसर",
+    shortDescription: "एनिमेटेड GIF को बिना फ़्रेम खोए छोटा करें।",
+  },
+  "gif-resizer": {
+    name: "GIF रीसाइज़र",
+    shortDescription: "एनिमेटेड GIF का साइज़ बदलें, हर फ़्रेम के साथ।",
+  },
+  "gif-to-mp4": {
+    name: "GIF से MP4",
+    shortDescription: "GIF को हल्के MP4 वीडियो में बदलें।",
+  },
+  "webp-to-gif": {
+    name: "WEBP से GIF",
+    shortDescription: "एनिमेटेड WEBP को GIF में बदलें।",
+  },
 
   // ── वैरिएंट: HD, मिरर, बैकग्राउंड (expansion.md) ──
   "image-to-hd": {

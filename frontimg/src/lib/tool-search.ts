@@ -298,6 +298,21 @@ export const TOOL_ALIASES: Record<string, string[]> = {
   "resize-image-in-cm": [
     "resize in cm", "cm to pixels", "resize image in inches", "print size", "resize in mm", "photo size in cm",
   ],
+  "video-to-gif": [
+    "mp4 to gif", "mov to gif", "webm to gif", "make gif from video", "clip to gif", "convert video to gif",
+  ],
+  "gif-compressor": [
+    "compress gif", "reduce gif size", "gif optimizer", "make gif smaller", "gif size reducer",
+  ],
+  "gif-resizer": [
+    "resize gif", "gif resize", "change gif size", "scale gif", "shrink gif",
+  ],
+  "gif-to-mp4": [
+    "convert gif to mp4", "gif to video", "gif2mp4", "gif to mp4 converter",
+  ],
+  "webp-to-gif": [
+    "animated webp to gif", "convert webp to gif", "webp2gif", "webp animation to gif",
+  ],
 
   // Variants — upscale, rotate, remove-background
   "image-to-hd": [

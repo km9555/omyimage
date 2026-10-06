@@ -209,6 +209,21 @@ export const idAliases: Record<string, string[]> = {
   "resize-image-in-cm": [
     "ubah ukuran foto cm", "ukuran foto dalam cm", "cm ke piksel", "ukuran cetak foto",
   ],
+  "video-to-gif": [
+    "mp4 ke gif", "ubah video jadi gif", "membuat gif dari video", "convert video ke gif",
+  ],
+  "gif-compressor": [
+    "perkecil ukuran gif", "compress gif", "kompres gif online", "mengecilkan gif",
+  ],
+  "gif-resizer": [
+    "resize gif", "mengubah ukuran gif", "perkecil gif",
+  ],
+  "gif-to-mp4": [
+    "ubah gif jadi mp4", "gif ke video", "convert gif ke mp4",
+  ],
+  "webp-to-gif": [
+    "webp animasi ke gif", "ubah webp jadi gif",
+  ],
 
   // Varian — HD, mirror, background
   "image-to-hd": [

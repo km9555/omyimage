@@ -331,6 +331,26 @@ export const ruTools: Record<string, LocalizedTool> = {
     name: "Размер фото в см",
     shortDescription: "Точный размер в сантиметрах, миллиметрах или дюймах.",
   },
+  "video-to-gif": {
+    name: "Видео в GIF",
+    shortDescription: "Фрагмент видео MP4, WEBM или MOV — в GIF.",
+  },
+  "gif-compressor": {
+    name: "Сжать GIF",
+    shortDescription: "Уменьшите вес анимированного GIF без потери кадров.",
+  },
+  "gif-resizer": {
+    name: "Изменить размер GIF",
+    shortDescription: "Измените размер анимированного GIF с сохранением кадров.",
+  },
+  "gif-to-mp4": {
+    name: "GIF в MP4",
+    shortDescription: "GIF в лёгкое видео MP4.",
+  },
+  "webp-to-gif": {
+    name: "WEBP в GIF",
+    shortDescription: "Анимированный WEBP в GIF.",
+  },
 
   // ── Варианты: HD, отражение, фон (expansion.md) ──
   "image-to-hd": {

@@ -224,6 +224,21 @@ export const hiAliases: Record<string, string[]> = {
   "resize-image-in-cm": [
     "resize image in cm", "cm to pixel", "फोटो साइज़ cm में", "resize in inches",
   ],
+  "video-to-gif": [
+    "video to gif", "mp4 to gif", "वीडियो को gif में बदलें", "gif बनाएँ",
+  ],
+  "gif-compressor": [
+    "compress gif", "gif size kam kare", "gif छोटा करें", "reduce gif size",
+  ],
+  "gif-resizer": [
+    "resize gif", "gif का साइज़ बदलें", "gif resize",
+  ],
+  "gif-to-mp4": [
+    "gif to mp4", "gif को वीडियो में बदलें", "gif to video",
+  ],
+  "webp-to-gif": [
+    "webp to gif", "animated webp to gif",
+  ],
 
   // वैरिएंट — HD, मिरर, बैकग्राउंड
   "image-to-hd": [

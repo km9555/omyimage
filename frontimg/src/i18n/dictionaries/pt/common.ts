@@ -37,6 +37,7 @@ export const ptCommon: Record<string, string> = {
   "Compress to Size": "Comprimir por tamanho",
   "Passport & ID Photos": "Fotos para documento",
   "Print & Social Sizes": "Impressão e redes sociais",
+  "GIF Tools": "Ferramentas de GIF",
   "Browse all tools": "Ver todas as ferramentas",
   "Browse tools": "Explorar ferramentas",
   "All tools": "Todas as ferramentas",
@@ -355,6 +356,9 @@ export const ptCommon: Record<string, string> = {
   "This size is too large for your browser — try a smaller scale.": "Este tamanho é grande demais para o seu navegador — escolha uma escala menor.",
   "This SVG could not be drawn. It may use features browsers do not render as an image.": "Não foi possível desenhar este SVG. Ele pode usar recursos que os navegadores não exibem como imagem.",
   "Your browser blocks exporting this SVG because it contains embedded HTML.": "Seu navegador bloqueia a exportação deste SVG porque ele contém HTML incorporado.",
+  "This file is not a valid WebP image.": "Este arquivo não é uma imagem WebP válida.",
+  "This WebP frame has no image data.": "Este quadro do WebP não tem dados de imagem.",
+  "Your browser can't create MP4 video. Try Chrome, Edge or Safari.": "Seu navegador não consegue criar vídeo MP4. Use o Chrome, o Edge ou o Safari.",
   // …and the backend's own user-facing sentences (backend/src/routes/image).
   "Upload an image.": "Envie uma imagem.",
   "This file is too large.": "Este arquivo é grande demais.",

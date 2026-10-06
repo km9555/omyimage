@@ -150,6 +150,14 @@ reverse-gif (3.6K) · gif-speed-changer (2.4K) · gif-cutter (2.4K) ·
 gif-merger (2.4K) · gif-to-sprite-sheet (2.4K) · gif-to-apng (1.6K) ·
 gif-to-webp (1.3K) · rotate-gif (1.3K).
 
+- **5A (done 2026-10-06, all locales):** video-to-gif, gif-compressor,
+  gif-resizer, gif-to-mp4, webp-to-gif.
+- **Next:** gif-cropper, typing-text-gif, add-text-to-gif, reverse-gif,
+  gif-speed-changer, gif-cutter, gif-merger, gif-to-sprite-sheet, gif-to-apng,
+  gif-to-webp, rotate-gif.
+  - All of these reuse `openGif` + `reencodeAsGif`. Most are a frame transform
+    plus GifTool-style UI.
+
 ### Phase 6 — edit tools (canvas)
 
 split-image (US 14.8K, IN 12.1K, BR 9.9K, RU 5.4K) · instagram-grid-maker
@@ -374,6 +382,51 @@ blur-screenshot (90–140/mo), exif-editor (≤ 390, KD 68), svg-to-gif, blur-gi
     leads it). DPI Converter is in Optimize, DPI Checker in Privacy & Info.
   - **Build:** run in the `_wt-base` worktree, because the user's own dev
     server held :3002.
+- **2026-10-06 — Batch 5A: video-to-gif, gif-compressor, gif-resizer,
+  gif-to-mp4, webp-to-gif — 25 pages.**
+  - **Engine `src/lib/gif/`:**
+    - `frames.ts`: a streaming `FrameSource` (one composite canvas, GIF
+      disposal 2/3 handled). The browser delay clamp (≤ 10 ms plays as
+      100 ms) is applied on read.
+    - `webp-anim.ts`: parses RIFF/VP8X/ANIM/ANMF by hand. Each frame is
+      rewrapped as a standalone WebP (ALPH kept) and decoded by
+      `createImageBitmap`, so it works in Safari with no extra decoder.
+    - `reencode.ts`: resize, keep every Nth frame (dropped delays merge into
+      the kept frame), and colour count.
+    - `video.ts`: `<video>` seek + canvas, with no ffmpeg.wasm.
+    - `to-mp4.ts`: WebCodecs H.264 + `mp4-muxer` (MIT, LICENSE-AUDIT F7).
+  - **`gif-encode.ts` optimise path:**
+    - The palette uses `colors-1` colours and reserves a transparent index.
+    - Frames after the first store only the changed pixels (dispose 1).
+    - `fuzz` treats palette-near pixels as unchanged.
+    - It is skipped for transparent sources, which still get colour and size
+      reduction.
+  - **Components:**
+    - `GifTool` with `mode` compress / resize / webp; the resizer and WEBP→GIF
+      pages reuse the compressor's `ui`.
+    - `VideoToGifTool` and `GifToMp4Tool`.
+  - **Measured on a noisy 40-frame 320 × 200 GIF (862 KB):**
+
+    | Level | Size | Mean error | Frames |
+    |---|---:|---:|---:|
+    | Light | 829 KB | ~1.5 levels | 40 |
+    | Medium | 554 KB | 3.0 | 40 |
+    | Strong | 138 KB | 5.0 | 20 |
+
+  - **Other checks:**
+    - A transparent GIF kept alpha 0 in the corners and cleared the moving
+      object's old position.
+    - GIF → MP4 at 3 repeats gave a valid isom MP4, 6.000 s.
+    - A 4 s H.264 MP4 at 10 fps and 240 px gave 40 frames, 4000 ms in total.
+    - A hand-built animated WebP (lossy + ALPH, lossless) decoded with the
+      correct blending.
+  - **Nav:** new "GIF Tools" section. gif-maker moved out of Create and
+    gif-to-images out of Convert. Columns:
+    `[optimize, compress-size, photo-id]`, `[edit, create, social-sizes,
+    privacy]`, `[ai, gif, convert-other]`, `[convert-format, convert-camera]`.
+  - **Snapshot diff vs 4B: 142 pages.** All are expected: Optimize-category
+    pages' "More tools" now show GIF Compressor where Signature Resizer was,
+    and the menu markup changed. verify:build: 456 URLs, 186 family pages.
 - **Deploys need the user's go-ahead.** 2A, 3A, 4A and the visibility fix
   went live on 2026-10-04 (merge 505e680 into `main`, then `npm run
   indexnow`). Later batches are committed on `feat/tool-expansion` and

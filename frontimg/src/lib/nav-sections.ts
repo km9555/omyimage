@@ -79,7 +79,7 @@ export const NAV_SECTIONS: NavSection[] = [
     label: "Create",
     icon: "auto_awesome",
     color: "#C98B3E",
-    ids: ["meme-generator", "gif-maker", "html-to-image", "image-color-picker"],
+    ids: ["meme-generator", "html-to-image", "image-color-picker"],
   },
   {
     id: "ai",
@@ -111,6 +111,13 @@ export const NAV_SECTIONS: NavSection[] = [
     ids: ["blur-face", "remove-exif", "image-metadata", "dpi-checker"],
   },
   {
+    id: "gif",
+    label: "GIF Tools",
+    icon: "gif_box",
+    color: "#C56A9A",
+    ids: ["gif-maker", "video-to-gif", "gif-compressor", "gif-resizer", "gif-to-mp4", "webp-to-gif", "gif-to-images"],
+  },
+  {
     id: "convert-format",
     label: "Convert Format",
     icon: "swap_horiz",
@@ -133,7 +140,7 @@ export const NAV_SECTIONS: NavSection[] = [
     label: "Convert To & From",
     icon: "import_export",
     color: "#4B8FC7",
-    ids: ["image-to-pdf", "image-to-text", "svg-to-png", "png-to-ico", "image-to-base64", "base64-to-image", "gif-to-images"],
+    ids: ["image-to-pdf", "image-to-text", "svg-to-png", "png-to-ico", "image-to-base64", "base64-to-image"],
   },
   {
     id: "convert-camera",
@@ -163,9 +170,9 @@ export const NAV_SECTIONS_BY_ID: Record<string, NavSection> = Object.fromEntries
  */
 export const NAV_COLUMNS: string[][] = [
   ["optimize", "compress-size", "photo-id"],
-  ["edit", "create", "social-sizes"],
-  ["ai", "convert-format"],
-  ["convert-other", "convert-camera", "privacy"],
+  ["edit", "create", "social-sizes", "privacy"],
+  ["ai", "gif", "convert-other"],
+  ["convert-format", "convert-camera"],
 ];
 
 /**

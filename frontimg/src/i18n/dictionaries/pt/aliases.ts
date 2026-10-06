@@ -215,6 +215,21 @@ export const ptAliases: Record<string, string[]> = {
   "resize-image-in-cm": [
     "redimensionar em cm", "tamanho em centímetros", "foto em cm", "cm para pixels",
   ],
+  "video-to-gif": [
+    "mp4 para gif", "converter vídeo em gif", "fazer gif de vídeo", "mov para gif",
+  ],
+  "gif-compressor": [
+    "reduzir tamanho de gif", "compressor de gif", "diminuir gif", "otimizar gif",
+  ],
+  "gif-resizer": [
+    "mudar tamanho do gif", "diminuir gif em pixels", "redimensionar gif animado",
+  ],
+  "gif-to-mp4": [
+    "converter gif em mp4", "gif para vídeo", "transformar gif em vídeo",
+  ],
+  "webp-to-gif": [
+    "webp animado para gif", "converter webp em gif",
+  ],
 
   // Variantes — HD, espelhar, fundo
   "image-to-hd": [

@@ -133,6 +133,11 @@ const PT_TOOL_SLUGS: Record<string, string> = {
   "dpi-converter": "alterar-dpi-da-imagem",
   "dpi-checker": "verificar-dpi-da-imagem",
   "resize-image-in-cm": "redimensionar-imagem-em-cm",
+  "video-to-gif": "video-para-gif",
+  "gif-compressor": "comprimir-gif",
+  "gif-resizer": "redimensionar-gif",
+  "gif-to-mp4": "gif-para-mp4",
+  "webp-to-gif": "webp-para-gif",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "imagem-em-hd",
@@ -230,6 +235,11 @@ const HI_TOOL_SLUGS: Record<string, string> = {
   "dpi-converter": "dpi-converter",
   "dpi-checker": "dpi-checker",
   "resize-image-in-cm": "resize-image-in-cm",
+  "video-to-gif": "video-to-gif",
+  "gif-compressor": "gif-compressor",
+  "gif-resizer": "gif-resizer",
+  "gif-to-mp4": "gif-to-mp4",
+  "webp-to-gif": "webp-to-gif",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "image-to-hd",
@@ -336,6 +346,11 @@ const RU_TOOL_SLUGS: Record<string, string> = {
   "dpi-converter": "dpi-converter",
   "dpi-checker": "dpi-checker",
   "resize-image-in-cm": "resize-image-in-cm",
+  "video-to-gif": "video-to-gif",
+  "gif-compressor": "gif-compressor",
+  "gif-resizer": "gif-resizer",
+  "gif-to-mp4": "gif-to-mp4",
+  "webp-to-gif": "webp-to-gif",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "image-to-hd",
@@ -464,6 +479,11 @@ const ID_TOOL_SLUGS: Record<string, string> = {
   "dpi-converter": "ubah-dpi-foto",
   "dpi-checker": "cek-dpi-foto",
   "resize-image-in-cm": "ubah-ukuran-foto-cm",
+  "video-to-gif": "video-ke-gif",
+  "gif-compressor": "kompres-gif",
+  "gif-resizer": "ubah-ukuran-gif",
+  "gif-to-mp4": "gif-ke-mp4",
+  "webp-to-gif": "webp-ke-gif",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "jadikan-foto-hd",

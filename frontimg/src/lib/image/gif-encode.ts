@@ -46,6 +46,21 @@ export interface GifEncodeOptions {
   repeat?: number;
   /** Encode 1-bit transparency instead of flattening onto a colour. */
   transparent?: boolean;
+  /**
+   * Inter-frame optimisation for opaque animations: every pixel that looks the
+   * same as in the frame already on screen is written as a reserved
+   * transparent index, so the frame shows through from the previous one and
+   * LZW compresses the long runs this creates. Ignored when `transparent` is
+   * set, because real transparency and "unchanged" would share one index.
+   */
+  optimize?: boolean;
+  /**
+   * How different (RGB distance, 0–441) a pixel may be from what is on screen
+   * and still count as unchanged. 0 = only identical palette entries. Above 0
+   * this is lossy: small flicker and noise are frozen, which is most of what
+   * makes video GIFs large.
+   */
+  fuzz?: number;
   onProgress?: (done: number, total: number) => void;
 }
 
@@ -108,6 +123,10 @@ export async function encodeGif(src: GifSource, opts: GifEncodeOptions): Promise
   const { GIFEncoder, quantize, applyPalette } = await import("gifenc");
   const pxPerFrame = width * height;
 
+  if (opts.optimize && !wantAlpha && src.count > 1) {
+    return encodeOptimized(src, opts, colors, repeat, { GIFEncoder, quantize, applyPalette });
+  }
+
   // rgba4444 keeps an alpha channel through quantization; oneBitAlpha snaps it
   // to fully on/off, which is all GIF can represent.
   const format = wantAlpha ? "rgba4444" : "rgb565";
@@ -134,6 +153,69 @@ export async function encodeGif(src: GifSource, opts: GifEncodeOptions): Promise
       // whatever the previous frame drew, so the animation smears.
       ...(useAlpha ? { transparent: true, transparentIndex, dispose: 2 } : {}),
     });
+    opts.onProgress?.(i + 1, src.count);
+    if (i < src.count - 1) await yieldToUi();
+  }
+  gif.finish();
+  return gif.bytes();
+}
+
+type Gifenc = typeof import("gifenc");
+
+/**
+ * The `optimize` path of encodeGif: one global palette with the last slot
+ * reserved for "unchanged", and every frame after the first written as a diff
+ * against what is on screen (dispose 1 = leave it there).
+ */
+async function encodeOptimized(
+  src: GifSource,
+  opts: GifEncodeOptions,
+  colors: number,
+  repeat: number,
+  lib: Pick<Gifenc, "GIFEncoder" | "quantize" | "applyPalette">,
+): Promise<Uint8Array> {
+  const { width, height } = opts;
+  const px = width * height;
+  const format = "rgb565";
+  const sample = await sampleAllFrames(src, px);
+  // One slot fewer than asked for: the extra entry is the "unchanged" marker.
+  const real = lib.quantize(sample, Math.max(2, colors - 1), { format });
+  const T = real.length;
+  const palette = [...real, [0, 0, 0]];
+
+  // Which palette pairs are close enough to count as the same pixel.
+  const fuzz = Math.max(0, opts.fuzz ?? 0);
+  let near: Uint8Array | null = null;
+  if (fuzz > 0) {
+    const f2 = fuzz * fuzz;
+    near = new Uint8Array(T * T);
+    for (let a = 0; a < T; a++) {
+      for (let b = 0; b < T; b++) {
+        const dr = real[a][0] - real[b][0];
+        const dg = real[a][1] - real[b][1];
+        const db = real[a][2] - real[b][2];
+        near[a * T + b] = dr * dr + dg * dg + db * db <= f2 ? 1 : 0;
+      }
+    }
+  }
+
+  const gif = lib.GIFEncoder();
+  const shown = new Uint8Array(px);
+  for (let i = 0; i < src.count; i++) {
+    const index = lib.applyPalette(await src.pixels(i), real, format);
+    if (i === 0) {
+      shown.set(index);
+      gif.writeFrame(index, width, height, { palette, repeat, delay: src.delay(i) });
+    } else {
+      const out = new Uint8Array(px);
+      for (let p = 0; p < px; p++) {
+        const a = index[p];
+        const s = shown[p];
+        if (a === s || (near && near[a * T + s])) out[p] = T;
+        else { out[p] = a; shown[p] = a; }
+      }
+      gif.writeFrame(out, width, height, { delay: src.delay(i), transparent: true, transparentIndex: T, dispose: 1 });
+    }
     opts.onProgress?.(i + 1, src.count);
     if (i < src.count - 1) await yieldToUi();
   }

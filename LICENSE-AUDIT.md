@@ -47,6 +47,7 @@ dependency; the other by adding third-party notices. Both are recorded below.
 | gifenc | 1.0.3 | MIT | Yes |
 | gifuct-js | 2.1.2 | MIT | Yes |
 | jszip | 3.10.1 | (MIT OR GPL-3.0-or-later) | Yes — **we elect MIT** |
+| mp4-muxer | 5.2.2 | MIT | Yes — see F7 |
 | next | 16.2.7 | MIT | Yes |
 | pdf-lib | 1.17.1 | MIT | Yes |
 | react | 19.2.4 | MIT | Yes |
@@ -309,6 +310,34 @@ stages it from `node_modules` into `public/mediapipe/wasm/` on `predev`/`prebuil
 and that directory is gitignored. Only the 224 KB model is committed. Everything
 is served from our own origin — no CDN request and no upload — which is what
 keeps the "processed entirely in your browser" claim on `/blur-face` true.
+
+---
+
+## F7 — `mp4-muxer` for browser GIF → MP4 · **Approved** · 2026-10-06
+
+Added for `/gif-to-mp4`. It only writes the MP4 container; the H.264 frames
+come from the browser's own WebCodecs `VideoEncoder`.
+
+**Checks performed**
+
+| Check | Result |
+|---|---|
+| Declared licence | `MIT` (`mp4-muxer@5.2.2`, © 2023 Vanilagy), `LICENSE` file shipped |
+| Copyleft strings in `build/mp4-muxer.{js,mjs,d.ts}` | none |
+| Runtime dependencies | `@types/dom-webcodecs`, `@types/wicg-file-system-access`, both type-only |
+| Copyleft strings in the built `out/` bundle after adding it | none |
+
+**Verdict: approved.** Pure TypeScript, no wasm, no native code. The package
+is marked deprecated in favour of its successor Mediabunny. Mediabunny is
+**MPL-2.0**, so we stay on mp4-muxer, which is stable and complete for this use.
+
+**Rule 4 (codecs and patents).** No codec ships with the site. H.264 encoding
+is done by the visitor's browser or OS, which carries any codec licence.
+Browsers without an H.264 encoder get an error message instead of a fallback
+encoder.
+
+**Obligations discharged:** the generator reproduces its MIT licence in
+`THIRD-PARTY-NOTICES.txt`.
 
 ---
 

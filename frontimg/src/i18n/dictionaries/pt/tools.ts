@@ -331,6 +331,26 @@ export const ptTools: Record<string, LocalizedTool> = {
     name: "Redimensionar Imagem em cm",
     shortDescription: "Redimensione para um tamanho exato em cm, mm ou polegadas.",
   },
+  "video-to-gif": {
+    name: "Vídeo para GIF",
+    shortDescription: "Transforme um trecho de vídeo MP4, WEBM ou MOV em GIF.",
+  },
+  "gif-compressor": {
+    name: "Comprimir GIF",
+    shortDescription: "Deixe GIFs animados menores sem perder quadros.",
+  },
+  "gif-resizer": {
+    name: "Redimensionar GIF",
+    shortDescription: "Redimensione GIFs animados mantendo todos os quadros.",
+  },
+  "gif-to-mp4": {
+    name: "GIF para MP4",
+    shortDescription: "Transforme GIFs em vídeos MP4 leves.",
+  },
+  "webp-to-gif": {
+    name: "WEBP para GIF",
+    shortDescription: "Converta WEBP animado em GIF.",
+  },
 
   // ── Variantes: melhorar, espelhar, fundo (expansion.md) ──
   "image-to-hd": {
