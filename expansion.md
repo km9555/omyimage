@@ -550,8 +550,9 @@ blur-screenshot (90–140/mo), exif-editor (≤ 390, KD 68), svg-to-gif, blur-gi
     - `encodeGif` with `exact: true`.
   - **Idle state on the typing tool.** ToolWorkspace's `data-tool-active`
     marker hides `[data-seo-content]`, so a tool that renders the workspace
-    from the start hides its own SEO copy — html-to-image already does this
-    and should be fixed separately. The typing tool shows a plain
+    from the start hides its own SEO copy. html-to-image did exactly this on
+    all 5 locales; it got the same idle card (URL/HTML input, Render to image,
+    Open all settings) in the following commit. The typing tool shows a plain
     textarea + Start first and opens the workspace only on Start; mobile Back
     returns to it.
   - **Measured:**

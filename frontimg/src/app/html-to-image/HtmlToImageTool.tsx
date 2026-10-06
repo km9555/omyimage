@@ -96,6 +96,15 @@ export function HtmlToImageTool() {
   const [isWorking, setIsWorking] = useState(false);
   const [progress, setProgress] = useState({ done: 0, total: 0 });
 
+  /*
+    Idle until the user starts. ToolWorkspace renders the `data-tool-active`
+    marker, and globals.css hides the page's SEO copy and subtitle whenever
+    that marker exists — so a workspace on first paint hid this page's own
+    content from readers and crawlers alike. Upload tools avoid it by showing
+    a dropzone first; this is the same split for a tool that takes a URL.
+  */
+  const [started, setStarted] = useState(false);
+
   const active = pages.find((p) => p.id === activeId) ?? pages[0];
 
   /*
@@ -158,6 +167,8 @@ export function HtmlToImageTool() {
       return starterOnly ? added : [...prev, ...added];
     });
     setActiveId(added[0].id);
+    setMode("html");
+    setStarted(true);
     toast.success(added.length === 1 ? t("Added 1 page.") : t("Added {n} pages.", { n: added.length }));
   };
 
@@ -195,17 +206,18 @@ export function HtmlToImageTool() {
     ...(css.trim() ? { css } : {}),
   });
 
+  /** Why the current input can't be rendered, or null when it can. */
+  const problem = (): string | null => {
+    if (mode === "url" && !/^https?:\/\//i.test(url.trim())) return t("Enter a valid URL (https://…).");
+    if (mode === "html" && renderable.length === 0) return t("Add some HTML to at least one page.");
+    if (width < 100 || height < 100) return t("Width and height must be at least 100px.");
+    return null;
+  };
+
   const run = async () => {
-    if (mode === "url" && !/^https?:\/\//i.test(url.trim())) {
-      toast.error(t("Enter a valid URL (https://…)."));
-      return;
-    }
-    if (mode === "html" && renderable.length === 0) {
-      toast.error(t("Add some HTML to at least one page."));
-      return;
-    }
-    if (width < 100 || height < 100) {
-      toast.error(t("Width and height must be at least 100px."));
+    const p = problem();
+    if (p) {
+      toast.error(p);
       return;
     }
 
@@ -256,42 +268,131 @@ export function HtmlToImageTool() {
   const smallField =
     "w-full px-2.5 py-2 rounded-lg bg-surface-container-lowest border border-surface-variant focus:border-secondary focus:ring-1 focus:ring-secondary outline-none text-body-md text-primary";
 
+  const uploadInput = (
+    <input
+      ref={uploadRef}
+      type="file"
+      accept=".html,.htm,text/html"
+      multiple
+      className="hidden"
+      onChange={(e) => {
+        if (e.target.files?.length) importFiles(e.target.files);
+        e.target.value = "";
+      }}
+    />
+  );
+
+  const modeToggle = (
+    <div className="grid w-full max-w-[320px] grid-cols-2 gap-1 rounded-lg bg-surface-container p-1">
+      {(["url", "html"] as Mode[]).map((m) => (
+        <button
+          key={m}
+          type="button"
+          onClick={() => setMode(m)}
+          className={`rounded-md px-3 py-2 text-body-md font-semibold uppercase transition-colors ${
+            mode === m
+              ? "bg-surface-container-lowest text-primary shadow-sm"
+              : "text-on-surface-variant hover:text-primary"
+          }`}
+        >
+          {/* i18n-raw: the mode ids URL and HTML are the same in every language */}
+          {m}
+        </button>
+      ))}
+    </div>
+  );
+
+  // ── Idle: the input only, page copy still visible ─────────────────────────
+  if (!started) {
+    const startRender = () => {
+      const p = problem();
+      if (p) {
+        toast.error(p);
+        return;
+      }
+      setStarted(true);
+      void run();
+    };
+    return (
+      <section className="flex flex-col gap-4 rounded-2xl border-2 border-dashed border-outline-variant/60 bg-surface-container-lowest p-5 md:p-8">
+        {uploadInput}
+        {modeToggle}
+        {mode === "url" ? (
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="html-image-url" className="text-label-sm font-label-sm text-on-surface-variant">{t("Web page URL")}</label>
+            <input
+              id="html-image-url"
+              type="url"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") startRender(); }}
+              placeholder="https://example.com"
+              className={fieldCls}
+            />
+          </div>
+        ) : (
+          <div className="flex flex-col gap-1.5">
+            <textarea
+              value={active.html}
+              onChange={(e) => updateActive(e.target.value)}
+              spellCheck={false}
+              placeholder={t("<!doctype html> …")}
+              rows={8}
+              aria-label={t("HTML code")}
+              className={`${fieldCls} resize-y font-label-sm leading-relaxed`}
+            />
+            <button
+              type="button"
+              onClick={() => uploadRef.current?.click()}
+              className="inline-flex items-center gap-1.5 self-start text-label-md font-medium text-on-surface-variant transition-colors hover:text-secondary"
+            >
+              <Icon name="upload_file" className="text-[18px]" /> {t("Import .html")}
+            </button>
+          </div>
+        )}
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            onClick={startRender}
+            className="inline-flex items-center gap-2 rounded-xl bg-secondary px-5 py-3 text-label-lg font-semibold text-on-secondary transition-opacity hover:opacity-90"
+          >
+            <Icon name="screenshot_monitor" className="text-[20px]" /> {t("Render to image")}
+          </button>
+          <button
+            type="button"
+            onClick={() => setStarted(true)}
+            className="inline-flex items-center gap-1.5 text-label-md font-semibold text-secondary hover:underline"
+          >
+            <Icon name="tune" className="text-[18px]" /> {t("Open all settings")}
+          </button>
+        </div>
+        <p className="text-label-sm font-label-sm text-on-surface-variant/80">
+          {t("Screen size, format, full-page capture and more are in the settings.")}
+        </p>
+      </section>
+    );
+  }
+
   return (
     <>
       <TopLoadingBar active={isWorking} />
-      <input
-        ref={uploadRef}
-        type="file"
-        accept=".html,.htm,text/html"
-        multiple
-        className="hidden"
-        onChange={(e) => {
-          if (e.target.files?.length) importFiles(e.target.files);
-          e.target.value = "";
-        }}
-      />
+      {uploadInput}
       <ToolWorkspace
         main={
           <>
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={() => setStarted(false)}
+                disabled={isWorking}
+                className="inline-flex items-center gap-1.5 text-label-md font-medium text-on-surface-variant transition-colors hover:text-primary disabled:opacity-40"
+              >
+                <Icon name="arrow_back" className="text-[18px]" /> {t("Back")}
+              </button>
+            </div>
             {/* Source lives in the centre column, not the rail: a rail is ~380px
                 wide, which turns any real document into a 6-line peephole. */}
-            <div className="grid w-full max-w-[320px] grid-cols-2 gap-1 rounded-lg bg-surface-container p-1">
-              {(["url", "html"] as Mode[]).map((m) => (
-                <button
-                  key={m}
-                  type="button"
-                  onClick={() => setMode(m)}
-                  className={`rounded-md px-3 py-2 text-body-md font-semibold uppercase transition-colors ${
-                    mode === m
-                      ? "bg-surface-container-lowest text-primary shadow-sm"
-                      : "text-on-surface-variant hover:text-primary"
-                  }`}
-                >
-                  {/* i18n-raw: the mode ids URL and HTML are the same in every language */}
-                  {m}
-                </button>
-              ))}
-            </div>
+            {modeToggle}
 
             {mode === "url" ? (
               <div className="flex flex-col gap-1.5">
