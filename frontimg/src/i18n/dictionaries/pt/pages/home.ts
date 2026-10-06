@@ -82,4 +82,14 @@ export const ptHome: Record<string, string> = {
   "You can revoke access at any time from your": "Você pode revogar o acesso a qualquer momento na",
   "Google Account permissions page": "página de permissões da sua Conta do Google",
   "Contact us": "Fale conosco",
+  // ToolDirectory — the "Sizes and presets" block under the grid (expansion.md Phase 8).
+  "Sizes and presets": "Tamanhos e predefinições",
+  "Ready-made versions of the tools above, each set up for one job — like compressing a photo to exactly 50 KB.": "Versões prontas das ferramentas acima, cada uma ajustada para uma tarefa — como comprimir uma foto para exatamente 50 KB.",
+  "Compress to a file size": "Comprimir para um tamanho de arquivo",
+  "Image to PDF under a size": "Imagem em PDF até um tamanho",
+  "Print and social media sizes": "Tamanhos para impressão e redes sociais",
+  "AI presets": "Predefinições com IA",
+  "More presets": "Mais predefinições",
+  "{size} KB": "{size} KB", // i18n-same — the unit is written KB in Portuguese
+  "{size} MB": "{size} MB", // i18n-same
 };

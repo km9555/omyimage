@@ -98,4 +98,14 @@ export const idHome: Record<string, string> = {
   "You can revoke access at any time from your": "Anda bisa mencabut akses kapan saja dari",
   "Google Account permissions page": "halaman izin Akun Google Anda",
   "Contact us": "Hubungi kami",
+  // ToolDirectory — the "Sizes and presets" block under the grid (expansion.md Phase 8).
+  "Sizes and presets": "Ukuran & Preset",
+  "Ready-made versions of the tools above, each set up for one job — like compressing a photo to exactly 50 KB.": "Versi siap pakai dari alat di atas, masing-masing diatur untuk satu tugas — seperti mengompres foto tepat 50 KB.",
+  "Compress to a file size": "Kompres ke ukuran file",
+  "Image to PDF under a size": "Gambar ke PDF di bawah ukuran tertentu",
+  "Print and social media sizes": "Ukuran cetak & media sosial",
+  "AI presets": "Preset AI",
+  "More presets": "Preset lainnya",
+  "{size} KB": "{size} KB", // i18n-same
+  "{size} MB": "{size} MB", // i18n-same
 };

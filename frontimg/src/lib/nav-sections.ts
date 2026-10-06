@@ -35,29 +35,18 @@ export const NAV_SECTIONS: NavSection[] = [
     label: "Optimize Image",
     icon: "compress",
     color: "#4F9D69",
-    ids: ["compress-image", "resize-image", "crop-image", "rotate-image", "flip-image", "signature-resizer", "dpi-converter"],
+    ids: ["compress-image", "resize-image", "crop-image", "rotate-image", "dpi-converter"],
   },
   {
-    // Variants of compress-image (expansion.md §5): one row per target size.
-    id: "compress-size",
-    label: "Compress to Size",
-    icon: "photo_size_select_large",
-    color: "#4F9D69",
-    ids: [
-      "reduce-image-size-in-kb",
-      "compress-image-to-20kb",
-      "compress-image-to-50kb",
-      "compress-image-to-100kb",
-      "compress-image-to-200kb",
-      "compress-image-to-1mb",
-    ],
-  },
-  {
+    // The two things forms ask for besides a compressed photo. Variants
+    // (3x4-photo, 2x2-photo, compress-image-to-50kb …) are not menu rows: they
+    // are listed under "Sizes and presets" on the home page and in each
+    // family's strip (expansion.md Phase 8).
     id: "photo-id",
-    label: "Passport & ID Photos",
+    label: "Passport & Signature",
     icon: "badge",
     color: "#4F7FB8",
-    ids: ["passport-photo-maker", "3x4-photo", "2x2-photo"],
+    ids: ["passport-photo-maker", "signature-resizer"],
   },
   {
     id: "edit",
@@ -99,19 +88,7 @@ export const NAV_SECTIONS: NavSection[] = [
       "remove-watermark",
       "remove-object",
       "upscale-image",
-      "image-to-hd",
-      "unblur-image",
-      "change-background-color",
-      "blur-background",
     ],
-  },
-  {
-    // Variants of resize-image (expansion.md §5): print size, then one row per platform size.
-    id: "social-sizes",
-    label: "Print & Social Sizes",
-    icon: "aspect_ratio",
-    color: "#4B8FC7",
-    ids: ["resize-image-in-cm", "youtube-thumbnail-resizer", "whatsapp-dp-resizer", "linkedin-banner-resizer", "facebook-cover-resizer", "discord-banner-resizer"],
   },
   {
     id: "privacy",
@@ -176,14 +153,15 @@ export const NAV_SECTIONS_BY_ID: Record<string, NavSection> = Object.fromEntries
 /**
  * Column layout for the 4-column desktop mega-menu, by section id.
  * Balanced by row count (section headings included), not section count,
- * keeping the three Convert sections together: 22–25 tool rows per column.
- * The variant rows leave the menu in the Phase 8 cleanup (expansion.md),
- * which rebalances this again.
+ * keeping the three Convert sections together: 19–26 rows per column
+ * (headings included). Variants are not menu rows since the Phase 8 cleanup
+ * (expansion.md); their families are listed under "Sizes and presets" on the
+ * home page.
  */
 export const NAV_COLUMNS: string[][] = [
-  ["optimize", "compress-size", "photo-id", "social-sizes"],
-  ["edit", "effects", "ai"],
-  ["gif", "privacy", "create"],
+  ["optimize", "photo-id", "ai", "privacy"],
+  ["edit", "effects", "create"],
+  ["gif"],
   ["convert-format", "convert-other", "convert-camera"],
 ];
 

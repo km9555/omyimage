@@ -86,4 +86,14 @@ export const hiHome: Record<string, string> = {
   "You can revoke access at any time from your": "आप यह पहुँच कभी भी हटा सकते हैं —",
   "Google Account permissions page": "अपने Google अकाउंट के अनुमति पेज से",
   "Contact us": "हमसे संपर्क करें",
+  // ToolDirectory — the "Sizes and presets" block under the grid (expansion.md Phase 8).
+  "Sizes and presets": "साइज़ और प्रीसेट",
+  "Ready-made versions of the tools above, each set up for one job — like compressing a photo to exactly 50 KB.": "ऊपर दिए टूल्स के तैयार वर्ज़न, हर एक किसी एक काम के लिए सेट — जैसे फोटो को ठीक 50 KB में कंप्रेस करना।",
+  "Compress to a file size": "तय फ़ाइल साइज़ में कंप्रेस करें",
+  "Image to PDF under a size": "तय साइज़ से छोटी PDF",
+  "Print and social media sizes": "प्रिंट और सोशल मीडिया साइज़",
+  "AI presets": "AI प्रीसेट",
+  "More presets": "और प्रीसेट",
+  "{size} KB": "{size} KB", // i18n-same — Indian users write KB in Latin letters
+  "{size} MB": "{size} MB", // i18n-same
 };

@@ -94,4 +94,14 @@ export const ruHome: Record<string, string> = {
   "You can revoke access at any time from your": "Отозвать доступ можно в любой момент —",
   "Google Account permissions page": "на странице разрешений вашего аккаунта Google",
   "Contact us": "Связаться с нами",
+  // ToolDirectory — the "Sizes and presets" block under the grid (expansion.md Phase 8).
+  "Sizes and presets": "Размеры и пресеты",
+  "Ready-made versions of the tools above, each set up for one job — like compressing a photo to exactly 50 KB.": "Готовые версии инструментов выше, каждая настроена под одну задачу — например, сжать фото ровно до 50 КБ.",
+  "Compress to a file size": "Сжать до размера файла",
+  "Image to PDF under a size": "Изображение в PDF до размера",
+  "Print and social media sizes": "Размеры для печати и соцсетей",
+  "AI presets": "Пресеты с ИИ",
+  "More presets": "Другие пресеты",
+  "{size} KB": "{size} КБ",
+  "{size} MB": "{size} МБ",
 };

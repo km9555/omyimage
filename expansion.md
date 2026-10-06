@@ -205,6 +205,15 @@ English-only blog guides linking into the families ("make a photo exactly
 "GIF size limits"), then submit the per-locale child sitemaps in Search
 Console / Bing / Yandex and run `npm run indexnow`.
 
+- **8B (written 2026-10-06): four English guides**, ready to paste into
+  `/admin/blog`. They are in `guides/` with every editor field filled in
+  and the facts checked; publishing needs the owner's admin sign-in.
+- **8C (done 2026-10-06): navigation cleanup.** Variants are off the home
+  grid, its tabs, the dashboard grid (until you search) and the Tools menu.
+  They are surfaced as a "Sizes and presets" chip block under the home grid,
+  and still in each family's strip and in search. Tool counts are parents
+  only (73).
+
 **Navigation cleanup — LAST step, after every phase (user, 2026-10-05).**
 The variant cards on the home grid ("Compress Image to 20KB", "…50KB", …)
 and the "Compress to Size" rows in the Tools menu read as repetition. Once
@@ -769,6 +778,53 @@ blur-screenshot (90–140/mo), exif-editor (≤ 390, KD 68), svg-to-gif, blur-gi
       - HD → scale 2 → 1280 × 720.
   - **Snapshot diff:** exactly the 8 variant pages. verify:build passes,
     including the family similarity ceiling.
+- **2026-10-06 — 8B + 8C: guides and the variant cleanup.**
+  - **Guides** (`guides/01–04`, README with publishing steps):
+    - Make a photo exactly 50 KB.
+    - Passport photo size by country.
+    - Social media image sizes 2026.
+    - GIF size limits.
+
+    Each is ~900–1,000 words with 6–12 links into the families (all link
+    targets checked against `out/`). Facts were verified on 2026-10-06:
+    - Passport sizes/head heights against official ranges and
+      `id-photo.ts`.
+    - Platform sizes against `social-presets.ts` and the Instagram 3:4 grid.
+    - Discord free 20 MB (Aug 2026), X GIF 15 MB web / 5 MB app, Slack emoji
+      128 KB.
+    - Our own tools' behaviour (compress-to-size counts 1 KB = 1,000 bytes;
+      the GIF compressor's Strong level keeps every other frame).
+
+    Publish guide 1 before guide 2 (2 links to 1).
+  - **Home grid:** `!t.parentId` again. The "Sizes and presets" block under
+    it has six groups of chips:
+    - compress to a file size
+    - image to PDF under a size
+    - print and social sizes
+    - passport & ID
+    - AI presets
+    - more presets
+
+    Sized presets read "20 KB" / "1 MB" (ru «КБ/МБ»), the others keep their
+    tool names. Only variants shipped in the locale are shown, linked with
+    `toolHref`.
+  - **Dashboard:** parents only, but variants join once you type a query,
+    so "50kb" still finds them.
+  - **Tools menu:**
+    - `compress-size` and `social-sizes` sections removed.
+    - "Passport & ID Photos" → "Passport & Signature" (passport photo
+      maker, signature resizer).
+    - Optimize loses flip; Image AI loses the four variants.
+    - Columns: `[optimize, photo-id, ai, privacy]`,
+      `[edit, effects, create]`, `[gif]`, `[convert ×3]` — 19/20/19/26 rows.
+    - The retired labels were dropped from each `common.ts`.
+  - **`liveToolCount`:** parents only (73), matching the cards.
+  - **Snapshot diff vs 8A: 15 pages** — home, pricing and contact × 5
+    locales. verify:build passes (561 URLs; variants stay in the sitemap).
+  - **Still for the owner:**
+    - Publish the guides.
+    - Submit the per-locale child sitemaps in Search Console. Bing and
+      Yandex get them through IndexNow after the next deploy.
 - **Deploys need the user's go-ahead.** 2A, 3A, 4A and the visibility fix
   went live on 2026-10-04 (merge 505e680 into `main`, then `npm run
   indexnow`). Later batches are committed on `feat/tool-expansion` and
