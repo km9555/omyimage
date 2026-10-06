@@ -371,6 +371,22 @@ export const ptTools: Record<string, LocalizedTool> = {
     name: "Cortar GIF",
     shortDescription: "Corte GIFs e fique só com os quadros que quiser.",
   },
+  "gif-to-webp": {
+    name: "GIF para WEBP",
+    shortDescription: "Converta GIFs animados em WEBP animado.",
+  },
+  "gif-to-apng": {
+    name: "GIF para APNG",
+    shortDescription: "Converta GIFs animados em PNG animado (APNG).",
+  },
+  "gif-to-sprite-sheet": {
+    name: "GIF para sprite sheet",
+    shortDescription: "Coloque todos os quadros do GIF numa folha de sprites PNG.",
+  },
+  "gif-merger": {
+    name: "Juntar GIFs",
+    shortDescription: "Junte vários GIFs em um só, um depois do outro.",
+  },
 
   // ── Variantes: melhorar, espelhar, fundo (expansion.md) ──
   "image-to-hd": {

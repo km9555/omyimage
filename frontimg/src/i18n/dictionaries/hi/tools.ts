@@ -370,6 +370,22 @@ export const hiTools: Record<string, LocalizedTool> = {
     name: "GIF कटर",
     shortDescription: "GIF को काटें और सिर्फ़ ज़रूरी फ़्रेम रखें।",
   },
+  "gif-to-webp": {
+    name: "GIF से WEBP",
+    shortDescription: "एनिमेटेड GIF को एनिमेटेड WEBP में बदलें।",
+  },
+  "gif-to-apng": {
+    name: "GIF से APNG",
+    shortDescription: "एनिमेटेड GIF को एनिमेटेड PNG (APNG) में बदलें।",
+  },
+  "gif-to-sprite-sheet": {
+    name: "GIF से स्प्राइट शीट",
+    shortDescription: "GIF के सभी फ़्रेम एक PNG स्प्राइट शीट पर रखें।",
+  },
+  "gif-merger": {
+    name: "GIF मर्जर",
+    shortDescription: "कई GIF को एक के बाद एक जोड़कर एक GIF बनाएँ।",
+  },
 
   // ── वैरिएंट: HD, मिरर, बैकग्राउंड (expansion.md) ──
   "image-to-hd": {

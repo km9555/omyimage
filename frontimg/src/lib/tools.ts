@@ -1217,6 +1217,74 @@ export const TOOLS: Tool[] = [
       "Cut animated GIFs online for free: pick a start and end frame to keep part of a GIF, or remove a section from it. In your browser, no upload.",
     primaryKeyword: "gif cutter",
   },
+  {
+    id: "gif-to-webp",
+    name: "GIF to WEBP",
+    slug: "gif-to-webp",
+    categoryId: "convert",
+    shortDescription: "Convert animated GIFs to animated WEBP.",
+    icon: "sync_alt",
+    processing: "client",
+    library: "Canvas WebP encoder",
+    status: "live",
+    isNew: true,
+    priority: 191,
+    seoTitle: "GIF to WEBP Converter — Animated, Lossless or Lossy | oMyImage",
+    seoDescription:
+      "Convert animated GIFs to animated WEBP online for free. Lossless keeps every pixel, lossy makes files far smaller, and every frame keeps its timing. In your browser.",
+    primaryKeyword: "gif to webp",
+  },
+  {
+    id: "gif-to-apng",
+    name: "GIF to APNG",
+    slug: "gif-to-apng",
+    categoryId: "convert",
+    shortDescription: "Convert animated GIFs to animated PNG (APNG).",
+    icon: "image",
+    processing: "client",
+    library: "Canvas / CompressionStream",
+    status: "live",
+    isNew: true,
+    priority: 192,
+    seoTitle: "GIF to APNG Converter — Animated PNG Online, Free | oMyImage",
+    seoDescription:
+      "Convert animated GIFs to APNG (animated PNG) online for free. Every pixel and frame is kept, often in a smaller file. In your browser, no upload.",
+    primaryKeyword: "gif to apng",
+  },
+  {
+    id: "gif-to-sprite-sheet",
+    name: "GIF to Sprite Sheet",
+    slug: "gif-to-sprite-sheet",
+    categoryId: "convert",
+    shortDescription: "Lay out every GIF frame on one PNG sprite sheet.",
+    icon: "grid_view",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    isNew: true,
+    priority: 193,
+    seoTitle: "GIF to Sprite Sheet — Turn GIF Frames into a PNG Sheet | oMyImage",
+    seoDescription:
+      "Turn an animated GIF into a PNG sprite sheet online for free: grid, row or column, with spacing and a ready CSS animation. In your browser, no upload.",
+    primaryKeyword: "gif to sprite sheet",
+  },
+  {
+    id: "gif-merger",
+    name: "GIF Merger",
+    slug: "gif-merger",
+    categoryId: "edit",
+    shortDescription: "Join several GIFs into one, one after another.",
+    icon: "layers",
+    processing: "client",
+    library: "Canvas / gifenc",
+    status: "live",
+    isNew: true,
+    priority: 194,
+    seoTitle: "GIF Merger — Combine GIFs into One Online, Free | oMyImage",
+    seoDescription:
+      "Merge animated GIFs online for free: put several GIFs in order and join them into one GIF that plays them one after another. In your browser, no upload.",
+    primaryKeyword: "gif merger",
+  },
 
   // ── Variants (expansion.md §2) ─────────────────────────────────────────
   // Each runs its parent's engine with `preset` applied, on its own URL with
@@ -1772,7 +1840,8 @@ export function getTool(slug: string): Tool | undefined {
  */
 export const GIF_SUITE = [
   "gif-maker", "video-to-gif", "gif-compressor", "gif-resizer", "gif-cropper", "gif-cutter",
-  "rotate-gif", "reverse-gif", "gif-speed-changer", "gif-to-mp4", "webp-to-gif", "gif-to-images",
+  "gif-merger", "rotate-gif", "reverse-gif", "gif-speed-changer", "gif-to-mp4", "gif-to-webp",
+  "gif-to-apng", "webp-to-gif", "gif-to-images", "gif-to-sprite-sheet",
 ];
 
 export function relatedTools(tool: Tool, n = 3): Tool[] {
@@ -1872,6 +1941,10 @@ const TOOL_COLORS: Record<string, string> = {
   "reverse-gif": "#B05A80",
   "gif-speed-changer": "#C0706A",
   "gif-cutter": "#A85E92",
+  "gif-to-webp": "#8E6AB8",
+  "gif-to-apng": "#A0709E",
+  "gif-to-sprite-sheet": "#B8668C",
+  "gif-merger": "#C4607E",
   "passport-photo-maker": "#4F7FB8",
   "signature-resizer": "#5A6FB0",
   "dpi-converter": "#5B7FA6",

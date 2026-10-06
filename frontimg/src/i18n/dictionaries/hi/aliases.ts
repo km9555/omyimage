@@ -254,6 +254,18 @@ export const hiAliases: Record<string, string[]> = {
   "gif-cutter": [
     "cut gif", "trim gif", "gif काटें",
   ],
+  "gif-to-webp": [
+    "gif to webp", "animated webp", "gif को webp में बदलें",
+  ],
+  "gif-to-apng": [
+    "gif to apng", "animated png", "gif को apng में बदलें",
+  ],
+  "gif-to-sprite-sheet": [
+    "gif to sprite sheet", "sprite sheet maker", "gif फ़्रेम एक इमेज में",
+  ],
+  "gif-merger": [
+    "merge gif", "combine gif", "gif जोड़ें",
+  ],
 
   // वैरिएंट — HD, मिरर, बैकग्राउंड
   "image-to-hd": [

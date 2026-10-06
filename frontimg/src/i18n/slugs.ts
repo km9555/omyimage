@@ -143,6 +143,10 @@ const PT_TOOL_SLUGS: Record<string, string> = {
   "reverse-gif": "inverter-gif",
   "gif-speed-changer": "alterar-velocidade-gif",
   "gif-cutter": "cortar-gif",
+  "gif-to-webp": "gif-para-webp",
+  "gif-to-apng": "gif-para-apng",
+  "gif-to-sprite-sheet": "gif-para-sprite-sheet",
+  "gif-merger": "juntar-gif",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "imagem-em-hd",
@@ -250,6 +254,10 @@ const HI_TOOL_SLUGS: Record<string, string> = {
   "reverse-gif": "reverse-gif",
   "gif-speed-changer": "gif-speed-changer",
   "gif-cutter": "gif-cutter",
+  "gif-to-webp": "gif-to-webp",
+  "gif-to-apng": "gif-to-apng",
+  "gif-to-sprite-sheet": "gif-to-sprite-sheet",
+  "gif-merger": "gif-merger",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "image-to-hd",
@@ -366,6 +374,10 @@ const RU_TOOL_SLUGS: Record<string, string> = {
   "reverse-gif": "reverse-gif",
   "gif-speed-changer": "gif-speed-changer",
   "gif-cutter": "gif-cutter",
+  "gif-to-webp": "gif-to-webp",
+  "gif-to-apng": "gif-to-apng",
+  "gif-to-sprite-sheet": "gif-to-sprite-sheet",
+  "gif-merger": "gif-merger",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "image-to-hd",
@@ -504,6 +516,10 @@ const ID_TOOL_SLUGS: Record<string, string> = {
   "reverse-gif": "reverse-gif",
   "gif-speed-changer": "ubah-kecepatan-gif",
   "gif-cutter": "potong-gif",
+  "gif-to-webp": "gif-ke-webp",
+  "gif-to-apng": "gif-ke-apng",
+  "gif-to-sprite-sheet": "gif-ke-sprite-sheet",
+  "gif-merger": "gabung-gif",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "jadikan-foto-hd",

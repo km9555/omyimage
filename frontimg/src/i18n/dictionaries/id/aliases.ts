@@ -239,6 +239,18 @@ export const idAliases: Record<string, string[]> = {
   "gif-cutter": [
     "trim gif", "memotong durasi gif", "hapus frame gif", "cut gif",
   ],
+  "gif-to-webp": [
+    "ubah gif jadi webp", "gif ke webp animasi", "convert gif ke webp",
+  ],
+  "gif-to-apng": [
+    "ubah gif jadi apng", "png animasi", "convert gif ke apng",
+  ],
+  "gif-to-sprite-sheet": [
+    "gif ke sprite", "sprite sheet gif", "frame gif jadi satu gambar",
+  ],
+  "gif-merger": [
+    "gabungkan gif", "menggabungkan gif", "merge gif", "satukan gif",
+  ],
 
   // Varian — HD, mirror, background
   "image-to-hd": [

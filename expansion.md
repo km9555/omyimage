@@ -154,11 +154,11 @@ gif-to-webp (1.3K) · rotate-gif (1.3K).
   gif-resizer, gif-to-mp4, webp-to-gif.
 - **5B (done 2026-10-06, all locales):** gif-cropper, rotate-gif,
   reverse-gif, gif-speed-changer, gif-cutter.
-- **Next (5C):** typing-text-gif, add-text-to-gif, gif-merger,
-  gif-to-sprite-sheet, gif-to-apng, gif-to-webp.
-  - gif-to-webp needs an animated-WebP encoder (canvas only writes stills).
-    Check libwebp-wasm builds against the LICENSE-AUDIT rules first.
-  - gif-to-apng: UPNG.js (MIT) can write APNG.
+- **5C (done 2026-10-06, all locales):** gif-to-webp, gif-to-apng,
+  gif-to-sprite-sheet, gif-merger. No new dependency: WebP frames come from
+  the browser's encoder and APNG is written in-house.
+- **Next (5D):** add-text-to-gif, typing-text-gif. They share text rendering;
+  check meme-generator for fonts and stroke code first.
 
 ### Phase 6 — edit tools (canvas)
 
@@ -475,6 +475,53 @@ blur-screenshot (90–140/mo), exif-editor (≤ 390, KD 68), svg-to-gif, blur-gi
   - **Snapshot diff vs 5A: 50 pages**, all expected — the 7 existing GIF pages
     × 5 locales (related list), plus home, pricing and contact × 5 (85 → 90
     tools). verify:build: 481 URLs.
+- **2026-10-06 — Batch 5C: gif-to-webp, gif-to-apng, gif-to-sprite-sheet,
+  gif-merger — 20 pages.**
+  - **`lib/gif/to-webp.ts`:**
+    - Each frame (only the changed rectangle, at even x/y) goes through
+      `canvas.toBlob("image/webp", q)`. In Chrome, q = 1 gives lossless VP8L
+      and q < 1 gives lossy VP8 + ALPH.
+    - The chunks are muxed into RIFF/VP8X/ANIM/ANMF (no-blend, no dispose),
+      and the per-frame ICCP chunk is dropped.
+    - Identical frames are folded into the previous duration. Loop count:
+      GIF N → WebP N + 1 plays.
+    - Safari has no WebP encoder, so the user gets the existing common
+      error.
+  - **`lib/gif/to-apng.ts`:**
+    - A PNG writer (CRC-32, IHDR/PLTE/tRNS/acTL/fcTL/IDAT/fdAT) with zlib
+      from `CompressionStream("deflate")`.
+    - Indexed (colour type 3) when every frame fits 256 colours; RGBA with
+      adaptive filters otherwise.
+    - Changed rectangles, folded identical frames, and the loop count carried
+      over (play-once stays play-once, checked with ImageDecoder).
+  - **`lib/gif/sprite.ts`:** grid, row or column. Canvas limits are 16384 px
+    a side and 16.7 MP for Safari, with a warning instead of a failed toBlob.
+    Row and column sheets get a CSS `steps()` snippet.
+  - **`lib/gif/merge.ts`:** `concatSources` builds one FrameSource out of
+    several, fitted to the output with contain or cover and a transparent or
+    colour background, then goes through `reencodeAsGif`.
+  - **Components:** `GifExportTool` (`mode` webp/apng/sprite; APNG and sprite
+    pages reuse the WEBP page's `ui`) and `GifMergerTool` (list with
+    up/down/remove, Add GIFs).
+  - **Measured:**
+
+    | Test GIF | WEBP lossless | WEBP high | WEBP small | APNG |
+    |---|---:|---:|---:|---:|
+    | Noisy 40 frames, multi-palette (1.9 MB) | −4 % | −40 % | −68 % | −3 % (RGBA) |
+    | Small transparent | −52 % | +46 % | — | −46 % (indexed) |
+
+    - Lossless WEBP and APNG are pixel-exact and keep transparency.
+    - **Merger:** a 30 + 10 + 30 frame merge put the smaller GIF in
+      transparent borders at the predicted spot. Fill & crop at the smallest
+      size cropped as computed.
+    - **Sprite sheet:** a 6 × 5 grid had every frame in place. At one row,
+      50 % and a 4 px gap, the CSS offset was −4920 px (30 × 164).
+  - **Copy:** written to these measurements. Lossy roughly halves video
+    GIFs, and on small graphics lossless can beat lossy. No browser on
+    iPhone can encode WEBP.
+  - **Snapshot diff vs 5B: 65 pages**, all expected — the existing GIF pages'
+    related ring shifted, and home, pricing and contact went from 90 to 94
+    tools. verify:build: 501 URLs.
 - **Deploys need the user's go-ahead.** 2A, 3A, 4A and the visibility fix
   went live on 2026-10-04 (merge 505e680 into `main`, then `npm run
   indexnow`). Later batches are committed on `feat/tool-expansion` and

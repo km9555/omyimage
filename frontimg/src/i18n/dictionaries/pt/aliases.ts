@@ -245,6 +245,18 @@ export const ptAliases: Record<string, string[]> = {
   "gif-cutter": [
     "aparar gif", "encurtar gif", "remover quadros do gif", "cortar parte do gif",
   ],
+  "gif-to-webp": [
+    "converter gif em webp", "gif animado para webp", "gif2webp",
+  ],
+  "gif-to-apng": [
+    "gif para png animado", "converter gif em apng", "png animado",
+  ],
+  "gif-to-sprite-sheet": [
+    "gif para sprite", "folha de sprites", "spritesheet gif", "quadros do gif em uma imagem",
+  ],
+  "gif-merger": [
+    "juntar gifs", "unir gif", "combinar gifs", "mesclar gif",
+  ],
 
   // Variantes — HD, espelhar, fundo
   "image-to-hd": [

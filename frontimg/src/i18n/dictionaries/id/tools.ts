@@ -373,6 +373,22 @@ export const idTools: Record<string, LocalizedTool> = {
     name: "Potong GIF",
     shortDescription: "Potong GIF dan simpan frame yang Anda mau.",
   },
+  "gif-to-webp": {
+    name: "GIF ke WEBP",
+    shortDescription: "Ubah GIF animasi jadi WEBP animasi.",
+  },
+  "gif-to-apng": {
+    name: "GIF ke APNG",
+    shortDescription: "Ubah GIF animasi jadi PNG animasi (APNG).",
+  },
+  "gif-to-sprite-sheet": {
+    name: "GIF ke Sprite Sheet",
+    shortDescription: "Susun semua frame GIF di satu sprite sheet PNG.",
+  },
+  "gif-merger": {
+    name: "Gabung GIF",
+    shortDescription: "Gabungkan beberapa GIF jadi satu, berurutan.",
+  },
 
   // ── Varian: HD, mirror, background (expansion.md) ──
   "image-to-hd": {

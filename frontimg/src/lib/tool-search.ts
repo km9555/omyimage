@@ -328,6 +328,18 @@ export const TOOL_ALIASES: Record<string, string[]> = {
   "gif-cutter": [
     "cut gif", "trim gif", "gif trimmer", "shorten gif", "remove frames from gif",
   ],
+  "gif-to-webp": [
+    "convert gif to webp", "animated webp", "gif2webp", "gif to animated webp",
+  ],
+  "gif-to-apng": [
+    "animated png", "convert gif to apng", "gif to animated png", "apng maker",
+  ],
+  "gif-to-sprite-sheet": [
+    "sprite sheet", "spritesheet", "gif to sprite", "sprite sheet generator", "gif frames to png sheet",
+  ],
+  "gif-merger": [
+    "merge gif", "combine gifs", "join gifs", "gif combiner", "put gifs together",
+  ],
 
   // Variants — upscale, rotate, remove-background
   "image-to-hd": [

@@ -371,6 +371,22 @@ export const ruTools: Record<string, LocalizedTool> = {
     name: "Укоротить GIF",
     shortDescription: "Оставьте в GIF только нужные кадры.",
   },
+  "gif-to-webp": {
+    name: "GIF в WEBP",
+    shortDescription: "Анимированный GIF в анимированный WEBP.",
+  },
+  "gif-to-apng": {
+    name: "GIF в APNG",
+    shortDescription: "Анимированный GIF в анимированный PNG (APNG).",
+  },
+  "gif-to-sprite-sheet": {
+    name: "GIF в спрайт-лист",
+    shortDescription: "Все кадры GIF на одном PNG спрайт-листе.",
+  },
+  "gif-merger": {
+    name: "Склеить GIF",
+    shortDescription: "Соедините несколько GIF в один, друг за другом.",
+  },
 
   // ── Варианты: HD, отражение, фон (expansion.md) ──
   "image-to-hd": {

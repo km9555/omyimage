@@ -114,6 +114,10 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "reverse-gif",
     "gif-speed-changer",
     "gif-cutter",
+    "gif-to-webp",
+    "gif-to-apng",
+    "gif-to-sprite-sheet",
+    "gif-merger",
     // Expansion 3A — engine variants (expansion.md §5)
     "image-to-hd",
     "unblur-image",
@@ -226,6 +230,10 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "reverse-gif",
     "gif-speed-changer",
     "gif-cutter",
+    "gif-to-webp",
+    "gif-to-apng",
+    "gif-to-sprite-sheet",
+    "gif-merger",
     // Expansion 3A — engine variants (expansion.md §5)
     "image-to-hd",
     "unblur-image",
@@ -340,6 +348,10 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "reverse-gif",
     "gif-speed-changer",
     "gif-cutter",
+    "gif-to-webp",
+    "gif-to-apng",
+    "gif-to-sprite-sheet",
+    "gif-merger",
     // Expansion 3A — engine variants (expansion.md §5)
     "image-to-hd",
     "unblur-image",
@@ -455,6 +467,10 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "reverse-gif",
     "gif-speed-changer",
     "gif-cutter",
+    "gif-to-webp",
+    "gif-to-apng",
+    "gif-to-sprite-sheet",
+    "gif-merger",
     // Expansion 3A — engine variants (expansion.md §5)
     "flip-image",
     "change-background-color",
