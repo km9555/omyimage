@@ -11,6 +11,7 @@ const content: ToolPageContent = {
   tagline:
     "Resize JPG, PNG, WEBP and GIF images online — by exact pixels or percentage, with aspect-ratio lock and batch support. Free, fast and 100% private in your browser.",
   category: { id: "optimize", label: "Optimize" },
+  variantsHeading: "Resize for print or a social platform",
 
   intro:
     "Need an image at an exact size for a profile picture, a thumbnail, or a print? oMyImage's Resize Image tool lets you set precise pixel dimensions or scale by percentage, with an aspect-ratio lock so nothing looks stretched. Resize a single image or a whole batch at once, choose your output format, and download. Everything runs in your browser, so your images stay private.",

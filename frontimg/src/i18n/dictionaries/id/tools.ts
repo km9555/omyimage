@@ -229,6 +229,210 @@ export const idTools: Record<string, LocalizedTool> = {
     name: "Kompres Foto 1 MB",
     shortDescription: "Foto ponsel di bawah 1 MB, biasanya ukuran penuh.",
   },
+  "compress-image-to-10kb": {
+    name: "Kompres Foto 10 KB",
+    shortDescription: "Tanda tangan dan foto kecil di bawah 10 KB.",
+  },
+  "compress-image-to-30kb": {
+    name: "Kompres Foto 30 KB",
+    shortDescription: "Pas foto formulir di bawah 30 KB, wajah tetap jelas.",
+  },
+  "compress-image-to-300kb": {
+    name: "Kompres Foto 300 KB",
+    shortDescription: "Foto dan scan dokumen di bawah 300 KB.",
+  },
+  "compress-image-to-500kb": {
+    name: "Kompres Foto 500 KB",
+    shortDescription: "Foto, scan, dan screenshot di bawah 500 KB.",
+  },
+  "compress-image-to-2mb": {
+    name: "Kompres Foto 2 MB",
+    shortDescription: "Foto besar dari HP di bawah 2 MB.",
+  },
+  "compress-image-to-15kb": {
+    name: "Kompres Foto 15 KB",
+    shortDescription: "Tanda tangan dan foto kecil di bawah 15 KB.",
+  },
+  "compress-image-to-40kb": {
+    name: "Kompres Foto 40 KB",
+    shortDescription: "Pas foto formulir di bawah 40 KB, tetap jelas.",
+  },
+  "compress-image-to-150kb": {
+    name: "Kompres Foto 150 KB",
+    shortDescription: "Foto dan halaman tulisan tangan di bawah 150 KB.",
+  },
+  "increase-image-size-in-kb": {
+    name: "Perbesar Ukuran Foto (KB)",
+    shortDescription: "Buat foto minimal 10, 20, atau 50 KB.",
+  },
+  "signature-resizer": {
+    name: "Ubah Ukuran Tanda Tangan",
+    shortDescription: "Bersihkan, potong, dan ubah ukuran tanda tangan.",
+  },
+  "jpg-to-pdf-under-100kb": {
+    name: "JPG ke PDF di Bawah 100 KB",
+    shortDescription: "PDF satu halaman di bawah 100 KB untuk formulir.",
+  },
+  "jpg-to-pdf-under-200kb": {
+    name: "JPG ke PDF di Bawah 200 KB",
+    shortDescription: "Sertifikat dan scan dalam satu PDF di bawah 200 KB.",
+  },
+  "jpg-to-pdf-under-300kb": {
+    name: "JPG ke PDF di Bawah 300 KB",
+    shortDescription: "Dokumen beberapa halaman dalam PDF di bawah 300 KB.",
+  },
+  "jpg-to-pdf-under-500kb": {
+    name: "JPG ke PDF di Bawah 500 KB",
+    shortDescription: "Dokumen panjang dalam satu PDF di bawah 500 KB.",
+  },
+  "convert-to-png": {
+    name: "Ubah Foto ke PNG",
+    shortDescription: "JPG, WEBP, GIF, dan BMP → PNG.",
+  },
+  "convert-to-webp": {
+    name: "Ubah Foto ke WEBP",
+    shortDescription: "JPG, PNG, GIF, dan BMP → WEBP.",
+  },
+  "svg-to-png": {
+    name: "SVG ke PNG",
+    shortDescription: "Ubah vektor SVG jadi PNG tajam di ukuran apa pun.",
+  },
+  "png-to-ico": {
+    name: "PNG ke ICO",
+    shortDescription: "Buat favicon .ico dan ikon Windows.",
+  },
+  "youtube-thumbnail-resizer": {
+    name: "Ubah Ukuran Thumbnail YouTube",
+    shortDescription: "Ubah gambar apa pun jadi thumbnail YouTube 1280 × 720.",
+  },
+  "whatsapp-dp-resizer": {
+    name: "Foto Profil WA Full",
+    shortDescription: "Foto utuh di profil WA persegi, tanpa terpotong.",
+  },
+  "linkedin-banner-resizer": {
+    name: "Ubah Ukuran Banner LinkedIn",
+    shortDescription: "Ubah gambar apa pun jadi banner LinkedIn 1584 × 396.",
+  },
+  "facebook-cover-resizer": {
+    name: "Ubah Ukuran Sampul Facebook",
+    shortDescription: "Ubah gambar apa pun jadi sampul Facebook 851 × 315.",
+  },
+  "discord-banner-resizer": {
+    name: "Ubah Ukuran Banner Discord",
+    shortDescription: "Ukuran banner profil dan server Discord.",
+  },
+  "dpi-converter": {
+    name: "Ubah DPI Foto",
+    shortDescription: "Ubah DPI ke 300, 200, atau nilai lain tanpa menurunkan kualitas.",
+  },
+  "dpi-checker": {
+    name: "Cek DPI Foto",
+    shortDescription: "Lihat DPI gambar dan ukuran cetaknya.",
+  },
+  "resize-image-in-cm": {
+    name: "Ubah Ukuran Foto dalam cm",
+    shortDescription: "Ubah ukuran foto ke cm, mm, atau inci yang tepat.",
+  },
+  "video-to-gif": {
+    name: "Video ke GIF",
+    shortDescription: "Ubah potongan video MP4, WEBM, atau MOV jadi GIF.",
+  },
+  "gif-compressor": {
+    name: "Kompres GIF",
+    shortDescription: "Perkecil GIF animasi tanpa kehilangan frame.",
+  },
+  "gif-resizer": {
+    name: "Ubah Ukuran GIF",
+    shortDescription: "Ubah ukuran GIF animasi dengan semua frame tetap ada.",
+  },
+  "gif-to-mp4": {
+    name: "GIF ke MP4",
+    shortDescription: "Ubah GIF jadi video MP4 yang ringan.",
+  },
+  "webp-to-gif": {
+    name: "WEBP ke GIF",
+    shortDescription: "Ubah WEBP animasi jadi GIF.",
+  },
+  "gif-cropper": {
+    name: "Crop GIF",
+    shortDescription: "Crop GIF animasi dengan semua frame tetap ada.",
+  },
+  "rotate-gif": {
+    name: "Putar GIF",
+    shortDescription: "Putar atau balik GIF animasi 90° atau 180°.",
+  },
+  "reverse-gif": {
+    name: "Putar Balik GIF",
+    shortDescription: "Putar GIF mundur atau jadikan boomerang.",
+  },
+  "gif-speed-changer": {
+    name: "Ubah Kecepatan GIF",
+    shortDescription: "Percepat atau perlambat GIF animasi.",
+  },
+  "gif-cutter": {
+    name: "Potong GIF",
+    shortDescription: "Potong GIF dan simpan frame yang Anda mau.",
+  },
+  "gif-to-webp": {
+    name: "GIF ke WEBP",
+    shortDescription: "Ubah GIF animasi jadi WEBP animasi.",
+  },
+  "gif-to-apng": {
+    name: "GIF ke APNG",
+    shortDescription: "Ubah GIF animasi jadi PNG animasi (APNG).",
+  },
+  "gif-to-sprite-sheet": {
+    name: "GIF ke Sprite Sheet",
+    shortDescription: "Susun semua frame GIF di satu sprite sheet PNG.",
+  },
+  "gif-merger": {
+    name: "Gabung GIF",
+    shortDescription: "Gabungkan beberapa GIF jadi satu, berurutan.",
+  },
+  "add-text-to-gif": {
+    name: "Tambah Teks ke GIF",
+    shortDescription: "Beri tulisan pada GIF animasi, di semua frame atau sebagian.",
+  },
+  "typing-text-gif": {
+    name: "GIF Teks Mengetik",
+    shortDescription: "Buat GIF berisi teks yang mengetik sendiri, huruf demi huruf.",
+  },
+  "invert-image": {
+    name: "Invert Warna Foto",
+    shortDescription: "Balik warna foto — negatif atau invert pintar.",
+  },
+  "pixelate-image": {
+    name: "Pixelate Foto",
+    shortDescription: "Ubah foto jadi blok-blok piksel.",
+  },
+  "image-brightness": {
+    name: "Kecerahan & Kontras",
+    shortDescription: "Cerahkan, gelapkan, dan atur kontras serta warna foto.",
+  },
+  "glitch-effect": {
+    name: "Efek Glitch",
+    shortDescription: "Beri foto tampilan layar rusak yang glitch.",
+  },
+  "round-corners": {
+    name: "Sudut Melengkung",
+    shortDescription: "Buat sudut gambar melengkung dengan tepi transparan.",
+  },
+  "remove-watermark": {
+    name: "Hapus Watermark",
+    shortDescription: "Hapus watermark, logo, dan tanggal dengan AI, langsung di browser.",
+  },
+  "remove-object": {
+    name: "Hapus Objek Foto",
+    shortDescription: "Hapus orang, benda, dan noda dari foto dengan AI.",
+  },
+  "split-image": {
+    name: "Split Foto",
+    shortDescription: "Potong gambar jadi beberapa bagian sama besar atau ubin.",
+  },
+  "image-overlay": {
+    name: "Overlay Foto",
+    shortDescription: "Tumpuk satu gambar di atas gambar lain, dengan opasitas dan blend.",
+  },
 
   // ── Varian: HD, mirror, background (expansion.md) ──
   "image-to-hd": {
@@ -262,6 +466,10 @@ export const idTools: Record<string, LocalizedTool> = {
   "2x2-photo": {
     name: "Pas Foto 2x2 Inci",
     shortDescription: "Foto 2 × 2 inci untuk paspor dan visa Amerika.",
+  },
+  "instagram-grid-maker": {
+    name: "Grid Instagram",
+    shortDescription: "Ubah satu foto jadi grid atau carousel Instagram.",
   },
 };
 

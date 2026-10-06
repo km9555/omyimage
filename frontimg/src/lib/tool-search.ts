@@ -143,6 +143,27 @@ export const TOOL_ALIASES: Record<string, string[]> = {
     "black and white", "greyscale", "bw image", "monochrome", "desaturate",
     "remove color", "make image black and white", "gray photo",
   ],
+  "invert-image": [
+    "invert colors", "negative image", "photo negative", "invert picture", "color inverter",
+  ],
+  "pixelate-image": [
+    "pixelate photo", "pixel art", "pixelated effect", "mosaic image", "8 bit photo",
+  ],
+  "image-brightness": [
+    "brighten photo", "contrast", "saturation", "darken image", "photo brightness",
+  ],
+  "glitch-effect": [
+    "glitch photo", "rgb split", "vhs effect", "glitch art", "distortion effect",
+  ],
+  "round-corners": [
+    "rounded corners", "round image corners", "rounded png", "corner radius", "rounded rectangle image",
+  ],
+  "remove-watermark": [
+    "watermark remover", "erase watermark", "remove logo from photo", "remove text from image", "remove date stamp", "delete watermark",
+  ],
+  "remove-object": [
+    "object remover", "erase object", "remove person from photo", "magic eraser", "cleanup picture", "inpaint", "remove unwanted objects",
+  ],
   "blur-image": [
     "blur photo", "soften image", "gaussian blur", "make image blurry",
     "blur whole image", "background blur",
@@ -158,6 +179,14 @@ export const TOOL_ALIASES: Record<string, string[]> = {
   "merge-images": [
     "combine images", "join images", "stitch images", "collage",
     "images side by side", "photo grid", "concatenate images", "merge photos",
+  ],
+  "split-image": [
+    "image splitter", "cut image into pieces", "divide image", "split photo in half",
+    "image grid cutter", "tile image", "slice image",
+  ],
+  "image-overlay": [
+    "overlay images", "put image on image", "superimpose", "blend images", "double exposure",
+    "transparent overlay", "layer photos",
   ],
   "gif-maker": [
     "make gif", "create gif", "animated gif", "images to gif", "photos to gif",
@@ -220,6 +249,132 @@ export const TOOL_ALIASES: Record<string, string[]> = {
   "compress-image-to-1mb": [
     "1 mb", "1mb", "under 1mb", "photo 1mb", "1 megabyte", "1000 kb",
   ],
+  "compress-image-to-10kb": [
+    "10 kb", "10kb", "resize image to 10kb", "under 10kb", "signature 10kb", "thumb impression",
+  ],
+  "compress-image-to-30kb": [
+    "30 kb", "30kb", "resize image to 30kb", "under 30kb", "photo 30kb",
+  ],
+  "compress-image-to-300kb": [
+    "300 kb", "300kb", "resize image to 300kb", "under 300kb",
+  ],
+  "compress-image-to-500kb": [
+    "500 kb", "500kb", "resize image to 500kb", "under 500kb", "half mb",
+  ],
+  "compress-image-to-2mb": [
+    "2 mb", "2mb", "resize image to 2mb", "under 2mb", "2000kb",
+  ],
+  "compress-image-to-15kb": [
+    "15 kb", "15kb", "resize image to 15kb", "under 15kb",
+  ],
+  "compress-image-to-40kb": [
+    "40 kb", "40kb", "resize image to 40kb", "under 40kb",
+  ],
+  "compress-image-to-150kb": [
+    "150 kb", "150kb", "resize image to 150kb", "under 150kb",
+  ],
+  "increase-image-size-in-kb": [
+    "increase kb", "increase photo size", "make image bigger in kb", "image size increaser", "minimum kb",
+  ],
+  "signature-resizer": [
+    "signature resize", "signature resizer", "resize signature", "signature 10 to 20 kb", "signature 20kb", "signature white background", "scan signature",
+  ],
+  "jpg-to-pdf-under-100kb": [
+    "jpg to pdf 100kb", "pdf under 100kb", "image to pdf 100kb", "pdf 100 kb",
+  ],
+  "jpg-to-pdf-under-200kb": [
+    "jpg to pdf 200kb", "pdf under 200kb", "image to pdf 200kb", "pdf 200 kb",
+  ],
+  "jpg-to-pdf-under-300kb": [
+    "jpg to pdf 300kb", "pdf under 300kb", "image to pdf 300kb", "pdf 300 kb",
+  ],
+  "jpg-to-pdf-under-500kb": [
+    "jpg to pdf 500kb", "pdf under 500kb", "image to pdf 500kb", "pdf 500 kb",
+  ],
+  "convert-to-png": [
+    "image to png", "to png", "change format to png", "make png", "png converter", "jpg to png converter",
+  ],
+  "convert-to-webp": [
+    "image to webp", "to webp", "webp converter", "make webp", "convert images to webp", "webp for website",
+  ],
+  "svg-to-png": [
+    "svg2png", "svg converter", "vector to png", "svg to image", "export svg as png", "svg to png high resolution",
+  ],
+  "png-to-ico": [
+    "png2ico", "ico converter", "favicon generator", "image to ico", "jpg to ico", "favicon.ico", "icon maker",
+  ],
+  "youtube-thumbnail-resizer": [
+    "youtube thumbnail size", "thumbnail resizer", "1280x720", "youtube thumbnail maker", "resize image for youtube",
+  ],
+  "whatsapp-dp-resizer": [
+    "whatsapp dp size", "whatsapp profile picture", "dp without crop", "full dp for whatsapp", "whatsapp dp maker",
+  ],
+  "linkedin-banner-resizer": [
+    "linkedin banner size", "linkedin background photo", "1584x396", "linkedin cover photo", "linkedin header",
+  ],
+  "facebook-cover-resizer": [
+    "facebook cover photo size", "fb cover", "851x315", "facebook banner", "facebook cover maker",
+  ],
+  "discord-banner-resizer": [
+    "discord banner size", "discord profile banner", "discord server banner", "600x240", "discord server icon",
+  ],
+  "dpi-converter": [
+    "change dpi", "300 dpi", "convert image to 300 dpi", "dpi changer", "increase dpi", "200 dpi", "set dpi",
+  ],
+  "dpi-checker": [
+    "check dpi", "image dpi", "what is the dpi of my image", "dpi finder", "find dpi", "image resolution checker",
+  ],
+  "resize-image-in-cm": [
+    "resize in cm", "cm to pixels", "resize image in inches", "print size", "resize in mm", "photo size in cm",
+  ],
+  "video-to-gif": [
+    "mp4 to gif", "mov to gif", "webm to gif", "make gif from video", "clip to gif", "convert video to gif",
+  ],
+  "gif-compressor": [
+    "compress gif", "reduce gif size", "gif optimizer", "make gif smaller", "gif size reducer",
+  ],
+  "gif-resizer": [
+    "resize gif", "gif resize", "change gif size", "scale gif", "shrink gif",
+  ],
+  "gif-to-mp4": [
+    "convert gif to mp4", "gif to video", "gif2mp4", "gif to mp4 converter",
+  ],
+  "webp-to-gif": [
+    "animated webp to gif", "convert webp to gif", "webp2gif", "webp animation to gif",
+  ],
+  "gif-cropper": [
+    "crop gif", "gif crop", "crop animated gif", "trim gif edges", "gif crop tool",
+  ],
+  "rotate-gif": [
+    "gif rotate", "rotate animated gif", "flip gif", "mirror gif", "turn gif sideways",
+  ],
+  "reverse-gif": [
+    "gif reverse", "play gif backwards", "rewind gif", "boomerang gif", "gif reverser",
+  ],
+  "gif-speed-changer": [
+    "change gif speed", "speed up gif", "slow down gif", "gif speed", "gif frame delay", "gif fps",
+  ],
+  "gif-cutter": [
+    "cut gif", "trim gif", "gif trimmer", "shorten gif", "remove frames from gif",
+  ],
+  "gif-to-webp": [
+    "convert gif to webp", "animated webp", "gif2webp", "gif to animated webp",
+  ],
+  "gif-to-apng": [
+    "animated png", "convert gif to apng", "gif to animated png", "apng maker",
+  ],
+  "gif-to-sprite-sheet": [
+    "sprite sheet", "spritesheet", "gif to sprite", "sprite sheet generator", "gif frames to png sheet",
+  ],
+  "gif-merger": [
+    "merge gif", "combine gifs", "join gifs", "gif combiner", "put gifs together",
+  ],
+  "add-text-to-gif": [
+    "caption gif", "write on gif", "put text on gif", "gif caption maker", "gif text editor", "meme gif",
+  ],
+  "typing-text-gif": [
+    "typing animation", "typewriter gif", "typing effect", "animated text gif", "text animation gif",
+  ],
 
   // Variants — upscale, rotate, remove-background
   "image-to-hd": [
@@ -245,6 +400,10 @@ export const TOOL_ALIASES: Record<string, string[]> = {
   ],
   "2x2-photo": [
     "2x2", "2 x 2 inch", "us passport photo", "us visa photo", "oci photo", "600x600",
+  ],
+  "instagram-grid-maker": [
+    "instagram grid", "grid maker", "split photo for instagram", "instagram puzzle",
+    "panorama carousel", "3x3 grid instagram",
   ],
 };
 

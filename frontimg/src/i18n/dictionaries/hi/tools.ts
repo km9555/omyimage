@@ -226,6 +226,210 @@ export const hiTools: Record<string, LocalizedTool> = {
     name: "इमेज 1 MB में कंप्रेस करें",
     shortDescription: "मोबाइल फोटो 1 MB से कम, ज़्यादातर पूरे साइज़ में।",
   },
+  "compress-image-to-10kb": {
+    name: "इमेज 10 KB में कंप्रेस करें",
+    shortDescription: "10 KB से कम में सिग्नेचर और अंगूठे का निशान।",
+  },
+  "compress-image-to-30kb": {
+    name: "इमेज 30 KB में कंप्रेस करें",
+    shortDescription: "30 KB से कम में फ़ॉर्म फोटो, चेहरा साफ़।",
+  },
+  "compress-image-to-300kb": {
+    name: "इमेज 300 KB में कंप्रेस करें",
+    shortDescription: "300 KB से कम में फोटो और स्कैन, पढ़ने लायक़ टेक्स्ट।",
+  },
+  "compress-image-to-500kb": {
+    name: "इमेज 500 KB में कंप्रेस करें",
+    shortDescription: "500 KB से कम में लगभग ओरिजिनल क्वालिटी।",
+  },
+  "compress-image-to-2mb": {
+    name: "इमेज 2 MB में कंप्रेस करें",
+    shortDescription: "बड़ी मोबाइल फोटो 2 MB से कम में।",
+  },
+  "compress-image-to-15kb": {
+    name: "इमेज 15 KB में कंप्रेस करें",
+    shortDescription: "15 KB से कम में सिग्नेचर और छोटी फोटो।",
+  },
+  "compress-image-to-40kb": {
+    name: "इमेज 40 KB में कंप्रेस करें",
+    shortDescription: "40 KB से कम में फ़ॉर्म फोटो, साफ़ चेहरा।",
+  },
+  "compress-image-to-150kb": {
+    name: "इमेज 150 KB में कंप्रेस करें",
+    shortDescription: "150 KB से कम में फोटो और हाथ से लिखे पेज।",
+  },
+  "increase-image-size-in-kb": {
+    name: "इमेज का साइज़ KB में बढ़ाएँ",
+    shortDescription: "फ़ॉर्म के लिए फोटो कम से कम 10, 20 या 50 KB करें।",
+  },
+  "signature-resizer": {
+    name: "सिग्नेचर रीसाइज़र",
+    shortDescription: "सिग्नेचर साफ़ करें, क्रॉप करें और 10–20 KB में लाएँ।",
+  },
+  "jpg-to-pdf-under-100kb": {
+    name: "JPG से PDF, 100 KB से कम",
+    shortDescription: "सख़्त फ़ॉर्म के लिए 100 KB से कम का एक पेज वाला PDF।",
+  },
+  "jpg-to-pdf-under-200kb": {
+    name: "JPG से PDF, 200 KB से कम",
+    shortDescription: "सर्टिफ़िकेट और स्कैन 200 KB से कम के एक PDF में।",
+  },
+  "jpg-to-pdf-under-300kb": {
+    name: "JPG से PDF, 300 KB से कम",
+    shortDescription: "कई पेज वाले दस्तावेज़ 300 KB से कम के PDF में।",
+  },
+  "jpg-to-pdf-under-500kb": {
+    name: "JPG से PDF, 500 KB से कम",
+    shortDescription: "लंबे दस्तावेज़ 500 KB से कम के एक PDF में।",
+  },
+  "convert-to-png": {
+    name: "PNG में बदलें",
+    shortDescription: "JPG, WEBP, GIF और BMP → PNG.",
+  },
+  "convert-to-webp": {
+    name: "WEBP में बदलें",
+    shortDescription: "JPG, PNG, GIF और BMP → WEBP.",
+  },
+  "svg-to-png": {
+    name: "SVG से PNG",
+    shortDescription: "SVG वेक्टर को किसी भी साइज़ में साफ़ PNG बनाएँ।",
+  },
+  "png-to-ico": {
+    name: "PNG से ICO",
+    shortDescription: "वेबसाइट के लिए favicon.ico और Windows आइकन बनाएँ।",
+  },
+  "youtube-thumbnail-resizer": {
+    name: "YouTube थंबनेल रीसाइज़र",
+    shortDescription: "किसी भी इमेज को 1280 × 720 YouTube थंबनेल बनाएँ।",
+  },
+  "whatsapp-dp-resizer": {
+    name: "WhatsApp DP रीसाइज़र",
+    shortDescription: "पूरी फोटो को बिना काटे चौकोर WhatsApp DP में फ़िट करें।",
+  },
+  "linkedin-banner-resizer": {
+    name: "LinkedIn बैनर रीसाइज़र",
+    shortDescription: "किसी भी इमेज को 1584 × 396 LinkedIn बैनर बनाएँ।",
+  },
+  "facebook-cover-resizer": {
+    name: "Facebook कवर रीसाइज़र",
+    shortDescription: "किसी भी इमेज को 851 × 315 Facebook कवर बनाएँ।",
+  },
+  "discord-banner-resizer": {
+    name: "Discord बैनर रीसाइज़र",
+    shortDescription: "Discord प्रोफ़ाइल और सर्वर बैनर के साइज़।",
+  },
+  "dpi-converter": {
+    name: "DPI कन्वर्टर",
+    shortDescription: "इमेज का DPI 300, 200 या किसी भी वैल्यू पर बदलें, बिना क्वालिटी खोए।",
+  },
+  "dpi-checker": {
+    name: "DPI चेकर",
+    shortDescription: "इमेज का DPI और प्रिंट साइज़ देखें।",
+  },
+  "resize-image-in-cm": {
+    name: "इमेज को cm में रीसाइज़ करें",
+    shortDescription: "इमेज को cm, mm या इंच में सटीक साइज़ में बदलें।",
+  },
+  "video-to-gif": {
+    name: "वीडियो से GIF",
+    shortDescription: "MP4, WEBM या MOV वीडियो के हिस्से को GIF बनाएँ।",
+  },
+  "gif-compressor": {
+    name: "GIF कंप्रेसर",
+    shortDescription: "एनिमेटेड GIF को बिना फ़्रेम खोए छोटा करें।",
+  },
+  "gif-resizer": {
+    name: "GIF रीसाइज़र",
+    shortDescription: "एनिमेटेड GIF का साइज़ बदलें, हर फ़्रेम के साथ।",
+  },
+  "gif-to-mp4": {
+    name: "GIF से MP4",
+    shortDescription: "GIF को हल्के MP4 वीडियो में बदलें।",
+  },
+  "webp-to-gif": {
+    name: "WEBP से GIF",
+    shortDescription: "एनिमेटेड WEBP को GIF में बदलें।",
+  },
+  "gif-cropper": {
+    name: "GIF क्रॉपर",
+    shortDescription: "एनिमेटेड GIF को क्रॉप करें, हर फ़्रेम के साथ।",
+  },
+  "rotate-gif": {
+    name: "GIF घुमाएँ",
+    shortDescription: "एनिमेटेड GIF को 90° या 180° घुमाएँ या पलटें।",
+  },
+  "reverse-gif": {
+    name: "GIF उल्टा करें",
+    shortDescription: "GIF को उल्टा या बूमरैंग की तरह चलाएँ।",
+  },
+  "gif-speed-changer": {
+    name: "GIF स्पीड बदलें",
+    shortDescription: "एनिमेटेड GIF को तेज़ या धीमा करें।",
+  },
+  "gif-cutter": {
+    name: "GIF कटर",
+    shortDescription: "GIF को काटें और सिर्फ़ ज़रूरी फ़्रेम रखें।",
+  },
+  "gif-to-webp": {
+    name: "GIF से WEBP",
+    shortDescription: "एनिमेटेड GIF को एनिमेटेड WEBP में बदलें।",
+  },
+  "gif-to-apng": {
+    name: "GIF से APNG",
+    shortDescription: "एनिमेटेड GIF को एनिमेटेड PNG (APNG) में बदलें।",
+  },
+  "gif-to-sprite-sheet": {
+    name: "GIF से स्प्राइट शीट",
+    shortDescription: "GIF के सभी फ़्रेम एक PNG स्प्राइट शीट पर रखें।",
+  },
+  "gif-merger": {
+    name: "GIF मर्जर",
+    shortDescription: "कई GIF को एक के बाद एक जोड़कर एक GIF बनाएँ।",
+  },
+  "add-text-to-gif": {
+    name: "GIF पर टेक्स्ट लिखें",
+    shortDescription: "एनिमेटेड GIF पर कैप्शन लगाएँ, हर फ़्रेम पर या कुछ पर।",
+  },
+  "typing-text-gif": {
+    name: "टाइपिंग टेक्स्ट GIF",
+    shortDescription: "ऐसी GIF बनाएँ जिसमें टेक्स्ट अक्षर-दर-अक्षर टाइप होता दिखे।",
+  },
+  "invert-image": {
+    name: "इमेज के रंग उलटें",
+    shortDescription: "फोटो के रंग उलटें — नेगेटिव या स्मार्ट इनवर्ट।",
+  },
+  "pixelate-image": {
+    name: "इमेज पिक्सलेट करें",
+    shortDescription: "फोटो को पिक्सल के ब्लॉक में बदलें।",
+  },
+  "image-brightness": {
+    name: "ब्राइटनेस और कंट्रास्ट",
+    shortDescription: "फोटो को हल्का या गहरा करें और कंट्रास्ट व रंग बदलें।",
+  },
+  "glitch-effect": {
+    name: "ग्लिच इफ़ेक्ट",
+    shortDescription: "फोटो को टूटी स्क्रीन जैसा ग्लिच लुक दें।",
+  },
+  "round-corners": {
+    name: "राउंड कॉर्नर",
+    shortDescription: "इमेज के कोने गोल करें, ट्रांसपेरेंट किनारों के साथ।",
+  },
+  "remove-watermark": {
+    name: "वॉटरमार्क हटाएँ",
+    shortDescription: "AI से वॉटरमार्क, लोगो और तारीख़ मिटाएँ — ब्राउज़र में।",
+  },
+  "remove-object": {
+    name: "फोटो से ऑब्जेक्ट हटाएँ",
+    shortDescription: "AI से फोटो से लोग, चीज़ें और दाग़ मिटाएँ।",
+  },
+  "split-image": {
+    name: "इमेज स्प्लिट करें",
+    shortDescription: "इमेज को बराबर हिस्सों या टाइल्स में काटें।",
+  },
+  "image-overlay": {
+    name: "इमेज ओवरले",
+    shortDescription: "एक फोटो के ऊपर दूसरी लगाएँ — ओपेसिटी और ब्लेंड मोड के साथ।",
+  },
 
   // ── वैरिएंट: HD, मिरर, बैकग्राउंड (expansion.md) ──
   "image-to-hd": {
@@ -259,6 +463,10 @@ export const hiTools: Record<string, LocalizedTool> = {
   "2x2-photo": {
     name: "2x2 फोटो मेकर",
     shortDescription: "US पासपोर्ट, वीज़ा और OCI के लिए 2 × 2 इंच फोटो।",
+  },
+  "instagram-grid-maker": {
+    name: "Instagram ग्रिड मेकर",
+    shortDescription: "एक फोटो से Instagram ग्रिड या कैरोसेल बनाएँ।",
   },
 };
 

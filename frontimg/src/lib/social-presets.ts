@@ -104,6 +104,19 @@ export const SOCIAL_PLATFORMS: SocialPlatform[] = [
       { label: "Story", w: 1080, h: 1920 },
     ],
   },
+  {
+    // Profile banner is Nitro-only, server banner needs Boost level 2; both are
+    // Discord's stated minimums (5:2 and 16:9). Avatars and server icons are
+    // shown as circles.
+    id: "discord",
+    name: "Discord",
+    presets: [
+      { label: "Profile banner", w: 600, h: 240 },
+      { label: "Server banner", w: 960, h: 540 },
+      { label: "Server icon", w: 512, h: 512 },
+      { label: "Profile", w: 128, h: 128 },
+    ],
+  },
 ];
 
 // Preset labels are English source strings, translated where the dropdown

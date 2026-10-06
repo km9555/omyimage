@@ -146,6 +146,159 @@ export const hiAliases: Record<string, string[]> = {
   "compress-image-to-1mb": [
     "1 mb", "फोटो 1 mb",
   ],
+  "compress-image-to-10kb": [
+    "10 kb", "फोटो 10 kb", "सिग्नेचर 10 kb",
+  ],
+  "compress-image-to-30kb": [
+    "30 kb", "फोटो 30 kb",
+  ],
+  "compress-image-to-300kb": [
+    "300 kb", "फोटो 300 kb",
+  ],
+  "compress-image-to-500kb": [
+    "500 kb", "फोटो 500 kb",
+  ],
+  "compress-image-to-2mb": [
+    "2 mb", "फोटो 2 mb",
+  ],
+  "compress-image-to-15kb": [
+    "15 kb", "फोटो 15 kb",
+  ],
+  "compress-image-to-40kb": [
+    "40 kb", "फोटो 40 kb",
+  ],
+  "compress-image-to-150kb": [
+    "150 kb", "फोटो 150 kb",
+  ],
+  "increase-image-size-in-kb": [
+    "इमेज साइज़ बढ़ाएँ", "फोटो का kb बढ़ाएँ", "increase image size", "increase kb",
+  ],
+  "signature-resizer": [
+    "सिग्नेचर रीसाइज़", "signature resize", "सिग्नेचर 10 से 20 kb", "signature 20kb",
+  ],
+  "jpg-to-pdf-under-100kb": [
+    "jpg to pdf 100kb", "pdf 100 kb", "jpg से pdf 100 kb",
+  ],
+  "jpg-to-pdf-under-200kb": [
+    "jpg to pdf 200kb", "pdf 200 kb", "jpg से pdf 200 kb",
+  ],
+  "jpg-to-pdf-under-300kb": [
+    "jpg to pdf 300kb", "pdf 300 kb", "jpg से pdf 300 kb",
+  ],
+  "jpg-to-pdf-under-500kb": [
+    "jpg to pdf 500kb", "pdf 500 kb", "jpg से pdf 500 kb",
+  ],
+  "convert-to-png": [
+    "पीएनजी में बदलें", "png में बदलें", "convert to png", "image to png",
+  ],
+  "convert-to-webp": [
+    "वेबपी में बदलें", "webp में बदलें", "convert to webp", "image to webp",
+  ],
+  "svg-to-png": [
+    "svg to png", "एसवीजी से पीएनजी", "svg converter", "svg को png में बदलें",
+  ],
+  "png-to-ico": [
+    "png to ico", "favicon generator", "आइकन बनाएँ", "ico converter", "image to ico",
+  ],
+  "youtube-thumbnail-resizer": [
+    "youtube thumbnail size", "थंबनेल साइज़", "youtube thumbnail resize", "1280x720",
+  ],
+  "whatsapp-dp-resizer": [
+    "whatsapp dp size", "dp without crop", "full dp whatsapp", "व्हाट्सएप डीपी",
+  ],
+  "linkedin-banner-resizer": [
+    "linkedin banner size", "linkedin background photo", "लिंक्डइन बैनर", "1584x396",
+  ],
+  "facebook-cover-resizer": [
+    "facebook cover photo size", "fb cover", "फेसबुक कवर फोटो", "851x315",
+  ],
+  "discord-banner-resizer": [
+    "discord banner size", "discord profile banner", "discord server banner", "डिस्कॉर्ड बैनर",
+  ],
+  "dpi-converter": [
+    "change dpi", "300 dpi", "dpi बदलें", "convert image to 300 dpi",
+  ],
+  "dpi-checker": [
+    "check dpi", "image dpi", "dpi कैसे देखें", "dpi checker",
+  ],
+  "resize-image-in-cm": [
+    "resize image in cm", "cm to pixel", "फोटो साइज़ cm में", "resize in inches",
+  ],
+  "video-to-gif": [
+    "video to gif", "mp4 to gif", "वीडियो को gif में बदलें", "gif बनाएँ",
+  ],
+  "gif-compressor": [
+    "compress gif", "gif size kam kare", "gif छोटा करें", "reduce gif size",
+  ],
+  "gif-resizer": [
+    "resize gif", "gif का साइज़ बदलें", "gif resize",
+  ],
+  "gif-to-mp4": [
+    "gif to mp4", "gif को वीडियो में बदलें", "gif to video",
+  ],
+  "webp-to-gif": [
+    "webp to gif", "animated webp to gif",
+  ],
+  "gif-cropper": [
+    "crop gif", "gif क्रॉप करें", "gif crop online",
+  ],
+  "rotate-gif": [
+    "rotate gif", "gif घुमाएँ", "flip gif",
+  ],
+  "reverse-gif": [
+    "reverse gif", "gif उल्टा चलाएँ", "boomerang gif",
+  ],
+  "gif-speed-changer": [
+    "gif speed changer", "gif तेज़ करें", "gif धीमा करें", "speed up gif",
+  ],
+  "gif-cutter": [
+    "cut gif", "trim gif", "gif काटें",
+  ],
+  "gif-to-webp": [
+    "gif to webp", "animated webp", "gif को webp में बदलें",
+  ],
+  "gif-to-apng": [
+    "gif to apng", "animated png", "gif को apng में बदलें",
+  ],
+  "gif-to-sprite-sheet": [
+    "gif to sprite sheet", "sprite sheet maker", "gif फ़्रेम एक इमेज में",
+  ],
+  "gif-merger": [
+    "merge gif", "combine gif", "gif जोड़ें",
+  ],
+  "add-text-to-gif": [
+    "add text to gif", "gif par text likhe", "gif caption",
+  ],
+  "typing-text-gif": [
+    "typing text gif", "typing animation", "टाइपिंग एनिमेशन",
+  ],
+  "invert-image": [
+    "invert image", "negative photo", "रंग उलटें",
+  ],
+  "pixelate-image": [
+    "pixelate image", "pixel effect", "फोटो पिक्सलेट",
+  ],
+  "image-brightness": [
+    "image brightness", "photo brightness", "contrast",
+  ],
+  "glitch-effect": [
+    "glitch effect", "glitch photo", "rgb split",
+  ],
+  "round-corners": [
+    "round corners", "rounded corners image", "कोने गोल करें",
+  ],
+  "remove-watermark": [
+    "watermark remover", "remove watermark", "वॉटरमार्क हटाएँ", "फोटो से लोगो हटाएँ",
+  ],
+  "remove-object": [
+    "remove object from photo", "object remover", "फोटो से चीज़ हटाएँ", "फोटो से आदमी हटाएँ",
+  ],
+  "split-image": [
+    "split image", "image splitter", "फोटो के हिस्से करें", "फोटो काटें",
+  ],
+  "image-overlay": [
+    "overlay images", "photo on photo", "फोटो के ऊपर फोटो", "डबल एक्सपोज़र",
+  ],
 
   // वैरिएंट — HD, मिरर, बैकग्राउंड
   "image-to-hd": [
@@ -171,5 +324,8 @@ export const hiAliases: Record<string, string[]> = {
   ],
   "2x2-photo": [
     "2x2 फोटो", "वीज़ा फोटो", "OCI फोटो", "2x2 photo", "us visa photo",
+  ],
+  "instagram-grid-maker": [
+    "instagram grid maker", "instagram grid", "ग्रिड पोस्ट", "पैनोरमा कैरोसेल",
   ],
 };

@@ -123,11 +123,11 @@ the notes. hi/ru slugs equal the English one.
 | flip-image *(rotate)* | espelhar-imagem | mirror-foto | US 22.2K + mirror 18.1K; IN 22.2K | pt "inverter imagem" is ambiguous (also = invert colours) → slug espelhar. |
 | change-background-color *(remove-background)* | trocar-fundo-da-foto | ganti-background-foto | ID 135K (KD 0); IN 450K `photo background change`; BR 8.1K `fundo branco foto` | Server tool already exists; metered like its parent. |
 | blur-background *(remove-background)* | desfocar-fundo | blur-background-foto | IN 74K, US 9.9K, BR 2.9K | |
-| convert-to-png *(ConvertTool)* | converter-para-png | ubah-ke-png | US 14.8K, IN 18.1K+12.1K, BR 8.1K | hand-built like convert-to-jpg |
-| convert-to-webp | converter-para-webp | ubah-ke-webp | IN 6.6K, US 2.4K, BR 1.6K | |
-| svg-to-png *(pair)* | svg-para-png | svg-ke-png | US 40.5K, IN 40.5K (KD 9) | |
-| png-to-ico *(pair)* | png-para-ico | png-ke-ico | US 18.1K, IN 12.1K, BR 2.9K | ICO encoder exists. |
-| youtube-thumbnail-resizer · whatsapp-dp-resizer · linkedin-banner-resizer · facebook-cover-resizer · discord-banner-resizer *(resize)* | … | … | `youtube thumbnail size` IN 49.5K / US 27.1K; `whatsapp dp size` IN 33.1K; LinkedIn 12.1K/9.9K; FB cover US 9.9K; Discord banner US 8.1K | social-presets.ts (+ Discord) |
+| convert-to-png *(ConvertTool)* | converter-para-png | ubah-foto-ke-png | US 14.8K, IN 18.1K+12.1K, BR 8.1K | 3B. Hand-built like convert-to-jpg; id slug follows `ubah-foto-ke-jpg`. |
+| convert-to-webp *(ConvertTool)* | converter-para-webp | ubah-foto-ke-webp | IN 6.6K, US 2.4K, BR 1.6K | 3B |
+| svg-to-png *(new tool)* | svg-para-png | svg-ke-png | US 40.5K, IN 40.5K (KD 9) | 3B. Not a converter pair: needs scale/width/background. `lib/image/svg-raster.ts`. |
+| png-to-ico *(new tool)* | png-para-ico | png-ke-ico | US 18.1K, IN 12.1K, BR 2.9K | 3B. There was NO ICO encoder (only GIF) — written in `lib/image/ico.ts`. |
+| youtube-thumbnail-resizer · whatsapp-dp-resizer · linkedin-banner-resizer · facebook-cover-resizer · discord-banner-resizer *(resize)* | redimensionar-thumbnail-youtube · foto-de-perfil-whatsapp · redimensionar-capa-linkedin · redimensionar-capa-facebook · redimensionar-banner-discord | ubah-ukuran-thumbnail-youtube · foto-profil-wa-full · ubah-ukuran-banner-linkedin · ubah-ukuran-sampul-facebook · ubah-ukuran-banner-discord | `youtube thumbnail size` IN 49.5K / US 27.1K; `whatsapp dp size` IN 33.1K; LinkedIn 12.1K/9.9K; FB cover US 9.9K; Discord banner US 8.1K | 3C. /ru ships only YouTube + WhatsApp — LinkedIn, Facebook and Discord are blocked in Russia. |
 
 ### Phase 4 — photo ID, print and DPI
 
@@ -136,9 +136,9 @@ the notes. hi/ru slugs equal the English one.
 | passport-photo-maker *(new: face-guided crop, bg colour, print sheet)* | foto-para-documento | pas-foto | IN 301K + 550K `passport size photo` (KD 40) | 4A, all locales. Opens on 3 × 4 cm in /pt and /id. |
 | 3x4-photo *(variant)* | foto-3x4 | foto-3x4 | BR 90.5K (KD 0); ID 33.1K + 27.1K; RU 2.4K | 4A: en, pt, ru, id. Not /hi (no demand). |
 | 2x2-photo *(variant)* | foto-2x2 | pas-foto-2x2 | US 2.4K | 4A: en, hi (US visa / OCI). Slugs reserved elsewhere. |
-| dpi-converter *(new)* | alterar-dpi-da-imagem | ubah-dpi-foto | IN 27.1K, US 5.4K |
-| dpi-checker *(new)* | verificar-dpi-da-imagem | cek-dpi-foto | IN 3.6K, US 2.9K |
-| resize-image-in-cm *(resize, cm/inch mode)* | redimensionar-imagem-em-cm | ubah-ukuran-foto-cm | IN 22.2K (KD 0) + 9.9K |
+| dpi-converter *(new)* | alterar-dpi-da-imagem | ubah-dpi-foto | IN 27.1K, US 5.4K | 4B, all locales. `DpiTool mode="convert"`. |
+| dpi-checker *(new)* | verificar-dpi-da-imagem | cek-dpi-foto | IN 3.6K, US 2.9K | 4B, all locales. Same component, `mode="check"`; its content modules reuse the converter's `ui`. |
+| resize-image-in-cm *(resize, cm/inch mode)* | redimensionar-imagem-em-cm | ubah-ukuran-foto-cm | IN 22.2K (KD 0) + 9.9K | 4B, all locales. New "Print size" mode in ResizeTool (also on /resize-image). |
 
 ### Phase 5 — GIF suite (US-led) · engine: `src/lib/gif/`
 
@@ -150,6 +150,16 @@ reverse-gif (3.6K) · gif-speed-changer (2.4K) · gif-cutter (2.4K) ·
 gif-merger (2.4K) · gif-to-sprite-sheet (2.4K) · gif-to-apng (1.6K) ·
 gif-to-webp (1.3K) · rotate-gif (1.3K).
 
+- **5A (done 2026-10-06, all locales):** video-to-gif, gif-compressor,
+  gif-resizer, gif-to-mp4, webp-to-gif.
+- **5B (done 2026-10-06, all locales):** gif-cropper, rotate-gif,
+  reverse-gif, gif-speed-changer, gif-cutter.
+- **5C (done 2026-10-06, all locales):** gif-to-webp, gif-to-apng,
+  gif-to-sprite-sheet, gif-merger. No new dependency: WebP frames come from
+  the browser's encoder and APNG is written in-house.
+- **5D (done 2026-10-06, all locales):** add-text-to-gif, typing-text-gif.
+  This completes Phase 5: 18 GIF tools in `GIF_SUITE`.
+
 ### Phase 6 — edit tools (canvas)
 
 split-image (US 14.8K, IN 12.1K, BR 9.9K, RU 5.4K) · instagram-grid-maker
@@ -157,10 +167,20 @@ split-image (US 14.8K, IN 12.1K, BR 9.9K, RU 5.4K) · instagram-grid-maker
 (US 12.1K) · image-overlay (US 4.4K ×2) · glitch-effect (US 6.6K) ·
 round-corners (IN 1.9K, US 1.3K) · image-brightness (IN 1.3K, US 1.6K contrast).
 
+- **6A (done 2026-10-06, all locales):** invert-image, pixelate-image,
+  image-brightness, glitch-effect, round-corners — one shared `FxTool`.
+  New "Filters & Effects" menu section (`EFFECTS_SUITE`).
+- **6B (done 2026-10-06, all locales):** split-image, instagram-grid-maker
+  (split variant, not in the menu), image-overlay. This completes Phase 6.
+
 ### Phase 7 — in-browser inpainting (onnxruntime-web + MI-GAN)
 
 remove-watermark (IN 368K `watermark remover` KD 49; US 135K; BR 74K KD 5;
 ID 40.5K KD 0) · remove-object (IN 60.5K + 49.5K; ID 74K KD 0; US 12.1K).
+
+- **Done 2026-10-06, all locales.** Both are parents sharing one component
+  (`InpaintTool mode=…`), in the Image AI menu section, `processing:
+  "client"` (free, not premium). Licence review: LICENSE-AUDIT.md F8.
 
 ### Phase 8 — guides + release
 
@@ -168,6 +188,14 @@ English-only blog guides linking into the families ("make a photo exactly
 50KB", "passport photo sizes by country", "social media image sizes",
 "GIF size limits"), then submit the per-locale child sitemaps in Search
 Console / Bing / Yandex and run `npm run indexnow`.
+
+**Navigation cleanup — LAST step, after every phase (user, 2026-10-05).**
+The variant cards on the home grid ("Compress Image to 20KB", "…50KB", …)
+and the "Compress to Size" rows in the Tools menu read as repetition. Once
+all phases are done, take the variants OFF the home grid, its tabs and the
+Tools menu (desktop + mobile), and surface them another way. Until then new
+variants are NOT added to `NAV_SECTIONS` (2B onward), so there is less to
+undo; the home grid picks them up automatically and that is fine for now.
 
 ### Not building
 
@@ -239,7 +267,465 @@ blur-screenshot (90–140/mo), exif-editor (≤ 390, KD 68), svg-to-gif, blur-gi
   tools" band. The band's CSS matched `aria-label="More tools"`, which is
   translated, so it had never applied on /pt /hi /ru /id; it now keys on
   `data-related-tools` / `data-breadcrumbs`.
-- **Deploys are paused pending the user's go-ahead.** 2A reached
-  `staging` (preview) on 2026-10-04; a later step was blocked as a
-  production-deploy risk, so 3A onwards is committed on
-  `feat/tool-expansion` locally and not pushed.
+- **2026-10-05 — Batch 2B: 10 KB, 30 KB, 300 KB, 500 KB, 2 MB, 25 pages.**
+  All five locales. Registry order (and so the family strip) runs by size;
+  priorities renumbered: compress family 101–111, 3A 121–125, 4A 131–132.
+  Not added to `NAV_SECTIONS` (see Phase 8 navigation cleanup). Each size
+  has its own angle so the family stays apart: 10 KB signatures / thumb
+  impressions, 30 KB face-first photos + KB-vs-KiB, 300 KB documents + PDF,
+  500 KB screenshots / web / email, 2 MB the PHP 2M default + printing.
+  Measured: portrait 176,561 B → 9,978 B at 227 × 284 (10 KB); worst-case
+  noise 4000 × 3000, 6.96 MB → 1,974,335 B at full size (2 MB). Copy
+  first claimed "150 × 190 px" for a 10 KB photo — corrected to 200 × 250.
+  Russian and Indonesian again needed an extra section/FAQ for the floor.
+  verify:build 329 URLs, 109 family pages, worst pair still 0.542.
+- **2026-10-05 — Batch 2C: 15 / 40 / 150 KB, increase-image-size-in-kb,
+  signature-resizer — 25 pages.** `growToSize` (compress-to-size.ts) makes
+  files bigger honestly: top JPG quality, then up to 4× the sides, then — only
+  if still short — an empty JPEG COM block (`padJpeg`), reported as
+  `padded`. MINIMUMS count 1 KB = 1,024 B (`minimumBytes`), maximums 1,000 B,
+  so both ends hold under either reading (found in testing: a 140 × 60
+  signature padded to exactly 10,000 B would fail a 1,024-counting form).
+  Increase mode is a CompressTool preset (`mode: "increase"`), invisible on
+  /compress-image. Signature Resizer (`lib/image/signature.ts`, a real tool,
+  in the menu's Optimize section): local paper levelling against a
+  32-px blur, ink trim with speck-proof projections, fit onto 140 × 60 px /
+  4 × 2 cm / 6 × 2 cm (300 DPI) / custom, KB range via compressToSize +
+  growToSize. Measured: 7 KB photo → 72,466 B at 244 × 306 (50–80 KB range);
+  shadowed 1600 × 1200 signature photo → clean 140 × 60 at 10,240 B (padded)
+  and 709 × 236 at 10,957 B for 6 × 2 cm. Side effect, kept: Signature
+  Resizer joins "More tools" on resize / crop / rotate / flip pages.
+  verify:build 354 URLs, 129 family pages, worst pair 0.542.
+- **2026-10-05 — Batch 2D: jpg-to-pdf-under-100 / 200 / 300 / 500 KB —
+  20 pages.** `lib/pdf/pdf-under-size.ts` limits the WHOLE PDF, not each
+  image. It builds once and returns that file untouched if it already fits.
+  Otherwise it measures the PDF overhead, splits the rest of the budget by
+  image area, runs each image through compressToSize (JPEG on the page
+  fill), rebuilds, and tightens at most 4 times. A starting
+  `maxDimension` derived from 0.05 B/px cut 3 dense pages from 41 s to
+  ~1 s. ImageToPdfTool takes `preset.maxKb`: an editable KB/MB limit field
+  in the rail, a dropzone note, "Already under / could not get under"
+  toasts, a `_200kb.pdf` filename, and no 10 MB nudge. Plain
+  /image-to-pdf is unchanged. Measured: 3 dense synthetic 3000 × 4000
+  pages → 192 KB, each ~592 × 790; a 3 KB limit gives 2,863 B. The copy
+  first claimed ~1100 × 1550 per page; that was corrected to the measured
+  ~800 × 1100 at 100 KB per page and ~600 × 800 at 65 KB. Russian 300/500
+  KB and Portuguese 500 KB needed one more FAQ for the 900-word floor.
+  verify:build 374 URLs, 154 family pages, worst pair 0.542.
+- **2026-10-05 — Batch 3B: convert-to-png, convert-to-webp, svg-to-png,
+  png-to-ico — 20 pages.**
+  - **Convert to PNG / WEBP:** ConvertTool pages, hand-built like
+    convert-to-jpg.
+  - **ICO encoder (`lib/image/ico.ts`):** the plan said one existed; it did
+    not.
+    - Sizes under 256 are 32-bit BGRA DIBs (bottom-up, height doubled, AND
+      mask); 256 is stored as PNG, as Windows does.
+    - Small sizes come from step-halving with high-quality smoothing.
+  - **SVG (`lib/image/svg-raster.ts`):** draws through `<img>` (no scripts,
+    no external fetches).
+    - It sets the TARGET width/height on the root before drawing, so 4× is a
+      real 4× rendering. A viewBox is added when one is missing.
+    - A file with no size at all is 300 × 150, and the tool says so.
+    - Output is capped at 8192 px.
+  - **Safari WEBP fix (ConvertTool, all WEBP pages incl. jpg-to-webp and
+    png-to-webp):** Safari cannot encode WEBP from a canvas and silently
+    returns a PNG. That PNG used to download as `.webp`; it now throws "Your
+    browser cannot save {format} images…".
+  - **Measured in the browser:**
+    - SVG 24 × 24 at 4× → 96 × 96; a viewBox-only SVG at width 1200 →
+      1200 × 600; no viewBox, 40 × 20 at 2× → 80 × 40, scaled, not cropped.
+    - ICO: 7 entries with contiguous offsets, decoded by Chrome, orientation
+      correct at every size.
+    - WEBP: a 339 KB PNG → 6 KB, with transparency kept.
+  - **Side effect, kept:** Convert to PNG / WEBP sit right after
+    convert-to-jpg in the registry, so they now lead "More tools" on
+    convert-category pages, replacing JPG to PNG / HEIC to PNG there.
+  - verify:build 394 URLs.
+- **2026-10-05 — Batch 3C: YouTube thumbnail, WhatsApp DP, LinkedIn banner,
+  Facebook cover, Discord banner — 22 pages.**
+  - **Variants of resize-image.** ResizeTool takes
+    `preset: { platform, preset, fit?, format? }`, opening in Social media mode
+    on that platform size. Plain /resize-image still opens in By pixels.
+  - **Per-page defaults:**
+    - YouTube and Facebook default to JPG: a 1280 × 720 PNG can exceed
+      YouTube's 2 MB limit.
+    - WhatsApp defaults to Pad (the "full DP without crop" query).
+    - Discord was added to `social-presets.ts`: profile banner 600 × 240,
+      server banner 960 × 540, server icon 512 × 512, profile 128 × 128.
+  - **Sizes were re-checked on 2026-10-05:**
+    - YouTube: 1280 × 720, min width 640, under 2 MB, verified channel.
+    - LinkedIn: 1584 × 396, under 8 MB; company covers 1128 × 191.
+    - Facebook: 851 × 315; shown 820 × 312 on desktop and 640 × 360 on phones;
+      minimum 400 × 150; under 100 KB recommended.
+    - Discord: banners are minimums, under 10 MB.
+    - WhatsApp: no official size. 500 × 500 is common; 192 × 192 is only the
+      "usually cited" minimum, and the copy says so.
+  - **Nav:** a new "Social Media Sizes" section. Privacy moved to column 4
+    to rebalance the columns.
+  - verify:build 416 URLs, 181 family pages, worst pair still 0.542.
+- **2026-10-05 — Batch 4B: dpi-converter, dpi-checker, resize-image-in-cm —
+  15 pages.**
+  - **`lib/image/dpi.ts` now also READS** BMP (header pixels-per-metre), WebP
+    (its EXIF chunk) and GIF (always "none"). Writing stays JPEG/PNG.
+  - **DpiTool:**
+    - The converter rewrites only the density field. WEBP/GIF/BMP are made
+      into lossless PNG first.
+    - The checker shows stored DPI and where it lives, the print size, and
+      the sharp size at 300 DPI.
+    - "Change DPI" hands the files to the converter (`stashFiles`).
+    - DpiTool lives in app/dpi-converter, so the keys checker files its
+      strings under dpi-converter. dpi-checker modules do `ui: converter.ui`
+      (the HeicTool rule: a route only has its own tool's ui in scope).
+  - **ResizeTool "Print size" mode** (4th segment, the modes are now 2 × 2):
+    - cm/mm/in plus DPI. Prefilled from the first image's print size.
+    - Switching unit converts the boxes; accepts "4,5".
+    - JPG/PNG output gets the DPI; files are named `name_3.5x4.5cm.jpg`.
+  - **Measured:**
+    - PNG got a pHYs chunk (11811 ppm) right after IHDR, +21 bytes.
+    - The canvas JPG's JFIF went from units 0 to units 1, 300 DPI.
+    - WEBP and BMP → PNG at 300 DPI.
+    - A 2400 × 3000 photo at 72 DPI reads 84.7 × 105.8 cm, sharp size
+      20.3 × 25.4 cm.
+    - 3.5 × "4,5" cm at 300 DPI → 413 × 531 px.
+  - **Copy fix during review:** "10 × 15 cm (4 × 6 inch)" claimed one pixel
+    size for both. They differ: 1181 × 1772 vs 1200 × 1800. Indonesian 4R
+    is 4 × 6 in.
+  - **Nav:** "Social Media Sizes" renamed "Print & Social Sizes" (resize-in-cm
+    leads it). DPI Converter is in Optimize, DPI Checker in Privacy & Info.
+  - **Build:** run in the `_wt-base` worktree, because the user's own dev
+    server held :3002.
+- **2026-10-06 — Batch 5A: video-to-gif, gif-compressor, gif-resizer,
+  gif-to-mp4, webp-to-gif — 25 pages.**
+  - **Engine `src/lib/gif/`:**
+    - `frames.ts`: a streaming `FrameSource` (one composite canvas, GIF
+      disposal 2/3 handled). The browser delay clamp (≤ 10 ms plays as
+      100 ms) is applied on read.
+    - `webp-anim.ts`: parses RIFF/VP8X/ANIM/ANMF by hand. Each frame is
+      rewrapped as a standalone WebP (ALPH kept) and decoded by
+      `createImageBitmap`, so it works in Safari with no extra decoder.
+    - `reencode.ts`: resize, keep every Nth frame (dropped delays merge into
+      the kept frame), and colour count.
+    - `video.ts`: `<video>` seek + canvas, with no ffmpeg.wasm.
+    - `to-mp4.ts`: WebCodecs H.264 + `mp4-muxer` (MIT, LICENSE-AUDIT F7).
+  - **`gif-encode.ts` optimise path:**
+    - The palette uses `colors-1` colours and reserves a transparent index.
+    - Frames after the first store only the changed pixels (dispose 1).
+    - `fuzz` treats palette-near pixels as unchanged.
+    - It is skipped for transparent sources, which still get colour and size
+      reduction.
+  - **Components:**
+    - `GifTool` with `mode` compress / resize / webp; the resizer and WEBP→GIF
+      pages reuse the compressor's `ui`.
+    - `VideoToGifTool` and `GifToMp4Tool`.
+  - **Measured on a noisy 40-frame 320 × 200 GIF (862 KB):**
+
+    | Level | Size | Mean error | Frames |
+    |---|---:|---:|---:|
+    | Light | 829 KB | ~1.5 levels | 40 |
+    | Medium | 554 KB | 3.0 | 40 |
+    | Strong | 138 KB | 5.0 | 20 |
+
+  - **Other checks:**
+    - A transparent GIF kept alpha 0 in the corners and cleared the moving
+      object's old position.
+    - GIF → MP4 at 3 repeats gave a valid isom MP4, 6.000 s.
+    - A 4 s H.264 MP4 at 10 fps and 240 px gave 40 frames, 4000 ms in total.
+    - A hand-built animated WebP (lossy + ALPH, lossless) decoded with the
+      correct blending.
+  - **Nav:** new "GIF Tools" section. gif-maker moved out of Create and
+    gif-to-images out of Convert. Columns:
+    `[optimize, compress-size, photo-id]`, `[edit, create, social-sizes,
+    privacy]`, `[ai, gif, convert-other]`, `[convert-format, convert-camera]`.
+  - **Snapshot diff vs 4B: 142 pages.** All are expected: Optimize-category
+    pages' "More tools" now show GIF Compressor where Signature Resizer was,
+    and the menu markup changed. verify:build: 456 URLs, 186 family pages.
+- **2026-10-06 — Batch 5B: gif-cropper, rotate-gif, reverse-gif,
+  gif-speed-changer, gif-cutter — 25 pages.**
+  - **One component:** `app/gif-cropper/GifEditTool.tsx`, with `mode` set to
+    crop, rotate, reverse, speed or cut. The other four pages reuse the
+    cropper's `ui` block.
+  - **Engine:**
+    - **`frames.ts` random access.** Snapshots are taken every ~√n frames,
+      and the frames composited while catching up are kept, so reading
+      backwards costs about one composite per frame. A 240-frame
+      480 × 270 reverse took 19.8 s with snapshots alone and 7.6 s after.
+    - **`gif-encode.ts` `exact` option.** When the frames hold ≤ 255 colours
+      (256 without the diff path), those colours are written back exactly
+      instead of being quantised to 5-6-5. Crop, rotate, reverse, cut — and
+      compressor Light at 100 % — are now pixel-exact on typical GIFs.
+    - **`reencode.ts`.** Adds a frame `plan`, a crop, quarter turns and
+      flips. Turns are a 32-bit pixel remap: a rotated canvas `drawImage` on
+      a read-back canvas ran in software and took 16.3 s on the same GIF; the
+      remap takes 6.2 s. The loop count is now carried over from the source:
+      a play-once GIF stays play-once and N loops stay N. Before, every
+      re-encode looped forever.
+    - **`retime.ts`.** `speedPlan` rounds frame edges on the scaled timeline
+      and merges frames that would be shorter than 20 ms (browsers play
+      ≤ 10 ms as 100 ms). When no frames are merged, `setGifDelays` rewrites
+      the delays in the bytes and leaves the image data untouched.
+  - **Measured on a 30-frame test GIF:**
+    - **Crop and rotate:** exact palette colours. Corner markers and the
+      moving square land on the predicted pixels for 90° right, 90° left,
+      180° and both flips; the transparent GIF keeps alpha 0 and clears the
+      moving circle's old position.
+    - **Reverse and boomerang:** frame bars come back 300→10. Boomerang has
+      58 frames, with the end frames not repeated.
+    - **Speed:** 2× is the same length with 30 bytes changed, done in 58 ms.
+      8× merges 14 frames, every frame ≥ 20 ms, 430 ms in total.
+    - **Cutter:** keep 6–15 gives 10 frames; remove gives 20.
+  - **Related tools:** `GIF_SUITE` in tools.ts lists the 12 GIF tools. The
+    menu's GIF section uses it, and a GIF page's "More tools" are the next
+    tools in it, wrapping round, so the suite links as a ring.
+  - **Indonesian:** reverse-gif is "Putar Balik GIF", because i18n-verify
+    rejects an H1 identical to the English one. The title keeps "Reverse
+    GIF".
+  - **Nav columns:** `[optimize, compress-size, photo-id]`, `[edit,
+    social-sizes, ai]`, `[gif, create, privacy]`, `[convert-format,
+    convert-other, convert-camera]`.
+  - **Snapshot diff vs 5A: 50 pages**, all expected — the 7 existing GIF pages
+    × 5 locales (related list), plus home, pricing and contact × 5 (85 → 90
+    tools). verify:build: 481 URLs.
+- **2026-10-06 — Batch 5C: gif-to-webp, gif-to-apng, gif-to-sprite-sheet,
+  gif-merger — 20 pages.**
+  - **`lib/gif/to-webp.ts`:**
+    - Each frame (only the changed rectangle, at even x/y) goes through
+      `canvas.toBlob("image/webp", q)`. In Chrome, q = 1 gives lossless VP8L
+      and q < 1 gives lossy VP8 + ALPH.
+    - The chunks are muxed into RIFF/VP8X/ANIM/ANMF (no-blend, no dispose),
+      and the per-frame ICCP chunk is dropped.
+    - Identical frames are folded into the previous duration. Loop count:
+      GIF N → WebP N + 1 plays.
+    - Safari has no WebP encoder, so the user gets the existing common
+      error.
+  - **`lib/gif/to-apng.ts`:**
+    - A PNG writer (CRC-32, IHDR/PLTE/tRNS/acTL/fcTL/IDAT/fdAT) with zlib
+      from `CompressionStream("deflate")`.
+    - Indexed (colour type 3) when every frame fits 256 colours; RGBA with
+      adaptive filters otherwise.
+    - Changed rectangles, folded identical frames, and the loop count carried
+      over (play-once stays play-once, checked with ImageDecoder).
+  - **`lib/gif/sprite.ts`:** grid, row or column. Canvas limits are 16384 px
+    a side and 16.7 MP for Safari, with a warning instead of a failed toBlob.
+    Row and column sheets get a CSS `steps()` snippet.
+  - **`lib/gif/merge.ts`:** `concatSources` builds one FrameSource out of
+    several, fitted to the output with contain or cover and a transparent or
+    colour background, then goes through `reencodeAsGif`.
+  - **Components:** `GifExportTool` (`mode` webp/apng/sprite; APNG and sprite
+    pages reuse the WEBP page's `ui`) and `GifMergerTool` (list with
+    up/down/remove, Add GIFs).
+  - **Measured:**
+
+    | Test GIF | WEBP lossless | WEBP high | WEBP small | APNG |
+    |---|---:|---:|---:|---:|
+    | Noisy 40 frames, multi-palette (1.9 MB) | −4 % | −40 % | −68 % | −3 % (RGBA) |
+    | Small transparent | −52 % | +46 % | — | −46 % (indexed) |
+
+    - Lossless WEBP and APNG are pixel-exact and keep transparency.
+    - **Merger:** a 30 + 10 + 30 frame merge put the smaller GIF in
+      transparent borders at the predicted spot. Fill & crop at the smallest
+      size cropped as computed.
+    - **Sprite sheet:** a 6 × 5 grid had every frame in place. At one row,
+      50 % and a 4 px gap, the CSS offset was −4920 px (30 × 164).
+  - **Copy:** written to these measurements. Lossy roughly halves video
+    GIFs, and on small graphics lossless can beat lossy. No browser on
+    iPhone can encode WEBP.
+  - **Snapshot diff vs 5B: 65 pages**, all expected — the existing GIF pages'
+    related ring shifted, and home, pricing and contact went from 90 to 94
+    tools. verify:build: 501 URLs.
+- **2026-10-06 — Batch 5D: add-text-to-gif, typing-text-gif — 10 pages.**
+  - **`lib/gif/text.ts`:**
+    - Four font stacks: Impact, sans (Inter via `--font-inter`), serif and
+      mono, all already on the device or the site.
+    - `ensureFont` calls `document.fonts.load` before any canvas drawing.
+    - `graphemes` uses Intl.Segmenter, so «स्ते» and 👋🏽 type whole.
+    - `wrapLines` keeps explicit newlines and breaks over-long words.
+    - `drawLines` draws the outline and the optional box.
+  - **GifTextTool (add text):**
+    - Nine positions; size as a % of the shorter side; outline; a 60 % box
+      in the outline colour; capitals.
+    - "Some frames" with from/to sliders.
+    - A live animated preview that plays the GIF with the caption, reading
+      the latest settings on each tick.
+    - Encoding goes through a captioned FrameSource into `reencodeAsGif`, so
+      timing and loop count are kept.
+  - **TypingGifTool:**
+    - The full text is laid out once. One frame per grapheme, with 400 ms
+      before the first letter.
+    - Pauses: +350 ms after . ! ? ।, +200 ms at line ends, +150 ms after
+      , ; :.
+    - Speeds of ≥ 50 letters/s type several letters per frame; the speeds
+      offered never reach that.
+    - The hold blinks the cursor every 500 ms. Repeat forever, or play once
+      (repeat −1).
+    - `encodeGif` with `exact: true`.
+  - **Idle state on the typing tool.** ToolWorkspace's `data-tool-active`
+    marker hides `[data-seo-content]`, so a tool that renders the workspace
+    from the start hides its own SEO copy. html-to-image did exactly this on
+    all 5 locales; it got the same idle card (URL/HTML input, Render to image,
+    Open all settings) in the following commit. The typing tool shows a plain
+    textarea + Start first and opens the workspace only on Start; mobile Back
+    returns to it.
+  - **Measured:**
+    - Captioned 30 frames: text on exactly frames 5–14 when the range was
+      set, timing kept, 22 KB.
+    - Typing GIF of the default text: 53 frames with delays
+      400/100/450/250/300…, 4 × 500 ms blinks, 39 KB, loops forever.
+    - A Hindi line gave 9 graphemes → 14 frames.
+  - **Nav:** privacy moved to column 1 (`[optimize, compress-size, photo-id,
+    privacy]`, `[edit, social-sizes, ai]`, `[gif, create]`,
+    `[convert-format, convert-other, convert-camera]`), 19–23 rows per
+    column.
+  - **Snapshot diff vs 5C: 55 pages**, all expected (ring neighbours of the
+    two inserted tools; 94 → 96 tools). verify:build: 511 URLs.
+- **2026-10-06 — Batch 6A: invert-image, pixelate-image, image-brightness,
+  glitch-effect, round-corners — 25 pages.**
+  - **`lib/image/fx.ts`:** `renderFx(canvas, src, W, H, mode, settings, k,
+    bg)` draws one mode; `k` scales pixel settings so the ~1000 px preview
+    matches the full-size output.
+    - **invert:** negative (255 − v) or smart (v + 255 − max − min, which
+      flips lightness and keeps hue).
+    - **pixelate:** shrink to one pixel per block, then scale up with
+      smoothing off.
+    - **adjust:** brightness/contrast LUT, then saturation around luma.
+    - **glitch:** strip slices from a seeded mulberry32, so preview and
+      download match until Shuffle; R/B split at 2.5 % of the width × strength;
+      optional scan lines.
+    - **corners:** clip to a rounded path with a per-corner radius as a share
+      of the shorter side.
+  - **`FxTool({ mode })`** (in `app/invert-image/`): batch FileTray, live
+    preview of the first image, "Hold to see the original", BackgroundPicker
+    for JPG. Corners default to PNG with a transparent background; other
+    modes keep the original format. The other four pages reuse
+    invert-image's `ui` in every locale.
+  - **"Pixelate image" is its own key.** The common "Pixelate" is a noun in
+    ru/id («Пикселизация», «Piksel») and read wrongly on the action button.
+  - **Nav:** `EFFECTS_SUITE` = brightness, grayscale, invert, blur, pixelate,
+    glitch; it is both the new "Filters & Effects" menu section and the
+    related-tools ring (`SUITES = [GIF_SUITE, EFFECTS_SUITE]`). round-corners
+    sits in Edit. Columns: `[optimize, compress-size, photo-id,
+    social-sizes]`, `[edit, effects, ai, create]`, `[gif, privacy]`,
+    `[convert-format, convert-other, convert-camera]`.
+  - **Measured (exact pixel checks in the browser):**
+    - Negative red (200,30,30) → (55,225,225); smart → (225,55,55).
+    - Brightness +50 → +64. Contrast +50 doubles the distance from 128.
+      Saturation −100 → luma.
+    - 20 px pixelate → runs of exactly 20.
+    - Corners: transparent in PNG, only the ticked corners change, white
+      fill in JPG with the note shown.
+    - Glitch: colour-split fringes at the predicted values; slices identical
+      between runs, and Shuffle changes them.
+  - **Snapshot diff vs the html-to-image fix: 25 pages**, all expected —
+    blur-image and grayscale-image moved onto the effects ring, and home,
+    pricing and contact went from 96 to 101 tools. verify:build: 536 URLs.
+- **2026-10-06 — Batch 6B: split-image, instagram-grid-maker, image-overlay —
+  15 pages.**
+  - **`lib/image/split.ts`:**
+    - `gridPieces` uses rounded edges, so uneven sizes differ by at most 1 px.
+    - `tilePieces` cuts fixed-size tiles from the top left; the last row and
+      column take the remainder. `MAX_PIECES` is 400.
+    - `igWindow` / `igPieces` crop the largest window of the layout's shape
+      (cols × rw : rows × rh), slid by fx/fy. Pieces are IG_WIDTH (1080) wide,
+      or narrower when the photo has fewer pixels — never upscaled.
+    - `postNumber`: a profile grid posts bottom-right first.
+  - **SplitTool** (`app/split-image/`) — batch, equal grid (presets
+    2×1 … 4×4, up to 20×20) or tile size; preview lines and numbers; a
+    Pieces panel to download single pieces; a ZIP with one folder per image.
+    Files are named `_rX_cY`.
+  - **Instagram mode** (`preset: { mode: "instagram" }`, one photo) —
+    profile grid (3 columns × 1–5 rows; 3:4 by default, 4:5, 1:1) or
+    carousel (2–10 slides, 4:5 / 1:1). Drag or sliders frame the photo; the
+    unused part is shaded. JPG/PNG output. Files are `_post-N` (in posting
+    order) or `_slide-N`. The copy is written to the January 2025 change to
+    3:4 grid thumbnails, and says to use 4:5 if the app crops 3:4 uploads.
+  - **`lib/image/overlay.ts` + OverlayTool** (`app/image-overlay/`):
+    - Background + top image, with "Place freely" (drag, arrow keys, size
+      as % of the background width, rotation ±180°, 9 snap positions) or
+      "Cover everything".
+    - Opacity and eight canvas blend modes; Swap images.
+    - "Hold to see the original" hides the top layer. Output is the
+      background's size and format.
+    - Dropping two files sets both layers.
+    - The position labels are called inline with `t()` — module-scope
+      labels are invisible to i18n-keys.
+  - **English plural rule:** `t()` has no plural forms in English, so "1
+    piece" is its own key next to "{n} pieces" (ru carries |one / |few).
+  - **Measured (browser):**
+    - Split 300 × 200 at 3 × 3 → pieces 100×67/66/67, all 60 000 pixels
+      exact. 128 px tiles → 128/128/44 × 128/72, all exact.
+    - A 2-image batch ZIP has `a/…` and `b/…` folders.
+    - Instagram 1 row × 3 of a 4000 × 3000 gradient → 1080 × 1440 posts,
+      centre colours as predicted (±1 JPG), seams matching. Drag moved fy
+      by the computed amount. A 4-slide carousel → 1000 × 1250 (4:5) /
+      1000 × 1000 (1:1), not upscaled.
+    - Overlay 70 % red on gray → (217,38,38). Multiply → (128,0,0).
+      Bottom-right snap is flush at (399,299). 90° rotation covers exactly
+      x 280–360. Cover fills the frame. Swap gives a 100 × 50 result.
+  - **Nav:** split-image and image-overlay join Edit (8 rows; column 2 = 23
+    rows). instagram-grid-maker stays out of the menu, per the Phase 8 note.
+  - **Snapshot diff vs 6A: 15 pages**, only home, pricing and contact
+    (101 → 104 tools); no related ring moved. verify:build: 551 URLs.
+- **2026-10-06 — Phase 7: remove-object, remove-watermark — 10 pages.**
+  - **Model.** The authors' `migan_pipeline_v2.onnx` (Hugging Face
+    `andraniksargsyan/migan`, MIT, SHA-256 `6f1f3530…`).
+    - Inputs: `image` uint8 [1,3,H,W] and `mask` uint8 [1,1,H,W]; output
+      `result`, the same shape.
+    - **Mask 0 = fill, 255 = keep.** Measured: with 0 a black square was
+      filled with the wall colour; with 255 the rest of the picture was
+      repainted instead.
+    - It crops around the hole internally, so a 12 MP photo runs in ~1.4 s
+      in Node. Pixels outside the hole come back unchanged.
+  - **Shipping.**
+    - The model is 28,079,181 bytes, over Pages' 25 MiB cap. It is
+      committed as two parts in `public/models/` and joined + SHA-checked in
+      the browser.
+    - ORT's CPU wasm (14 MB) is staged by `scripts/copy-ort.mjs` into
+      `public/ort/1.30.0/`. The WebGPU builds are 27 MB, over the cap.
+    - ORT is loaded with a native `import()` that Turbopack and webpack
+      ignore — verified in the built chunk.
+    - `env.wasm.proxy` puts inference in ORT's own worker, so the page never
+      freezes. One thread: multi-threading would need COOP/COEP headers,
+      which break the Drive picker and sign-in popups.
+    - Both are served immutable (`_headers`).
+  - **`lib/image/inpaint.ts`:**
+    - `markRegions` groups marks on a 16 px grid, grows each box by ¾ of
+      its long side (at least 48 px) and merges overlaps, so separate marks
+      are filled one region at a time at full detail.
+    - Marks are dilated by 0.4 % of the shorter side (2–15 px).
+    - Each removal returns before/after patches for undo and redo.
+    - Pictures over 16.7 MP are worked on scaled down, and the page says so.
+  - **`InpaintTool`:**
+    - Brush, box and eraser on a mark layer at image resolution;
+      "Clear marks"; Undo / Redo / Start over, plus Ctrl+Z and Ctrl+Shift+Z.
+    - "Hold to see the original".
+    - The model starts loading as soon as a picture is added, with a
+      progress bar and a retry on failure.
+    - Watermark mode opens with the box tool.
+  - **Copy.** It says plainly that the AI invents a plausible fill rather
+    than recovering pixels, that big diagonal watermarks come out softer,
+    and that it is for images you own or may edit (watermarks on stock
+    photos protect someone's work).
+  - **`I18nError` keys are invisible to i18n-keys.** The model-download
+    error was added to each locale's `common.ts` by hand, next to the
+    existing one from `lib/gif/to-webp.ts`.
+  - **Measured.** Dev server, Chrome:
+    - An 800 × 600 test with a red square removed by box → wall colour
+      within 1 step, ~2 s including the first run.
+    - Two separate brush marks filled in one click.
+    - Undo/redo restore pixels exactly.
+    - 4000 × 3000 JPG with "© SAMPLE" text: deviation from the background
+      went from max 129 / mean 28 to max 15 / mean 7, in 2.4 s with a
+      180 MB heap.
+  - **Production export** served by the new `npm run serve:out` (clean URLs
+    and real `.mjs` / `.wasm` types): runtime, model and proxy worker all
+    loaded. A fully boxed watermark came out max 15 / mean 2.2 from the
+    background.
+  - **Nav.** Image AI gains both (8 rows), so Create moved to the GIF column:
+    `[optimize, compress-size, photo-id, social-sizes]`, `[edit, effects,
+    ai]`, `[gif, privacy, create]`, `[convert…]` — 22–25 rows per column.
+  - **Snapshot diff vs 6B: 43 pages**, all expected — the AI pages'
+    related links now include the two tools, and the tool count went from
+    104 to 106. verify:build: 561 URLs.
+- **Deploys need the user's go-ahead.** 2A, 3A, 4A and the visibility fix
+  went live on 2026-10-04 (merge 505e680 into `main`, then `npm run
+  indexnow`). Later batches are committed on `feat/tool-expansion` and
+  pushed / merged only when the user says so.

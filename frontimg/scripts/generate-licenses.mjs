@@ -103,6 +103,34 @@ const MANUAL_COMPONENTS = [
       "Model weights (blaze_face_short_range.tflite) served from our own origin on /blur-face. " +
       "Runs entirely in the browser; no image data leaves the device.",
   },
+  // Same pattern for the inpainting tools (/remove-object, /remove-watermark):
+  // the npm walk sees onnxruntime-web, but the browser receives its WebAssembly
+  // build — which statically links Eigen — and the MI-GAN weights, committed
+  // under public/models/ (LICENSE-AUDIT.md F8).
+  {
+    name: "ONNX Runtime Web — WebAssembly runtime",
+    license: "MIT",
+    repository: "https://github.com/microsoft/onnxruntime",
+    note:
+      "Compiled to WebAssembly and served from our own origin on /remove-object and /remove-watermark. " +
+      "Staged into public/ort/ at build time from onnxruntime-web by scripts/copy-ort.mjs.",
+  },
+  {
+    name: "Eigen (bundled in the ONNX Runtime WebAssembly build)",
+    license: "MPL-2.0",
+    repository: "https://gitlab.com/libeigen/eigen",
+    note:
+      "C++ linear-algebra headers compiled, unmodified, into the ONNX Runtime WebAssembly build. " +
+      "MPL-2.0 is file-level: the Source Code Form of every covered file is available at the repository above.",
+  },
+  {
+    name: "MI-GAN inpainting model (migan_pipeline_v2.onnx)",
+    license: "MIT — Copyright (c) 2024 Picsart AI Research (PAIR)",
+    repository: "https://github.com/Picsart-AI-Research/MI-GAN",
+    note:
+      "Model weights from https://huggingface.co/andraniksargsyan/migan, served from our own origin " +
+      "in two parts on /remove-object and /remove-watermark. Runs entirely in the browser.",
+  },
   {
     name: "sharp / libvips",
     license: "Apache-2.0 (sharp) AND LGPL-3.0-or-later (libvips and linked libraries)",

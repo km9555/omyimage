@@ -15,7 +15,7 @@
  * Colours are the registry's own category hues (see CATEGORY_COLORS in
  * tools.ts) so a section header never disagrees with the tool icons under it.
  */
-import { TOOLS_BY_ID, type Tool } from "@/lib/tools";
+import { EFFECTS_SUITE, GIF_SUITE, TOOLS_BY_ID, type Tool } from "@/lib/tools";
 import type { Locale } from "@/i18n/config";
 import { toolShippedIn } from "@/i18n/status";
 
@@ -35,7 +35,7 @@ export const NAV_SECTIONS: NavSection[] = [
     label: "Optimize Image",
     icon: "compress",
     color: "#4F9D69",
-    ids: ["compress-image", "resize-image", "crop-image", "rotate-image", "flip-image"],
+    ids: ["compress-image", "resize-image", "crop-image", "rotate-image", "flip-image", "signature-resizer", "dpi-converter"],
   },
   {
     // Variants of compress-image (expansion.md §5): one row per target size.
@@ -69,17 +69,25 @@ export const NAV_SECTIONS: NavSection[] = [
       "watermark-image",
       "add-border",
       "circle-crop",
-      "blur-image",
-      "grayscale-image",
+      "round-corners",
       "merge-images",
+      "split-image",
+      "image-overlay",
     ],
+  },
+  {
+    id: "effects",
+    label: "Filters & Effects",
+    icon: "auto_fix_high",
+    color: "#7A6FB0",
+    ids: EFFECTS_SUITE,
   },
   {
     id: "create",
     label: "Create",
     icon: "auto_awesome",
     color: "#C98B3E",
-    ids: ["meme-generator", "gif-maker", "html-to-image", "image-color-picker"],
+    ids: ["meme-generator", "html-to-image", "image-color-picker"],
   },
   {
     id: "ai",
@@ -88,6 +96,8 @@ export const NAV_SECTIONS: NavSection[] = [
     color: "#7B79C9",
     ids: [
       "remove-background",
+      "remove-watermark",
+      "remove-object",
       "upscale-image",
       "image-to-hd",
       "unblur-image",
@@ -96,11 +106,26 @@ export const NAV_SECTIONS: NavSection[] = [
     ],
   },
   {
+    // Variants of resize-image (expansion.md §5): print size, then one row per platform size.
+    id: "social-sizes",
+    label: "Print & Social Sizes",
+    icon: "aspect_ratio",
+    color: "#4B8FC7",
+    ids: ["resize-image-in-cm", "youtube-thumbnail-resizer", "whatsapp-dp-resizer", "linkedin-banner-resizer", "facebook-cover-resizer", "discord-banner-resizer"],
+  },
+  {
     id: "privacy",
     label: "Privacy & Info",
     icon: "lock",
     color: "#C55A52",
-    ids: ["blur-face", "remove-exif", "image-metadata"],
+    ids: ["blur-face", "remove-exif", "image-metadata", "dpi-checker"],
+  },
+  {
+    id: "gif",
+    label: "GIF Tools",
+    icon: "gif_box",
+    color: "#C56A9A",
+    ids: GIF_SUITE,
   },
   {
     id: "convert-format",
@@ -109,6 +134,8 @@ export const NAV_SECTIONS: NavSection[] = [
     color: "#4B8FC7",
     ids: [
       "convert-to-jpg",
+      "convert-to-png",
+      "convert-to-webp",
       "jpg-to-png",
       "png-to-jpg",
       "jpg-to-webp",
@@ -123,7 +150,7 @@ export const NAV_SECTIONS: NavSection[] = [
     label: "Convert To & From",
     icon: "import_export",
     color: "#4B8FC7",
-    ids: ["image-to-pdf", "image-to-text", "image-to-base64", "base64-to-image", "gif-to-images"],
+    ids: ["image-to-pdf", "image-to-text", "svg-to-png", "png-to-ico", "image-to-base64", "base64-to-image"],
   },
   {
     id: "convert-camera",
@@ -148,14 +175,16 @@ export const NAV_SECTIONS_BY_ID: Record<string, NavSection> = Object.fromEntries
 
 /**
  * Column layout for the 4-column desktop mega-menu, by section id.
- * Balanced by row count, not section count: every column lands on 12–14
- * tool rows.
+ * Balanced by row count (section headings included), not section count,
+ * keeping the three Convert sections together: 22–25 tool rows per column.
+ * The variant rows leave the menu in the Phase 8 cleanup (expansion.md),
+ * which rebalances this again.
  */
 export const NAV_COLUMNS: string[][] = [
-  ["optimize", "compress-size", "photo-id"],
-  ["edit", "create", "privacy"],
-  ["ai", "convert-format"],
-  ["convert-other", "convert-camera"],
+  ["optimize", "compress-size", "photo-id", "social-sizes"],
+  ["edit", "effects", "ai"],
+  ["gif", "privacy", "create"],
+  ["convert-format", "convert-other", "convert-camera"],
 ];
 
 /**

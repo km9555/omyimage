@@ -47,6 +47,8 @@ dependency; the other by adding third-party notices. Both are recorded below.
 | gifenc | 1.0.3 | MIT | Yes |
 | gifuct-js | 2.1.2 | MIT | Yes |
 | jszip | 3.10.1 | (MIT OR GPL-3.0-or-later) | Yes — **we elect MIT** |
+| mp4-muxer | 5.2.2 | MIT | Yes — see F7 |
+| onnxruntime-web | 1.30.0 | MIT (wasm statically links Eigen, MPL-2.0) | Yes — see F8 |
 | next | 16.2.7 | MIT | Yes |
 | pdf-lib | 1.17.1 | MIT | Yes |
 | react | 19.2.4 | MIT | Yes |
@@ -309,6 +311,83 @@ stages it from `node_modules` into `public/mediapipe/wasm/` on `predev`/`prebuil
 and that directory is gitignored. Only the 224 KB model is committed. Everything
 is served from our own origin — no CDN request and no upload — which is what
 keeps the "processed entirely in your browser" claim on `/blur-face` true.
+
+---
+
+## F7 — `mp4-muxer` for browser GIF → MP4 · **Approved** · 2026-10-06
+
+Added for `/gif-to-mp4`. It only writes the MP4 container; the H.264 frames
+come from the browser's own WebCodecs `VideoEncoder`.
+
+**Checks performed**
+
+| Check | Result |
+|---|---|
+| Declared licence | `MIT` (`mp4-muxer@5.2.2`, © 2023 Vanilagy), `LICENSE` file shipped |
+| Copyleft strings in `build/mp4-muxer.{js,mjs,d.ts}` | none |
+| Runtime dependencies | `@types/dom-webcodecs`, `@types/wicg-file-system-access`, both type-only |
+| Copyleft strings in the built `out/` bundle after adding it | none |
+
+**Verdict: approved.** Pure TypeScript, no wasm, no native code. The package
+is marked deprecated in favour of its successor Mediabunny. Mediabunny is
+**MPL-2.0**, so we stay on mp4-muxer, which is stable and complete for this use.
+
+**Rule 4 (codecs and patents).** No codec ships with the site. H.264 encoding
+is done by the visitor's browser or OS, which carries any codec licence.
+Browsers without an H.264 encoder get an error message instead of a fallback
+encoder.
+
+**Obligations discharged:** the generator reproduces its MIT licence in
+`THIRD-PARTY-NOTICES.txt`.
+
+---
+
+## F8 — `onnxruntime-web` + MI-GAN for browser inpainting · **Approved** · 2026-10-06
+
+Added for `/remove-object` and `/remove-watermark` (expansion.md Phase 7).
+ONNX Runtime Web runs the MI-GAN inpainting model on the visitor's CPU; no
+image leaves the device.
+
+**Checks performed**
+
+| Check | Result |
+|---|---|
+| Declared licence | `MIT` (`onnxruntime-web@1.30.0`, Microsoft). Runtime deps `onnxruntime-common`, `flatbuffers`, `long`, `guid-typescript` — all permissive |
+| Copyleft strings in the shipped `ort.wasm.min.mjs`, `ort-wasm-simd-threaded.{mjs,wasm}` (`grep -aiE "\b(A?GPL\|LGPL)\b\|GNU General Public\|GNU Lesser"`) | none |
+| Native code inside the wasm | ONNX Runtime's CPU kernels, MLAS and **Eigen** (symbols such as `EigenNonBlockingThreadPool` present) |
+| Eigen's licence | **MPL-2.0**; ONNX Runtime builds it with `EIGEN_MPL2_ONLY`, so no LGPL-era Eigen files are included |
+| Model weights `migan_pipeline_v2.onnx` | **MIT**, © 2024 Picsart AI Research — the `LICENSE` beside the file at huggingface.co/andraniksargsyan/migan (the paper's first author); upstream code MIT. 28,079,181 bytes, SHA-256 `6f1f3530…8c40b`, equal to the Hub's LFS oid |
+
+**Verdict: approved.** MIT runtime and MIT weights. MPL-2.0 is file-level
+weak copyleft: shipping **unmodified** MPL files inside a larger work is
+allowed for any purpose, commercial included. The only duty is to tell
+recipients where the Source Code Form is (MPL §3.2). This is the same licence
+as `lightningcss` (F3); the difference is that Eigen reaches the browser, so the
+duty applies. No MPL-free alternative exists for running an ONNX model in a
+browser, which is why the Mediabunny reasoning in F7 does not apply here.
+
+**Obligations discharged**
+
+- `MANUAL_COMPONENTS` in `scripts/generate-licenses.mjs` lists the ORT wasm
+  runtime (MIT) and Eigen (MPL-2.0, with its source repository), and gives
+  MI-GAN's weights their copyright line, so `THIRD-PARTY-NOTICES.txt`
+  carries all three.
+
+**Note on shipping**
+
+- **Runtime:** ~14 MB, not committed. `scripts/copy-ort.mjs` stages
+  `ort.wasm.min.mjs`, `ort-wasm-simd-threaded.mjs` and `.wasm` into
+  `public/ort/<version>/` on `predev`/`prebuild` (gitignored), and fails the
+  build if `ORT_VERSION` in `lib/image/inpaint.ts` drifts from the installed
+  package. The WebGPU builds (27 MB each) are over Cloudflare Pages' 25 MiB
+  per-file limit, so only the CPU build ships.
+- **Model:** 28 MB, also over the limit. It is **committed** under
+  `public/models/` in two byte-exact parts (`.gitattributes` marks them
+  binary) and joined, then SHA-256-checked, in the browser. Committing rather
+  than fetching at build time follows F6: builds must not depend on a third
+  party being reachable.
+- **Caching:** both are served immutable (`public/_headers`); the version
+  folder and the hash in the model filenames change the URL on any update.
 
 ---
 

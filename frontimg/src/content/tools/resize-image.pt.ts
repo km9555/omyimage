@@ -21,6 +21,7 @@ const content: ToolPageContent = {
   tagline:
     "Redimensione imagens JPG, PNG, WEBP e GIF online — por pixels exatos ou porcentagem, com proporção travada, tamanhos prontos para redes sociais e em lote. Grátis, rápido e 100% privado no seu navegador.",
   category: { id: "optimize", label: "Otimizar" },
+  variantsHeading: "Redimensionar para impressão ou redes sociais",
 
   metaTitle: "Redimensionar imagem online grátis — em pixels ou % | oMyImage",
   metaDescription:
@@ -175,6 +176,21 @@ const content: ToolPageContent = {
     "Post image": "Imagem do post",
     "Company logo": "Logo da empresa",
     "Channel icon": "Ícone do canal",
+    "Profile banner": "Banner do perfil",
+    "Server banner": "Banner do servidor",
+    "Server icon": "Ícone do servidor",
+    // Print size mode (ResizeTool; PRINT_UNITS and MODES are module scope)
+    "Print size": "Tamanho de impressão",
+    "Unit": "Unidade",
+    "cm": "cm", // i18n-same
+    "mm": "mm", // i18n-same
+    "in": "pol.",
+    "Width ({unit})": "Largura ({unit})",
+    "Height ({unit})": "Altura ({unit})",
+    "Resolution (DPI)": "Resolução (DPI)",
+    "Pixels = size × DPI. 300 DPI is the usual quality for printed photos.": "Pixels = tamanho × DPI. 300 DPI é a qualidade usual para fotos impressas.",
+    "WEBP can't store a DPI — choose JPG or PNG so the file keeps its print size.": "O WEBP não guarda DPI — escolha JPG ou PNG para o arquivo manter o tamanho de impressão.",
+    "{dpi} DPI": "{dpi} DPI", // i18n-same
     "Channel art": "Banner do canal",
     "Thumbnail": "Miniatura",
     "Standard pin": "Pin padrão",

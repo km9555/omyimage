@@ -61,6 +61,9 @@ export const ruCommon: Record<string, string> = {
   "New": "Новинка",
   "Compress to Size": "Сжать до размера",
   "Passport & ID Photos": "Фото на документы",
+  "Print & Social Sizes": "Размеры для печати и соцсетей",
+  "GIF Tools": "Инструменты для GIF",
+  "Filters & Effects": "Фильтры и эффекты",
   "Browse all tools": "Все инструменты",
   "Browse tools": "Смотреть инструменты",
   "All tools": "Все инструменты",
@@ -386,6 +389,17 @@ export const ruCommon: Record<string, string> = {
   "The server did not start the job. Please try again.":
     "Сервер не начал обработку. Попробуйте ещё раз.",
   "Timed out waiting for the server to finish.": "Сервер не ответил вовремя.",
+  "Your browser cannot save {format} images. Try Chrome, Edge or Firefox.": "Ваш браузер не умеет сохранять изображения {format}. Попробуйте Chrome, Edge или Firefox.",
+  // lib/image/inpaint.ts (I18nError — invisible to i18n-keys)
+  "The AI model could not be downloaded. Check your connection and try again.": "Не удалось загрузить модель ИИ. Проверьте подключение и попробуйте ещё раз.",
+  "This file is not a valid SVG.": "Этот файл не является корректным SVG.",
+  "This size is too large for your browser — try a smaller scale.": "Этот размер слишком велик для вашего браузера — выберите масштаб поменьше.",
+  "This SVG could not be drawn. It may use features browsers do not render as an image.": "Не удалось отрисовать этот SVG. Возможно, в нём есть элементы, которые браузеры не показывают как изображение.",
+  "Your browser blocks exporting this SVG because it contains embedded HTML.": "Браузер не даёт экспортировать этот SVG, потому что в нём есть встроенный HTML.",
+  "This file is not a valid WebP image.": "Этот файл не является корректным изображением WebP.",
+  "This file is not a valid GIF.": "Этот файл не является корректным GIF.",
+  "This WebP frame has no image data.": "В этом кадре WebP нет данных изображения.",
+  "Your browser can't create MP4 video. Try Chrome, Edge or Safari.": "Ваш браузер не умеет создавать видео MP4. Попробуйте Chrome, Edge или Safari.",
   "Upload an image.": "Загрузите изображение.",
   "This file is too large.": "Этот файл слишком большой.",
   "Too many processing requests. Please wait a moment.":

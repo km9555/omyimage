@@ -73,6 +73,16 @@ export function limitBytes(value: number, unit: "KB" | "MB"): number {
   return Math.round(value * (unit === "MB" ? 1_000_000 : 1_000));
 }
 
+/**
+ * Bytes for an "at least 10 KB" style MINIMUM — binary, the mirror image of
+ * limitBytes: 10,000 bytes is "10 KB" to a form that counts 1,000 but only
+ * 9.8 KB to one that counts 1,024, so a minimum is met under both readings
+ * only at 10,240 bytes.
+ */
+export function minimumBytes(value: number, unit: "KB" | "MB"): number {
+  return Math.ceil(value * (unit === "MB" ? 1_048_576 : 1_024));
+}
+
 function drawScaled(
   bmp: ImageBitmap,
   w: number,
@@ -218,5 +228,149 @@ export async function compressToSize(file: Blob, opts: TargetSizeOptions): Promi
   } finally {
     bmp.close();
     opts.onProgress?.(1);
+  }
+}
+
+// ── Growing a file to a MINIMUM size ─────────────────────────────────────
+/*
+ * "Increase image size in KB": forms that also say "at least 20 KB" reject a
+ * small, already-compressed photo or a scanned signature. Re-encoding can make
+ * a file bigger in three honest steps, tried in this order:
+ *
+ *   1. Higher JPG quality at the same size — more detail kept, nothing lost.
+ *   2. More pixels: enlarge by the square root of the shortfall (file size
+ *      tracks pixel count), up to MAX_GROW× and the browser's canvas budget.
+ *      Skipped when the caller needs exact dimensions (a 140 × 60 signature).
+ *   3. Padding: an empty JPEG comment (COM) block appended after the header.
+ *      It adds bytes and nothing else — every decoder skips it, the picture is
+ *      bit-for-bit the same. Only used when 1 and 2 cannot reach the minimum,
+ *      and reported (`padded`) so the page can say so.
+ */
+const MAX_GROW = 4;
+const MAX_GROW_LONG_SIDE = 6000;
+
+export interface GrowSizeOptions {
+  /** Lower limit in bytes (the result is at least this big). */
+  minBytes: number;
+  /** Optional upper limit in bytes. */
+  maxBytes?: number;
+  /** Fill behind transparent pixels. */
+  background?: string;
+  /** Exact output size in pixels; disables enlarging (padding still allowed). */
+  size?: { width: number; height: number };
+  /** Allow enlarging the pixel dimensions (default true). */
+  allowEnlarge?: boolean;
+}
+
+export interface GrowSizeResult {
+  blob: Blob;
+  width: number;
+  height: number;
+  quality: number;
+  /** True when the result is within [minBytes, maxBytes]. */
+  met: boolean;
+  /** True when the pixel dimensions were increased. */
+  enlarged: boolean;
+  /** True when an empty comment block was added to reach the minimum. */
+  padded: boolean;
+}
+
+/**
+ * A copy of a JPEG with empty COM segments inserted after its JFIF/APP header
+ * until it is at least `targetBytes` long. Pixels are untouched.
+ */
+export async function padJpeg(blob: Blob, targetBytes: number): Promise<Blob> {
+  const src = new Uint8Array(await blob.arrayBuffer());
+  if (src[0] !== 0xff || src[1] !== 0xd8) throw new Error("Not a JPEG file.");
+  let need = targetBytes - src.length;
+  if (need <= 0) return blob;
+  // Insert after SOI and any APPn segments, so JFIF/EXIF stay first.
+  let at = 2;
+  while (at + 4 <= src.length && src[at] === 0xff && src[at + 1] >= 0xe0 && src[at + 1] <= 0xef) {
+    at += 2 + ((src[at + 2] << 8) | src[at + 3]);
+  }
+  const segments: Uint8Array[] = [];
+  while (need > 0) {
+    // A segment is 4 header bytes + payload; payload ≤ 65,533.
+    const payload = Math.min(65_533, Math.max(1, need - 4));
+    const seg = new Uint8Array(4 + payload);
+    seg[0] = 0xff;
+    seg[1] = 0xfe;
+    seg[2] = ((payload + 2) >> 8) & 0xff;
+    seg[3] = (payload + 2) & 0xff;
+    seg.fill(0x20, 4); // spaces
+    segments.push(seg);
+    need -= seg.length;
+  }
+  return new Blob([src.subarray(0, at), ...segments, src.subarray(at)] as BlobPart[], { type: "image/jpeg" });
+}
+
+export async function growToSize(file: Blob, opts: GrowSizeOptions): Promise<GrowSizeResult> {
+  const { minBytes, maxBytes, background = "#ffffff" } = opts;
+  if (!(minBytes > 0)) throw new Error("The minimum size must be greater than zero.");
+  if (maxBytes !== undefined && maxBytes < minBytes) throw new Error("The minimum size is larger than the maximum.");
+  const allowEnlarge = opts.allowEnlarge !== false && !opts.size;
+
+  const probe = await createImageBitmap(file, { imageOrientation: "from-image" }).catch(() => null);
+  if (!probe) throw new Error("This image could not be read.");
+  const natural = { w: probe.width, h: probe.height };
+  probe.close();
+  const bmp = await decodeAt(file, natural, Math.min(1, budgetScale(natural.w, natural.h)));
+  // The decoded size, which is below the natural one only for photos past the
+  // browser's canvas budget — enlarging those is never the way to a minimum.
+  const baseW = opts.size?.width ?? bmp.width;
+  const baseH = opts.size?.height ?? bmp.height;
+
+  const encodeAt = async (w: number, h: number, q: number) => {
+    const canvas = drawScaled(bmp, w, h, background);
+    try {
+      return { blob: await canvasToBlob(canvas, "image/jpeg", q), width: w, height: h, quality: q };
+    } finally {
+      canvas.width = 0;
+      canvas.height = 0;
+    }
+  };
+  const within = (n: number) => n >= minBytes && (maxBytes === undefined || n <= maxBytes);
+
+  try {
+    // 1. Highest quality at the base size.
+    let best = await encodeAt(baseW, baseH, 1);
+    let enlarged = false;
+
+    // 2. Enlarge while still short.
+    if (best.blob.size < minBytes && allowEnlarge) {
+      const cap = Math.min(MAX_GROW, MAX_GROW_LONG_SIDE / Math.max(baseW, baseH));
+      let scale = 1;
+      for (let round = 0; round < 6 && best.blob.size < minBytes && scale < cap - 1e-3; round++) {
+        scale = Math.min(cap, scale * Math.max(1.1, Math.sqrt(minBytes / best.blob.size) * 1.08));
+        const w = Math.round(baseW * scale);
+        const h = Math.round(baseH * scale);
+        if (!canBrowserHandlePixels(w * h)) break;
+        best = await encodeAt(w, h, 1);
+        enlarged = true;
+      }
+    }
+
+    // Overshot the maximum: the highest quality at this size that fits.
+    if (maxBytes !== undefined && best.blob.size > maxBytes) {
+      let lo = QUALITY_FLOOR;
+      let hi = 1;
+      let fit: typeof best | null = null;
+      for (let i = 0; i < SEARCH_STEPS + 1; i++) {
+        const mid = (lo + hi) / 2;
+        const r = await encodeAt(best.width, best.height, mid);
+        if (r.blob.size <= maxBytes) { fit = r; lo = mid; } else { hi = mid; }
+      }
+      if (fit) best = fit;
+    }
+
+    // 3. Pad the rest of the way, if it is still short.
+    if (best.blob.size < minBytes) {
+      const padded = await padJpeg(best.blob, minBytes);
+      return { ...best, blob: padded, met: within(padded.size), enlarged, padded: true };
+    }
+    return { ...best, met: within(best.blob.size), enlarged, padded: false };
+  } finally {
+    bmp.close();
   }
 }

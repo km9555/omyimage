@@ -20,6 +20,7 @@ import {
 import { renderCrop, type CropSel } from "@/lib/image/crop";
 import { fitBox, FIT_NOTE, type FitMode } from "@/lib/image/fit";
 import { SOCIAL_PLATFORMS, CUSTOM_PRESET } from "@/lib/social-presets";
+import { setDpi } from "@/lib/image/dpi";
 import { useHandoff } from "@/lib/tool-handoff";
 import { useFormatBytes, useT } from "@/i18n/I18nScope";
 import { translateError } from "@/i18n/errors";
@@ -27,8 +28,21 @@ import { translateError } from "@/i18n/errors";
 const ACCENT = "#4B8FC7";
 const ACCEPT = "image/jpeg,image/png,image/webp,image/gif,image/bmp";
 
-type Mode = "pixels" | "percent" | "social";
+type Mode = "pixels" | "percent" | "social" | "print";
 type Format = "original" | ExportMime;
+type PrintUnit = "cm" | "mm" | "in";
+
+/** Units per inch, for the Print size mode. */
+const PER_INCH: Record<PrintUnit, number> = { cm: 2.54, mm: 25.4, in: 1 };
+const PRINT_UNITS: { value: PrintUnit; label: string }[] = [
+  { value: "cm", label: "cm" },
+  { value: "mm", label: "mm" },
+  { value: "in", label: "in" },
+];
+const PRINT_DPIS = [150, 200, 300, 600];
+/** A physical length, rounded for an input box: 2 decimals, no trailing zeros. */
+const lengthStr = (n: number) => String(Math.round(n * 100) / 100);
+const toNum = (s: string) => { const n = parseFloat(s.replace(",", ".")); return Number.isFinite(n) ? n : 0; };
 
 type Item = {
   id: string;
@@ -79,6 +93,7 @@ const MODES: { value: Mode; label: string }[] = [
   { value: "pixels", label: "By pixels" },
   { value: "percent", label: "By percent" },
   { value: "social", label: "Social media" },
+  { value: "print", label: "Print size" },
 ];
 
 const FITS: { value: FitMode; label: string; hint: string }[] = [
@@ -112,16 +127,44 @@ function workingMime(file: File): ExportMime {
   return "image/png";
 }
 
-export function ResizeTool() {
+/**
+ * Opens the tool in a given mode — Social media on one platform size (the
+ * youtube-thumbnail-resizer / whatsapp-dp-resizer … variants) or Print size
+ * (resize-image-in-cm). Without it the tool starts in By pixels exactly as
+ * before.
+ */
+export interface ResizePreset {
+  /** Defaults to "social" when `platform` is given. */
+  mode?: Mode;
+  /** `SOCIAL_PLATFORMS` id. */
+  platform?: string;
+  /** The preset's English label within that platform, e.g. "Thumbnail". */
+  preset?: string;
+  fit?: FitMode;
+  format?: Format;
+  /** Print size mode: the starting unit and DPI. */
+  unit?: PrintUnit;
+  dpi?: number;
+}
+
+/** The platform and preset index a ResizePreset names, or the first of each. */
+function socialStart(preset?: ResizePreset) {
+  const p = SOCIAL_PLATFORMS.find((x) => x.id === preset?.platform) ?? SOCIAL_PLATFORMS[0];
+  const i = Math.max(0, p.presets.findIndex((x) => x.label === preset?.preset));
+  return { platform: p, index: i, size: p.presets[i] };
+}
+
+export function ResizeTool({ preset }: { preset?: ResizePreset } = {}) {
   const t = useT();
   const formatBytes = useFormatBytes();
+  const start = socialStart(preset);
   const [items, setItems] = useState<Item[]>([]);
-  const [mode, setMode] = useState<Mode>("pixels");
+  const [mode, setMode] = useState<Mode>(preset?.mode ?? (preset?.platform ? "social" : "pixels"));
   const [widthStr, setWidthStr] = useState("");
   const [heightStr, setHeightStr] = useState("");
   const [keepAspect, setKeepAspect] = useState(true);
   const [percentStr, setPercentStr] = useState("50");
-  const [format, setFormat] = useState<Format>("original");
+  const [format, setFormat] = useState<Format>(preset?.format ?? "original");
   const [quality, setQuality] = useState(0.92);
   const [bg, setBg] = useState<BgValue>({ transparent: false, color: "#ffffff" });
   const [isWorking, setIsWorking] = useState(false);
@@ -133,11 +176,18 @@ export function ResizeTool() {
   const [editingId, setEditingId] = useState<string | null>(null);
 
   // Social media mode.
-  const [platformId, setPlatformId] = useState(SOCIAL_PLATFORMS[0].id);
-  const [presetKey, setPresetKey] = useState("0");
-  const [socialW, setSocialW] = useState(String(SOCIAL_PLATFORMS[0].presets[0].w));
-  const [socialH, setSocialH] = useState(String(SOCIAL_PLATFORMS[0].presets[0].h));
-  const [fit, setFit] = useState<FitMode>("cover");
+  const [platformId, setPlatformId] = useState(start.platform.id);
+  const [presetKey, setPresetKey] = useState(String(start.index));
+  const [socialW, setSocialW] = useState(String(start.size.w));
+  const [socialH, setSocialH] = useState(String(start.size.h));
+  const [fit, setFit] = useState<FitMode>(preset?.fit ?? "cover");
+
+  // Print size mode: a physical size and the DPI it is printed at.
+  const [printUnit, setPrintUnit] = useState<PrintUnit>(preset?.unit ?? "cm");
+  const [printW, setPrintW] = useState("");
+  const [printH, setPrintH] = useState("");
+  const [printDpiStr, setPrintDpiStr] = useState(String(preset?.dpi ?? 300));
+  const printDpi = Math.max(1, Math.min(4800, toInt(printDpiStr)));
 
   /*
     Revoke preview URLs on UNMOUNT only — the ref-mirror pattern from
@@ -151,6 +201,18 @@ export function ResizeTool() {
   useEffect(() => () => { itemsRef.current.forEach((i) => URL.revokeObjectURL(i.url)); }, []);
 
   const first = items[0];
+
+  /* Print size starts from the first image's own size at the chosen DPI, so the
+     boxes say something true ("this photo is 25.4 × 16.93 cm at 300 DPI")
+     instead of sitting empty. Only fills boxes that are still empty. */
+  useEffect(() => {
+    if (!first?.w || !first?.h) return;
+    const w = first.w;
+    const h = first.h;
+    setPrintW((cur) => (cur === "" ? lengthStr((w / printDpi) * PER_INCH[printUnit]) : cur));
+    setPrintH((cur) => (cur === "" ? lengthStr((h / printDpi) * PER_INCH[printUnit]) : cur));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [first?.w, first?.h]);
 
   /*
     Whether a drop has already claimed the right to prefill Width/Height.
@@ -210,6 +272,8 @@ export function ResizeTool() {
     setItems([]);
     setWidthStr("");
     setHeightStr("");
+    setPrintW("");
+    setPrintH("");
     prefilledRef.current = false;
     setDone(false);
     setInfoId(null);
@@ -281,6 +345,23 @@ export function ResizeTool() {
     if (keepAspect && first?.w && first?.h) { const h = toInt(v); if (h > 0) setWidthStr(String(Math.round(h * (first.w / first.h)))); }
   };
 
+  // Print size: same aspect lock as By pixels, in physical units.
+  const onPrintW = (v: string) => {
+    setPrintW(v);
+    if (keepAspect && first?.w && first?.h) { const n = toNum(v); if (n > 0) setPrintH(lengthStr(n * (first.h / first.w))); }
+  };
+  const onPrintH = (v: string) => {
+    setPrintH(v);
+    if (keepAspect && first?.w && first?.h) { const n = toNum(v); if (n > 0) setPrintW(lengthStr(n * (first.w / first.h))); }
+  };
+  /** Switching unit converts the boxes, so the physical size stays put. */
+  const pickUnit = (u: PrintUnit) => {
+    const k = PER_INCH[u] / PER_INCH[printUnit];
+    setPrintW((cur) => (toNum(cur) > 0 ? lengthStr(toNum(cur) * k) : cur));
+    setPrintH((cur) => (toNum(cur) > 0 ? lengthStr(toNum(cur) * k) : cur));
+    setPrintUnit(u);
+  };
+
   const platform = SOCIAL_PLATFORMS.find((p) => p.id === platformId) ?? SOCIAL_PLATFORMS[0];
 
   const pickPlatform = (id: string) => {
@@ -325,8 +406,10 @@ export function ResizeTool() {
       return { content: d, out: d, serverFit: "fill", serverSize: d };
     }
 
-    const W = toInt(widthStr);
-    const H = toInt(heightStr);
+    // Print size is By pixels with the pixels worked out from size × DPI.
+    const toPx = (s: string) => Math.round((toNum(s) / PER_INCH[printUnit]) * printDpi);
+    const W = mode === "print" ? toPx(printW) : toInt(widthStr);
+    const H = mode === "print" ? toPx(printH) : toInt(heightStr);
     if (W <= 0 && H <= 0) return null;
     const d = keepAspect
       ? (() => {
@@ -340,10 +423,11 @@ export function ResizeTool() {
   const previewPlan = useMemo(
     () => (first ? planFor(first) : null),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [first, mode, widthStr, heightStr, percentStr, keepAspect, socialW, socialH, fit]
+    [first, mode, widthStr, heightStr, percentStr, keepAspect, socialW, socialH, fit, printW, printH, printUnit, printDpi]
   );
 
   const anyJpg = items.some((it) => outMimeFor(it.file, format) === "image/jpeg");
+  const anyWebpOut = items.some((it) => outMimeFor(it.file, format) === "image/webp");
   const isPadding = mode === "social" && fit === "contain";
   const showBg = anyJpg || isPadding;
   const showQuality = format !== "image/png";
@@ -391,7 +475,15 @@ export function ResizeTool() {
           });
           blob = r.blob; width = r.width; height = r.height;
         }
-        out.push({ ...it, result: { blob, size: blob.size, name: `${baseName(it.file.name)}_resized.${mimeExt(mime)}`, w: width, h: height } });
+        let name = `${baseName(it.file.name)}_resized.${mimeExt(mime)}`;
+        if (mode === "print") {
+          // A print size only survives into the file if the DPI label does:
+          // JPG and PNG carry it; WEBP has no density field a browser can write.
+          if (mime !== "image/webp") blob = await setDpi(blob, printDpi);
+          const k = PER_INCH[printUnit] / printDpi;
+          name = `${baseName(it.file.name)}_${lengthStr(width * k)}x${lengthStr(height * k)}${printUnit}.${mimeExt(mime)}`;
+        }
+        out.push({ ...it, result: { blob, size: blob.size, name, w: width, h: height } });
       }
       setItems(out);
       setDone(true);
@@ -519,7 +611,9 @@ export function ResizeTool() {
                         {t("First image → {w} × {h} px", { w: previewPlan.out.width, h: previewPlan.out.height })}
                         {mode === "social"
                           ? ` · ${t(FIT_NOTE[fit])}`
-                          : items.length > 1 && keepAspect
+                          : mode === "print"
+                            ? ` · ${t("{dpi} DPI", { dpi: printDpi })}`
+                            : items.length > 1 && keepAspect
                             ? ` ${t("— each keeps its own ratio")}`
                             : ""}
                       </>
@@ -541,7 +635,7 @@ export function ResizeTool() {
               </>
             }
           >
-          <div className="grid grid-cols-3 gap-1 rounded-lg bg-surface-container p-1">
+          <div className="grid grid-cols-2 gap-1 rounded-lg bg-surface-container p-1">
             {MODES.map((m) => (
               <button key={m.value} type="button" onClick={() => setMode(m.value)} className={segCls(mode === m.value)}>
                 {t(m.label)}
@@ -602,6 +696,42 @@ export function ResizeTool() {
                 </div>
                 <p className="text-label-sm font-label-sm text-on-surface-variant">{t(FITS.find((f) => f.value === fit)?.hint ?? "")}</p>
               </div>
+            </div>
+          )}
+
+          {mode === "print" && (
+            <div className="flex flex-col gap-3">
+              <div role="radiogroup" aria-label={t("Unit")} className="grid grid-cols-3 gap-1 rounded-lg bg-surface-container p-1">
+                {PRINT_UNITS.map((u) => (
+                  <button key={u.value} type="button" role="radio" aria-checked={printUnit === u.value} onClick={() => pickUnit(u.value)} className={`${segCls(printUnit === u.value)} text-label-md`}>
+                    {t(u.label)}
+                  </button>
+                ))}
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="flex flex-col gap-1.5"><label className="text-label-sm font-label-sm text-on-surface-variant">{t("Width ({unit})", { unit: t(printUnit) })}</label><input type="text" inputMode="decimal" value={printW} onChange={(e) => onPrintW(e.target.value)} className={fieldCls} /></div>
+                <div className="flex flex-col gap-1.5"><label className="text-label-sm font-label-sm text-on-surface-variant">{t("Height ({unit})", { unit: t(printUnit) })}</label><input type="text" inputMode="decimal" value={printH} onChange={(e) => onPrintH(e.target.value)} className={fieldCls} /></div>
+              </div>
+              <label className="flex items-center gap-2.5 cursor-pointer">
+                <input type="checkbox" checked={keepAspect} onChange={(e) => setKeepAspect(e.target.checked)} className="w-4 h-4 accent-secondary" />
+                <span className="text-body-md text-on-surface flex items-center gap-1.5"><Icon name="link" className="text-[18px]" /> {t("Keep aspect ratio (fit)")}</span>
+              </label>
+              <div className="flex flex-col gap-1.5">
+                <span className="text-label-sm font-label-sm text-on-surface-variant">{t("Resolution (DPI)")}</span>
+                <div className="flex flex-wrap items-center gap-1.5">
+                  {PRINT_DPIS.map((d) => (
+                    <button key={d} type="button" onClick={() => setPrintDpiStr(String(d))}
+                      className={`rounded-full border px-2.5 py-1 text-label-sm font-semibold tabular-nums transition-colors ${printDpi === d ? "border-secondary bg-secondary/10 text-secondary" : "border-outline-variant/60 text-on-surface-variant hover:border-secondary hover:text-secondary"}`}>
+                      {d}
+                    </button>
+                  ))}
+                  <input type="number" min={1} max={4800} value={printDpiStr} onChange={(e) => setPrintDpiStr(e.target.value)} aria-label={t("Resolution (DPI)")} className={`${fieldCls.replace("w-full", "w-24")} tabular-nums`} />
+                </div>
+                <p className="text-label-sm font-label-sm text-on-surface-variant">{t("Pixels = size × DPI. 300 DPI is the usual quality for printed photos.")}</p>
+              </div>
+              {anyWebpOut && (
+                <p className="text-label-sm font-label-sm text-on-surface-variant/80">{t("WEBP can't store a DPI — choose JPG or PNG so the file keeps its print size.")}</p>
+              )}
             </div>
           )}
 

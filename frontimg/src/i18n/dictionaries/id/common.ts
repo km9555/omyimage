@@ -50,6 +50,9 @@ export const idCommon: Record<string, string> = {
   "New": "Baru",
   "Compress to Size": "Kompres ke Ukuran",
   "Passport & ID Photos": "Pas Foto & Foto Dokumen",
+  "Print & Social Sizes": "Ukuran Cetak & Media Sosial",
+  "GIF Tools": "Alat GIF",
+  "Filters & Effects": "Filter & Efek",
   "Browse all tools": "Lihat semua alat",
   "Browse tools": "Lihat alat",
   "All tools": "Semua alat",
@@ -355,6 +358,17 @@ export const idCommon: Record<string, string> = {
   "The server did not start the job. Please try again.":
     "Server tidak memulai proses. Silakan coba lagi.",
   "Timed out waiting for the server to finish.": "Waktu habis menunggu server selesai.",
+  "Your browser cannot save {format} images. Try Chrome, Edge or Firefox.": "Browser Anda tidak bisa menyimpan gambar {format}. Coba Chrome, Edge, atau Firefox.",
+  // lib/image/inpaint.ts (I18nError — invisible to i18n-keys)
+  "The AI model could not be downloaded. Check your connection and try again.": "Model AI tidak bisa diunduh. Periksa koneksi Anda lalu coba lagi.",
+  "This file is not a valid SVG.": "File ini bukan SVG yang valid.",
+  "This size is too large for your browser — try a smaller scale.": "Ukuran ini terlalu besar untuk browser Anda — pilih skala yang lebih kecil.",
+  "This SVG could not be drawn. It may use features browsers do not render as an image.": "SVG ini tidak bisa digambar. Mungkin ada fitur yang tidak ditampilkan browser sebagai gambar.",
+  "Your browser blocks exporting this SVG because it contains embedded HTML.": "Browser Anda memblokir ekspor SVG ini karena berisi HTML tertanam.",
+  "This file is not a valid WebP image.": "File ini bukan gambar WebP yang valid.",
+  "This file is not a valid GIF.": "File ini bukan GIF yang valid.",
+  "This WebP frame has no image data.": "Frame WebP ini tidak berisi data gambar.",
+  "Your browser can't create MP4 video. Try Chrome, Edge or Safari.": "Browser Anda tidak bisa membuat video MP4. Coba Chrome, Edge, atau Safari.",
   "Upload an image.": "Unggah gambar.",
   "This file is too large.": "File ini terlalu besar.",
   "Too many processing requests. Please wait a moment.":

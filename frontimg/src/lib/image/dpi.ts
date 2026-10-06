@@ -39,13 +39,27 @@ function crc32(bytes: Uint8Array): number {
 const isJpeg = (b: Uint8Array) => b[0] === 0xff && b[1] === 0xd8;
 const isPng = (b: Uint8Array) =>
   b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47 && b[4] === 0x0d && b[5] === 0x0a;
+const isBmp = (b: Uint8Array) => b[0] === 0x42 && b[1] === 0x4d;
+const isWebp = (b: Uint8Array) =>
+  b[0] === 0x52 && b[1] === 0x49 && b[2] === 0x46 && b[3] === 0x46 && b[8] === 0x57 && b[9] === 0x45 && b[10] === 0x42 && b[11] === 0x50;
+const isGif = (b: Uint8Array) => b[0] === 0x47 && b[1] === 0x49 && b[2] === 0x46;
 
 export interface DpiInfo {
   /** Horizontal / vertical density in dots per inch, or null when unset. */
   x: number | null;
   y: number | null;
-  /** Where it was read from. "aspect" = JFIF with units 0 (no real DPI). */
-  source: "jfif" | "exif" | "png" | "aspect" | "none";
+  /**
+   * Where it was read from. "aspect" = a density field that only gives a pixel
+   * aspect ratio (JFIF units 0, PNG unit 0) — no real DPI. "none" = the file
+   * has no density field at all (always the case for GIF).
+   */
+  source: "jfif" | "exif" | "png" | "bmp" | "aspect" | "none";
+}
+
+/** Whether `setDpi` can write this file's own format (JPEG or PNG). */
+export async function canStoreDpi(blob: Blob): Promise<boolean> {
+  const head = new Uint8Array(await blob.slice(0, 8).arrayBuffer());
+  return isJpeg(head) || isPng(head);
 }
 
 // ── EXIF resolution (inside APP1 "Exif\0\0" TIFF) ──────────────────────────
@@ -83,9 +97,67 @@ function exifResolutionEntries(b: Uint8Array, ex: Exif): { tag: number; valueOff
   return out;
 }
 
-/** Read the DPI a JPEG or PNG declares. */
+/** EXIF XResolution/YResolution as DPI, or null when absent or unit-less. */
+function exifDpi(b: Uint8Array, ex: Exif): { x: number; y: number } | null {
+  const dv = new DataView(b.buffer, b.byteOffset, b.byteLength);
+  let x: number | null = null;
+  let y: number | null = null;
+  let unit = 2;
+  for (const e of exifResolutionEntries(b, ex)) {
+    if (e.tag === 0x0128) unit = dv.getUint16(e.valueOffset, ex.little);
+    else if (e.valueOffset + 8 <= b.length) {
+      const num = dv.getUint32(e.valueOffset, ex.little);
+      const den = dv.getUint32(e.valueOffset + 4, ex.little) || 1;
+      if (e.tag === 0x011a) x = num / den;
+      else y = num / den;
+    }
+  }
+  if (x && y && unit === 2) return { x: Math.round(x), y: Math.round(y) };
+  if (x && y && unit === 3) return { x: Math.round(x * 2.54), y: Math.round(y * 2.54) };
+  return null;
+}
+
+/** The EXIF block of a WebP (RIFF "EXIF" chunk), located like findExif's. */
+function findWebpExif(b: Uint8Array): Exif | null {
+  const dv = new DataView(b.buffer, b.byteOffset, b.byteLength);
+  let i = 12;
+  while (i + 8 <= b.length) {
+    const type = String.fromCharCode(b[i], b[i + 1], b[i + 2], b[i + 3]);
+    const len = dv.getUint32(i + 4, true);
+    if (type === "EXIF") {
+      let start = i + 8;
+      // Some writers keep JPEG's "Exif\0\0" prefix inside the chunk.
+      if (b[start] === 0x45 && b[start + 1] === 0x78 && b[start + 2] === 0x69 && b[start + 3] === 0x66) start += 6;
+      if (start + 8 > b.length) return null;
+      return { tiffStart: start, little: b[start] === 0x49 };
+    }
+    i += 8 + len + (len & 1);
+  }
+  return null;
+}
+
+/**
+ * Read the DPI an image declares: JPEG (EXIF, then JFIF), PNG (pHYs), BMP
+ * (the header's pixels-per-metre), WebP (its EXIF chunk, if any). GIF has no
+ * density field at all and always reads as "none".
+ */
 export async function readDpi(blob: Blob): Promise<DpiInfo> {
   const b = new Uint8Array(await blob.arrayBuffer());
+  if (isBmp(b) && b.length >= 46) {
+    const dv = new DataView(b.buffer);
+    // BITMAPCOREHEADER (12 bytes) predates the resolution fields.
+    if (dv.getUint32(14, true) < 40) return { x: null, y: null, source: "none" };
+    const ppmX = dv.getInt32(38, true);
+    const ppmY = dv.getInt32(42, true);
+    if (ppmX <= 0 || ppmY <= 0) return { x: null, y: null, source: "none" };
+    return { x: Math.round(ppmX / INCH_PER_METRE), y: Math.round(ppmY / INCH_PER_METRE), source: "bmp" };
+  }
+  if (isWebp(b)) {
+    const ex = findWebpExif(b);
+    const d = ex ? exifDpi(b, ex) : null;
+    return d ? { ...d, source: "exif" } : { x: null, y: null, source: "none" };
+  }
+  if (isGif(b)) return { x: null, y: null, source: "none" };
   if (isPng(b)) {
     let i = 8;
     const dv = new DataView(b.buffer);
@@ -106,23 +178,8 @@ export async function readDpi(blob: Blob): Promise<DpiInfo> {
   }
   if (isJpeg(b)) {
     const ex = findExif(b);
-    if (ex) {
-      const dv = new DataView(b.buffer);
-      let x: number | null = null;
-      let y: number | null = null;
-      let unit = 2;
-      for (const e of exifResolutionEntries(b, ex)) {
-        if (e.tag === 0x0128) unit = dv.getUint16(e.valueOffset, ex.little);
-        else if (e.valueOffset + 8 <= b.length) {
-          const num = dv.getUint32(e.valueOffset, ex.little);
-          const den = dv.getUint32(e.valueOffset + 4, ex.little) || 1;
-          if (e.tag === 0x011a) x = num / den;
-          else y = num / den;
-        }
-      }
-      if (x && y && unit === 2) return { x: Math.round(x), y: Math.round(y), source: "exif" };
-      if (x && y && unit === 3) return { x: Math.round(x * 2.54), y: Math.round(y * 2.54), source: "exif" };
-    }
+    const d = ex ? exifDpi(b, ex) : null;
+    if (d) return { ...d, source: "exif" };
     if (b[2] === 0xff && b[3] === 0xe0 && b[6] === 0x4a && b[7] === 0x46 && b[8] === 0x49 && b[9] === 0x46) {
       const units = b[13];
       const xd = (b[14] << 8) | b[15];

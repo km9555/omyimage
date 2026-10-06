@@ -9,3 +9,11 @@
 # changed subset is a changed URL and a year of immutability is safe.
 /fonts/*
   Cache-Control: public, max-age=31536000, immutable
+
+# ONNX Runtime's WebAssembly runtime (scripts/copy-ort.mjs) sits under a
+# version folder, and the MI-GAN model parts carry the first 8 hex digits of
+# the model's SHA-256 in their names, so a changed file is a changed URL.
+/ort/*
+  Cache-Control: public, max-age=31536000, immutable
+/models/*
+  Cache-Control: public, max-age=31536000, immutable

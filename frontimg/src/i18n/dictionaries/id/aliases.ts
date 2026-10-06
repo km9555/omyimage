@@ -131,6 +131,159 @@ export const idAliases: Record<string, string[]> = {
   "compress-image-to-1mb": [
     "kompres foto 1 mb", "kompres foto 1mb", "1 mb", "ubah foto jadi 1 mb",
   ],
+  "compress-image-to-10kb": [
+    "kompres foto 10kb", "10 kb", "tanda tangan 10kb",
+  ],
+  "compress-image-to-30kb": [
+    "kompres foto 30kb", "30 kb",
+  ],
+  "compress-image-to-300kb": [
+    "kompres foto 300kb", "kompres jpg 300kb", "300 kb", "ubah ukuran foto 300kb",
+  ],
+  "compress-image-to-500kb": [
+    "kompres foto 500kb", "kompres jpg 500kb", "500 kb", "ubah ukuran foto 500kb",
+  ],
+  "compress-image-to-2mb": [
+    "kompres foto 2mb", "2 mb", "kompres foto jadi 2mb",
+  ],
+  "compress-image-to-15kb": [
+    "kompres foto 15kb", "15 kb",
+  ],
+  "compress-image-to-40kb": [
+    "kompres foto 40kb", "40 kb",
+  ],
+  "compress-image-to-150kb": [
+    "kompres foto 150kb", "150 kb",
+  ],
+  "increase-image-size-in-kb": [
+    "perbesar ukuran foto", "menambah ukuran foto kb", "memperbesar kb foto",
+  ],
+  "signature-resizer": [
+    "tanda tangan", "ubah ukuran tanda tangan", "tanda tangan background putih", "scan tanda tangan",
+  ],
+  "jpg-to-pdf-under-100kb": [
+    "jpg ke pdf 100kb", "pdf 100 kb", "ubah jpg ke pdf 100kb",
+  ],
+  "jpg-to-pdf-under-200kb": [
+    "jpg ke pdf 200kb", "pdf 200 kb", "ubah jpg ke pdf 200kb",
+  ],
+  "jpg-to-pdf-under-300kb": [
+    "jpg ke pdf 300kb", "pdf 300 kb", "ubah jpg ke pdf 300kb",
+  ],
+  "jpg-to-pdf-under-500kb": [
+    "jpg ke pdf 500kb", "pdf 500 kb", "ubah jpg ke pdf 500kb",
+  ],
+  "convert-to-png": [
+    "konversi ke png", "ubah ke png", "jadikan png", "gambar ke png",
+  ],
+  "convert-to-webp": [
+    "konversi ke webp", "ubah ke webp", "jadikan webp", "gambar ke webp",
+  ],
+  "svg-to-png": [
+    "konversi svg", "ubah svg jadi png", "svg ke gambar", "svg ke png online",
+  ],
+  "png-to-ico": [
+    "buat favicon", "gambar ke ico", "ubah ke ico", "membuat ikon", "jpg ke ico",
+  ],
+  "youtube-thumbnail-resizer": [
+    "ukuran thumbnail youtube", "thumbnail yt", "sampul video youtube", "1280x720",
+  ],
+  "whatsapp-dp-resizer": [
+    "pp wa full", "foto profil wa tanpa crop", "pp wa tidak terpotong", "ukuran foto profil whatsapp",
+  ],
+  "linkedin-banner-resizer": [
+    "ukuran banner linkedin", "foto latar linkedin", "sampul linkedin", "1584x396",
+  ],
+  "facebook-cover-resizer": [
+    "ukuran sampul facebook", "foto sampul fb", "cover facebook", "851x315",
+  ],
+  "discord-banner-resizer": [
+    "ukuran banner discord", "banner profil discord", "banner server discord", "ikon server discord",
+  ],
+  "dpi-converter": [
+    "ubah dpi", "300 dpi", "ganti dpi foto", "dpi converter",
+  ],
+  "dpi-checker": [
+    "cek dpi", "lihat dpi foto", "dpi gambar", "cara cek dpi",
+  ],
+  "resize-image-in-cm": [
+    "ubah ukuran foto cm", "ukuran foto dalam cm", "cm ke piksel", "ukuran cetak foto",
+  ],
+  "video-to-gif": [
+    "mp4 ke gif", "ubah video jadi gif", "membuat gif dari video", "convert video ke gif",
+  ],
+  "gif-compressor": [
+    "perkecil ukuran gif", "compress gif", "kompres gif online", "mengecilkan gif",
+  ],
+  "gif-resizer": [
+    "resize gif", "mengubah ukuran gif", "perkecil gif",
+  ],
+  "gif-to-mp4": [
+    "ubah gif jadi mp4", "gif ke video", "convert gif ke mp4",
+  ],
+  "webp-to-gif": [
+    "webp animasi ke gif", "ubah webp jadi gif",
+  ],
+  "gif-cropper": [
+    "potong tepi gif", "crop gif online", "memotong gambar gif",
+  ],
+  "rotate-gif": [
+    "rotate gif", "memutar gif", "mirror gif", "balik gif",
+  ],
+  "reverse-gif": [
+    "gif terbalik", "gif mundur", "boomerang gif", "membalik gif",
+  ],
+  "gif-speed-changer": [
+    "mempercepat gif", "memperlambat gif", "speed gif", "kecepatan gif",
+  ],
+  "gif-cutter": [
+    "trim gif", "memotong durasi gif", "hapus frame gif", "cut gif",
+  ],
+  "gif-to-webp": [
+    "ubah gif jadi webp", "gif ke webp animasi", "convert gif ke webp",
+  ],
+  "gif-to-apng": [
+    "ubah gif jadi apng", "png animasi", "convert gif ke apng",
+  ],
+  "gif-to-sprite-sheet": [
+    "gif ke sprite", "sprite sheet gif", "frame gif jadi satu gambar",
+  ],
+  "gif-merger": [
+    "gabungkan gif", "menggabungkan gif", "merge gif", "satukan gif",
+  ],
+  "add-text-to-gif": [
+    "tulis di gif", "kasih teks di gif", "caption gif", "teks gif animasi",
+  ],
+  "typing-text-gif": [
+    "animasi mengetik", "efek mesin ketik", "typing text gif", "teks berjalan",
+  ],
+  "invert-image": [
+    "negatif foto", "membalik warna", "invert gambar",
+  ],
+  "pixelate-image": [
+    "efek pixel", "pixelate gambar", "sensor pixel",
+  ],
+  "image-brightness": [
+    "mencerahkan foto", "kontras foto", "saturasi",
+  ],
+  "glitch-effect": [
+    "efek glitch", "glitch foto", "efek rusak",
+  ],
+  "round-corners": [
+    "sudut bulat", "rounded corner", "melengkungkan sudut foto",
+  ],
+  "remove-watermark": [
+    "hapus watermark", "menghilangkan watermark", "hapus logo di foto", "hapus tulisan di foto", "hapus tanggal di foto",
+  ],
+  "remove-object": [
+    "hapus objek foto", "menghapus objek di foto", "hapus orang di foto", "magic eraser", "bersihkan foto",
+  ],
+  "split-image": [
+    "split foto", "potong foto jadi beberapa bagian", "bagi foto", "potong gambar jadi dua",
+  ],
+  "image-overlay": [
+    "overlay foto", "tumpuk foto", "gabung foto transparan", "double exposure",
+  ],
 
   // Varian — HD, mirror, background
   "image-to-hd": [
@@ -156,5 +309,8 @@ export const idAliases: Record<string, string[]> = {
   ],
   "2x2-photo": [
     "foto 2x2", "pas foto 2x2", "foto visa amerika", "foto paspor amerika",
+  ],
+  "instagram-grid-maker": [
+    "grid instagram", "potong foto untuk instagram", "feed puzzle", "carousel panorama",
   ],
 };

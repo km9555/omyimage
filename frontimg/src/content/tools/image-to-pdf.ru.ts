@@ -26,6 +26,7 @@ const content: ToolPageContent = {
   tagline:
     "Соберите снимки и сканы в один PDF — порядок, размер страницы, ориентация и поля настраиваются. Бесплатно и прямо в браузере.",
   category: { id: "convert", label: "Конвертация" },
+  variantsHeading: "PDF с ограничением по размеру",
 
   metaTitle: "Фото в PDF онлайн бесплатно — JPG и PNG в один документ | oMyImage",
   metaDescription:
@@ -227,6 +228,17 @@ const content: ToolPageContent = {
     "Contain": "Вписать",
     "Cover": "Заполнить",
     "Stretch": "Растянуть",
+    // ImageToPdfTool.tsx — size limit (jpg-to-pdf-under-N-kb)
+    "Already under {size} — no compression needed.": "Уже меньше {size} — сжимать не пришлось.",
+    "Could not get the PDF under {size} — this is the smallest it can be.": "Не удалось уложить PDF в {size} — это минимально возможный размер.",
+    "Enter a size greater than zero.": "Укажите размер больше нуля.",
+    "Images are compressed only as much as needed for the whole PDF to fit.": "Изображения сжимаются ровно настолько, чтобы весь PDF уложился в лимит.",
+    "KB": "КБ",
+    "MB": "МБ",
+    "Maximum PDF size": "Максимальный размер PDF",
+    "PDF size: {size}": "Размер PDF: {size}",
+    "The PDF will be kept under {size}.": "PDF будет не больше {size}.",
+    "Unit": "Единица",
   },
 };
 

@@ -132,6 +132,9 @@ const content: ToolPageContent = {
     "{n} pages|one": "{n} страница",
     "{n} pages|few": "{n} страницы",
     "Import .html": "Импортировать .html",
+    "HTML code": "HTML-код",
+    "Open all settings": "Открыть все настройки",
+    "Screen size, format, full-page capture and more are in the settings.": "Размер экрана, формат, снимок всей страницы и другое — в настройках.",
     "Add page": "Добавить страницу",
     // Colon, not a bare object: {name} is the page name, which defaults to the
     // TRANSLATED «Страница N». «Удалить Страница 1» is ungrammatical — the

@@ -227,6 +227,210 @@ export const ruTools: Record<string, LocalizedTool> = {
     name: "Сжать фото до 1 МБ",
     shortDescription: "Фото с телефона меньше 1 МБ, обычно в полном размере.",
   },
+  "compress-image-to-10kb": {
+    name: "Сжать фото до 10 КБ",
+    shortDescription: "Подписи и маленькие фото меньше 10 КБ.",
+  },
+  "compress-image-to-30kb": {
+    name: "Сжать фото до 30 КБ",
+    shortDescription: "Фото для анкет меньше 30 КБ, лицо остаётся чётким.",
+  },
+  "compress-image-to-300kb": {
+    name: "Сжать фото до 300 КБ",
+    shortDescription: "Фото и сканы меньше 300 КБ, текст читается.",
+  },
+  "compress-image-to-500kb": {
+    name: "Сжать фото до 500 КБ",
+    shortDescription: "Фото, сканы и скриншоты меньше 500 КБ.",
+  },
+  "compress-image-to-2mb": {
+    name: "Сжать фото до 2 МБ",
+    shortDescription: "Большие фото с телефона меньше 2 МБ.",
+  },
+  "compress-image-to-15kb": {
+    name: "Сжать фото до 15 КБ",
+    shortDescription: "Подписи и маленькие фото меньше 15 КБ.",
+  },
+  "compress-image-to-40kb": {
+    name: "Сжать фото до 40 КБ",
+    shortDescription: "Фото для анкет меньше 40 КБ, лицо чёткое.",
+  },
+  "compress-image-to-150kb": {
+    name: "Сжать фото до 150 КБ",
+    shortDescription: "Фото и рукописные страницы меньше 150 КБ.",
+  },
+  "increase-image-size-in-kb": {
+    name: "Увеличить размер фото в КБ",
+    shortDescription: "Сделайте фото не меньше 10, 20 или 50 КБ.",
+  },
+  "signature-resizer": {
+    name: "Изменить размер подписи",
+    shortDescription: "Очистить, обрезать и уменьшить подпись.",
+  },
+  "jpg-to-pdf-under-100kb": {
+    name: "JPG в PDF до 100 КБ",
+    shortDescription: "Одностраничный PDF до 100 КБ для строгих форм.",
+  },
+  "jpg-to-pdf-under-200kb": {
+    name: "JPG в PDF до 200 КБ",
+    shortDescription: "Справки и сканы в одном PDF до 200 КБ.",
+  },
+  "jpg-to-pdf-under-300kb": {
+    name: "JPG в PDF до 300 КБ",
+    shortDescription: "Многостраничные документы в PDF до 300 КБ.",
+  },
+  "jpg-to-pdf-under-500kb": {
+    name: "JPG в PDF до 500 КБ",
+    shortDescription: "Длинные документы в одном PDF до 500 КБ.",
+  },
+  "convert-to-png": {
+    name: "Конвертировать в PNG",
+    shortDescription: "JPG, WEBP, GIF и BMP — в PNG без потерь.",
+  },
+  "convert-to-webp": {
+    name: "Конвертировать в WEBP",
+    shortDescription: "JPG, PNG, GIF и BMP — в лёгкий WEBP для сайта.",
+  },
+  "svg-to-png": {
+    name: "SVG в PNG",
+    shortDescription: "Векторный SVG в чёткий PNG любого размера.",
+  },
+  "png-to-ico": {
+    name: "PNG в ICO",
+    shortDescription: "Favicon.ico и значки Windows из картинки.",
+  },
+  "youtube-thumbnail-resizer": {
+    name: "Превью для YouTube",
+    shortDescription: "Любая картинка в превью YouTube 1280 × 720.",
+  },
+  "whatsapp-dp-resizer": {
+    name: "Аватарка для WhatsApp",
+    shortDescription: "Фото целиком в квадратной аватарке, без обрезки.",
+  },
+  "linkedin-banner-resizer": {
+    name: "Обложка для LinkedIn",
+    shortDescription: "Любая картинка в обложку LinkedIn 1584 × 396.",
+  },
+  "facebook-cover-resizer": {
+    name: "Обложка для Facebook",
+    shortDescription: "Любая картинка в обложку Facebook 851 × 315.",
+  },
+  "discord-banner-resizer": {
+    name: "Баннер для Discord",
+    shortDescription: "Размеры баннеров профиля и сервера Discord.",
+  },
+  "dpi-converter": {
+    name: "Изменить DPI",
+    shortDescription: "DPI 300, 200 или любой другой — без потери качества.",
+  },
+  "dpi-checker": {
+    name: "Узнать DPI",
+    shortDescription: "DPI изображения и размер при печати.",
+  },
+  "resize-image-in-cm": {
+    name: "Размер фото в см",
+    shortDescription: "Точный размер в сантиметрах, миллиметрах или дюймах.",
+  },
+  "video-to-gif": {
+    name: "Видео в GIF",
+    shortDescription: "Фрагмент видео MP4, WEBM или MOV — в GIF.",
+  },
+  "gif-compressor": {
+    name: "Сжать GIF",
+    shortDescription: "Уменьшите вес анимированного GIF без потери кадров.",
+  },
+  "gif-resizer": {
+    name: "Изменить размер GIF",
+    shortDescription: "Измените размер анимированного GIF с сохранением кадров.",
+  },
+  "gif-to-mp4": {
+    name: "GIF в MP4",
+    shortDescription: "GIF в лёгкое видео MP4.",
+  },
+  "webp-to-gif": {
+    name: "WEBP в GIF",
+    shortDescription: "Анимированный WEBP в GIF.",
+  },
+  "gif-cropper": {
+    name: "Обрезать GIF",
+    shortDescription: "Обрежьте анимированный GIF, сохранив все кадры.",
+  },
+  "rotate-gif": {
+    name: "Повернуть GIF",
+    shortDescription: "Поверните или отразите GIF на 90° или 180°.",
+  },
+  "reverse-gif": {
+    name: "Реверс GIF",
+    shortDescription: "Проиграйте GIF задом наперёд или бумерангом.",
+  },
+  "gif-speed-changer": {
+    name: "Изменить скорость GIF",
+    shortDescription: "Ускорьте или замедлите анимированный GIF.",
+  },
+  "gif-cutter": {
+    name: "Укоротить GIF",
+    shortDescription: "Оставьте в GIF только нужные кадры.",
+  },
+  "gif-to-webp": {
+    name: "GIF в WEBP",
+    shortDescription: "Анимированный GIF в анимированный WEBP.",
+  },
+  "gif-to-apng": {
+    name: "GIF в APNG",
+    shortDescription: "Анимированный GIF в анимированный PNG (APNG).",
+  },
+  "gif-to-sprite-sheet": {
+    name: "GIF в спрайт-лист",
+    shortDescription: "Все кадры GIF на одном PNG спрайт-листе.",
+  },
+  "gif-merger": {
+    name: "Склеить GIF",
+    shortDescription: "Соедините несколько GIF в один, друг за другом.",
+  },
+  "add-text-to-gif": {
+    name: "Текст на GIF",
+    shortDescription: "Добавьте надпись на анимированный GIF — на все кадры или на часть.",
+  },
+  "typing-text-gif": {
+    name: "GIF с печатающимся текстом",
+    shortDescription: "Гифка, в которой текст печатается буква за буквой.",
+  },
+  "invert-image": {
+    name: "Инвертировать цвета",
+    shortDescription: "Инвертируйте цвета фото — негатив или умная инверсия.",
+  },
+  "pixelate-image": {
+    name: "Пикселизация фото",
+    shortDescription: "Превратите фото в крупные пиксели.",
+  },
+  "image-brightness": {
+    name: "Яркость и контраст",
+    shortDescription: "Сделайте фото светлее или темнее, настройте контраст и цвет.",
+  },
+  "glitch-effect": {
+    name: "Глитч-эффект",
+    shortDescription: "Добавьте фото эффект сломанного экрана.",
+  },
+  "round-corners": {
+    name: "Скруглить углы",
+    shortDescription: "Скруглите углы изображения с прозрачными краями.",
+  },
+  "remove-watermark": {
+    name: "Удалить водяной знак",
+    shortDescription: "Сотрите водяные знаки, логотипы и даты с помощью ИИ прямо в браузере.",
+  },
+  "remove-object": {
+    name: "Удалить объект с фото",
+    shortDescription: "Сотрите людей, предметы и дефекты с фото с помощью ИИ.",
+  },
+  "split-image": {
+    name: "Разрезать изображение",
+    shortDescription: "Разрежьте картинку на равные части или плитки.",
+  },
+  "image-overlay": {
+    name: "Наложение изображений",
+    shortDescription: "Наложите одну картинку на другую с прозрачностью и смешиванием.",
+  },
 
   // ── Варианты: HD, отражение, фон (expansion.md) ──
   "image-to-hd": {
@@ -260,6 +464,10 @@ export const ruTools: Record<string, LocalizedTool> = {
   "2x2-photo": {
     name: "Фото 2x2 на визу США",
     shortDescription: "Фото 2 × 2 дюйма для визы и паспорта США.",
+  },
+  "instagram-grid-maker": {
+    name: "Сетка для Instagram",
+    shortDescription: "Превратите одно фото в сетку или карусель для Instagram.",
   },
 };
 

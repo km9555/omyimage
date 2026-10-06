@@ -137,6 +137,159 @@ export const ptAliases: Record<string, string[]> = {
   "compress-image-to-1mb": [
     "comprimir imagem para 1mb", "1 mb", "comprimir foto 1mb",
   ],
+  "compress-image-to-10kb": [
+    "comprimir imagem para 10kb", "10 kb", "assinatura 10kb",
+  ],
+  "compress-image-to-30kb": [
+    "comprimir imagem para 30kb", "30 kb", "foto 30kb",
+  ],
+  "compress-image-to-300kb": [
+    "comprimir imagem para 300kb", "300 kb", "reduzir foto para 300kb",
+  ],
+  "compress-image-to-500kb": [
+    "comprimir imagem para 500kb", "500 kb", "reduzir foto para 500kb",
+  ],
+  "compress-image-to-2mb": [
+    "comprimir imagem para 2mb", "2 mb", "reduzir foto para 2mb",
+  ],
+  "compress-image-to-15kb": [
+    "comprimir imagem para 15kb", "15 kb",
+  ],
+  "compress-image-to-40kb": [
+    "comprimir imagem para 40kb", "40 kb",
+  ],
+  "compress-image-to-150kb": [
+    "comprimir imagem para 150kb", "150 kb",
+  ],
+  "increase-image-size-in-kb": [
+    "aumentar tamanho da imagem", "aumentar kb da foto", "aumentar tamanho da foto em kb",
+  ],
+  "signature-resizer": [
+    "redimensionar assinatura", "assinatura digitalizada", "assinatura fundo branco", "assinatura 20kb",
+  ],
+  "jpg-to-pdf-under-100kb": [
+    "jpg para pdf 100kb", "pdf 100kb", "converter jpg em pdf até 100kb",
+  ],
+  "jpg-to-pdf-under-200kb": [
+    "jpg para pdf 200kb", "pdf 200kb", "converter jpg em pdf até 200kb",
+  ],
+  "jpg-to-pdf-under-300kb": [
+    "jpg para pdf 300kb", "pdf 300kb", "converter jpg em pdf até 300kb",
+  ],
+  "jpg-to-pdf-under-500kb": [
+    "jpg para pdf 500kb", "pdf 500kb", "converter jpg em pdf até 500kb",
+  ],
+  "convert-to-png": [
+    "converter para png", "transformar em png", "mudar formato para png", "imagem para png",
+  ],
+  "convert-to-webp": [
+    "converter para webp", "transformar em webp", "imagem para webp", "mudar formato para webp",
+  ],
+  "svg-to-png": [
+    "converter svg", "svg em png", "vetor para png", "exportar svg como png",
+  ],
+  "png-to-ico": [
+    "gerador de favicon", "imagem para ico", "criar ícone", "favicon ico", "jpg para ico",
+  ],
+  "youtube-thumbnail-resizer": [
+    "tamanho thumbnail youtube", "miniatura youtube", "capa de vídeo youtube", "1280x720",
+  ],
+  "whatsapp-dp-resizer": [
+    "foto de perfil whatsapp sem cortar", "foto inteira whatsapp", "tamanho foto perfil whatsapp", "dp whatsapp",
+  ],
+  "linkedin-banner-resizer": [
+    "tamanho capa linkedin", "banner linkedin", "foto de fundo linkedin", "1584x396",
+  ],
+  "facebook-cover-resizer": [
+    "tamanho capa facebook", "foto de capa facebook", "banner facebook", "851x315",
+  ],
+  "discord-banner-resizer": [
+    "tamanho banner discord", "banner de perfil discord", "banner de servidor discord", "ícone servidor discord",
+  ],
+  "dpi-converter": [
+    "mudar dpi", "converter para 300 dpi", "aumentar dpi", "alterar resolução dpi",
+  ],
+  "dpi-checker": [
+    "ver dpi da imagem", "descobrir dpi", "qual o dpi da foto", "verificar resolução",
+  ],
+  "resize-image-in-cm": [
+    "redimensionar em cm", "tamanho em centímetros", "foto em cm", "cm para pixels",
+  ],
+  "video-to-gif": [
+    "mp4 para gif", "converter vídeo em gif", "fazer gif de vídeo", "mov para gif",
+  ],
+  "gif-compressor": [
+    "reduzir tamanho de gif", "compressor de gif", "diminuir gif", "otimizar gif",
+  ],
+  "gif-resizer": [
+    "mudar tamanho do gif", "diminuir gif em pixels", "redimensionar gif animado",
+  ],
+  "gif-to-mp4": [
+    "converter gif em mp4", "gif para vídeo", "transformar gif em vídeo",
+  ],
+  "webp-to-gif": [
+    "webp animado para gif", "converter webp em gif",
+  ],
+  "gif-cropper": [
+    "cortar bordas do gif", "recortar gif animado", "crop gif",
+  ],
+  "rotate-gif": [
+    "rotacionar gif", "espelhar gif", "virar gif",
+  ],
+  "reverse-gif": [
+    "gif ao contrário", "gif de trás para frente", "gif bumerangue", "reverter gif",
+  ],
+  "gif-speed-changer": [
+    "mudar velocidade do gif", "acelerar gif", "deixar gif mais lento", "velocidade do gif",
+  ],
+  "gif-cutter": [
+    "aparar gif", "encurtar gif", "remover quadros do gif", "cortar parte do gif",
+  ],
+  "gif-to-webp": [
+    "converter gif em webp", "gif animado para webp", "gif2webp",
+  ],
+  "gif-to-apng": [
+    "gif para png animado", "converter gif em apng", "png animado",
+  ],
+  "gif-to-sprite-sheet": [
+    "gif para sprite", "folha de sprites", "spritesheet gif", "quadros do gif em uma imagem",
+  ],
+  "gif-merger": [
+    "juntar gifs", "unir gif", "combinar gifs", "mesclar gif",
+  ],
+  "add-text-to-gif": [
+    "escrever em gif", "legenda em gif", "texto em gif animado", "adicionar texto ao gif",
+  ],
+  "typing-text-gif": [
+    "texto digitando", "efeito de digitação", "gif de texto animado", "máquina de escrever gif",
+  ],
+  "invert-image": [
+    "negativo de foto", "inverter cor", "imagem negativa", "inverter imagem",
+  ],
+  "pixelate-image": [
+    "pixelizar imagem", "efeito pixel", "pixel art foto", "mosaico",
+  ],
+  "image-brightness": [
+    "clarear foto", "escurecer foto", "ajustar contraste", "saturação",
+  ],
+  "glitch-effect": [
+    "glitch foto", "efeito vhs", "distorção rgb", "foto glitch",
+  ],
+  "round-corners": [
+    "cantos arredondados", "borda arredondada", "arredondar imagem", "png cantos arredondados",
+  ],
+  "remove-watermark": [
+    "remover marca d'água", "tirar marca d'água", "apagar logo da foto", "tirar texto da imagem", "remover data da foto",
+  ],
+  "remove-object": [
+    "remover objetos da foto", "apagar pessoa da foto", "borracha mágica", "tirar objeto da imagem", "limpar foto",
+  ],
+  "split-image": [
+    "dividir imagem", "cortar imagem em partes", "dividir foto ao meio", "cortar foto em pedaços", "quebra-cabeça de foto",
+  ],
+  "image-overlay": [
+    "sobrepor imagens", "colocar foto em cima de outra", "juntar fotos com transparência", "dupla exposição", "mesclar imagens",
+  ],
 
   // Variantes — HD, espelhar, fundo
   "image-to-hd": [
@@ -162,5 +315,8 @@ export const ptAliases: Record<string, string[]> = {
   ],
   "2x2-photo": [
     "foto 2x2", "foto visto americano", "foto passaporte americano", "2x2 polegadas",
+  ],
+  "instagram-grid-maker": [
+    "grade instagram", "dividir foto instagram", "feed quebra-cabeça", "carrossel panorâmico", "grid instagram",
   ],
 };
