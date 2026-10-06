@@ -387,6 +387,14 @@ export const ruTools: Record<string, LocalizedTool> = {
     name: "Склеить GIF",
     shortDescription: "Соедините несколько GIF в один, друг за другом.",
   },
+  "add-text-to-gif": {
+    name: "Текст на GIF",
+    shortDescription: "Добавьте надпись на анимированный GIF — на все кадры или на часть.",
+  },
+  "typing-text-gif": {
+    name: "GIF с печатающимся текстом",
+    shortDescription: "Гифка, в которой текст печатается буква за буквой.",
+  },
 
   // ── Варианты: HD, отражение, фон (expansion.md) ──
   "image-to-hd": {

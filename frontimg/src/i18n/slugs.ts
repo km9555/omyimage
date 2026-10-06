@@ -147,6 +147,8 @@ const PT_TOOL_SLUGS: Record<string, string> = {
   "gif-to-apng": "gif-para-apng",
   "gif-to-sprite-sheet": "gif-para-sprite-sheet",
   "gif-merger": "juntar-gif",
+  "add-text-to-gif": "colocar-texto-em-gif",
+  "typing-text-gif": "gif-de-texto-digitando",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "imagem-em-hd",
@@ -258,6 +260,8 @@ const HI_TOOL_SLUGS: Record<string, string> = {
   "gif-to-apng": "gif-to-apng",
   "gif-to-sprite-sheet": "gif-to-sprite-sheet",
   "gif-merger": "gif-merger",
+  "add-text-to-gif": "add-text-to-gif",
+  "typing-text-gif": "typing-text-gif",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "image-to-hd",
@@ -378,6 +382,8 @@ const RU_TOOL_SLUGS: Record<string, string> = {
   "gif-to-apng": "gif-to-apng",
   "gif-to-sprite-sheet": "gif-to-sprite-sheet",
   "gif-merger": "gif-merger",
+  "add-text-to-gif": "add-text-to-gif",
+  "typing-text-gif": "typing-text-gif",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "image-to-hd",
@@ -520,6 +526,8 @@ const ID_TOOL_SLUGS: Record<string, string> = {
   "gif-to-apng": "gif-ke-apng",
   "gif-to-sprite-sheet": "gif-ke-sprite-sheet",
   "gif-merger": "gabung-gif",
+  "add-text-to-gif": "tambah-teks-ke-gif",
+  "typing-text-gif": "gif-teks-mengetik",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "jadikan-foto-hd",

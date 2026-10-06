@@ -157,8 +157,8 @@ gif-to-webp (1.3K) · rotate-gif (1.3K).
 - **5C (done 2026-10-06, all locales):** gif-to-webp, gif-to-apng,
   gif-to-sprite-sheet, gif-merger. No new dependency: WebP frames come from
   the browser's encoder and APNG is written in-house.
-- **Next (5D):** add-text-to-gif, typing-text-gif. They share text rendering;
-  check meme-generator for fonts and stroke code first.
+- **5D (done 2026-10-06, all locales):** add-text-to-gif, typing-text-gif.
+  This completes Phase 5: 18 GIF tools in `GIF_SUITE`.
 
 ### Phase 6 — edit tools (canvas)
 
@@ -522,6 +522,50 @@ blur-screenshot (90–140/mo), exif-editor (≤ 390, KD 68), svg-to-gif, blur-gi
   - **Snapshot diff vs 5B: 65 pages**, all expected — the existing GIF pages'
     related ring shifted, and home, pricing and contact went from 90 to 94
     tools. verify:build: 501 URLs.
+- **2026-10-06 — Batch 5D: add-text-to-gif, typing-text-gif — 10 pages.**
+  - **`lib/gif/text.ts`:**
+    - Four font stacks: Impact, sans (Inter via `--font-inter`), serif and
+      mono, all already on the device or the site.
+    - `ensureFont` calls `document.fonts.load` before any canvas drawing.
+    - `graphemes` uses Intl.Segmenter, so «स्ते» and 👋🏽 type whole.
+    - `wrapLines` keeps explicit newlines and breaks over-long words.
+    - `drawLines` draws the outline and the optional box.
+  - **GifTextTool (add text):**
+    - Nine positions; size as a % of the shorter side; outline; a 60 % box
+      in the outline colour; capitals.
+    - "Some frames" with from/to sliders.
+    - A live animated preview that plays the GIF with the caption, reading
+      the latest settings on each tick.
+    - Encoding goes through a captioned FrameSource into `reencodeAsGif`, so
+      timing and loop count are kept.
+  - **TypingGifTool:**
+    - The full text is laid out once. One frame per grapheme, with 400 ms
+      before the first letter.
+    - Pauses: +350 ms after . ! ? ।, +200 ms at line ends, +150 ms after
+      , ; :.
+    - Speeds of ≥ 50 letters/s type several letters per frame; the speeds
+      offered never reach that.
+    - The hold blinks the cursor every 500 ms. Repeat forever, or play once
+      (repeat −1).
+    - `encodeGif` with `exact: true`.
+  - **Idle state on the typing tool.** ToolWorkspace's `data-tool-active`
+    marker hides `[data-seo-content]`, so a tool that renders the workspace
+    from the start hides its own SEO copy — html-to-image already does this
+    and should be fixed separately. The typing tool shows a plain
+    textarea + Start first and opens the workspace only on Start; mobile Back
+    returns to it.
+  - **Measured:**
+    - Captioned 30 frames: text on exactly frames 5–14 when the range was
+      set, timing kept, 22 KB.
+    - Typing GIF of the default text: 53 frames with delays
+      400/100/450/250/300…, 4 × 500 ms blinks, 39 KB, loops forever.
+    - A Hindi line gave 9 graphemes → 14 frames.
+  - **Nav:** privacy moved to column 1 (`[optimize, compress-size, photo-id,
+    privacy]`, `[edit, social-sizes, ai]`, `[gif, create]`,
+    `[convert-format, convert-other, convert-camera]`), 19–23 rows per
+    column.
+  - **Snapshot diff vs 5C: 55 pages**, all expected (ring neighbours of the
+    two inserted tools; 94 → 96 tools). verify:build: 511 URLs.
 - **Deploys need the user's go-ahead.** 2A, 3A, 4A and the visibility fix
   went live on 2026-10-04 (merge 505e680 into `main`, then `npm run
   indexnow`). Later batches are committed on `feat/tool-expansion` and

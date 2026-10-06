@@ -387,6 +387,14 @@ export const ptTools: Record<string, LocalizedTool> = {
     name: "Juntar GIFs",
     shortDescription: "Junte vários GIFs em um só, um depois do outro.",
   },
+  "add-text-to-gif": {
+    name: "Colocar texto em GIF",
+    shortDescription: "Coloque legendas em GIFs animados, em todos os quadros ou em alguns.",
+  },
+  "typing-text-gif": {
+    name: "GIF de texto digitando",
+    shortDescription: "Crie um GIF de texto se digitando sozinho, letra por letra.",
+  },
 
   // ── Variantes: melhorar, espelhar, fundo (expansion.md) ──
   "image-to-hd": {

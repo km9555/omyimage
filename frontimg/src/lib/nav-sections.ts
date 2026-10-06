@@ -166,14 +166,14 @@ export const NAV_SECTIONS_BY_ID: Record<string, NavSection> = Object.fromEntries
 /**
  * Column layout for the 4-column desktop mega-menu, by section id.
  * Balanced by row count (section headings included), not section count,
- * keeping the three Convert sections together: 16–23 tool rows per column.
+ * keeping the three Convert sections together: 19–23 tool rows per column.
  * The variant rows leave the menu in the Phase 8 cleanup (expansion.md),
  * which rebalances this again.
  */
 export const NAV_COLUMNS: string[][] = [
-  ["optimize", "compress-size", "photo-id"],
+  ["optimize", "compress-size", "photo-id", "privacy"],
   ["edit", "social-sizes", "ai"],
-  ["gif", "create", "privacy"],
+  ["gif", "create"],
   ["convert-format", "convert-other", "convert-camera"],
 ];
 

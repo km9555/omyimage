@@ -1285,6 +1285,40 @@ export const TOOLS: Tool[] = [
       "Merge animated GIFs online for free: put several GIFs in order and join them into one GIF that plays them one after another. In your browser, no upload.",
     primaryKeyword: "gif merger",
   },
+  {
+    id: "add-text-to-gif",
+    name: "Add Text to GIF",
+    slug: "add-text-to-gif",
+    categoryId: "edit",
+    shortDescription: "Put captions on animated GIFs, on every frame or some.",
+    icon: "text_fields",
+    processing: "client",
+    library: "Canvas / gifenc",
+    status: "live",
+    isNew: true,
+    priority: 195,
+    seoTitle: "Add Text to GIF — Caption Animated GIFs Online, Free | oMyImage",
+    seoDescription:
+      "Add text to animated GIFs online for free: captions, meme text or subtitles on every frame or only some, with outline, box and a live preview. In your browser, no upload.",
+    primaryKeyword: "add text to gif",
+  },
+  {
+    id: "typing-text-gif",
+    name: "Typing Text GIF",
+    slug: "typing-text-gif",
+    categoryId: "edit",
+    shortDescription: "Make a GIF of text typing itself, letter by letter.",
+    icon: "terminal",
+    processing: "client",
+    library: "Canvas / gifenc",
+    status: "live",
+    isNew: true,
+    priority: 196,
+    seoTitle: "Typing Text GIF Maker — Animated Typing Effect, Free | oMyImage",
+    seoDescription:
+      "Make a typing text GIF online for free: your words appear letter by letter with a blinking cursor. Choose the speed, font and colours. In your browser, nothing to upload.",
+    primaryKeyword: "typing text gif",
+  },
 
   // ── Variants (expansion.md §2) ─────────────────────────────────────────
   // Each runs its parent's engine with `preset` applied, on its own URL with
@@ -1839,9 +1873,9 @@ export function getTool(slug: string): Tool | undefined {
  * menu's GIF section lists them, and their related tools come from this list.
  */
 export const GIF_SUITE = [
-  "gif-maker", "video-to-gif", "gif-compressor", "gif-resizer", "gif-cropper", "gif-cutter",
-  "gif-merger", "rotate-gif", "reverse-gif", "gif-speed-changer", "gif-to-mp4", "gif-to-webp",
-  "gif-to-apng", "webp-to-gif", "gif-to-images", "gif-to-sprite-sheet",
+  "gif-maker", "typing-text-gif", "video-to-gif", "gif-compressor", "gif-resizer", "gif-cropper",
+  "gif-cutter", "add-text-to-gif", "gif-merger", "rotate-gif", "reverse-gif", "gif-speed-changer",
+  "gif-to-mp4", "gif-to-webp", "gif-to-apng", "webp-to-gif", "gif-to-images", "gif-to-sprite-sheet",
 ];
 
 export function relatedTools(tool: Tool, n = 3): Tool[] {
@@ -1945,6 +1979,8 @@ const TOOL_COLORS: Record<string, string> = {
   "gif-to-apng": "#A0709E",
   "gif-to-sprite-sheet": "#B8668C",
   "gif-merger": "#C4607E",
+  "add-text-to-gif": "#B4628A",
+  "typing-text-gif": "#9C6A9E",
   "passport-photo-maker": "#4F7FB8",
   "signature-resizer": "#5A6FB0",
   "dpi-converter": "#5B7FA6",

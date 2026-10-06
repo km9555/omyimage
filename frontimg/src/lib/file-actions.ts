@@ -86,6 +86,7 @@ const TOOL_INPUTS: Record<string, ToolInput> = {
   "gif-to-apng": { kinds: ["gif"], single: true },
   "gif-to-sprite-sheet": { kinds: ["gif"], single: true },
   "gif-merger": { kinds: ["gif"] },
+  "add-text-to-gif": { kinds: ["gif"], single: true },
   "image-to-pdf": { kinds: COMMON_GIF_BMP },
   "image-to-base64": { kinds: [...COMMON_GIF_BMP, "svg", "avif"], single: true },
   "image-to-text": { kinds: [...COMMON, "bmp"], single: true },

@@ -386,6 +386,14 @@ export const hiTools: Record<string, LocalizedTool> = {
     name: "GIF मर्जर",
     shortDescription: "कई GIF को एक के बाद एक जोड़कर एक GIF बनाएँ।",
   },
+  "add-text-to-gif": {
+    name: "GIF पर टेक्स्ट लिखें",
+    shortDescription: "एनिमेटेड GIF पर कैप्शन लगाएँ, हर फ़्रेम पर या कुछ पर।",
+  },
+  "typing-text-gif": {
+    name: "टाइपिंग टेक्स्ट GIF",
+    shortDescription: "ऐसी GIF बनाएँ जिसमें टेक्स्ट अक्षर-दर-अक्षर टाइप होता दिखे।",
+  },
 
   // ── वैरिएंट: HD, मिरर, बैकग्राउंड (expansion.md) ──
   "image-to-hd": {

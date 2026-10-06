@@ -266,6 +266,12 @@ export const hiAliases: Record<string, string[]> = {
   "gif-merger": [
     "merge gif", "combine gif", "gif जोड़ें",
   ],
+  "add-text-to-gif": [
+    "add text to gif", "gif par text likhe", "gif caption",
+  ],
+  "typing-text-gif": [
+    "typing text gif", "typing animation", "टाइपिंग एनिमेशन",
+  ],
 
   // वैरिएंट — HD, मिरर, बैकग्राउंड
   "image-to-hd": [

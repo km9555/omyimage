@@ -340,6 +340,12 @@ export const TOOL_ALIASES: Record<string, string[]> = {
   "gif-merger": [
     "merge gif", "combine gifs", "join gifs", "gif combiner", "put gifs together",
   ],
+  "add-text-to-gif": [
+    "caption gif", "write on gif", "put text on gif", "gif caption maker", "gif text editor", "meme gif",
+  ],
+  "typing-text-gif": [
+    "typing animation", "typewriter gif", "typing effect", "animated text gif", "text animation gif",
+  ],
 
   // Variants — upscale, rotate, remove-background
   "image-to-hd": [

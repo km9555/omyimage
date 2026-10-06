@@ -257,6 +257,12 @@ export const ptAliases: Record<string, string[]> = {
   "gif-merger": [
     "juntar gifs", "unir gif", "combinar gifs", "mesclar gif",
   ],
+  "add-text-to-gif": [
+    "escrever em gif", "legenda em gif", "texto em gif animado", "adicionar texto ao gif",
+  ],
+  "typing-text-gif": [
+    "texto digitando", "efeito de digitação", "gif de texto animado", "máquina de escrever gif",
+  ],
 
   // Variantes — HD, espelhar, fundo
   "image-to-hd": [

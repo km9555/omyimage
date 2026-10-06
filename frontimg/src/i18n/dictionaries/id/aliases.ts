@@ -251,6 +251,12 @@ export const idAliases: Record<string, string[]> = {
   "gif-merger": [
     "gabungkan gif", "menggabungkan gif", "merge gif", "satukan gif",
   ],
+  "add-text-to-gif": [
+    "tulis di gif", "kasih teks di gif", "caption gif", "teks gif animasi",
+  ],
+  "typing-text-gif": [
+    "animasi mengetik", "efek mesin ketik", "typing text gif", "teks berjalan",
+  ],
 
   // Varian — HD, mirror, background
   "image-to-hd": [

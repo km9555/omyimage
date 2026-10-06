@@ -389,6 +389,14 @@ export const idTools: Record<string, LocalizedTool> = {
     name: "Gabung GIF",
     shortDescription: "Gabungkan beberapa GIF jadi satu, berurutan.",
   },
+  "add-text-to-gif": {
+    name: "Tambah Teks ke GIF",
+    shortDescription: "Beri tulisan pada GIF animasi, di semua frame atau sebagian.",
+  },
+  "typing-text-gif": {
+    name: "GIF Teks Mengetik",
+    shortDescription: "Buat GIF berisi teks yang mengetik sendiri, huruf demi huruf.",
+  },
 
   // ── Varian: HD, mirror, background (expansion.md) ──
   "image-to-hd": {
