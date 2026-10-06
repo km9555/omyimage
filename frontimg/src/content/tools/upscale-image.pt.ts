@@ -103,6 +103,16 @@ const content: ToolPageContent = {
     "Upscale": "Melhorar",
     "Upscaling…": "Melhorando…",
     "Scale factor": "Fator de escala",
+    // unblur-image and image-to-hd modes (UpscaleTool preset.mode)
+    "Unblur": "Tirar o desfoque",
+    "Unblurring…": "Tirando o desfoque…",
+    "Keep the original size": "Manter o tamanho original",
+    "The AI sharpens at twice the resolution, then the photo is returned at its own size — same picture, crisper.": "A IA deixa a foto nítida no dobro da resolução e depois a devolve no tamanho dela — a mesma foto, mais nítida.",
+    "You get the sharpened photo at twice its size — useful for small or pixelated pictures.": "Você recebe a foto nítida com o dobro do tamanho — útil para imagens pequenas ou pixeladas.",
+    "Convert to HD": "Converter para HD",
+    "Target size": "Tamanho final",
+    "The longer side comes out at this size. The AI scale (2×, 3× or 4×) is chosen for you.": "O lado maior sai com esse tamanho. A escala da IA (2×, 3× ou 4×) é escolhida para você.",
+    "A very small picture may not reach 4K even at 4× — you then get the 4× result.": "Uma imagem muito pequena pode não chegar a 4K nem com 4× — nesse caso você recebe o resultado em 4×.",
     // Backend sentences this tool can surface (routes/image/upscale)
     "AI upscaling isn't enabled on this server (Real-ESRGAN not installed).":
       "A melhoria de qualidade com IA não está disponível neste servidor no momento.",

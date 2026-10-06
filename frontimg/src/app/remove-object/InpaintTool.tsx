@@ -36,9 +36,17 @@ export function InpaintTool({ mode }: { mode: Mode }) {
   const [size, setSize] = useState<{ W: number; H: number; scaled: boolean } | null>(null);
   const originalRef = useRef<HTMLCanvasElement | null>(null);
   const workRef = useRef<HTMLCanvasElement | null>(null);
-  const viewRef = useRef<HTMLCanvasElement>(null);
-  const maskRef = useRef<HTMLCanvasElement>(null);
-  const stageRef = useRef<HTMLDivElement>(null);
+  // The canvases and the stage are held in state as well as in refs: below
+  // `md` ToolWorkspace first renders the desktop layout, then swaps to the
+  // mobile shell, which mounts NEW elements. Effects keyed on the element (not
+  // just on the picture) size and draw whichever canvas is actually on screen.
+  const viewRef = useRef<HTMLCanvasElement | null>(null);
+  const maskRef = useRef<HTMLCanvasElement | null>(null);
+  const [viewEl, setViewEl] = useState<HTMLCanvasElement | null>(null);
+  const [maskEl, setMaskEl] = useState<HTMLCanvasElement | null>(null);
+  const [stageEl, setStageEl] = useState<HTMLDivElement | null>(null);
+  const viewCb = useCallback((el: HTMLCanvasElement | null) => { viewRef.current = el; setViewEl(el); }, []);
+  const maskCb = useCallback((el: HTMLCanvasElement | null) => { maskRef.current = el; setMaskEl(el); }, []);
   const [disp, setDisp] = useState<{ w: number; h: number } | null>(null);
 
   const [tool, setTool] = useState<Tool>(mode === "watermark" ? "box" : "brush");
@@ -108,7 +116,7 @@ export function InpaintTool({ mode }: { mode: Mode }) {
 
   // Fit the picture to the stage: its width, and at most 62 % of the window's height.
   useEffect(() => {
-    const el = stageRef.current;
+    const el = stageEl;
     if (!el || !size) return;
     const fit = () => {
       const k = Math.min((el.clientWidth - 24) / size.W, (window.innerHeight * 0.62) / size.H, 4);
@@ -119,15 +127,16 @@ export function InpaintTool({ mode }: { mode: Mode }) {
     ro.observe(el);
     window.addEventListener("resize", fit);
     return () => { ro.disconnect(); window.removeEventListener("resize", fit); };
-  }, [size]);
+  }, [size, stageEl]);
 
-  // A new picture gets a fresh, empty mark layer at its own resolution.
+  // A new picture — or a newly mounted mark canvas — gets a fresh, empty mark
+  // layer at the picture's resolution.
   useEffect(() => {
-    const m = maskRef.current;
-    if (!m || !size) return;
-    m.width = size.W;
-    m.height = size.H;
-  }, [size]);
+    if (!maskEl || !size) return;
+    maskEl.width = size.W;
+    maskEl.height = size.H;
+    setHasMarks(false);
+  }, [size, maskEl]);
 
   const redraw = useCallback(() => {
     const v = viewRef.current;
@@ -139,7 +148,7 @@ export function InpaintTool({ mode }: { mode: Mode }) {
     }
     v.getContext("2d")?.drawImage(src, 0, 0);
   }, [comparing]);
-  useEffect(() => { redraw(); }, [redraw, size, done, undone, disp]);
+  useEffect(() => { redraw(); }, [redraw, size, done, undone, disp, viewEl]);
 
   const clearMarks = () => {
     const m = maskRef.current;
@@ -446,11 +455,11 @@ export function InpaintTool({ mode }: { mode: Mode }) {
         }}
         main={
           <>
-            <div ref={stageRef} className="bg-surface-container rounded-xl border border-surface-variant p-3 flex items-center justify-center overflow-hidden" style={{ minHeight: 260 }}>
+            <div ref={setStageEl} className="bg-surface-container rounded-xl border border-surface-variant p-3 flex items-center justify-center overflow-hidden" style={{ minHeight: 260 }}>
               <div className="relative select-none" style={disp ? { width: disp.w, height: disp.h } : { width: "100%", height: 240 }}>
-                <canvas ref={viewRef} style={checker} className="absolute inset-0 h-full w-full rounded" aria-hidden="true" />
+                <canvas ref={viewCb} style={checker} className="absolute inset-0 h-full w-full rounded" aria-hidden="true" />
                 <canvas
-                  ref={maskRef}
+                  ref={maskCb}
                   className="absolute inset-0 h-full w-full rounded"
                   style={{ opacity: comparing ? 0 : 0.5, touchAction: "none", cursor: tool === "box" ? "crosshair" : "none" }}
                   aria-label={mode === "watermark" ? t("Picture — mark the watermark here") : t("Picture — mark what to remove here")}
@@ -489,6 +498,19 @@ export function InpaintTool({ mode }: { mode: Mode }) {
                 <Icon name="visibility" className="text-[16px]" /> {t("Hold to see the original")}
               </button>
             </div>
+            {/* On phones the rail (and its Download button) is a sheet behind
+                Settings, and the bottom bar's action is Remove — so once there
+                is a result, offer the download right under the picture. */}
+            {done.length > 0 && (
+              <button
+                type="button"
+                onClick={() => { void save(); }}
+                disabled={busy}
+                className="md:hidden inline-flex items-center justify-center gap-2 self-center rounded-lg border border-surface-variant bg-surface-container-lowest px-5 py-2.5 text-body-md font-semibold text-primary disabled:opacity-50"
+              >
+                <Icon name="download" className="text-[18px]" /> {t("Download image")}
+              </button>
+            )}
             {size.scaled && (
               <p className="text-center text-label-sm font-label-sm text-on-surface-variant/80">
                 {t("This photo is very large, so it is edited and saved at {w} × {h} px.", { w: size.W, h: size.H })}

@@ -184,10 +184,35 @@ ID 40.5K KD 0) · remove-object (IN 60.5K + 49.5K; ID 74K KD 0; US 12.1K).
 
 ### Phase 8 — guides + release
 
+- **8A (done 2026-10-06): the upscale variants do their own job.** Asked by
+  the user whether upscale-image + unblur-image (+ image-to-hd) was spam.
+  Answer: different intent, own copy, similarity-checked, one family — not a
+  doorway. But all three opened the identical tool at 2×, which is the part
+  that reads as one page under three names. Now:
+  - **unblur-image** returns the photo at its own size by default ("Keep the
+    original size"; off → 2×).
+  - **image-to-hd** takes a target (HD 1280 / Full HD 1920 / 4K 3840 on
+    the longer side), picks the AI scale itself and sizes the result to the
+    target.
+  - **upscale-image** stays the free 2×/3×/4× tool.
+
+  **Watch in Search Console** (from ~2026-12): if unblur-image gets no
+  impressions of its own, or swaps with upscale-image on the same queries,
+  301 it into upscale-image.
+
 English-only blog guides linking into the families ("make a photo exactly
 50KB", "passport photo sizes by country", "social media image sizes",
 "GIF size limits"), then submit the per-locale child sitemaps in Search
 Console / Bing / Yandex and run `npm run indexnow`.
+
+- **8B (written 2026-10-06): four English guides**, ready to paste into
+  `/admin/blog`. They are in `guides/` with every editor field filled in
+  and the facts checked; publishing needs the owner's admin sign-in.
+- **8C (done 2026-10-06): navigation cleanup.** Variants are off the home
+  grid, its tabs, the dashboard grid (until you search) and the Tools menu.
+  They are surfaced as a "Sizes and presets" chip block under the home grid,
+  and still in each family's strip and in search. Tool counts are parents
+  only (73).
 
 **Navigation cleanup — LAST step, after every phase (user, 2026-10-05).**
 The variant cards on the home grid ("Compress Image to 20KB", "…50KB", …)
@@ -725,6 +750,100 @@ blur-screenshot (90–140/mo), exif-editor (≤ 390, KD 68), svg-to-gif, blur-gi
   - **Snapshot diff vs 6B: 43 pages**, all expected — the AI pages'
     related links now include the two tools, and the tool count went from
     104 to 106. verify:build: 561 URLs.
+- **2026-10-06 — 8A: unblur-image and image-to-hd made functionally distinct
+  — 8 pages.**
+  - **`ServerImageTool` gains two hooks:**
+    - `prepareOptions(file, opts)` decides what the server is sent.
+    - `rerunKeys`: changing one of these options clears a stale result.
+  - **`UpscaleTool` `preset.mode`:**
+    - `unblur` sends `{scale: 2}`. A `postProcess` scales the result back
+      to the photo's own size (EXIF-safe aspect check), or keeps 2× when
+      "Keep the original size" is off. The toggle re-derives the result
+      without another server call.
+    - `hd` sends the smallest scale that reaches the target. The result is
+      fitted to the target on the longer side; when even 4× falls short,
+      the 4× result is returned rather than stretched.
+  - **Copy:** en/pt/hi/ru rewritten wherever it promised enlarging or
+    "choose the scale". The obsolete "why is it bigger?" FAQ became "is it
+    the same size?".
+  - **Measured** with the endpoint stubbed in the browser to a real k×
+    resample:
+    - Unblur: 300 × 200 in → `{scale: 2}` sent → 300 × 200 out
+      (`_unblurred`). Toggle off → 600 × 400 (`_unblurred_2x`), still one
+      server call.
+    - Image to HD, 800 × 450 in:
+      - Full HD → scale 3 → 1920 × 1080 (`_fullhd`).
+      - Switching to 4K cleared the result, then scale 4 → 3200 × 1800,
+        not stretched.
+      - HD → scale 2 → 1280 × 720.
+  - **Snapshot diff:** exactly the 8 variant pages. verify:build passes,
+    including the family similarity ceiling.
+- **2026-10-06 — 8B + 8C: guides and the variant cleanup.**
+  - **Guides** (`guides/01–04`, README with publishing steps):
+    - Make a photo exactly 50 KB.
+    - Passport photo size by country.
+    - Social media image sizes 2026.
+    - GIF size limits.
+
+    Each is ~900–1,000 words with 6–12 links into the families (all link
+    targets checked against `out/`). Facts were verified on 2026-10-06:
+    - Passport sizes/head heights against official ranges and
+      `id-photo.ts`.
+    - Platform sizes against `social-presets.ts` and the Instagram 3:4 grid.
+    - Discord free 20 MB (Aug 2026), X GIF 15 MB web / 5 MB app, Slack emoji
+      128 KB.
+    - Our own tools' behaviour (compress-to-size counts 1 KB = 1,000 bytes;
+      the GIF compressor's Strong level keeps every other frame).
+
+    Publish guide 1 before guide 2 (2 links to 1).
+  - **Home grid:** `!t.parentId` again. The "Sizes and presets" block under
+    it has six groups of chips:
+    - compress to a file size
+    - image to PDF under a size
+    - print and social sizes
+    - passport & ID
+    - AI presets
+    - more presets
+
+    Sized presets read "20 KB" / "1 MB" (ru «КБ/МБ»), the others keep their
+    tool names. Only variants shipped in the locale are shown, linked with
+    `toolHref`.
+  - **Dashboard:** parents only, but variants join once you type a query,
+    so "50kb" still finds them.
+  - **Tools menu:**
+    - `compress-size` and `social-sizes` sections removed.
+    - "Passport & ID Photos" → "Passport & Signature" (passport photo
+      maker, signature resizer).
+    - Optimize loses flip; Image AI loses the four variants.
+    - Columns: `[optimize, photo-id, ai, privacy]`,
+      `[edit, effects, create]`, `[gif]`, `[convert ×3]` — 19/20/19/26 rows.
+    - The retired labels were dropped from each `common.ts`.
+  - **`liveToolCount`:** parents only (73), matching the cards.
+  - **Snapshot diff vs 8A: 15 pages** — home, pricing and contact × 5
+    locales. verify:build passes (561 URLs; variants stay in the sitemap).
+  - **Still for the owner:**
+    - Publish the guides.
+    - Submit the per-locale child sitemaps in Search Console. Bing and
+      Yandex get them through IndexNow after the next deploy.
+- **2026-10-06 — Post-phase fixes (found while checking open items).**
+  - **Mobile bug in the new canvas tools.** Below `md`, ToolWorkspace first
+    renders the desktop layout and then swaps to the mobile shell, which
+    mounts NEW elements. Effects keyed only on the picture never re-ran for
+    them.
+    - On /remove-object and /remove-watermark the mark layer stayed a
+      default 300 × 150 canvas, so marks landed in the wrong place and the
+      removal missed.
+    - Fixed by holding the canvases/stage in state through callback refs,
+      so effects re-run for the canvas actually on screen. The same pattern
+      was applied to the overlay, split and FX previews.
+    - Verified at 375 px: mark layer sized to the 600 × 400 image, square removed
+      (81,140,187 vs wall 80,140,190), overlay and split previews draw.
+  - **Phone download.** The mobile shell's action is Remove and Download
+    lived only in the Settings sheet, so a Download button now appears under
+    the picture once something has been removed.
+  - **"over thirty tools" → "over seventy tools"** (home purpose band and
+    About, 5 locales). It was 73 tools, and the id note that kept "thirty"
+    at forty tools was updated.
 - **Deploys need the user's go-ahead.** 2A, 3A, 4A and the visibility fix
   went live on 2026-10-04 (merge 505e680 into `main`, then `npm run
   indexnow`). Later batches are committed on `feat/tool-expansion` and

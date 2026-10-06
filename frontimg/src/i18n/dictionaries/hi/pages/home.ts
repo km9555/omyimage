@@ -33,8 +33,8 @@ export const hiHome: Record<string, string> = {
   "Continue": "आगे बढ़ें",
 
   // ── ToolDirectory ───────────────────────────────────────────────────────
-  "is a free online image toolkit — over thirty tools to compress, resize, crop, convert, watermark and edit images, most running entirely in your browser so your files never leave your device. Importing from Google Drive is optional, reads only the files you pick, and never stores them on our servers.":
-    "मुफ़्त ऑनलाइन इमेज टूल का सेट है — इमेज कंप्रेस करने, रीसाइज़ करने, क्रॉप करने, फ़ॉर्मैट बदलने, वॉटरमार्क लगाने और एडिट करने के तीस से ज़्यादा टूल, जिनमें से ज़्यादातर पूरी तरह आपके ब्राउज़र में चलते हैं, इसलिए आपकी फ़ाइलें आपके डिवाइस से बाहर नहीं जातीं। Google Drive से इमेज लाना वैकल्पिक है, इससे सिर्फ़ वही फ़ाइलें पढ़ी जाती हैं जो आप चुनते हैं, और वे हमारे सर्वर पर कभी सहेजी नहीं जातीं।",
+  "is a free online image toolkit — over seventy tools to compress, resize, crop, convert, watermark and edit images, most running entirely in your browser so your files never leave your device. Importing from Google Drive is optional, reads only the files you pick, and never stores them on our servers.":
+    "मुफ़्त ऑनलाइन इमेज टूल का सेट है — इमेज कंप्रेस करने, रीसाइज़ करने, क्रॉप करने, फ़ॉर्मैट बदलने, वॉटरमार्क लगाने और एडिट करने के सत्तर से ज़्यादा टूल, जिनमें से ज़्यादातर पूरी तरह आपके ब्राउज़र में चलते हैं, इसलिए आपकी फ़ाइलें आपके डिवाइस से बाहर नहीं जातीं। Google Drive से इमेज लाना वैकल्पिक है, इससे सिर्फ़ वही फ़ाइलें पढ़ी जाती हैं जो आप चुनते हैं, और वे हमारे सर्वर पर कभी सहेजी नहीं जातीं।",
   "What is oMyImage?": "oMyImage क्या है?",
   "How we use Google data": "हम Google का डेटा कैसे इस्तेमाल करते हैं",
   "Favorites": "पसंदीदा",
@@ -57,8 +57,8 @@ export const hiHome: Record<string, string> = {
   "Get your optimized images back, ready for your workflow.":
     "अपनी ऑप्टिमाइज़ की हुई इमेज वापस पाएँ, इस्तेमाल के लिए तैयार।",
   "About oMyImage": "oMyImage के बारे में",
-  "is a free online image toolkit for everyday image work. It gives you a single place to compress, resize, crop, rotate, convert, watermark and edit images — over thirty tools, each one a dedicated page that does one job well.":
-    "रोज़ के इमेज के कामों के लिए मुफ़्त ऑनलाइन टूल का सेट है। इमेज कंप्रेस करना, रीसाइज़ करना, क्रॉप करना, घुमाना, फ़ॉर्मैट बदलना, वॉटरमार्क लगाना और एडिट करना — सब एक ही जगह, तीस से ज़्यादा टूल, और हर टूल का अपना पेज जो एक काम अच्छे से करता है।",
+  "is a free online image toolkit for everyday image work. It gives you a single place to compress, resize, crop, rotate, convert, watermark and edit images — over seventy tools, each one a dedicated page that does one job well.":
+    "रोज़ के इमेज के कामों के लिए मुफ़्त ऑनलाइन टूल का सेट है। इमेज कंप्रेस करना, रीसाइज़ करना, क्रॉप करना, घुमाना, फ़ॉर्मैट बदलना, वॉटरमार्क लगाना और एडिट करना — सब एक ही जगह, सत्तर से ज़्यादा टूल, और हर टूल का अपना पेज जो एक काम अच्छे से करता है।",
   "Most tools run entirely inside your web browser: your image is processed on your own device and is never uploaded anywhere. Larger files, and the AI tools that need real hardware, are processed on our servers and deleted shortly after the job finishes. oMyImage is free to use and needs no account.":
     "ज़्यादातर टूल पूरी तरह आपके ब्राउज़र के अंदर चलते हैं: इमेज आपके अपने डिवाइस पर प्रोसेस होती है और कहीं अपलोड नहीं होती। बड़ी फ़ाइलें, और वे AI टूल जिन्हें असली हार्डवेयर चाहिए, हमारे सर्वर पर प्रोसेस होते हैं और काम पूरा होते ही थोड़ी देर में मिटा दिए जाते हैं। oMyImage मुफ़्त है और इसके लिए अकाउंट बनाने की ज़रूरत नहीं।",
   "What you can do with oMyImage": "oMyImage से आप क्या कर सकते हैं",
@@ -86,4 +86,14 @@ export const hiHome: Record<string, string> = {
   "You can revoke access at any time from your": "आप यह पहुँच कभी भी हटा सकते हैं —",
   "Google Account permissions page": "अपने Google अकाउंट के अनुमति पेज से",
   "Contact us": "हमसे संपर्क करें",
+  // ToolDirectory — the "Sizes and presets" block under the grid (expansion.md Phase 8).
+  "Sizes and presets": "साइज़ और प्रीसेट",
+  "Ready-made versions of the tools above, each set up for one job — like compressing a photo to exactly 50 KB.": "ऊपर दिए टूल्स के तैयार वर्ज़न, हर एक किसी एक काम के लिए सेट — जैसे फोटो को ठीक 50 KB में कंप्रेस करना।",
+  "Compress to a file size": "तय फ़ाइल साइज़ में कंप्रेस करें",
+  "Image to PDF under a size": "तय साइज़ से छोटी PDF",
+  "Print and social media sizes": "प्रिंट और सोशल मीडिया साइज़",
+  "AI presets": "AI प्रीसेट",
+  "More presets": "और प्रीसेट",
+  "{size} KB": "{size} KB", // i18n-same — Indian users write KB in Latin letters
+  "{size} MB": "{size} MB", // i18n-same
 };

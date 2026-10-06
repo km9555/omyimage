@@ -10,7 +10,7 @@ export const metadata = toolMetadata(content);
 export default function Page() {
   return (
     <ToolPageShell content={content} parent={parent}>
-      <UpscaleTool preset={{ scale: 2 }} />
+      <UpscaleTool preset={{ mode: "unblur" }} />
     </ToolPageShell>
   );
 }

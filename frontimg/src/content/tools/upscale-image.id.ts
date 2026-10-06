@@ -115,6 +115,16 @@ const content: ToolPageContent = {
     "Upscale": "Jadikan HD",
     "Upscaling…": "Memproses…",
     "Scale factor": "Perbesar",
+    // unblur-image and image-to-hd modes (UpscaleTool preset.mode)
+    "Unblur": "Perjelas",
+    "Unblurring…": "Memperjelas…",
+    "Keep the original size": "Pertahankan ukuran asli",
+    "The AI sharpens at twice the resolution, then the photo is returned at its own size — same picture, crisper.": "AI mempertajam di resolusi dua kali lipat, lalu foto dikembalikan ke ukuran aslinya — foto yang sama, lebih tajam.",
+    "You get the sharpened photo at twice its size — useful for small or pixelated pictures.": "Anda mendapat foto yang lebih tajam dengan ukuran dua kali lipat — berguna untuk gambar kecil atau pecah.",
+    "Convert to HD": "Ubah ke HD",
+    "Target size": "Ukuran tujuan",
+    "The longer side comes out at this size. The AI scale (2×, 3× or 4×) is chosen for you.": "Sisi terpanjang keluar dengan ukuran ini. Skala AI (2×, 3×, atau 4×) dipilihkan untuk Anda.",
+    "A very small picture may not reach 4K even at 4× — you then get the 4× result.": "Gambar yang sangat kecil mungkin tidak mencapai 4K bahkan dengan 4× — Anda lalu mendapat hasil 4×.",
     "AI upscaling isn't enabled on this server (Real-ESRGAN not installed).":
       "Fitur HD dengan AI belum aktif di server ini (Real-ESRGAN belum terpasang).",
   },

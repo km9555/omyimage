@@ -7,12 +7,12 @@ import { Icon } from "@/components/Icon";
 import { HomeLauncher } from "@/components/HomeLauncher";
 import { ToolCard } from "@/components/ToolCard";
 import { QuickAccessCard } from "@/components/QuickAccessCard";
-import { TOOLS } from "@/lib/tools";
+import { TOOLS, type Tool } from "@/lib/tools";
 import { toolShippedIn } from "@/i18n/status";
 import { CATEGORY_PILLS as PILLS } from "@/lib/tool-categories";
 import { useFavoriteTools } from "@/lib/useToolPrefs";
 import { useLocale, useT } from "@/i18n/I18nScope";
-import { localeHome, localeHref } from "@/lib/i18n/links";
+import { localeHome, localeHref, toolHref } from "@/lib/i18n/links";
 import { toolName } from "@/lib/i18n/tool-labels";
 
 const PILL_ICONS: Record<string, string> = {
@@ -54,16 +54,45 @@ export function ToolDirectory() {
   // `homeGrid !== false` keeps the long-tail format-pair converters off the
   // home page — they live on /image-converter. Without this the Convert pill
   // becomes forty near-identical cards.
-  // Variants (compress-image-to-50kb …) are cards too, but only where they
-  // ship — /id has no image-to-hd, and a card must not link out to English.
-  // Their priorities (101+) sort them after the main tools in every pill.
+  // Variants (compress-image-to-50kb …) are not cards either: fifteen
+  // "Compress Image to …" cards read as repetition (owner, 2026-10-05). They
+  // are listed as compact links under the grid instead — see `presetGroups`.
   const tools = useMemo(
     () =>
-      TOOLS.filter((t) => t.homeGrid !== false && (!t.parentId || toolShippedIn(t.id, locale)))
+      TOOLS.filter((t) => t.homeGrid !== false && !t.parentId)
         .filter(pill.match)
         .sort((a, b) => a.priority - b.priority),
     [pill, locale],
   );
+
+  // Variant families as short link chips — "Compress to a file size: 10 KB ·
+  // 20 KB · …". Only variants shipped in this locale, so a chip never links
+  // out to an English page. A preset with a size gets the size as its label;
+  // the others keep their (distinct) tool names.
+  const presetGroups = useMemo(() => {
+    const kbOf = (v: Tool) => {
+      const p = v.preset ?? {};
+      return typeof p.targetKb === "number" ? p.targetKb : typeof p.maxKb === "number" ? p.maxKb : null;
+    };
+    const label = (v: Tool) => {
+      const kb = kbOf(v);
+      if (kb === null) return toolName(v, locale);
+      return kb >= 1000 ? t("{size} MB", { size: kb / 1000 }) : t("{size} KB", { size: kb });
+    };
+    const variantsOf = (...parents: string[]) =>
+      TOOLS.filter((v) => v.parentId && parents.includes(v.parentId) && v.status === "live" && toolShippedIn(v.id, locale))
+        // Named presets first, then sizes from small to large.
+        .sort((a, b) => (kbOf(a) ?? -1) - (kbOf(b) ?? -1) || a.priority - b.priority)
+        .map((v) => ({ id: v.id, href: toolHref(v, locale), label: label(v) }));
+    return [
+      { title: t("Compress to a file size"), links: variantsOf("compress-image") },
+      { title: t("Image to PDF under a size"), links: variantsOf("image-to-pdf") },
+      { title: t("Print and social media sizes"), links: variantsOf("resize-image") },
+      { title: t("Passport & ID Photos"), links: variantsOf("passport-photo-maker") },
+      { title: t("AI presets"), links: variantsOf("upscale-image", "remove-background") },
+      { title: t("More presets"), links: variantsOf("rotate-image", "split-image") },
+    ].filter((g) => g.links.length > 0);
+  }, [locale, t]);
 
   return (
     <>
@@ -83,7 +112,7 @@ export function ToolDirectory() {
           <p className="text-body-md text-on-surface-variant">
             {/* i18n-raw: brand name */}
             <strong className="font-semibold text-primary">oMyImage</strong>{" "}
-            {t("is a free online image toolkit — over thirty tools to compress, resize, crop, convert, watermark and edit images, most running entirely in your browser so your files never leave your device. Importing from Google Drive is optional, reads only the files you pick, and never stores them on our servers.")}
+            {t("is a free online image toolkit — over seventy tools to compress, resize, crop, convert, watermark and edit images, most running entirely in your browser so your files never leave your device. Importing from Google Drive is optional, reads only the files you pick, and never stores them on our servers.")}
           </p>
           <div className="flex shrink-0 items-center gap-4 text-body-sm">
             <Link
@@ -208,6 +237,36 @@ export function ToolDirectory() {
           <p className="text-center text-body-lg text-on-surface-variant py-16">
             {t("No tools in {category} yet.", { category: t(pill.label) })}
           </p>
+        )}
+
+        {/* Variants are hidden from the grid; these chips are how a visitor
+            (and a crawler) reaches them from the home page. */}
+        {presetGroups.length > 0 && (
+          <div id="presets" className="mt-12 rounded-2xl border border-surface-variant bg-surface-container-lowest p-5 md:p-7">
+            <h2 className="text-headline-sm font-headline-sm text-primary">{t("Sizes and presets")}</h2>
+            <p className="mt-1 text-body-md text-on-surface-variant">
+              {t("Ready-made versions of the tools above, each set up for one job — like compressing a photo to exactly 50 KB.")}
+            </p>
+            <div className="mt-5 grid gap-5 md:grid-cols-2">
+              {presetGroups.map((g) => (
+                <div key={g.title} className="flex flex-col gap-2">
+                  <h3 className="text-label-md font-semibold text-on-surface">{g.title}</h3>
+                  <ul className="flex flex-wrap gap-1.5">
+                    {g.links.map((l) => (
+                      <li key={l.id}>
+                        <Link
+                          href={l.href}
+                          className="inline-flex rounded-full border border-surface-variant bg-surface-container px-3 py-1 text-label-md font-medium text-on-surface-variant transition-colors hover:border-secondary/50 hover:text-primary"
+                        >
+                          {l.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
         )}
 
         {/* The format-pair converters are hidden from this grid, so the hub is

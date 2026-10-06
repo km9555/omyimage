@@ -7,7 +7,6 @@
  * and is verified. Everything else stays "planned" (renders as "Coming soon").
  */
 import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
-import { toolShippedIn } from "@/i18n/status";
 
 export type ToolStatus = "live" | "planned";
 export type Processing = "client" | "server" | "hybrid" | "ai";
@@ -1770,7 +1769,7 @@ export const TOOLS: Tool[] = [
     name: "Image to HD",
     slug: "image-to-hd",
     parentId: "upscale-image",
-    preset: { scale: 2 },
+    preset: { mode: "hd" },
     categoryId: "ai",
     shortDescription: "Turn a small or low-res photo into HD.",
     icon: "hd",
@@ -1789,7 +1788,7 @@ export const TOOLS: Tool[] = [
     name: "Unblur Image",
     slug: "unblur-image",
     parentId: "upscale-image",
-    preset: { scale: 2 },
+    preset: { mode: "unblur" },
     categoryId: "ai",
     shortDescription: "Sharpen soft, slightly blurry photos with AI.",
     icon: "auto_fix_high",
@@ -2000,13 +1999,15 @@ export const TOOLS: Tool[] = [
  * releases, because nothing links a prose string to the registry.
  *
  * Counts `live` only — a "planned" entry renders as "Coming soon" and is not
- * a tool a visitor can use. Variants (compress-image-to-50kb …) count where
- * they are shipped, because the home grid and the Tools menu show them as
- * tools there: the number has to match the cards on the same site. That makes
- * it per locale — /id has no image-to-hd, /hi no 3x4-photo.
+ * a tool a visitor can use. The number has to match the cards on the same
+ * site, and since the Phase 8 cleanup (expansion.md) variants
+ * (compress-image-to-50kb …) are not cards or menu rows — they are presets
+ * of the tools that are — so they are not counted. The locale parameter stays
+ * so callers need not change if a locale ever ships a different set of tools.
  */
 export function liveToolCount(locale: Locale = DEFAULT_LOCALE): number {
-  return TOOLS.filter((t) => t.status === "live" && (!t.parentId || toolShippedIn(t.id, locale))).length;
+  void locale;
+  return TOOLS.filter((t) => t.status === "live" && !t.parentId).length;
 }
 
 // ── Lookups ──────────────────────────────────────────────────────────────

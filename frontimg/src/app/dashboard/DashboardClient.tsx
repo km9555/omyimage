@@ -48,10 +48,12 @@ export function DashboardClient() {
   // Ranked, alias-aware search within the active pill; an empty query falls
   // back to priority order. Shared with the home page — see lib/tool-search.ts.
   const browseTools = useMemo(() => {
-    // Same pool as the home grid: variants included where the locale ships
-    // them, so the two directories never disagree.
+    // Same cards as the home grid — no variants — until something is typed:
+    // then variants shipped in this locale join, so "50kb" still finds
+    // Compress Image to 50KB.
+    const searching = query.trim() !== "";
     const pool = TOOLS.filter(
-      (tool) => tool.status === "live" && (!tool.parentId || toolShippedIn(tool.id, locale)),
+      (tool) => tool.status === "live" && (!tool.parentId || (searching && toolShippedIn(tool.id, locale))),
     ).filter(pill.match);
     return searchTools(query, pool, locale);
   }, [pill, query, locale]);

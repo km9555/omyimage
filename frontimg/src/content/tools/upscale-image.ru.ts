@@ -175,6 +175,16 @@ const content: ToolPageContent = {
     "Upscale": "Улучшить",
     "Upscaling…": "Обработка…",
     "Scale factor": "Увеличение",
+    // unblur-image and image-to-hd modes (UpscaleTool preset.mode)
+    "Unblur": "Убрать размытие",
+    "Unblurring…": "Убираем размытие…",
+    "Keep the original size": "Сохранить исходный размер",
+    "The AI sharpens at twice the resolution, then the photo is returned at its own size — same picture, crisper.": "ИИ повышает резкость в удвоенном разрешении, а затем возвращает фото в исходном размере — тот же снимок, только чётче.",
+    "You get the sharpened photo at twice its size — useful for small or pixelated pictures.": "Вы получите чёткое фото в два раза больше — полезно для маленьких и пиксельных картинок.",
+    "Convert to HD": "Преобразовать в HD",
+    "Target size": "Итоговый размер",
+    "The longer side comes out at this size. The AI scale (2×, 3× or 4×) is chosen for you.": "Длинная сторона получается такого размера. Масштаб ИИ (2×, 3× или 4×) подбирается автоматически.",
+    "A very small picture may not reach 4K even at 4× — you then get the 4× result.": "Очень маленькая картинка может не дотянуть до 4K даже при 4× — тогда вы получите результат в 4×.",
     "AI upscaling isn't enabled on this server (Real-ESRGAN not installed).":
       "Увеличение с ИИ не подключено на этом сервере (Real-ESRGAN не установлен).",
   },

@@ -53,7 +53,10 @@ export function OverlayTool() {
   const [comparing, setComparing] = useState(false);
   const [dragOver, setDragOver] = useState(false);
 
-  const previewRef = useRef<HTMLCanvasElement>(null);
+  // Held in state, not a ref: below `md` ToolWorkspace swaps to the mobile
+  // shell after its first render, which mounts a NEW canvas — the draw effect
+  // must re-run for it.
+  const [previewEl, setPreviewEl] = useState<HTMLCanvasElement | null>(null);
   const baseInput = useRef<HTMLInputElement>(null);
   const overInput = useRef<HTMLInputElement>(null);
   const drag = useRef<{ x: number; y: number; ox: number; oy: number } | null>(null);
@@ -68,11 +71,11 @@ export function OverlayTool() {
   const fill = mime === "image/jpeg" ? (resolveBg({ ...bg, transparent: false }) ?? "#ffffff") : null;
 
   useEffect(() => {
-    const c = previewRef.current;
+    const c = previewEl;
     if (!c || !base) return;
     const showOver = comparing ? null : over;
     paintOverlay(c, base.prev, showOver?.prev ?? null, base.prev.width, base.prev.height, over?.bmp.width ?? 1, over?.bmp.height ?? 1, s, fill);
-  }, [base, over, s, comparing, fill]);
+  }, [base, over, s, comparing, fill, previewEl]);
 
   const replace = async (which: "base" | "over", file: File) => {
     setLoading(true);
@@ -325,7 +328,7 @@ export function OverlayTool() {
           <>
             <div className="bg-surface-container rounded-xl border border-surface-variant p-4 flex items-center justify-center overflow-hidden" style={{ minHeight: 220 }}>
               <canvas
-                ref={previewRef}
+                ref={setPreviewEl}
                 tabIndex={placing ? 0 : -1}
                 style={{ ...checker, touchAction: placing ? "none" : undefined, cursor: placing ? "move" : undefined }}
                 className="max-w-full max-h-[52vh] rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-secondary"

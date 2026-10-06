@@ -107,6 +107,16 @@ const content: ToolPageContent = {
     "Upscale": "अपस्केल करें",
     "Upscaling…": "अपस्केल हो रहा है…",
     "Scale factor": "स्केल",
+    // unblur-image and image-to-hd modes (UpscaleTool preset.mode)
+    "Unblur": "धुंधलापन हटाएँ",
+    "Unblurring…": "धुंधलापन हटा रहे हैं…",
+    "Keep the original size": "ओरिजिनल साइज़ रखें",
+    "The AI sharpens at twice the resolution, then the photo is returned at its own size — same picture, crisper.": "AI दोगुने रेज़ोल्यूशन पर फोटो साफ़ करता है, फिर उसे उसी के साइज़ में लौटाता है — वही फोटो, ज़्यादा साफ़।",
+    "You get the sharpened photo at twice its size — useful for small or pixelated pictures.": "आपको साफ़ फोटो दोगुने साइज़ में मिलती है — छोटी या पिक्सेल वाली तस्वीरों के लिए काम की।",
+    "Convert to HD": "HD में बदलें",
+    "Target size": "चाहिए साइज़",
+    "The longer side comes out at this size. The AI scale (2×, 3× or 4×) is chosen for you.": "लंबी तरफ़ इसी साइज़ की बनती है। AI स्केल (2×, 3× या 4×) अपने आप चुना जाता है।",
+    "A very small picture may not reach 4K even at 4× — you then get the 4× result.": "बहुत छोटी तस्वीर 4× पर भी 4K तक नहीं पहुँच सकती — तब आपको 4× वाला नतीजा मिलता है।",
     // Backend sentences this tool can surface (routes/image/upscale)
     "AI upscaling isn't enabled on this server (Real-ESRGAN not installed).":
       "इस सर्वर पर अभी AI से क्वालिटी बढ़ाने की सुविधा उपलब्ध नहीं है।",
