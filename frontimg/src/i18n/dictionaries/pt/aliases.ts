@@ -263,6 +263,21 @@ export const ptAliases: Record<string, string[]> = {
   "typing-text-gif": [
     "texto digitando", "efeito de digitação", "gif de texto animado", "máquina de escrever gif",
   ],
+  "invert-image": [
+    "negativo de foto", "inverter cor", "imagem negativa", "inverter imagem",
+  ],
+  "pixelate-image": [
+    "pixelizar imagem", "efeito pixel", "pixel art foto", "mosaico",
+  ],
+  "image-brightness": [
+    "clarear foto", "escurecer foto", "ajustar contraste", "saturação",
+  ],
+  "glitch-effect": [
+    "glitch foto", "efeito vhs", "distorção rgb", "foto glitch",
+  ],
+  "round-corners": [
+    "cantos arredondados", "borda arredondada", "arredondar imagem", "png cantos arredondados",
+  ],
 
   // Variantes — HD, espelhar, fundo
   "image-to-hd": [

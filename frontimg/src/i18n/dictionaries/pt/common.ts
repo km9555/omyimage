@@ -38,6 +38,7 @@ export const ptCommon: Record<string, string> = {
   "Passport & ID Photos": "Fotos para documento",
   "Print & Social Sizes": "Impressão e redes sociais",
   "GIF Tools": "Ferramentas de GIF",
+  "Filters & Effects": "Filtros e efeitos",
   "Browse all tools": "Ver todas as ferramentas",
   "Browse tools": "Explorar ferramentas",
   "All tools": "Todas as ferramentas",

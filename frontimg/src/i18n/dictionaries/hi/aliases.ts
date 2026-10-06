@@ -272,6 +272,21 @@ export const hiAliases: Record<string, string[]> = {
   "typing-text-gif": [
     "typing text gif", "typing animation", "टाइपिंग एनिमेशन",
   ],
+  "invert-image": [
+    "invert image", "negative photo", "रंग उलटें",
+  ],
+  "pixelate-image": [
+    "pixelate image", "pixel effect", "फोटो पिक्सलेट",
+  ],
+  "image-brightness": [
+    "image brightness", "photo brightness", "contrast",
+  ],
+  "glitch-effect": [
+    "glitch effect", "glitch photo", "rgb split",
+  ],
+  "round-corners": [
+    "round corners", "rounded corners image", "कोने गोल करें",
+  ],
 
   // वैरिएंट — HD, मिरर, बैकग्राउंड
   "image-to-hd": [

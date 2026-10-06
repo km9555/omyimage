@@ -1319,6 +1319,91 @@ export const TOOLS: Tool[] = [
       "Make a typing text GIF online for free: your words appear letter by letter with a blinking cursor. Choose the speed, font and colours. In your browser, nothing to upload.",
     primaryKeyword: "typing text gif",
   },
+  {
+    id: "invert-image",
+    name: "Invert Image",
+    slug: "invert-image",
+    categoryId: "edit",
+    shortDescription: "Invert the colours of photos — negative or smart invert.",
+    icon: "dark_mode",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    isNew: true,
+    priority: 201,
+    seoTitle: "Invert Image Colors Online — Negative & Smart Invert | oMyImage",
+    seoDescription:
+      "Invert image colors online for free: turn a photo into a negative, or swap light and dark while keeping the hues. JPG, PNG and WEBP, many at once. In your browser, no upload.",
+    primaryKeyword: "invert image",
+  },
+  {
+    id: "pixelate-image",
+    name: "Pixelate Image",
+    slug: "pixelate-image",
+    categoryId: "edit",
+    shortDescription: "Turn photos into chunky pixel blocks.",
+    icon: "apps",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    isNew: true,
+    priority: 202,
+    seoTitle: "Pixelate Image Online — Pixel Art Effect, Free | oMyImage",
+    seoDescription:
+      "Pixelate images online for free: choose the block size and turn any photo into chunky pixels or a retro pixel-art look. Many images at once. In your browser, no upload.",
+    primaryKeyword: "pixelate image",
+  },
+  {
+    id: "image-brightness",
+    name: "Brightness & Contrast",
+    slug: "image-brightness",
+    categoryId: "edit",
+    shortDescription: "Brighten, darken and add contrast or colour to photos.",
+    icon: "light_mode",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    isNew: true,
+    priority: 203,
+    seoTitle: "Adjust Image Brightness & Contrast Online, Free | oMyImage",
+    seoDescription:
+      "Adjust image brightness, contrast and saturation online for free with a live preview. Fix dark or washed-out photos, many at once. In your browser, no upload.",
+    primaryKeyword: "image brightness",
+  },
+  {
+    id: "glitch-effect",
+    name: "Glitch Effect",
+    slug: "glitch-effect",
+    categoryId: "edit",
+    shortDescription: "Give photos a broken-screen glitch look.",
+    icon: "gradient",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    isNew: true,
+    priority: 204,
+    seoTitle: "Glitch Effect Online — Glitch Photo Editor, Free | oMyImage",
+    seoDescription:
+      "Add a glitch effect to photos online for free: RGB colour split, shifted slices and scan lines, with a strength slider and shuffle. In your browser, no upload.",
+    primaryKeyword: "glitch effect",
+  },
+  {
+    id: "round-corners",
+    name: "Round Corners",
+    slug: "round-corners",
+    categoryId: "edit",
+    shortDescription: "Give images rounded corners with transparent edges.",
+    icon: "rounded_corner",
+    processing: "client",
+    library: "Canvas",
+    status: "live",
+    isNew: true,
+    priority: 205,
+    seoTitle: "Round Image Corners Online — Rounded Corners PNG | oMyImage",
+    seoDescription:
+      "Round the corners of images online for free: pick the radius and which corners, keep the edges transparent as PNG or fill them with a colour. In your browser, no upload.",
+    primaryKeyword: "round corners image",
+  },
 
   // ── Variants (expansion.md §2) ─────────────────────────────────────────
   // Each runs its parent's engine with `preset` applied, on its own URL with
@@ -1878,16 +1963,28 @@ export const GIF_SUITE = [
   "gif-to-mp4", "gif-to-webp", "gif-to-apng", "webp-to-gif", "gif-to-images", "gif-to-sprite-sheet",
 ];
 
+/**
+ * Whole-image filters and effects, in menu order. Same idea as GIF_SUITE: the
+ * Tools menu's Filters & Effects section and these pages' related tools come
+ * from this list.
+ */
+export const EFFECTS_SUITE = [
+  "image-brightness", "grayscale-image", "invert-image", "blur-image", "pixelate-image", "glitch-effect",
+];
+
+const SUITES = [GIF_SUITE, EFFECTS_SUITE];
+
 export function relatedTools(tool: Tool, n = 3): Tool[] {
   // Variants never appear here (their family has its own link strip), and a
   // variant page shows its parent's list, so adding a variant can't reshuffle
   // the related tools on any existing page.
   const base = tool.parentId ? (TOOLS_BY_ID[tool.parentId] ?? tool) : tool;
-  // A GIF tool links to the next GIF tools in the suite, wrapping round, so
+  // A suite member links to the next tools in its suite, wrapping round, so
   // the suite's pages form a ring instead of all pointing at its first three.
-  const at = GIF_SUITE.indexOf(base.id);
-  if (at >= 0) {
-    const ring = [...GIF_SUITE.slice(at + 1), ...GIF_SUITE.slice(0, at)]
+  const suite = SUITES.find((s) => s.includes(base.id));
+  if (suite) {
+    const at = suite.indexOf(base.id);
+    const ring = [...suite.slice(at + 1), ...suite.slice(0, at)]
       .map((id) => TOOLS_BY_ID[id])
       .filter((t) => t?.status === "live");
     if (ring.length >= n) return ring.slice(0, n);
@@ -1981,6 +2078,11 @@ const TOOL_COLORS: Record<string, string> = {
   "gif-merger": "#C4607E",
   "add-text-to-gif": "#B4628A",
   "typing-text-gif": "#9C6A9E",
+  "invert-image": "#5E6A9E",
+  "pixelate-image": "#7A6FB0",
+  "image-brightness": "#C2A04A",
+  "glitch-effect": "#9A5FB0",
+  "round-corners": "#6F8FB0",
   "passport-photo-maker": "#4F7FB8",
   "signature-resizer": "#5A6FB0",
   "dpi-converter": "#5B7FA6",

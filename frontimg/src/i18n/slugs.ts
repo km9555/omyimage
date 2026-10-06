@@ -149,6 +149,11 @@ const PT_TOOL_SLUGS: Record<string, string> = {
   "gif-merger": "juntar-gif",
   "add-text-to-gif": "colocar-texto-em-gif",
   "typing-text-gif": "gif-de-texto-digitando",
+  "invert-image": "inverter-cores-da-imagem",
+  "pixelate-image": "pixelar-imagem",
+  "image-brightness": "ajustar-brilho-da-imagem",
+  "glitch-effect": "efeito-glitch",
+  "round-corners": "arredondar-cantos-da-imagem",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "imagem-em-hd",
@@ -262,6 +267,11 @@ const HI_TOOL_SLUGS: Record<string, string> = {
   "gif-merger": "gif-merger",
   "add-text-to-gif": "add-text-to-gif",
   "typing-text-gif": "typing-text-gif",
+  "invert-image": "invert-image",
+  "pixelate-image": "pixelate-image",
+  "image-brightness": "image-brightness",
+  "glitch-effect": "glitch-effect",
+  "round-corners": "round-corners",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "image-to-hd",
@@ -384,6 +394,11 @@ const RU_TOOL_SLUGS: Record<string, string> = {
   "gif-merger": "gif-merger",
   "add-text-to-gif": "add-text-to-gif",
   "typing-text-gif": "typing-text-gif",
+  "invert-image": "invert-image",
+  "pixelate-image": "pixelate-image",
+  "image-brightness": "image-brightness",
+  "glitch-effect": "glitch-effect",
+  "round-corners": "round-corners",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "image-to-hd",
@@ -528,6 +543,11 @@ const ID_TOOL_SLUGS: Record<string, string> = {
   "gif-merger": "gabung-gif",
   "add-text-to-gif": "tambah-teks-ke-gif",
   "typing-text-gif": "gif-teks-mengetik",
+  "invert-image": "invert-warna-foto",
+  "pixelate-image": "pixelate-foto",
+  "image-brightness": "atur-kecerahan-foto",
+  "glitch-effect": "efek-glitch-foto",
+  "round-corners": "sudut-melengkung-foto",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "jadikan-foto-hd",

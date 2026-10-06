@@ -63,6 +63,7 @@ export const ruCommon: Record<string, string> = {
   "Passport & ID Photos": "Фото на документы",
   "Print & Social Sizes": "Размеры для печати и соцсетей",
   "GIF Tools": "Инструменты для GIF",
+  "Filters & Effects": "Фильтры и эффекты",
   "Browse all tools": "Все инструменты",
   "Browse tools": "Смотреть инструменты",
   "All tools": "Все инструменты",

@@ -52,6 +52,7 @@ export const idCommon: Record<string, string> = {
   "Passport & ID Photos": "Pas Foto & Foto Dokumen",
   "Print & Social Sizes": "Ukuran Cetak & Media Sosial",
   "GIF Tools": "Alat GIF",
+  "Filters & Effects": "Filter & Efek",
   "Browse all tools": "Lihat semua alat",
   "Browse tools": "Lihat alat",
   "All tools": "Semua alat",

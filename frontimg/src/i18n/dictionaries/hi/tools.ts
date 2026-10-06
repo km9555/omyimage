@@ -394,6 +394,26 @@ export const hiTools: Record<string, LocalizedTool> = {
     name: "टाइपिंग टेक्स्ट GIF",
     shortDescription: "ऐसी GIF बनाएँ जिसमें टेक्स्ट अक्षर-दर-अक्षर टाइप होता दिखे।",
   },
+  "invert-image": {
+    name: "इमेज के रंग उलटें",
+    shortDescription: "फोटो के रंग उलटें — नेगेटिव या स्मार्ट इनवर्ट।",
+  },
+  "pixelate-image": {
+    name: "इमेज पिक्सलेट करें",
+    shortDescription: "फोटो को पिक्सल के ब्लॉक में बदलें।",
+  },
+  "image-brightness": {
+    name: "ब्राइटनेस और कंट्रास्ट",
+    shortDescription: "फोटो को हल्का या गहरा करें और कंट्रास्ट व रंग बदलें।",
+  },
+  "glitch-effect": {
+    name: "ग्लिच इफ़ेक्ट",
+    shortDescription: "फोटो को टूटी स्क्रीन जैसा ग्लिच लुक दें।",
+  },
+  "round-corners": {
+    name: "राउंड कॉर्नर",
+    shortDescription: "इमेज के कोने गोल करें, ट्रांसपेरेंट किनारों के साथ।",
+  },
 
   // ── वैरिएंट: HD, मिरर, बैकग्राउंड (expansion.md) ──
   "image-to-hd": {

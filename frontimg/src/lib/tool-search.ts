@@ -143,6 +143,21 @@ export const TOOL_ALIASES: Record<string, string[]> = {
     "black and white", "greyscale", "bw image", "monochrome", "desaturate",
     "remove color", "make image black and white", "gray photo",
   ],
+  "invert-image": [
+    "invert colors", "negative image", "photo negative", "invert picture", "color inverter",
+  ],
+  "pixelate-image": [
+    "pixelate photo", "pixel art", "pixelated effect", "mosaic image", "8 bit photo",
+  ],
+  "image-brightness": [
+    "brighten photo", "contrast", "saturation", "darken image", "photo brightness",
+  ],
+  "glitch-effect": [
+    "glitch photo", "rgb split", "vhs effect", "glitch art", "distortion effect",
+  ],
+  "round-corners": [
+    "rounded corners", "round image corners", "rounded png", "corner radius", "rounded rectangle image",
+  ],
   "blur-image": [
     "blur photo", "soften image", "gaussian blur", "make image blurry",
     "blur whole image", "background blur",

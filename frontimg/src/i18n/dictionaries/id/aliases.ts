@@ -257,6 +257,21 @@ export const idAliases: Record<string, string[]> = {
   "typing-text-gif": [
     "animasi mengetik", "efek mesin ketik", "typing text gif", "teks berjalan",
   ],
+  "invert-image": [
+    "negatif foto", "membalik warna", "invert gambar",
+  ],
+  "pixelate-image": [
+    "efek pixel", "pixelate gambar", "sensor pixel",
+  ],
+  "image-brightness": [
+    "mencerahkan foto", "kontras foto", "saturasi",
+  ],
+  "glitch-effect": [
+    "efek glitch", "glitch foto", "efek rusak",
+  ],
+  "round-corners": [
+    "sudut bulat", "rounded corner", "melengkungkan sudut foto",
+  ],
 
   // Varian — HD, mirror, background
   "image-to-hd": [

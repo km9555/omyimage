@@ -395,6 +395,26 @@ export const ruTools: Record<string, LocalizedTool> = {
     name: "GIF с печатающимся текстом",
     shortDescription: "Гифка, в которой текст печатается буква за буквой.",
   },
+  "invert-image": {
+    name: "Инвертировать цвета",
+    shortDescription: "Инвертируйте цвета фото — негатив или умная инверсия.",
+  },
+  "pixelate-image": {
+    name: "Пикселизация фото",
+    shortDescription: "Превратите фото в крупные пиксели.",
+  },
+  "image-brightness": {
+    name: "Яркость и контраст",
+    shortDescription: "Сделайте фото светлее или темнее, настройте контраст и цвет.",
+  },
+  "glitch-effect": {
+    name: "Глитч-эффект",
+    shortDescription: "Добавьте фото эффект сломанного экрана.",
+  },
+  "round-corners": {
+    name: "Скруглить углы",
+    shortDescription: "Скруглите углы изображения с прозрачными краями.",
+  },
 
   // ── Варианты: HD, отражение, фон (expansion.md) ──
   "image-to-hd": {

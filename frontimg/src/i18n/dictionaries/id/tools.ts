@@ -397,6 +397,26 @@ export const idTools: Record<string, LocalizedTool> = {
     name: "GIF Teks Mengetik",
     shortDescription: "Buat GIF berisi teks yang mengetik sendiri, huruf demi huruf.",
   },
+  "invert-image": {
+    name: "Invert Warna Foto",
+    shortDescription: "Balik warna foto — negatif atau invert pintar.",
+  },
+  "pixelate-image": {
+    name: "Pixelate Foto",
+    shortDescription: "Ubah foto jadi blok-blok piksel.",
+  },
+  "image-brightness": {
+    name: "Kecerahan & Kontras",
+    shortDescription: "Cerahkan, gelapkan, dan atur kontras serta warna foto.",
+  },
+  "glitch-effect": {
+    name: "Efek Glitch",
+    shortDescription: "Beri foto tampilan layar rusak yang glitch.",
+  },
+  "round-corners": {
+    name: "Sudut Melengkung",
+    shortDescription: "Buat sudut gambar melengkung dengan tepi transparan.",
+  },
 
   // ── Varian: HD, mirror, background (expansion.md) ──
   "image-to-hd": {

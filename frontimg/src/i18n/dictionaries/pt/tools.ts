@@ -395,6 +395,26 @@ export const ptTools: Record<string, LocalizedTool> = {
     name: "GIF de texto digitando",
     shortDescription: "Crie um GIF de texto se digitando sozinho, letra por letra.",
   },
+  "invert-image": {
+    name: "Inverter cores da imagem",
+    shortDescription: "Inverta as cores de fotos — negativo ou inversão inteligente.",
+  },
+  "pixelate-image": {
+    name: "Pixelar imagem",
+    shortDescription: "Transforme fotos em blocos de pixels.",
+  },
+  "image-brightness": {
+    name: "Brilho e contraste",
+    shortDescription: "Clareie, escureça e ajuste contraste e cor de fotos.",
+  },
+  "glitch-effect": {
+    name: "Efeito glitch",
+    shortDescription: "Dê às fotos um visual de tela com defeito.",
+  },
+  "round-corners": {
+    name: "Arredondar cantos",
+    shortDescription: "Deixe os cantos das imagens arredondados, com bordas transparentes.",
+  },
 
   // ── Variantes: melhorar, espelhar, fundo (expansion.md) ──
   "image-to-hd": {

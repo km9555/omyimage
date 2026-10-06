@@ -15,7 +15,7 @@
  * Colours are the registry's own category hues (see CATEGORY_COLORS in
  * tools.ts) so a section header never disagrees with the tool icons under it.
  */
-import { GIF_SUITE, TOOLS_BY_ID, type Tool } from "@/lib/tools";
+import { EFFECTS_SUITE, GIF_SUITE, TOOLS_BY_ID, type Tool } from "@/lib/tools";
 import type { Locale } from "@/i18n/config";
 import { toolShippedIn } from "@/i18n/status";
 
@@ -69,10 +69,16 @@ export const NAV_SECTIONS: NavSection[] = [
       "watermark-image",
       "add-border",
       "circle-crop",
-      "blur-image",
-      "grayscale-image",
+      "round-corners",
       "merge-images",
     ],
+  },
+  {
+    id: "effects",
+    label: "Filters & Effects",
+    icon: "auto_fix_high",
+    color: "#7A6FB0",
+    ids: EFFECTS_SUITE,
   },
   {
     id: "create",
@@ -166,14 +172,14 @@ export const NAV_SECTIONS_BY_ID: Record<string, NavSection> = Object.fromEntries
 /**
  * Column layout for the 4-column desktop mega-menu, by section id.
  * Balanced by row count (section headings included), not section count,
- * keeping the three Convert sections together: 19–23 tool rows per column.
+ * keeping the three Convert sections together: 21–23 tool rows per column.
  * The variant rows leave the menu in the Phase 8 cleanup (expansion.md),
  * which rebalances this again.
  */
 export const NAV_COLUMNS: string[][] = [
-  ["optimize", "compress-size", "photo-id", "privacy"],
-  ["edit", "social-sizes", "ai"],
-  ["gif", "create"],
+  ["optimize", "compress-size", "photo-id", "social-sizes"],
+  ["edit", "effects", "ai", "create"],
+  ["gif", "privacy"],
   ["convert-format", "convert-other", "convert-camera"],
 ];
 

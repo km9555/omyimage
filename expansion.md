@@ -167,6 +167,12 @@ split-image (US 14.8K, IN 12.1K, BR 9.9K, RU 5.4K) · instagram-grid-maker
 (US 12.1K) · image-overlay (US 4.4K ×2) · glitch-effect (US 6.6K) ·
 round-corners (IN 1.9K, US 1.3K) · image-brightness (IN 1.3K, US 1.6K contrast).
 
+- **6A (done 2026-10-06, all locales):** invert-image, pixelate-image,
+  image-brightness, glitch-effect, round-corners — one shared `FxTool`.
+  New "Filters & Effects" menu section (`EFFECTS_SUITE`).
+- **6B (next):** split-image, instagram-grid-maker (split variant, not in the
+  menu), image-overlay.
+
 ### Phase 7 — in-browser inpainting (onnxruntime-web + MI-GAN)
 
 remove-watermark (IN 368K `watermark remover` KD 49; US 135K; BR 74K KD 5;
@@ -567,6 +573,46 @@ blur-screenshot (90–140/mo), exif-editor (≤ 390, KD 68), svg-to-gif, blur-gi
     column.
   - **Snapshot diff vs 5C: 55 pages**, all expected (ring neighbours of the
     two inserted tools; 94 → 96 tools). verify:build: 511 URLs.
+- **2026-10-06 — Batch 6A: invert-image, pixelate-image, image-brightness,
+  glitch-effect, round-corners — 25 pages.**
+  - **`lib/image/fx.ts`:** `renderFx(canvas, src, W, H, mode, settings, k,
+    bg)` draws one mode; `k` scales pixel settings so the ~1000 px preview
+    matches the full-size output.
+    - **invert:** negative (255 − v) or smart (v + 255 − max − min, which
+      flips lightness and keeps hue).
+    - **pixelate:** shrink to one pixel per block, then scale up with
+      smoothing off.
+    - **adjust:** brightness/contrast LUT, then saturation around luma.
+    - **glitch:** strip slices from a seeded mulberry32, so preview and
+      download match until Shuffle; R/B split at 2.5 % of the width × strength;
+      optional scan lines.
+    - **corners:** clip to a rounded path with a per-corner radius as a share
+      of the shorter side.
+  - **`FxTool({ mode })`** (in `app/invert-image/`): batch FileTray, live
+    preview of the first image, "Hold to see the original", BackgroundPicker
+    for JPG. Corners default to PNG with a transparent background; other
+    modes keep the original format. The other four pages reuse
+    invert-image's `ui` in every locale.
+  - **"Pixelate image" is its own key.** The common "Pixelate" is a noun in
+    ru/id («Пикселизация», «Piksel») and read wrongly on the action button.
+  - **Nav:** `EFFECTS_SUITE` = brightness, grayscale, invert, blur, pixelate,
+    glitch; it is both the new "Filters & Effects" menu section and the
+    related-tools ring (`SUITES = [GIF_SUITE, EFFECTS_SUITE]`). round-corners
+    sits in Edit. Columns: `[optimize, compress-size, photo-id,
+    social-sizes]`, `[edit, effects, ai, create]`, `[gif, privacy]`,
+    `[convert-format, convert-other, convert-camera]`.
+  - **Measured (exact pixel checks in the browser):**
+    - Negative red (200,30,30) → (55,225,225); smart → (225,55,55).
+    - Brightness +50 → +64. Contrast +50 doubles the distance from 128.
+      Saturation −100 → luma.
+    - 20 px pixelate → runs of exactly 20.
+    - Corners: transparent in PNG, only the ticked corners change, white
+      fill in JPG with the note shown.
+    - Glitch: colour-split fringes at the predicted values; slices identical
+      between runs, and Shuffle changes them.
+  - **Snapshot diff vs the html-to-image fix: 25 pages**, all expected —
+    blur-image and grayscale-image moved onto the effects ring, and home,
+    pricing and contact went from 96 to 101 tools. verify:build: 536 URLs.
 - **Deploys need the user's go-ahead.** 2A, 3A, 4A and the visibility fix
   went live on 2026-10-04 (merge 505e680 into `main`, then `npm run
   indexnow`). Later batches are committed on `feat/tool-expansion` and

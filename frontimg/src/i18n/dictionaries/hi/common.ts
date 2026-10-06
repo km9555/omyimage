@@ -51,6 +51,7 @@ export const hiCommon: Record<string, string> = {
   "Passport & ID Photos": "पासपोर्ट और ID फोटो",
   "Print & Social Sizes": "प्रिंट और सोशल मीडिया साइज़",
   "GIF Tools": "GIF टूल",
+  "Filters & Effects": "फ़िल्टर और इफ़ेक्ट",
   "Browse all tools": "सभी टूल देखें",
   "Browse tools": "टूल देखें",
   "All tools": "सभी टूल",
