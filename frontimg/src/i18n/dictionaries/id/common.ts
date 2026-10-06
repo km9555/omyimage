@@ -363,6 +363,7 @@ export const idCommon: Record<string, string> = {
   "This SVG could not be drawn. It may use features browsers do not render as an image.": "SVG ini tidak bisa digambar. Mungkin ada fitur yang tidak ditampilkan browser sebagai gambar.",
   "Your browser blocks exporting this SVG because it contains embedded HTML.": "Browser Anda memblokir ekspor SVG ini karena berisi HTML tertanam.",
   "This file is not a valid WebP image.": "File ini bukan gambar WebP yang valid.",
+  "This file is not a valid GIF.": "File ini bukan GIF yang valid.",
   "This WebP frame has no image data.": "Frame WebP ini tidak berisi data gambar.",
   "Your browser can't create MP4 video. Try Chrome, Edge or Safari.": "Browser Anda tidak bisa membuat video MP4. Coba Chrome, Edge, atau Safari.",
   "Upload an image.": "Unggah gambar.",

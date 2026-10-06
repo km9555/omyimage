@@ -61,6 +61,14 @@ export interface GifEncodeOptions {
    * makes video GIFs large.
    */
   fuzz?: number;
+  /**
+   * Keep the animation's own colours when it has few enough of them for one
+   * palette, instead of re-quantising. Quantising to 5-6-5 bits shifts every
+   * colour slightly, which is invisible once but adds up when a GIF is edited
+   * (cropped, rotated, reversed…) and saved again. Falls back to quantising
+   * as soon as the frames turn out to have too many colours.
+   */
+  exact?: boolean;
   onProgress?: (done: number, total: number) => void;
 }
 
@@ -92,13 +100,25 @@ const yieldToUi = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
  * Collect a strided sample of pixels spanning every frame, so the shared
  * palette represents the whole animation rather than whichever frame happens
  * to be first.
+ *
+ * With `exactLimit` > 0 the same pass also lists every distinct colour (as
+ * 0xRRGGBB), giving up once there are more than `exactLimit`. With `alpha`,
+ * pixels under half opacity are transparent and are not colours.
  */
-async function sampleAllFrames(src: GifSource, pxPerFrame: number): Promise<Uint8ClampedArray> {
+async function sampleAllFrames(
+  src: GifSource,
+  pxPerFrame: number,
+  exactLimit = 0,
+  alpha = false,
+): Promise<{ sample: Uint8ClampedArray; exact: number[] | null }> {
   const perFrame = Math.max(1, Math.floor(SAMPLE_BUDGET / Math.max(1, src.count)));
   const step = Math.max(1, Math.floor(pxPerFrame / perFrame));
   const take = Math.ceil(pxPerFrame / step);
   const out = new Uint8ClampedArray(take * src.count * 4);
   let w = 0;
+  // One bit per 24-bit colour: 2 MB, and no hashing in the hot loop.
+  let seen = exactLimit > 0 ? new Uint32Array(1 << 19) : null;
+  const colours: number[] = [];
 
   for (let i = 0; i < src.count; i++) {
     const data = await src.pixels(i);
@@ -109,8 +129,46 @@ async function sampleAllFrames(src: GifSource, pxPerFrame: number): Promise<Uint
       out[w++] = data[s + 2];
       out[w++] = data[s + 3];
     }
+    if (seen) {
+      let last = -1;
+      for (let s = 0; s < data.length; s += 4) {
+        if (alpha && data[s + 3] < 128) continue;
+        const c = (data[s] << 16) | (data[s + 1] << 8) | data[s + 2];
+        if (c === last) continue;
+        last = c;
+        const bit = 1 << (c & 31);
+        if (seen[c >>> 5] & bit) continue;
+        seen[c >>> 5] |= bit;
+        colours.push(c);
+        if (colours.length > exactLimit) { seen = null; break; }
+      }
+    }
   }
-  return w === out.length ? out : out.subarray(0, w);
+  return { sample: w === out.length ? out : out.subarray(0, w), exact: seen ? colours : null };
+}
+
+const rgbOf = (c: number) => [(c >> 16) & 255, (c >> 8) & 255, c & 255];
+
+/**
+ * Palette indices for an exact palette. Each pixel's colour is looked up
+ * directly — gifenc's applyPalette works on 5-6-5 keys, under which two
+ * nearby exact colours would land on the same entry.
+ */
+function exactIndexer(colours: number[], transparentIndex: number) {
+  const map = new Map<number, number>();
+  colours.forEach((c, i) => map.set(c, i));
+  return (data: Uint8ClampedArray): Uint8Array => {
+    const out = new Uint8Array(data.length >> 2);
+    let last = -1;
+    let lastIndex = 0;
+    for (let p = 0, s = 0; s < data.length; p++, s += 4) {
+      if (transparentIndex >= 0 && data[s + 3] < 128) { out[p] = transparentIndex; continue; }
+      const c = (data[s] << 16) | (data[s + 1] << 8) | data[s + 2];
+      if (c !== last) { last = c; lastIndex = map.get(c) ?? 0; }
+      out[p] = lastIndex;
+    }
+    return out;
+  };
 }
 
 export async function encodeGif(src: GifSource, opts: GifEncodeOptions): Promise<Uint8Array> {
@@ -130,19 +188,32 @@ export async function encodeGif(src: GifSource, opts: GifEncodeOptions): Promise
   // rgba4444 keeps an alpha channel through quantization; oneBitAlpha snaps it
   // to fully on/off, which is all GIF can represent.
   const format = wantAlpha ? "rgba4444" : "rgb565";
-  const sample = await sampleAllFrames(src, pxPerFrame);
-  const palette = quantize(sample, colors, { format, oneBitAlpha: wantAlpha });
+  const { sample, exact } = await sampleAllFrames(src, pxPerFrame, opts.exact ? colors - (wantAlpha ? 1 : 0) : 0, wantAlpha);
 
-  // Transparency only works if quantize actually kept a zero-alpha entry; if
-  // the frames turned out fully opaque it will not have, and asking gifenc to
-  // treat index 0 as transparent would punch a hole in a real colour.
-  const transparentIndex = wantAlpha ? palette.findIndex((c) => (c[3] ?? 255) === 0) : -1;
+  let palette: number[][];
+  let transparentIndex: number;
+  let toIndex: (data: Uint8ClampedArray) => Uint8Array;
+  if (exact) {
+    // The transparent slot goes last, and GIF needs at least two entries.
+    palette = exact.map(rgbOf);
+    transparentIndex = wantAlpha ? palette.length : -1;
+    if (wantAlpha) palette.push([0, 0, 0]);
+    while (palette.length < 2) palette.push([0, 0, 0]);
+    toIndex = exactIndexer(exact, transparentIndex);
+  } else {
+    palette = quantize(sample, colors, { format, oneBitAlpha: wantAlpha });
+    // Transparency only works if quantize actually kept a zero-alpha entry; if
+    // the frames turned out fully opaque it will not have, and asking gifenc to
+    // treat index 0 as transparent would punch a hole in a real colour.
+    transparentIndex = wantAlpha ? palette.findIndex((c) => (c[3] ?? 255) === 0) : -1;
+    toIndex = (data) => applyPalette(data, palette, format);
+  }
   const useAlpha = wantAlpha && transparentIndex >= 0;
 
   const gif = GIFEncoder();
   for (let i = 0; i < src.count; i++) {
     const data = await src.pixels(i);
-    const index = applyPalette(data, palette, format);
+    const index = toIndex(data);
     gif.writeFrame(index, width, height, {
       // Only the first frame carries the palette; the rest inherit it as the
       // global colour table. That is the whole point — a local table per frame
@@ -177,9 +248,10 @@ async function encodeOptimized(
   const { width, height } = opts;
   const px = width * height;
   const format = "rgb565";
-  const sample = await sampleAllFrames(src, px);
   // One slot fewer than asked for: the extra entry is the "unchanged" marker.
-  const real = lib.quantize(sample, Math.max(2, colors - 1), { format });
+  const { sample, exact } = await sampleAllFrames(src, px, opts.exact ? colors - 1 : 0);
+  const real = exact ? exact.map(rgbOf) : lib.quantize(sample, Math.max(2, colors - 1), { format });
+  const toIndex = exact ? exactIndexer(exact, -1) : (data: Uint8ClampedArray) => lib.applyPalette(data, real, format);
   const T = real.length;
   const palette = [...real, [0, 0, 0]];
 
@@ -202,7 +274,7 @@ async function encodeOptimized(
   const gif = lib.GIFEncoder();
   const shown = new Uint8Array(px);
   for (let i = 0; i < src.count; i++) {
-    const index = lib.applyPalette(await src.pixels(i), real, format);
+    const index = toIndex(await src.pixels(i));
     if (i === 0) {
       shown.set(index);
       gif.writeFrame(index, width, height, { palette, repeat, delay: src.delay(i) });

@@ -4,9 +4,11 @@
  * `decodeGifFrames` (lib/image/gif-decode.ts) keeps a canvas per frame, which
  * is right for the GIF Maker's editable timeline but costs width × height × 4
  * bytes per frame — a 300-frame 480 × 270 GIF is 155 MB before anything
- * happens. The GIF tools only ever walk frames in order (sample pass, then
- * encode pass), so this reader keeps ONE canvas and composites forward;
- * asking for an earlier frame restarts from the first.
+ * happens. The GIF tools mostly walk frames in order (sample pass, then
+ * encode pass), so this reader keeps ONE canvas and composites forward.
+ * Reverse playback and the cutter's previews read backwards, so a snapshot
+ * of the composite is kept every few frames and a backwards read restarts
+ * from the nearest one instead of from frame 0.
  */
 
 export interface FrameSource {
@@ -19,6 +21,11 @@ export interface FrameSource {
    * frame: read or draw it before asking for the next one.
    */
   frame(i: number): Promise<HTMLCanvasElement>;
+  /**
+   * How the source loops, in gifenc's terms: 0 = forever, -1 = plays once,
+   * N = the stored loop count. Absent means forever.
+   */
+  repeat?: number;
 }
 
 /**
@@ -31,6 +38,62 @@ export const playDelay = (ms: number | undefined) => (!ms || ms <= 10 ? 100 : ms
 
 /** Total running time in milliseconds. */
 export const totalDuration = (src: FrameSource) => src.delays.reduce((a, b) => a + b, 0);
+
+/** Memory allowed for snapshots, and again for frames kept after a backwards read. */
+const SNAPSHOT_BUDGET = 64 * 1024 * 1024;
+
+/**
+ * Random access for a forward-only compositor.
+ *
+ * - Snapshots of the canvas plus whatever decoder state the next frame
+ *   depends on (`S`), every `every` frames — about √n of them — so a
+ *   backwards read restarts from the nearest one instead of from frame 0.
+ * - Catching up from that snapshot composites the frames in between anyway,
+ *   so they are kept: reading backwards one frame at a time, as reverse
+ *   playback does, then costs about one composite per frame, like playing
+ *   forwards.
+ */
+export function snapshotStore<S>(count: number, width: number, height: number) {
+  const bytes = width * height * 4;
+  const every = Math.max(8, Math.ceil(Math.sqrt(count)), Math.ceil((count * bytes) / SNAPSHOT_BUDGET));
+  const keepMax = Math.max(1, Math.min(every, Math.floor(SNAPSHOT_BUDGET / bytes)));
+  type Snap = { image: ImageData; state: S };
+  const snaps = new Map<number, Snap>();
+  let kept = new Map<number, Snap>();
+  let keeping = false;
+  return {
+    /** Call after frame `cursor` is drawn. */
+    save(ctx: CanvasRenderingContext2D, cursor: number, state: S) {
+      const snap = cursor % every === 0 && !snaps.has(cursor);
+      if (!snap && !keeping) return;
+      const s = { image: ctx.getImageData(0, 0, width, height), state };
+      if (snap) snaps.set(cursor, s);
+      if (keeping) {
+        kept.set(cursor, s);
+        // Keep the frames nearest the one asked for: they are read next.
+        if (kept.size > keepMax) kept.delete(kept.keys().next().value as number);
+      }
+    },
+    /**
+     * Where to resume for a backwards read of frame `i`: the frame itself if
+     * it was kept, else the latest snapshot before it (keeping the frames
+     * composited from there), else null — restart from frame 0.
+     */
+    rewind(i: number): { cursor: number; image: ImageData; state: S } | null {
+      const hit = kept.get(i);
+      if (hit) return { cursor: i, ...hit };
+      kept = new Map();
+      keeping = true;
+      for (let k = Math.floor(i / every) * every; k >= 0; k -= every) {
+        const s = snaps.get(k);
+        if (s) return { cursor: k, ...s };
+      }
+      return null;
+    },
+    /** Call once the frame asked for is drawn. */
+    settle() { keeping = false; },
+  };
+}
 
 /** Whether any frame has transparent or semi-transparent pixels. One full pass. */
 export async function hasTransparency(src: FrameSource): Promise<boolean> {
@@ -45,6 +108,7 @@ export async function hasTransparency(src: FrameSource): Promise<boolean> {
 type GifuctFrame = {
   image?: unknown;
   gce?: { delay?: number };
+  application?: { id?: string; blocks?: ArrayLike<number> };
 };
 
 /**
@@ -82,15 +146,24 @@ export async function openGif(blob: Blob): Promise<FrameSource> {
   // without decompressing anything.
   const delays = raw.map((f) => playDelay(f.gce ? (f.gce.delay ?? 0) * 10 : 0));
 
+  type Pending = { type: number; x: number; y: number; w: number; h: number; saved?: ImageData } | null;
   let cursor = -1;
-  let pending: { type: number; x: number; y: number; w: number; h: number; saved?: ImageData } | null = null;
+  let pending: Pending = null;
+  const store = snapshotStore<Pending>(raw.length, width, height);
 
   async function frame(i: number): Promise<HTMLCanvasElement> {
     if (i < 0 || i >= raw.length) throw new Error("Frame out of range.");
-    if (i <= cursor) {
-      ctx!.clearRect(0, 0, width, height);
-      cursor = -1;
-      pending = null;
+    if (i < cursor) {
+      const at = store.rewind(i);
+      if (at) {
+        ctx!.putImageData(at.image, 0, 0);
+        cursor = at.cursor;
+        pending = at.state;
+      } else {
+        ctx!.clearRect(0, 0, width, height);
+        cursor = -1;
+        pending = null;
+      }
     }
     while (cursor < i) {
       cursor++;
@@ -112,9 +185,15 @@ export async function openGif(blob: Blob): Promise<FrameSource> {
         ctx!.drawImage(patch, left, top);
       }
       pending = { type: disposal, x: left, y: top, w, h, saved };
+      store.save(ctx!, cursor, pending);
     }
+    store.settle();
     return canvas;
   }
 
-  return { width, height, delays, frame };
+  // The NETSCAPE2.0 block holds the loop count; a GIF without one plays once.
+  const loop = gif.frames.find((f) => f.application?.id === "NETSCAPE2.0")?.application?.blocks;
+  const repeat = loop && loop.length >= 3 ? loop[1] | (loop[2] << 8) : -1;
+
+  return { width, height, delays, frame, repeat };
 }

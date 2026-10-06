@@ -15,7 +15,7 @@
  * Colours are the registry's own category hues (see CATEGORY_COLORS in
  * tools.ts) so a section header never disagrees with the tool icons under it.
  */
-import { TOOLS_BY_ID, type Tool } from "@/lib/tools";
+import { GIF_SUITE, TOOLS_BY_ID, type Tool } from "@/lib/tools";
 import type { Locale } from "@/i18n/config";
 import { toolShippedIn } from "@/i18n/status";
 
@@ -115,7 +115,7 @@ export const NAV_SECTIONS: NavSection[] = [
     label: "GIF Tools",
     icon: "gif_box",
     color: "#C56A9A",
-    ids: ["gif-maker", "video-to-gif", "gif-compressor", "gif-resizer", "gif-to-mp4", "webp-to-gif", "gif-to-images"],
+    ids: GIF_SUITE,
   },
   {
     id: "convert-format",
@@ -165,14 +165,16 @@ export const NAV_SECTIONS_BY_ID: Record<string, NavSection> = Object.fromEntries
 
 /**
  * Column layout for the 4-column desktop mega-menu, by section id.
- * Balanced by row count, not section count: every column lands on 12–14
- * tool rows.
+ * Balanced by row count (section headings included), not section count,
+ * keeping the three Convert sections together: 16–23 tool rows per column.
+ * The variant rows leave the menu in the Phase 8 cleanup (expansion.md),
+ * which rebalances this again.
  */
 export const NAV_COLUMNS: string[][] = [
   ["optimize", "compress-size", "photo-id"],
-  ["edit", "create", "social-sizes", "privacy"],
-  ["ai", "gif", "convert-other"],
-  ["convert-format", "convert-camera"],
+  ["edit", "social-sizes", "ai"],
+  ["gif", "create", "privacy"],
+  ["convert-format", "convert-other", "convert-camera"],
 ];
 
 /**

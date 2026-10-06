@@ -351,6 +351,26 @@ export const ruTools: Record<string, LocalizedTool> = {
     name: "WEBP в GIF",
     shortDescription: "Анимированный WEBP в GIF.",
   },
+  "gif-cropper": {
+    name: "Обрезать GIF",
+    shortDescription: "Обрежьте анимированный GIF, сохранив все кадры.",
+  },
+  "rotate-gif": {
+    name: "Повернуть GIF",
+    shortDescription: "Поверните или отразите GIF на 90° или 180°.",
+  },
+  "reverse-gif": {
+    name: "Реверс GIF",
+    shortDescription: "Проиграйте GIF задом наперёд или бумерангом.",
+  },
+  "gif-speed-changer": {
+    name: "Изменить скорость GIF",
+    shortDescription: "Ускорьте или замедлите анимированный GIF.",
+  },
+  "gif-cutter": {
+    name: "Укоротить GIF",
+    shortDescription: "Оставьте в GIF только нужные кадры.",
+  },
 
   // ── Варианты: HD, отражение, фон (expansion.md) ──
   "image-to-hd": {

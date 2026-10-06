@@ -230,6 +230,21 @@ export const ptAliases: Record<string, string[]> = {
   "webp-to-gif": [
     "webp animado para gif", "converter webp em gif",
   ],
+  "gif-cropper": [
+    "cortar bordas do gif", "recortar gif animado", "crop gif",
+  ],
+  "rotate-gif": [
+    "rotacionar gif", "espelhar gif", "virar gif",
+  ],
+  "reverse-gif": [
+    "gif ao contrário", "gif de trás para frente", "gif bumerangue", "reverter gif",
+  ],
+  "gif-speed-changer": [
+    "mudar velocidade do gif", "acelerar gif", "deixar gif mais lento", "velocidade do gif",
+  ],
+  "gif-cutter": [
+    "aparar gif", "encurtar gif", "remover quadros do gif", "cortar parte do gif",
+  ],
 
   // Variantes — HD, espelhar, fundo
   "image-to-hd": [

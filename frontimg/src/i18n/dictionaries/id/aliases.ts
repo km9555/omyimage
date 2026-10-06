@@ -224,6 +224,21 @@ export const idAliases: Record<string, string[]> = {
   "webp-to-gif": [
     "webp animasi ke gif", "ubah webp jadi gif",
   ],
+  "gif-cropper": [
+    "potong tepi gif", "crop gif online", "memotong gambar gif",
+  ],
+  "rotate-gif": [
+    "rotate gif", "memutar gif", "mirror gif", "balik gif",
+  ],
+  "reverse-gif": [
+    "gif terbalik", "gif mundur", "boomerang gif", "membalik gif",
+  ],
+  "gif-speed-changer": [
+    "mempercepat gif", "memperlambat gif", "speed gif", "kecepatan gif",
+  ],
+  "gif-cutter": [
+    "trim gif", "memotong durasi gif", "hapus frame gif", "cut gif",
+  ],
 
   // Varian — HD, mirror, background
   "image-to-hd": [

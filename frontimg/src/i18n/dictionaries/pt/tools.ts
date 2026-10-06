@@ -351,6 +351,26 @@ export const ptTools: Record<string, LocalizedTool> = {
     name: "WEBP para GIF",
     shortDescription: "Converta WEBP animado em GIF.",
   },
+  "gif-cropper": {
+    name: "Recortar GIF",
+    shortDescription: "Recorte GIFs animados mantendo todos os quadros.",
+  },
+  "rotate-gif": {
+    name: "Girar GIF",
+    shortDescription: "Gire ou espelhe GIFs animados em 90° ou 180°.",
+  },
+  "reverse-gif": {
+    name: "Inverter GIF",
+    shortDescription: "Faça um GIF tocar de trás para frente ou em bumerangue.",
+  },
+  "gif-speed-changer": {
+    name: "Alterar velocidade do GIF",
+    shortDescription: "Acelere ou desacelere GIFs animados.",
+  },
+  "gif-cutter": {
+    name: "Cortar GIF",
+    shortDescription: "Corte GIFs e fique só com os quadros que quiser.",
+  },
 
   // ── Variantes: melhorar, espelhar, fundo (expansion.md) ──
   "image-to-hd": {

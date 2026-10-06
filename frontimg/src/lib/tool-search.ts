@@ -313,6 +313,21 @@ export const TOOL_ALIASES: Record<string, string[]> = {
   "webp-to-gif": [
     "animated webp to gif", "convert webp to gif", "webp2gif", "webp animation to gif",
   ],
+  "gif-cropper": [
+    "crop gif", "gif crop", "crop animated gif", "trim gif edges", "gif crop tool",
+  ],
+  "rotate-gif": [
+    "gif rotate", "rotate animated gif", "flip gif", "mirror gif", "turn gif sideways",
+  ],
+  "reverse-gif": [
+    "gif reverse", "play gif backwards", "rewind gif", "boomerang gif", "gif reverser",
+  ],
+  "gif-speed-changer": [
+    "change gif speed", "speed up gif", "slow down gif", "gif speed", "gif frame delay", "gif fps",
+  ],
+  "gif-cutter": [
+    "cut gif", "trim gif", "gif trimmer", "shorten gif", "remove frames from gif",
+  ],
 
   // Variants — upscale, rotate, remove-background
   "image-to-hd": [

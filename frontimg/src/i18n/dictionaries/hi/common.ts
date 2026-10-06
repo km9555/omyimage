@@ -374,6 +374,7 @@ export const hiCommon: Record<string, string> = {
   "This SVG could not be drawn. It may use features browsers do not render as an image.": "यह SVG बनाया नहीं जा सका। इसमें ऐसी चीज़ें हो सकती हैं जिन्हें ब्राउज़र इमेज के रूप में नहीं दिखाते।",
   "Your browser blocks exporting this SVG because it contains embedded HTML.": "इस SVG में एम्बेड किया हुआ HTML है, इसलिए आपका ब्राउज़र इसे एक्सपोर्ट नहीं करने देता।",
   "This file is not a valid WebP image.": "यह फ़ाइल सही WebP इमेज नहीं है।",
+  "This file is not a valid GIF.": "यह फ़ाइल सही GIF नहीं है।",
   "This WebP frame has no image data.": "इस WebP फ़्रेम में इमेज डेटा नहीं है।",
   "Your browser can't create MP4 video. Try Chrome, Edge or Safari.": "आपका ब्राउज़र MP4 वीडियो नहीं बना सकता। Chrome, Edge या Safari आज़माएँ।",
   // …and the backend's own user-facing sentences (backend/src/routes/image).

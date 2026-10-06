@@ -239,6 +239,21 @@ export const hiAliases: Record<string, string[]> = {
   "webp-to-gif": [
     "webp to gif", "animated webp to gif",
   ],
+  "gif-cropper": [
+    "crop gif", "gif क्रॉप करें", "gif crop online",
+  ],
+  "rotate-gif": [
+    "rotate gif", "gif घुमाएँ", "flip gif",
+  ],
+  "reverse-gif": [
+    "reverse gif", "gif उल्टा चलाएँ", "boomerang gif",
+  ],
+  "gif-speed-changer": [
+    "gif speed changer", "gif तेज़ करें", "gif धीमा करें", "speed up gif",
+  ],
+  "gif-cutter": [
+    "cut gif", "trim gif", "gif काटें",
+  ],
 
   // वैरिएंट — HD, मिरर, बैकग्राउंड
   "image-to-hd": [

@@ -350,6 +350,26 @@ export const hiTools: Record<string, LocalizedTool> = {
     name: "WEBP से GIF",
     shortDescription: "एनिमेटेड WEBP को GIF में बदलें।",
   },
+  "gif-cropper": {
+    name: "GIF क्रॉपर",
+    shortDescription: "एनिमेटेड GIF को क्रॉप करें, हर फ़्रेम के साथ।",
+  },
+  "rotate-gif": {
+    name: "GIF घुमाएँ",
+    shortDescription: "एनिमेटेड GIF को 90° या 180° घुमाएँ या पलटें।",
+  },
+  "reverse-gif": {
+    name: "GIF उल्टा करें",
+    shortDescription: "GIF को उल्टा या बूमरैंग की तरह चलाएँ।",
+  },
+  "gif-speed-changer": {
+    name: "GIF स्पीड बदलें",
+    shortDescription: "एनिमेटेड GIF को तेज़ या धीमा करें।",
+  },
+  "gif-cutter": {
+    name: "GIF कटर",
+    shortDescription: "GIF को काटें और सिर्फ़ ज़रूरी फ़्रेम रखें।",
+  },
 
   // ── वैरिएंट: HD, मिरर, बैकग्राउंड (expansion.md) ──
   "image-to-hd": {

@@ -1132,6 +1132,91 @@ export const TOOLS: Tool[] = [
       "Convert animated WEBP to GIF online for free, keeping every frame and its timing. Still WEBP images work too. In your browser, no upload.",
     primaryKeyword: "webp to gif",
   },
+  {
+    id: "gif-cropper",
+    name: "GIF Cropper",
+    slug: "gif-cropper",
+    categoryId: "optimize",
+    shortDescription: "Crop animated GIFs and keep every frame.",
+    icon: "crop",
+    processing: "client",
+    library: "Canvas / gifenc",
+    status: "live",
+    isNew: true,
+    priority: 186,
+    seoTitle: "GIF Cropper — Crop Animated GIFs Online, Free | oMyImage",
+    seoDescription:
+      "Crop animated GIFs online for free: drag a box or type exact pixels, lock an aspect ratio, and every frame is cropped the same way. In your browser, no upload.",
+    primaryKeyword: "crop gif",
+  },
+  {
+    id: "rotate-gif",
+    name: "Rotate GIF",
+    slug: "rotate-gif",
+    categoryId: "optimize",
+    shortDescription: "Rotate or flip animated GIFs by 90° or 180°.",
+    icon: "rotate_90_degrees_cw",
+    processing: "client",
+    library: "Canvas / gifenc",
+    status: "live",
+    isNew: true,
+    priority: 187,
+    seoTitle: "Rotate GIF Online — Rotate or Flip Animated GIFs | oMyImage",
+    seoDescription:
+      "Rotate animated GIFs 90° left or right or 180°, or flip them, online for free. Every frame and its timing are kept. In your browser, no upload.",
+    primaryKeyword: "rotate gif",
+  },
+  {
+    id: "reverse-gif",
+    name: "Reverse GIF",
+    slug: "reverse-gif",
+    categoryId: "edit",
+    shortDescription: "Play a GIF backwards or as a boomerang loop.",
+    icon: "history",
+    processing: "client",
+    library: "Canvas / gifenc",
+    status: "live",
+    isNew: true,
+    priority: 188,
+    seoTitle: "Reverse GIF Online — Play GIFs Backwards, Free | oMyImage",
+    seoDescription:
+      "Reverse an animated GIF online for free, or make a boomerang that plays forwards and then backwards. Frame timing is kept. In your browser, no upload.",
+    primaryKeyword: "reverse gif",
+  },
+  {
+    id: "gif-speed-changer",
+    name: "GIF Speed Changer",
+    slug: "gif-speed-changer",
+    categoryId: "edit",
+    shortDescription: "Speed up or slow down animated GIFs.",
+    icon: "speed",
+    processing: "client",
+    library: "Canvas / gifenc",
+    status: "live",
+    isNew: true,
+    priority: 189,
+    seoTitle: "GIF Speed Changer — Speed Up or Slow Down GIFs | oMyImage",
+    seoDescription:
+      "Change GIF speed online for free: make an animated GIF faster or slower, or give every frame the same delay. Usually without touching a pixel. In your browser, no upload.",
+    primaryKeyword: "gif speed changer",
+  },
+  {
+    id: "gif-cutter",
+    name: "GIF Cutter",
+    slug: "gif-cutter",
+    categoryId: "edit",
+    shortDescription: "Trim GIFs to the frames you want.",
+    icon: "burst_mode",
+    processing: "client",
+    library: "Canvas / gifenc",
+    status: "live",
+    isNew: true,
+    priority: 190,
+    seoTitle: "GIF Cutter — Trim Animated GIFs Online, Free | oMyImage",
+    seoDescription:
+      "Cut animated GIFs online for free: pick a start and end frame to keep part of a GIF, or remove a section from it. In your browser, no upload.",
+    primaryKeyword: "gif cutter",
+  },
 
   // ── Variants (expansion.md §2) ─────────────────────────────────────────
   // Each runs its parent's engine with `preset` applied, on its own URL with
@@ -1680,11 +1765,30 @@ export function getTool(slug: string): Tool | undefined {
  * returned so related cards never link to a not-yet-built tool. Same-category
  * tools are preferred.
  */
+/**
+ * The GIF tools, in menu order. They span three categories (Optimize, Edit,
+ * Convert), so they are grouped here rather than by `categoryId`: the Tools
+ * menu's GIF section lists them, and their related tools come from this list.
+ */
+export const GIF_SUITE = [
+  "gif-maker", "video-to-gif", "gif-compressor", "gif-resizer", "gif-cropper", "gif-cutter",
+  "rotate-gif", "reverse-gif", "gif-speed-changer", "gif-to-mp4", "webp-to-gif", "gif-to-images",
+];
+
 export function relatedTools(tool: Tool, n = 3): Tool[] {
   // Variants never appear here (their family has its own link strip), and a
   // variant page shows its parent's list, so adding a variant can't reshuffle
   // the related tools on any existing page.
   const base = tool.parentId ? (TOOLS_BY_ID[tool.parentId] ?? tool) : tool;
+  // A GIF tool links to the next GIF tools in the suite, wrapping round, so
+  // the suite's pages form a ring instead of all pointing at its first three.
+  const at = GIF_SUITE.indexOf(base.id);
+  if (at >= 0) {
+    const ring = [...GIF_SUITE.slice(at + 1), ...GIF_SUITE.slice(0, at)]
+      .map((id) => TOOLS_BY_ID[id])
+      .filter((t) => t?.status === "live");
+    if (ring.length >= n) return ring.slice(0, n);
+  }
   const live = TOOLS.filter((t) => t.status === "live" && t.id !== base.id && !t.parentId);
   const sameCat = live.filter((t) => t.categoryId === base.categoryId);
   const others = live.filter((t) => t.categoryId !== base.categoryId);
@@ -1763,6 +1867,11 @@ const TOOL_COLORS: Record<string, string> = {
   "gif-resizer": "#A86A9A",
   "gif-to-mp4": "#C56A6A",
   "webp-to-gif": "#9A6AC5",
+  "gif-cropper": "#B86A8A",
+  "rotate-gif": "#9E6AA8",
+  "reverse-gif": "#B05A80",
+  "gif-speed-changer": "#C0706A",
+  "gif-cutter": "#A85E92",
   "passport-photo-maker": "#4F7FB8",
   "signature-resizer": "#5A6FB0",
   "dpi-converter": "#5B7FA6",

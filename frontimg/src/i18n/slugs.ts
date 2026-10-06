@@ -138,6 +138,11 @@ const PT_TOOL_SLUGS: Record<string, string> = {
   "gif-resizer": "redimensionar-gif",
   "gif-to-mp4": "gif-para-mp4",
   "webp-to-gif": "webp-para-gif",
+  "gif-cropper": "recortar-gif",
+  "rotate-gif": "girar-gif",
+  "reverse-gif": "inverter-gif",
+  "gif-speed-changer": "alterar-velocidade-gif",
+  "gif-cutter": "cortar-gif",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "imagem-em-hd",
@@ -240,6 +245,11 @@ const HI_TOOL_SLUGS: Record<string, string> = {
   "gif-resizer": "gif-resizer",
   "gif-to-mp4": "gif-to-mp4",
   "webp-to-gif": "webp-to-gif",
+  "gif-cropper": "gif-cropper",
+  "rotate-gif": "rotate-gif",
+  "reverse-gif": "reverse-gif",
+  "gif-speed-changer": "gif-speed-changer",
+  "gif-cutter": "gif-cutter",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "image-to-hd",
@@ -351,6 +361,11 @@ const RU_TOOL_SLUGS: Record<string, string> = {
   "gif-resizer": "gif-resizer",
   "gif-to-mp4": "gif-to-mp4",
   "webp-to-gif": "webp-to-gif",
+  "gif-cropper": "gif-cropper",
+  "rotate-gif": "rotate-gif",
+  "reverse-gif": "reverse-gif",
+  "gif-speed-changer": "gif-speed-changer",
+  "gif-cutter": "gif-cutter",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "image-to-hd",
@@ -484,6 +499,11 @@ const ID_TOOL_SLUGS: Record<string, string> = {
   "gif-resizer": "ubah-ukuran-gif",
   "gif-to-mp4": "gif-ke-mp4",
   "webp-to-gif": "webp-ke-gif",
+  "gif-cropper": "crop-gif",
+  "rotate-gif": "putar-gif",
+  "reverse-gif": "reverse-gif",
+  "gif-speed-changer": "ubah-kecepatan-gif",
+  "gif-cutter": "potong-gif",
 
   // ── Variants: upscale, rotate, remove-background (expansion.md §5) ────
   "image-to-hd": "jadikan-foto-hd",

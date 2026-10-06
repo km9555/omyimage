@@ -10,7 +10,7 @@
  *
  * Layout reference: https://developers.google.com/speed/webp/docs/riff_container
  */
-import { playDelay, type FrameSource } from "@/lib/gif/frames";
+import { playDelay, snapshotStore, type FrameSource } from "@/lib/gif/frames";
 
 const fourcc = (b: Uint8Array, o: number) => String.fromCharCode(b[o], b[o + 1], b[o + 2], b[o + 3]);
 const u24 = (b: Uint8Array, o: number) => b[o] | (b[o + 1] << 8) | (b[o + 2] << 16);
@@ -111,9 +111,15 @@ export async function openWebp(blob: Blob): Promise<FrameSource> {
   });
 
   let cursor = -1;
+  // The next frame's disposal reads only `frames`, so the canvas is the whole state.
+  const store = snapshotStore<null>(frames.length, width, height);
   async function frame(i: number): Promise<HTMLCanvasElement> {
     if (i < 0 || i >= frames.length) throw new Error("Frame out of range.");
-    if (i <= cursor) { ctx!.clearRect(0, 0, width, height); cursor = -1; }
+    if (i < cursor) {
+      const at = store.rewind(i);
+      if (at) { ctx!.putImageData(at.image, 0, 0); cursor = at.cursor; }
+      else { ctx!.clearRect(0, 0, width, height); cursor = -1; }
+    }
     while (cursor < i) {
       if (cursor >= 0 && frames[cursor].dispose) {
         const p = frames[cursor];
@@ -125,7 +131,9 @@ export async function openWebp(blob: Blob): Promise<FrameSource> {
       if (!f.blend) ctx!.clearRect(f.x, f.y, f.w, f.h);
       ctx!.drawImage(bmp, f.x, f.y);
       bmp.close();
+      store.save(ctx!, cursor, null);
     }
+    store.settle();
     return canvas;
   }
 

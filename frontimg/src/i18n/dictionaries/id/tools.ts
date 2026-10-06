@@ -353,6 +353,26 @@ export const idTools: Record<string, LocalizedTool> = {
     name: "WEBP ke GIF",
     shortDescription: "Ubah WEBP animasi jadi GIF.",
   },
+  "gif-cropper": {
+    name: "Crop GIF",
+    shortDescription: "Crop GIF animasi dengan semua frame tetap ada.",
+  },
+  "rotate-gif": {
+    name: "Putar GIF",
+    shortDescription: "Putar atau balik GIF animasi 90° atau 180°.",
+  },
+  "reverse-gif": {
+    name: "Putar Balik GIF",
+    shortDescription: "Putar GIF mundur atau jadikan boomerang.",
+  },
+  "gif-speed-changer": {
+    name: "Ubah Kecepatan GIF",
+    shortDescription: "Percepat atau perlambat GIF animasi.",
+  },
+  "gif-cutter": {
+    name: "Potong GIF",
+    shortDescription: "Potong GIF dan simpan frame yang Anda mau.",
+  },
 
   // ── Varian: HD, mirror, background (expansion.md) ──
   "image-to-hd": {

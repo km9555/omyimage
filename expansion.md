@@ -152,11 +152,13 @@ gif-to-webp (1.3K) · rotate-gif (1.3K).
 
 - **5A (done 2026-10-06, all locales):** video-to-gif, gif-compressor,
   gif-resizer, gif-to-mp4, webp-to-gif.
-- **Next:** gif-cropper, typing-text-gif, add-text-to-gif, reverse-gif,
-  gif-speed-changer, gif-cutter, gif-merger, gif-to-sprite-sheet, gif-to-apng,
-  gif-to-webp, rotate-gif.
-  - All of these reuse `openGif` + `reencodeAsGif`. Most are a frame transform
-    plus GifTool-style UI.
+- **5B (done 2026-10-06, all locales):** gif-cropper, rotate-gif,
+  reverse-gif, gif-speed-changer, gif-cutter.
+- **Next (5C):** typing-text-gif, add-text-to-gif, gif-merger,
+  gif-to-sprite-sheet, gif-to-apng, gif-to-webp.
+  - gif-to-webp needs an animated-WebP encoder (canvas only writes stills).
+    Check libwebp-wasm builds against the LICENSE-AUDIT rules first.
+  - gif-to-apng: UPNG.js (MIT) can write APNG.
 
 ### Phase 6 — edit tools (canvas)
 
@@ -427,6 +429,52 @@ blur-screenshot (90–140/mo), exif-editor (≤ 390, KD 68), svg-to-gif, blur-gi
   - **Snapshot diff vs 4B: 142 pages.** All are expected: Optimize-category
     pages' "More tools" now show GIF Compressor where Signature Resizer was,
     and the menu markup changed. verify:build: 456 URLs, 186 family pages.
+- **2026-10-06 — Batch 5B: gif-cropper, rotate-gif, reverse-gif,
+  gif-speed-changer, gif-cutter — 25 pages.**
+  - **One component:** `app/gif-cropper/GifEditTool.tsx`, with `mode` set to
+    crop, rotate, reverse, speed or cut. The other four pages reuse the
+    cropper's `ui` block.
+  - **Engine:**
+    - **`frames.ts` random access.** Snapshots are taken every ~√n frames,
+      and the frames composited while catching up are kept, so reading
+      backwards costs about one composite per frame. A 240-frame
+      480 × 270 reverse took 19.8 s with snapshots alone and 7.6 s after.
+    - **`gif-encode.ts` `exact` option.** When the frames hold ≤ 255 colours
+      (256 without the diff path), those colours are written back exactly
+      instead of being quantised to 5-6-5. Crop, rotate, reverse, cut — and
+      compressor Light at 100 % — are now pixel-exact on typical GIFs.
+    - **`reencode.ts`.** Adds a frame `plan`, a crop, quarter turns and
+      flips. Turns are a 32-bit pixel remap: a rotated canvas `drawImage` on
+      a read-back canvas ran in software and took 16.3 s on the same GIF; the
+      remap takes 6.2 s. The loop count is now carried over from the source:
+      a play-once GIF stays play-once and N loops stay N. Before, every
+      re-encode looped forever.
+    - **`retime.ts`.** `speedPlan` rounds frame edges on the scaled timeline
+      and merges frames that would be shorter than 20 ms (browsers play
+      ≤ 10 ms as 100 ms). When no frames are merged, `setGifDelays` rewrites
+      the delays in the bytes and leaves the image data untouched.
+  - **Measured on a 30-frame test GIF:**
+    - **Crop and rotate:** exact palette colours. Corner markers and the
+      moving square land on the predicted pixels for 90° right, 90° left,
+      180° and both flips; the transparent GIF keeps alpha 0 and clears the
+      moving circle's old position.
+    - **Reverse and boomerang:** frame bars come back 300→10. Boomerang has
+      58 frames, with the end frames not repeated.
+    - **Speed:** 2× is the same length with 30 bytes changed, done in 58 ms.
+      8× merges 14 frames, every frame ≥ 20 ms, 430 ms in total.
+    - **Cutter:** keep 6–15 gives 10 frames; remove gives 20.
+  - **Related tools:** `GIF_SUITE` in tools.ts lists the 12 GIF tools. The
+    menu's GIF section uses it, and a GIF page's "More tools" are the next
+    tools in it, wrapping round, so the suite links as a ring.
+  - **Indonesian:** reverse-gif is "Putar Balik GIF", because i18n-verify
+    rejects an H1 identical to the English one. The title keeps "Reverse
+    GIF".
+  - **Nav columns:** `[optimize, compress-size, photo-id]`, `[edit,
+    social-sizes, ai]`, `[gif, create, privacy]`, `[convert-format,
+    convert-other, convert-camera]`.
+  - **Snapshot diff vs 5A: 50 pages**, all expected — the 7 existing GIF pages
+    × 5 locales (related list), plus home, pricing and contact × 5 (85 → 90
+    tools). verify:build: 481 URLs.
 - **Deploys need the user's go-ahead.** 2A, 3A, 4A and the visibility fix
   went live on 2026-10-04 (merge 505e680 into `main`, then `npm run
   indexnow`). Later batches are committed on `feat/tool-expansion` and
