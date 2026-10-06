@@ -83,7 +83,10 @@ export function SplitTool({ preset }: { preset?: SplitPreset }) {
   const igCols = kind === "grid" ? 3 : slides;
   const igRowCount = kind === "grid" ? igRows : 1;
 
-  const previewRef = useRef<HTMLCanvasElement>(null);
+  // Held in state, not a ref: below `md` ToolWorkspace swaps to the mobile
+  // shell after its first render, which mounts a NEW canvas — the draw effect
+  // must re-run for it.
+  const [previewEl, setPreviewEl] = useState<HTMLCanvasElement | null>(null);
   const pv = useRef<{ canvas: HTMLCanvasElement; k: number; w: number; h: number; W: number; H: number } | null>(null);
   const [pvTick, setPvTick] = useState(0);
   const drag = useRef<{ x: number; y: number; fx: number; fy: number } | null>(null);
@@ -136,7 +139,7 @@ export function SplitTool({ preset }: { preset?: SplitPreset }) {
   }, [sig]);
 
   useEffect(() => {
-    const c = previewRef.current;
+    const c = previewEl;
     const p = pv.current;
     if (!c || !p) return;
     c.width = p.w;
@@ -183,7 +186,7 @@ export function SplitTool({ preset }: { preset?: SplitPreset }) {
       });
     }
     ctx.restore();
-  }, [pvTick, countFor, piecesFor, labelFor, ig, igCols, igRowCount, shape, fx, fy]);
+  }, [pvTick, countFor, piecesFor, labelFor, ig, igCols, igRowCount, shape, fx, fy, previewEl]);
 
   const addFiles = useCallback((incoming: FileList | File[]) => {
     const imgs = Array.from(incoming).filter((f) => f.type.startsWith("image/"));
@@ -511,7 +514,7 @@ export function SplitTool({ preset }: { preset?: SplitPreset }) {
           <>
             <div className="bg-surface-container rounded-xl border border-surface-variant p-4 flex items-center justify-center overflow-hidden" style={{ minHeight: 220 }}>
               <canvas
-                ref={previewRef}
+                ref={setPreviewEl}
                 style={{ ...checker, touchAction: ig ? "none" : undefined, cursor: ig ? "move" : undefined }}
                 className="max-w-full max-h-[52vh] rounded"
                 aria-label={t("Preview")}

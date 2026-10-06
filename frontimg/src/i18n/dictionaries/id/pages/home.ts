@@ -14,9 +14,8 @@
  * where the English list has room for it — the AI line opens on hapus
  * background and jadikan foto HD, the two biggest AI queries in this market.
  *
- * "over thirty tools" stays «lebih dari tiga puluh alat»: it is still true at
- * forty, and the English source kept it deliberately rather than orphan six
- * locale entries for a claim that is not wrong.
+ * "over seventy tools" is «lebih dari tujuh puluh alat» — updated from thirty
+ * when the 2026-10 expansion took the count to 73 (expansion.md Phase 8).
  */
 export const idHome: Record<string, string> = {
   // ── HomeLauncher (hero) ─────────────────────────────────────────────────
@@ -41,8 +40,8 @@ export const idHome: Record<string, string> = {
   "Continue": "Lanjutkan",
 
   // ── ToolDirectory ───────────────────────────────────────────────────────
-  "is a free online image toolkit — over thirty tools to compress, resize, crop, convert, watermark and edit images, most running entirely in your browser so your files never leave your device. Importing from Google Drive is optional, reads only the files you pick, and never stores them on our servers.":
-    "adalah kumpulan alat gambar online gratis — lebih dari tiga puluh alat untuk kompres, ubah ukuran, crop, ubah format, beri watermark, dan edit gambar. Sebagian besar berjalan sepenuhnya di browser, jadi file Anda tidak pernah meninggalkan perangkat. Impor dari Google Drive bersifat opsional, hanya membaca file yang Anda pilih, dan tidak pernah menyimpannya di server kami.",
+  "is a free online image toolkit — over seventy tools to compress, resize, crop, convert, watermark and edit images, most running entirely in your browser so your files never leave your device. Importing from Google Drive is optional, reads only the files you pick, and never stores them on our servers.":
+    "adalah kumpulan alat gambar online gratis — lebih dari tujuh puluh alat untuk kompres, ubah ukuran, crop, ubah format, beri watermark, dan edit gambar. Sebagian besar berjalan sepenuhnya di browser, jadi file Anda tidak pernah meninggalkan perangkat. Impor dari Google Drive bersifat opsional, hanya membaca file yang Anda pilih, dan tidak pernah menyimpannya di server kami.",
   "What is oMyImage?": "Apa itu oMyImage?",
   "How we use Google data": "Cara kami menggunakan data Google",
   "Favorites": "Favorit",
@@ -65,8 +64,8 @@ export const idHome: Record<string, string> = {
   "Get your optimized images back, ready for your workflow.":
     "Ambil kembali foto yang sudah diproses, siap dipakai.",
   "About oMyImage": "Tentang oMyImage",
-  "is a free online image toolkit for everyday image work. It gives you a single place to compress, resize, crop, rotate, convert, watermark and edit images — over thirty tools, each one a dedicated page that does one job well.":
-    "adalah kumpulan alat gambar online gratis untuk urusan gambar sehari-hari. Satu tempat untuk kompres, ubah ukuran, crop, putar, ubah format, beri watermark, dan edit gambar — lebih dari tiga puluh alat, masing-masing di halamannya sendiri yang mengerjakan satu tugas dengan baik.",
+  "is a free online image toolkit for everyday image work. It gives you a single place to compress, resize, crop, rotate, convert, watermark and edit images — over seventy tools, each one a dedicated page that does one job well.":
+    "adalah kumpulan alat gambar online gratis untuk urusan gambar sehari-hari. Satu tempat untuk kompres, ubah ukuran, crop, putar, ubah format, beri watermark, dan edit gambar — lebih dari tujuh puluh alat, masing-masing di halamannya sendiri yang mengerjakan satu tugas dengan baik.",
   "Most tools run entirely inside your web browser: your image is processed on your own device and is never uploaded anywhere. Larger files, and the AI tools that need real hardware, are processed on our servers and deleted shortly after the job finishes. oMyImage is free to use and needs no account.":
     "Sebagian besar alat berjalan sepenuhnya di dalam browser: gambar Anda diproses di perangkat Anda sendiri dan tidak pernah diunggah ke mana pun. File yang lebih besar, dan alat AI yang membutuhkan perangkat keras sungguhan, diproses di server kami lalu dihapus tak lama setelah prosesnya selesai. oMyImage gratis dipakai dan tidak memerlukan akun.",
   "What you can do with oMyImage": "Yang bisa Anda lakukan di oMyImage",

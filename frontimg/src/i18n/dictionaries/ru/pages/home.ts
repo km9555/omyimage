@@ -37,8 +37,8 @@ export const ruHome: Record<string, string> = {
   "Continue": "Продолжить",
 
   // ── ToolDirectory ───────────────────────────────────────────────────────
-  "is a free online image toolkit — over thirty tools to compress, resize, crop, convert, watermark and edit images, most running entirely in your browser so your files never leave your device. Importing from Google Drive is optional, reads only the files you pick, and never stores them on our servers.":
-    "— это бесплатный набор онлайн-инструментов: больше тридцати инструментов, чтобы сжать, изменить размер, обрезать, сменить формат, поставить водяной знак и отредактировать изображения. Большинство работает полностью в браузере, поэтому файлы не покидают ваше устройство. Загрузка из Google Drive необязательна, читает только выбранные вами файлы и никогда не сохраняет их на наших серверах.",
+  "is a free online image toolkit — over seventy tools to compress, resize, crop, convert, watermark and edit images, most running entirely in your browser so your files never leave your device. Importing from Google Drive is optional, reads only the files you pick, and never stores them on our servers.":
+    "— это бесплатный набор онлайн-инструментов: больше семидесяти инструментов, чтобы сжать, изменить размер, обрезать, сменить формат, поставить водяной знак и отредактировать изображения. Большинство работает полностью в браузере, поэтому файлы не покидают ваше устройство. Загрузка из Google Drive необязательна, читает только выбранные вами файлы и никогда не сохраняет их на наших серверах.",
   "What is oMyImage?": "Что такое oMyImage?",
   "How we use Google data": "Как мы используем данные Google",
   "Favorites": "Избранное",
@@ -61,8 +61,8 @@ export const ruHome: Record<string, string> = {
   "Get your optimized images back, ready for your workflow.":
     "Заберите готовые файлы — можно сразу пускать в дело.",
   "About oMyImage": "Об oMyImage",
-  "is a free online image toolkit for everyday image work. It gives you a single place to compress, resize, crop, rotate, convert, watermark and edit images — over thirty tools, each one a dedicated page that does one job well.":
-    "— это бесплатный набор онлайн-инструментов для повседневной работы с изображениями. Одно место, где можно сжать, изменить размер, обрезать, повернуть, сменить формат, поставить водяной знак и отредактировать: больше тридцати инструментов, и у каждого своя страница, которая хорошо делает одно дело.",
+  "is a free online image toolkit for everyday image work. It gives you a single place to compress, resize, crop, rotate, convert, watermark and edit images — over seventy tools, each one a dedicated page that does one job well.":
+    "— это бесплатный набор онлайн-инструментов для повседневной работы с изображениями. Одно место, где можно сжать, изменить размер, обрезать, повернуть, сменить формат, поставить водяной знак и отредактировать: больше семидесяти инструментов, и у каждого своя страница, которая хорошо делает одно дело.",
   "Most tools run entirely inside your web browser: your image is processed on your own device and is never uploaded anywhere. Larger files, and the AI tools that need real hardware, are processed on our servers and deleted shortly after the job finishes. oMyImage is free to use and needs no account.":
     "Большинство инструментов работает целиком внутри браузера: изображение обрабатывается на вашем устройстве и никуда не загружается. Крупные файлы и инструменты с ИИ, которым нужно настоящее железо, обрабатываются на наших серверах и удаляются вскоре после завершения задачи. oMyImage бесплатен, и аккаунт для него не нужен.",
   "What you can do with oMyImage": "Что можно делать в oMyImage",

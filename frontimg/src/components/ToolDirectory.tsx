@@ -112,7 +112,7 @@ export function ToolDirectory() {
           <p className="text-body-md text-on-surface-variant">
             {/* i18n-raw: brand name */}
             <strong className="font-semibold text-primary">oMyImage</strong>{" "}
-            {t("is a free online image toolkit — over thirty tools to compress, resize, crop, convert, watermark and edit images, most running entirely in your browser so your files never leave your device. Importing from Google Drive is optional, reads only the files you pick, and never stores them on our servers.")}
+            {t("is a free online image toolkit — over seventy tools to compress, resize, crop, convert, watermark and edit images, most running entirely in your browser so your files never leave your device. Importing from Google Drive is optional, reads only the files you pick, and never stores them on our servers.")}
           </p>
           <div className="flex shrink-0 items-center gap-4 text-body-sm">
             <Link

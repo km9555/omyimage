@@ -54,7 +54,10 @@ export function FxTool({ mode }: { mode: FxMode }) {
   const [done, setDone] = useState(false);
   const [comparing, setComparing] = useState(false);
 
-  const previewRef = useRef<HTMLCanvasElement>(null);
+  // Held in state, not a ref: below `md` ToolWorkspace swaps to the mobile
+  // shell after its first render, which mounts a NEW canvas — the draw effect
+  // must re-run for it.
+  const [previewEl, setPreviewEl] = useState<HTMLCanvasElement | null>(null);
   const pv = useRef<{ canvas: HTMLCanvasElement; k: number; w: number; h: number } | null>(null);
   const [pvTick, setPvTick] = useState(0);
 
@@ -84,7 +87,7 @@ export function FxTool({ mode }: { mode: FxMode }) {
   }, [bg, mode]);
 
   useEffect(() => {
-    const c = previewRef.current;
+    const c = previewEl;
     const p = pv.current;
     if (!c || !p) return;
     if (comparing) {
@@ -94,7 +97,7 @@ export function FxTool({ mode }: { mode: FxMode }) {
     }
     const mime = firstFile ? outMimeFor(firstFile, format) : "image/png";
     renderFx(c, p.canvas, p.w, p.h, mode, s, p.k, bgFor(mime));
-  }, [s, mode, pvTick, comparing, format, bgFor, firstFile]);
+  }, [s, mode, pvTick, comparing, format, bgFor, firstFile, previewEl]);
 
   const addFiles = useCallback((incoming: FileList | File[]) => {
     const imgs = Array.from(incoming).filter((f) => f.type.startsWith("image/"));
@@ -288,7 +291,7 @@ export function FxTool({ mode }: { mode: FxMode }) {
         main={
           <>
             <div className="bg-surface-container rounded-xl border border-surface-variant p-4 flex items-center justify-center overflow-hidden" style={{ minHeight: 220 }}>
-              <canvas ref={previewRef} style={checker} className="max-w-full max-h-[46vh] rounded" aria-label={t("Preview")} />
+              <canvas ref={setPreviewEl} style={checker} className="max-w-full max-h-[46vh] rounded" aria-label={t("Preview")} />
             </div>
             <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-label-sm font-label-sm text-on-surface-variant">
               <span>

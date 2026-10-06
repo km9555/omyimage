@@ -825,6 +825,25 @@ blur-screenshot (90–140/mo), exif-editor (≤ 390, KD 68), svg-to-gif, blur-gi
     - Publish the guides.
     - Submit the per-locale child sitemaps in Search Console. Bing and
       Yandex get them through IndexNow after the next deploy.
+- **2026-10-06 — Post-phase fixes (found while checking open items).**
+  - **Mobile bug in the new canvas tools.** Below `md`, ToolWorkspace first
+    renders the desktop layout and then swaps to the mobile shell, which
+    mounts NEW elements. Effects keyed only on the picture never re-ran for
+    them.
+    - On /remove-object and /remove-watermark the mark layer stayed a
+      default 300 × 150 canvas, so marks landed in the wrong place and the
+      removal missed.
+    - Fixed by holding the canvases/stage in state through callback refs,
+      so effects re-run for the canvas actually on screen. The same pattern
+      was applied to the overlay, split and FX previews.
+    - Verified at 375 px: mark layer sized to the 600 × 400 image, square removed
+      (81,140,187 vs wall 80,140,190), overlay and split previews draw.
+  - **Phone download.** The mobile shell's action is Remove and Download
+    lived only in the Settings sheet, so a Download button now appears under
+    the picture once something has been removed.
+  - **"over thirty tools" → "over seventy tools"** (home purpose band and
+    About, 5 locales). It was 73 tools, and the id note that kept "thirty"
+    at forty tools was updated.
 - **Deploys need the user's go-ahead.** 2A, 3A, 4A and the visibility fix
   went live on 2026-10-04 (merge 505e680 into `main`, then `npm run
   indexnow`). Later batches are committed on `feat/tool-expansion` and

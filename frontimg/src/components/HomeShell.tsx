@@ -125,7 +125,7 @@ export function HomeShell({
               {/* i18n-raw: brand name */}
               <strong className="font-semibold text-primary">oMyImage</strong>{" "}
               {t(
-                "is a free online image toolkit for everyday image work. It gives you a single place to compress, resize, crop, rotate, convert, watermark and edit images — over thirty tools, each one a dedicated page that does one job well.",
+                "is a free online image toolkit for everyday image work. It gives you a single place to compress, resize, crop, rotate, convert, watermark and edit images — over seventy tools, each one a dedicated page that does one job well.",
               )}
             </p>
             <p>
