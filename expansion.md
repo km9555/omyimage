@@ -184,6 +184,22 @@ ID 40.5K KD 0) · remove-object (IN 60.5K + 49.5K; ID 74K KD 0; US 12.1K).
 
 ### Phase 8 — guides + release
 
+- **8A (done 2026-10-06): the upscale variants do their own job.** Asked by
+  the user whether upscale-image + unblur-image (+ image-to-hd) was spam.
+  Answer: different intent, own copy, similarity-checked, one family — not a
+  doorway. But all three opened the identical tool at 2×, which is the part
+  that reads as one page under three names. Now:
+  - **unblur-image** returns the photo at its own size by default ("Keep the
+    original size"; off → 2×).
+  - **image-to-hd** takes a target (HD 1280 / Full HD 1920 / 4K 3840 on
+    the longer side), picks the AI scale itself and sizes the result to the
+    target.
+  - **upscale-image** stays the free 2×/3×/4× tool.
+
+  **Watch in Search Console** (from ~2026-12): if unblur-image gets no
+  impressions of its own, or swaps with upscale-image on the same queries,
+  301 it into upscale-image.
+
 English-only blog guides linking into the families ("make a photo exactly
 50KB", "passport photo sizes by country", "social media image sizes",
 "GIF size limits"), then submit the per-locale child sitemaps in Search
@@ -725,6 +741,34 @@ blur-screenshot (90–140/mo), exif-editor (≤ 390, KD 68), svg-to-gif, blur-gi
   - **Snapshot diff vs 6B: 43 pages**, all expected — the AI pages'
     related links now include the two tools, and the tool count went from
     104 to 106. verify:build: 561 URLs.
+- **2026-10-06 — 8A: unblur-image and image-to-hd made functionally distinct
+  — 8 pages.**
+  - **`ServerImageTool` gains two hooks:**
+    - `prepareOptions(file, opts)` decides what the server is sent.
+    - `rerunKeys`: changing one of these options clears a stale result.
+  - **`UpscaleTool` `preset.mode`:**
+    - `unblur` sends `{scale: 2}`. A `postProcess` scales the result back
+      to the photo's own size (EXIF-safe aspect check), or keeps 2× when
+      "Keep the original size" is off. The toggle re-derives the result
+      without another server call.
+    - `hd` sends the smallest scale that reaches the target. The result is
+      fitted to the target on the longer side; when even 4× falls short,
+      the 4× result is returned rather than stretched.
+  - **Copy:** en/pt/hi/ru rewritten wherever it promised enlarging or
+    "choose the scale". The obsolete "why is it bigger?" FAQ became "is it
+    the same size?".
+  - **Measured** with the endpoint stubbed in the browser to a real k×
+    resample:
+    - Unblur: 300 × 200 in → `{scale: 2}` sent → 300 × 200 out
+      (`_unblurred`). Toggle off → 600 × 400 (`_unblurred_2x`), still one
+      server call.
+    - Image to HD, 800 × 450 in:
+      - Full HD → scale 3 → 1920 × 1080 (`_fullhd`).
+      - Switching to 4K cleared the result, then scale 4 → 3200 × 1800,
+        not stretched.
+      - HD → scale 2 → 1280 × 720.
+  - **Snapshot diff:** exactly the 8 variant pages. verify:build passes,
+    including the family similarity ceiling.
 - **Deploys need the user's go-ahead.** 2A, 3A, 4A and the visibility fix
   went live on 2026-10-04 (merge 505e680 into `main`, then `npm run
   indexnow`). Later batches are committed on `feat/tool-expansion` and

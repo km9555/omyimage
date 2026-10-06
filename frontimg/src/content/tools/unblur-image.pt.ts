@@ -10,15 +10,15 @@ const content: ToolPageContent = {
   locale: "pt",
   name: "Tirar desfoque da foto",
   tagline:
-    "Deixe nítidas fotos moles, levemente borradas ou pixeladas com IA. O modelo amplia a imagem e reconstrói bordas e texturas — funciona melhor em desfoque leve e em fotos estragadas pela compressão. Grátis e sem marca d'água.",
+    "Deixe nítidas fotos moles, levemente borradas ou pixeladas com IA. Você recebe de volta a foto no mesmo tamanho, só que mais nítida: o modelo reconstrói bordas e texturas — funciona melhor em desfoque leve e em fotos estragadas pela compressão. Grátis e sem marca d'água.",
   category: { id: "ai", label: "IA de imagem" },
 
   metaTitle: "Tirar Desfoque da Foto Online — Deixe Fotos Nítidas com IA | oMyImage",
   metaDescription:
-    "Tire o desfoque de fotos online com IA: deixe nítidas fotos moles ou levemente borradas enquanto amplia 2–4×. Funciona melhor em desfoque leve e compressão. Grátis, sem marca d'água.",
+    "Tire o desfoque de fotos online com IA: deixe nítidas fotos moles ou levemente borradas, no mesmo tamanho da original. Funciona melhor em desfoque leve e compressão. Grátis, sem marca d'água.",
 
   intro:
-    "A maioria das fotos que as pessoas chamam de \"borradas\" está, na verdade, mole: um pouco fora de foco, tirada com pouca luz, diminuída e salva de novo por um aplicativo de mensagem ou ampliada a partir de um original pequeno. São exatamente esses os defeitos para os quais um modelo de restauração de imagem com IA é treinado. Envie a foto e o modelo a amplia redesenhando bordas, texturas e linhas finas, o que remove ao mesmo tempo a maior parte da moleza e dos blocos. Ele não salva toda imagem — as seções abaixo explicam que tipo de desfoque ele corrige e qual não.",
+    "A maioria das fotos que as pessoas chamam de \"borradas\" está, na verdade, mole: um pouco fora de foco, tirada com pouca luz, diminuída e salva de novo por um aplicativo de mensagem ou ampliada a partir de um original pequeno. São exatamente esses os defeitos para os quais um modelo de restauração de imagem com IA é treinado. Envie a foto e o modelo a redesenha no dobro da resolução — bordas, texturas e linhas finas — e a devolve no tamanho original, pronta para ocupar o lugar da antiga, sem a maior parte da moleza e dos blocos. Ele não salva toda imagem — as seções abaixo explicam que tipo de desfoque ele corrige e qual não.",
 
   sections: [
     {
@@ -26,7 +26,7 @@ const content: ToolPageContent = {
       id: "fixable",
       body: [
         "A moleza de pequenos erros de foco, de lentes simples e sensores pequenos e da redução de ruído com pouca luz. A pixelização de fotos salvas pequenas e depois ampliadas. Os blocos e borrões da compressão pesada de JPG, que é o que acontece com uma foto toda vez que ela é encaminhada num aplicativo de mensagem.",
-        "Em todos esses casos as formas continuam lá, só não estão bem desenhadas. O modelo reconhece as formas — um olho, uma letra, uma folha, uma costura — e as desenha nítidas num tamanho maior, e para o olho isso aparece como uma foto sem desfoque.",
+        "Em todos esses casos as formas continuam lá, só não estão bem desenhadas. O modelo reconhece as formas — um olho, uma letra, uma folha, uma costura — e as desenha nítidas, e para o olho isso aparece como uma foto sem desfoque.",
       ],
     },
     {
@@ -42,15 +42,15 @@ const content: ToolPageContent = {
       id: "tips",
       body: [
         "Comece sempre pela melhor cópia que você tiver: o original da galeria é melhor que um print, que é melhor que uma cópia encaminhada. Recorte o que não interessa antes de enviar, para a atenção do modelo ir para a parte importante.",
-        "Use 2× para a maioria das fotos. Fatores maiores ajudam imagens pequenas, mas numa imagem que já é grande eles mais acrescentam pixels do que nitidez. Compare o resultado com o comparador antes de baixar; em rostos, olhe primeiro os olhos e a linha do cabelo.",
+        "Mantenha o tamanho original para fotos que você vai usar como estão. Desligue a opção para uma imagem pequena ou pixelada que você quer maior: aí o resultado nítido vem com o dobro do tamanho. Compare o resultado com o comparador antes de baixar; em rostos, olhe primeiro os olhos e a linha do cabelo.",
       ],
     },
     {
       heading: "Fotos antigas e digitalizadas",
       id: "old-photos",
       body: [
-        "Digitalizações de fotos antigas e fotos copiadas de um álbum impresso costumam estar moles e granuladas, e não realmente borradas, o que combina bem com o modelo: ele remove boa parte do granulado e redesenha os contornos num tamanho maior.",
-        "Ele não conserta arranhões, dobras, manchas nem cores desbotadas — isso é estrago na foto impressa, não falta de resolução, e precisa de retoque. Digitalize na maior resolução que o seu scanner oferece e depois deixe nítida aqui em 2×.",
+        "Digitalizações de fotos antigas e fotos copiadas de um álbum impresso costumam estar moles e granuladas, e não realmente borradas, o que combina bem com o modelo: ele remove boa parte do granulado e redesenha os contornos.",
+        "Ele não conserta arranhões, dobras, manchas nem cores desbotadas — isso é estrago na foto impressa, não falta de resolução, e precisa de retoque. Digitalize na maior resolução que o seu scanner oferece e depois deixe nítida aqui.",
       ],
     },
   ],
@@ -58,22 +58,22 @@ const content: ToolPageContent = {
   howToTitle: "Como tirar o desfoque de uma foto",
   steps: [
     { title: "Envie a foto borrada", description: "Selecione um JPG, PNG ou WEBP — o arquivo original, não um print, se você tiver." },
-    { title: "Escolha a escala", description: "2× serve para a maioria das fotos; use 3× ou 4× quando a imagem for muito pequena." },
+    { title: "Mantenha o tamanho ou amplie", description: "O resultado mantém o tamanho da sua foto; desligue isso para recebê-la com o dobro do tamanho." },
     { title: "Deixe nítida e baixe", description: "Compare antes e depois com o comparador e baixe a imagem mais nítida." },
   ],
 
   features: [
-    { icon: "auto_fix_high", title: "Restauração com IA", description: "Reconstrói bordas, texturas e letras enquanto amplia, em vez de misturar pixels." },
+    { icon: "auto_fix_high", title: "Restauração com IA", description: "Reconstrói bordas, texturas e letras em vez de misturar pixels — no tamanho da sua própria foto." },
     { icon: "visibility", title: "Antes e depois honesto", description: "Um comparador mostra exatamente o que mudou, para você julgar o resultado." },
     { icon: "verified_user", title: "Grátis, sem marca d'água", description: "Sem cadastro e sem nada carimbado no resultado." },
   ],
 
   faqs: [
-    { q: "Como tirar o desfoque de uma foto online?", a: "Envie a foto, mantenha a escala em 2× (ou aumente para uma imagem muito pequena) e clique no botão. Compare o resultado com o comparador e baixe se estiver bom." },
+    { q: "Como tirar o desfoque de uma foto online?", a: "Envie a foto e clique em Tirar o desfoque. Compare o resultado com o comparador e baixe se estiver bom — ele volta no mesmo tamanho da sua foto." },
     { q: "Dá para consertar uma foto em que a câmera tremeu?", a: "Só em parte. O desfoque de movimento espalha os detalhes em rastros que nenhum modelo consegue desfazer de verdade; você terá uma imagem mais limpa, mas não a foto nítida que a câmera perdeu." },
     { q: "Dá para deixar reconhecível um rosto borrado?", a: "Não, e nem deveria. Num rosto que já é reconhecível ele deixa tudo bem mais nítido; num irreconhecível ele só estaria chutando, então o resultado não pode ser usado para identificar ninguém." },
-    { q: "Ele despixela imagens?", a: "Sim — uma imagem pequena e cheia de blocos é um dos melhores casos. Ele amplia a imagem e troca os blocos de pixels visíveis por bordas suaves e textura." },
-    { q: "Por que a imagem sem desfoque ficou maior que a original?", a: "O modelo funciona ampliando: ele prevê detalhes numa resolução maior. Se precisar do tamanho original de volta, redimensione o resultado para baixo — ele continua mais nítido que o original." },
+    { q: "Ele despixela imagens?", a: "Sim — uma imagem pequena e cheia de blocos é um dos melhores casos. Desligue Manter o tamanho original para dar espaço ao detalhe extra: os blocos viram bordas suaves e textura com o dobro do tamanho." },
+    { q: "A foto sem desfoque fica do mesmo tamanho da original?", a: "Sim, por padrão. O modelo prevê detalhes no dobro da resolução e o resultado volta ao tamanho da sua foto. Desligue Manter o tamanho original para baixar em 2×." },
     { q: "Ele conserta texto borrado na foto de um documento?", a: "Texto levemente mole fica bem mais nítido. Texto borrado demais para ler no original normalmente continua ilegível." },
     { q: "Minha foto é enviada?", a: "Sim, para o nosso servidor, porque o modelo precisa de mais memória do que um navegador tem. O resultado fica só por pouco tempo atrás de um link privado e é apagado automaticamente em até uma hora." },
   ],

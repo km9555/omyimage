@@ -43,6 +43,8 @@ export function ServerImageTool({
   controls,
   note,
   postProcess,
+  prepareOptions,
+  rerunKeys,
 }: {
   accent: string;
   icon: string;
@@ -69,6 +71,17 @@ export function ServerImageTool({
    * (module scope or useCallback): it is an effect dependency.
    */
   postProcess?: (raw: Blob, original: File, opts: Record<string, unknown>) => Promise<{ blob: Blob; name?: string }>;
+  /**
+   * Turn the page's options into what the server is sent, with the image in
+   * hand — image-to-hd works out the AI scale from the picture's size and the
+   * chosen target. Without it the options are sent as they are.
+   */
+  prepareOptions?: (file: File, opts: Record<string, unknown>) => Promise<Record<string, unknown>>;
+  /**
+   * Options whose change makes the server's output stale (it would need another
+   * run, not just a new `postProcess`): changing one clears the result.
+   */
+  rerunKeys?: readonly string[];
 }) {
   const t = useT();
   const formatBytes = useFormatBytes();
@@ -121,6 +134,13 @@ export function ServerImageTool({
     return () => { alive = false; };
   }, [postProcess, raw, file, opts, t]);
 
+  // Changing an option the server output depends on drops that output.
+  const rerunSig = JSON.stringify((rerunKeys ?? []).map((k) => opts[k]));
+  useEffect(() => {
+    setResult(null);
+    setRaw(null);
+  }, [rerunSig]);
+
   useHandoff(onFiles);
 
   const set = (k: string, v: unknown) => setOpts((o) => ({ ...o, [k]: v }));
@@ -129,7 +149,7 @@ export function ServerImageTool({
     if (!file) return;
     setIsWorking(true);
     try {
-      const r = await processOnServer(endpoint, file, opts);
+      const r = await processOnServer(endpoint, file, prepareOptions ? await prepareOptions(file, opts) : opts);
       if (postProcess) {
         setRaw({ blob: r.blob, name: r.filename });
       } else {
