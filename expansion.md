@@ -178,6 +178,10 @@ round-corners (IN 1.9K, US 1.3K) · image-brightness (IN 1.3K, US 1.6K contrast)
 remove-watermark (IN 368K `watermark remover` KD 49; US 135K; BR 74K KD 5;
 ID 40.5K KD 0) · remove-object (IN 60.5K + 49.5K; ID 74K KD 0; US 12.1K).
 
+- **Done 2026-10-06, all locales.** Both are parents sharing one component
+  (`InpaintTool mode=…`), in the Image AI menu section, `processing:
+  "client"` (free, not premium). Licence review: LICENSE-AUDIT.md F8.
+
 ### Phase 8 — guides + release
 
 English-only blog guides linking into the families ("make a photo exactly
@@ -660,6 +664,67 @@ blur-screenshot (90–140/mo), exif-editor (≤ 390, KD 68), svg-to-gif, blur-gi
     rows). instagram-grid-maker stays out of the menu, per the Phase 8 note.
   - **Snapshot diff vs 6A: 15 pages**, only home, pricing and contact
     (101 → 104 tools); no related ring moved. verify:build: 551 URLs.
+- **2026-10-06 — Phase 7: remove-object, remove-watermark — 10 pages.**
+  - **Model.** The authors' `migan_pipeline_v2.onnx` (Hugging Face
+    `andraniksargsyan/migan`, MIT, SHA-256 `6f1f3530…`).
+    - Inputs: `image` uint8 [1,3,H,W] and `mask` uint8 [1,1,H,W]; output
+      `result`, the same shape.
+    - **Mask 0 = fill, 255 = keep.** Measured: with 0 a black square was
+      filled with the wall colour; with 255 the rest of the picture was
+      repainted instead.
+    - It crops around the hole internally, so a 12 MP photo runs in ~1.4 s
+      in Node. Pixels outside the hole come back unchanged.
+  - **Shipping.**
+    - The model is 28,079,181 bytes, over Pages' 25 MiB cap. It is
+      committed as two parts in `public/models/` and joined + SHA-checked in
+      the browser.
+    - ORT's CPU wasm (14 MB) is staged by `scripts/copy-ort.mjs` into
+      `public/ort/1.30.0/`. The WebGPU builds are 27 MB, over the cap.
+    - ORT is loaded with a native `import()` that Turbopack and webpack
+      ignore — verified in the built chunk.
+    - `env.wasm.proxy` puts inference in ORT's own worker, so the page never
+      freezes. One thread: multi-threading would need COOP/COEP headers,
+      which break the Drive picker and sign-in popups.
+    - Both are served immutable (`_headers`).
+  - **`lib/image/inpaint.ts`:**
+    - `markRegions` groups marks on a 16 px grid, grows each box by ¾ of
+      its long side (at least 48 px) and merges overlaps, so separate marks
+      are filled one region at a time at full detail.
+    - Marks are dilated by 0.4 % of the shorter side (2–15 px).
+    - Each removal returns before/after patches for undo and redo.
+    - Pictures over 16.7 MP are worked on scaled down, and the page says so.
+  - **`InpaintTool`:**
+    - Brush, box and eraser on a mark layer at image resolution;
+      "Clear marks"; Undo / Redo / Start over, plus Ctrl+Z and Ctrl+Shift+Z.
+    - "Hold to see the original".
+    - The model starts loading as soon as a picture is added, with a
+      progress bar and a retry on failure.
+    - Watermark mode opens with the box tool.
+  - **Copy.** It says plainly that the AI invents a plausible fill rather
+    than recovering pixels, that big diagonal watermarks come out softer,
+    and that it is for images you own or may edit (watermarks on stock
+    photos protect someone's work).
+  - **`I18nError` keys are invisible to i18n-keys.** The model-download
+    error was added to each locale's `common.ts` by hand, next to the
+    existing one from `lib/gif/to-webp.ts`.
+  - **Measured.** Dev server, Chrome:
+    - An 800 × 600 test with a red square removed by box → wall colour
+      within 1 step, ~2 s including the first run.
+    - Two separate brush marks filled in one click.
+    - Undo/redo restore pixels exactly.
+    - 4000 × 3000 JPG with "© SAMPLE" text: deviation from the background
+      went from max 129 / mean 28 to max 15 / mean 7, in 2.4 s with a
+      180 MB heap.
+  - **Production export** served by the new `npm run serve:out` (clean URLs
+    and real `.mjs` / `.wasm` types): runtime, model and proxy worker all
+    loaded. A fully boxed watermark came out max 15 / mean 2.2 from the
+    background.
+  - **Nav.** Image AI gains both (8 rows), so Create moved to the GIF column:
+    `[optimize, compress-size, photo-id, social-sizes]`, `[edit, effects,
+    ai]`, `[gif, privacy, create]`, `[convert…]` — 22–25 rows per column.
+  - **Snapshot diff vs 6B: 43 pages**, all expected — the AI pages'
+    related links now include the two tools, and the tool count went from
+    104 to 106. verify:build: 561 URLs.
 - **Deploys need the user's go-ahead.** 2A, 3A, 4A and the visibility fix
   went live on 2026-10-04 (merge 505e680 into `main`, then `npm run
   indexnow`). Later batches are committed on `feat/tool-expansion` and

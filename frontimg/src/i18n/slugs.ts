@@ -154,6 +154,8 @@ const PT_TOOL_SLUGS: Record<string, string> = {
   "image-brightness": "ajustar-brilho-da-imagem",
   "glitch-effect": "efeito-glitch",
   "round-corners": "arredondar-cantos-da-imagem",
+  "remove-watermark": "remover-marca-dagua",
+  "remove-object": "remover-objetos-da-foto",
   "split-image": "dividir-imagem",
   "image-overlay": "sobrepor-imagens",
 
@@ -275,6 +277,8 @@ const HI_TOOL_SLUGS: Record<string, string> = {
   "image-brightness": "image-brightness",
   "glitch-effect": "glitch-effect",
   "round-corners": "round-corners",
+  "remove-watermark": "remove-watermark",
+  "remove-object": "remove-object",
   "split-image": "split-image",
   "image-overlay": "image-overlay",
 
@@ -405,6 +409,8 @@ const RU_TOOL_SLUGS: Record<string, string> = {
   "image-brightness": "image-brightness",
   "glitch-effect": "glitch-effect",
   "round-corners": "round-corners",
+  "remove-watermark": "remove-watermark",
+  "remove-object": "remove-object",
   "split-image": "split-image",
   "image-overlay": "image-overlay",
 
@@ -557,6 +563,8 @@ const ID_TOOL_SLUGS: Record<string, string> = {
   "image-brightness": "atur-kecerahan-foto",
   "glitch-effect": "efek-glitch-foto",
   "round-corners": "sudut-melengkung-foto",
+  "remove-watermark": "hapus-watermark",
+  "remove-object": "hapus-objek-foto",
   "split-image": "split-foto",
   "image-overlay": "overlay-foto",
 

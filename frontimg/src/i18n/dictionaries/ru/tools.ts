@@ -415,6 +415,14 @@ export const ruTools: Record<string, LocalizedTool> = {
     name: "Скруглить углы",
     shortDescription: "Скруглите углы изображения с прозрачными краями.",
   },
+  "remove-watermark": {
+    name: "Удалить водяной знак",
+    shortDescription: "Сотрите водяные знаки, логотипы и даты с помощью ИИ прямо в браузере.",
+  },
+  "remove-object": {
+    name: "Удалить объект с фото",
+    shortDescription: "Сотрите людей, предметы и дефекты с фото с помощью ИИ.",
+  },
   "split-image": {
     name: "Разрезать изображение",
     shortDescription: "Разрежьте картинку на равные части или плитки.",

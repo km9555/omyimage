@@ -370,6 +370,8 @@ export const hiCommon: Record<string, string> = {
   "The server did not start the job. Please try again.": "सर्वर ने काम शुरू नहीं किया। फिर कोशिश करें।",
   "Timed out waiting for the server to finish.": "सर्वर के पूरा होने का इंतज़ार करते-करते समय ख़त्म हो गया।",
   "Your browser cannot save {format} images. Try Chrome, Edge or Firefox.": "आपका ब्राउज़र {format} इमेज सेव नहीं कर सकता। Chrome, Edge या Firefox आज़माएँ।",
+  // lib/image/inpaint.ts (I18nError — invisible to i18n-keys)
+  "The AI model could not be downloaded. Check your connection and try again.": "AI मॉडल डाउनलोड नहीं हो सका। अपना कनेक्शन जाँचें और फिर से कोशिश करें।",
   "This file is not a valid SVG.": "यह फ़ाइल सही SVG नहीं है।",
   "This size is too large for your browser — try a smaller scale.": "यह साइज़ आपके ब्राउज़र के लिए बहुत बड़ा है — छोटा स्केल चुनें।",
   "This SVG could not be drawn. It may use features browsers do not render as an image.": "यह SVG बनाया नहीं जा सका। इसमें ऐसी चीज़ें हो सकती हैं जिन्हें ब्राउज़र इमेज के रूप में नहीं दिखाते।",

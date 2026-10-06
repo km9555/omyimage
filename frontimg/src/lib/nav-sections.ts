@@ -96,6 +96,8 @@ export const NAV_SECTIONS: NavSection[] = [
     color: "#7B79C9",
     ids: [
       "remove-background",
+      "remove-watermark",
+      "remove-object",
       "upscale-image",
       "image-to-hd",
       "unblur-image",
@@ -174,14 +176,14 @@ export const NAV_SECTIONS_BY_ID: Record<string, NavSection> = Object.fromEntries
 /**
  * Column layout for the 4-column desktop mega-menu, by section id.
  * Balanced by row count (section headings included), not section count,
- * keeping the three Convert sections together: 21–23 tool rows per column.
+ * keeping the three Convert sections together: 22–25 tool rows per column.
  * The variant rows leave the menu in the Phase 8 cleanup (expansion.md),
  * which rebalances this again.
  */
 export const NAV_COLUMNS: string[][] = [
   ["optimize", "compress-size", "photo-id", "social-sizes"],
-  ["edit", "effects", "ai", "create"],
-  ["gif", "privacy"],
+  ["edit", "effects", "ai"],
+  ["gif", "privacy", "create"],
   ["convert-format", "convert-other", "convert-camera"],
 ];
 

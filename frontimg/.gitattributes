@@ -1,0 +1,4 @@
+# Model weights are byte-exact (their SHA-256 is checked in the browser); never
+# let core.autocrlf touch them.
+public/models/** binary
+*.tflite binary

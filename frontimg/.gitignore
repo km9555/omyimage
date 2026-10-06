@@ -1,3 +1,5 @@
 
 # MediaPipe wasm runtime is staged from node_modules by scripts/copy-mediapipe.mjs
 public/mediapipe/wasm/
+# ONNX Runtime Web wasm runtime is staged from node_modules by scripts/copy-ort.mjs
+public/ort/

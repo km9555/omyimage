@@ -278,6 +278,12 @@ export const ptAliases: Record<string, string[]> = {
   "round-corners": [
     "cantos arredondados", "borda arredondada", "arredondar imagem", "png cantos arredondados",
   ],
+  "remove-watermark": [
+    "remover marca d'água", "tirar marca d'água", "apagar logo da foto", "tirar texto da imagem", "remover data da foto",
+  ],
+  "remove-object": [
+    "remover objetos da foto", "apagar pessoa da foto", "borracha mágica", "tirar objeto da imagem", "limpar foto",
+  ],
   "split-image": [
     "dividir imagem", "cortar imagem em partes", "dividir foto ao meio", "cortar foto em pedaços", "quebra-cabeça de foto",
   ],

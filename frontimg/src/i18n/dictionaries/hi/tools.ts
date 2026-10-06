@@ -414,6 +414,14 @@ export const hiTools: Record<string, LocalizedTool> = {
     name: "राउंड कॉर्नर",
     shortDescription: "इमेज के कोने गोल करें, ट्रांसपेरेंट किनारों के साथ।",
   },
+  "remove-watermark": {
+    name: "वॉटरमार्क हटाएँ",
+    shortDescription: "AI से वॉटरमार्क, लोगो और तारीख़ मिटाएँ — ब्राउज़र में।",
+  },
+  "remove-object": {
+    name: "फोटो से ऑब्जेक्ट हटाएँ",
+    shortDescription: "AI से फोटो से लोग, चीज़ें और दाग़ मिटाएँ।",
+  },
   "split-image": {
     name: "इमेज स्प्लिट करें",
     shortDescription: "इमेज को बराबर हिस्सों या टाइल्स में काटें।",

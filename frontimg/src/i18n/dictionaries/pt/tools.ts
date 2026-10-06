@@ -415,6 +415,14 @@ export const ptTools: Record<string, LocalizedTool> = {
     name: "Arredondar cantos",
     shortDescription: "Deixe os cantos das imagens arredondados, com bordas transparentes.",
   },
+  "remove-watermark": {
+    name: "Remover marca d'água",
+    shortDescription: "Apague marcas d'água, logos e datas com IA, no navegador.",
+  },
+  "remove-object": {
+    name: "Remover objetos da foto",
+    shortDescription: "Apague pessoas, objetos e imperfeições de fotos com IA.",
+  },
   "split-image": {
     name: "Dividir imagem",
     shortDescription: "Corte uma imagem em partes iguais ou em blocos.",

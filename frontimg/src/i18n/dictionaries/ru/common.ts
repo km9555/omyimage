@@ -390,6 +390,8 @@ export const ruCommon: Record<string, string> = {
     "Сервер не начал обработку. Попробуйте ещё раз.",
   "Timed out waiting for the server to finish.": "Сервер не ответил вовремя.",
   "Your browser cannot save {format} images. Try Chrome, Edge or Firefox.": "Ваш браузер не умеет сохранять изображения {format}. Попробуйте Chrome, Edge или Firefox.",
+  // lib/image/inpaint.ts (I18nError — invisible to i18n-keys)
+  "The AI model could not be downloaded. Check your connection and try again.": "Не удалось загрузить модель ИИ. Проверьте подключение и попробуйте ещё раз.",
   "This file is not a valid SVG.": "Этот файл не является корректным SVG.",
   "This size is too large for your browser — try a smaller scale.": "Этот размер слишком велик для вашего браузера — выберите масштаб поменьше.",
   "This SVG could not be drawn. It may use features browsers do not render as an image.": "Не удалось отрисовать этот SVG. Возможно, в нём есть элементы, которые браузеры не показывают как изображение.",

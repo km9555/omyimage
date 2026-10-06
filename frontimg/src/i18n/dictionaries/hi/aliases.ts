@@ -287,6 +287,12 @@ export const hiAliases: Record<string, string[]> = {
   "round-corners": [
     "round corners", "rounded corners image", "कोने गोल करें",
   ],
+  "remove-watermark": [
+    "watermark remover", "remove watermark", "वॉटरमार्क हटाएँ", "फोटो से लोगो हटाएँ",
+  ],
+  "remove-object": [
+    "remove object from photo", "object remover", "फोटो से चीज़ हटाएँ", "फोटो से आदमी हटाएँ",
+  ],
   "split-image": [
     "split image", "image splitter", "फोटो के हिस्से करें", "फोटो काटें",
   ],

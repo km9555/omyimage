@@ -118,6 +118,8 @@ const TOOL_INPUTS: Record<string, ToolInput> = {
   // ── AI (server) ─────────────────────────────────────────────────────────
   "remove-background": { kinds: COMMON, single: true },
   "upscale-image": { kinds: COMMON, single: true },
+  "remove-watermark": { kinds: COMMON, single: true },
+  "remove-object": { kinds: COMMON, single: true },
   "passport-photo-maker": { kinds: COMMON, single: true },
   "signature-resizer": { kinds: COMMON, single: true },
   "dpi-converter": { kinds: COMMON_GIF_BMP },

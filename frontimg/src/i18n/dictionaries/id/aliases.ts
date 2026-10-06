@@ -272,6 +272,12 @@ export const idAliases: Record<string, string[]> = {
   "round-corners": [
     "sudut bulat", "rounded corner", "melengkungkan sudut foto",
   ],
+  "remove-watermark": [
+    "hapus watermark", "menghilangkan watermark", "hapus logo di foto", "hapus tulisan di foto", "hapus tanggal di foto",
+  ],
+  "remove-object": [
+    "hapus objek foto", "menghapus objek di foto", "hapus orang di foto", "magic eraser", "bersihkan foto",
+  ],
   "split-image": [
     "split foto", "potong foto jadi beberapa bagian", "bagi foto", "potong gambar jadi dua",
   ],

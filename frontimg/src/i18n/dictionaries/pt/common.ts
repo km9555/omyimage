@@ -353,6 +353,8 @@ export const ptCommon: Record<string, string> = {
   "The server did not start the job. Please try again.": "O servidor não iniciou a tarefa. Tente novamente.",
   "Timed out waiting for the server to finish.": "Tempo esgotado esperando o servidor terminar.",
   "Your browser cannot save {format} images. Try Chrome, Edge or Firefox.": "Seu navegador não consegue salvar imagens {format}. Use o Chrome, o Edge ou o Firefox.",
+  // lib/image/inpaint.ts (I18nError — invisible to i18n-keys)
+  "The AI model could not be downloaded. Check your connection and try again.": "Não foi possível baixar o modelo de IA. Verifique sua conexão e tente de novo.",
   "This file is not a valid SVG.": "Este arquivo não é um SVG válido.",
   "This size is too large for your browser — try a smaller scale.": "Este tamanho é grande demais para o seu navegador — escolha uma escala menor.",
   "This SVG could not be drawn. It may use features browsers do not render as an image.": "Não foi possível desenhar este SVG. Ele pode usar recursos que os navegadores não exibem como imagem.",

@@ -158,6 +158,12 @@ export const TOOL_ALIASES: Record<string, string[]> = {
   "round-corners": [
     "rounded corners", "round image corners", "rounded png", "corner radius", "rounded rectangle image",
   ],
+  "remove-watermark": [
+    "watermark remover", "erase watermark", "remove logo from photo", "remove text from image", "remove date stamp", "delete watermark",
+  ],
+  "remove-object": [
+    "object remover", "erase object", "remove person from photo", "magic eraser", "cleanup picture", "inpaint", "remove unwanted objects",
+  ],
   "blur-image": [
     "blur photo", "soften image", "gaussian blur", "make image blurry",
     "blur whole image", "background blur",

@@ -417,6 +417,14 @@ export const idTools: Record<string, LocalizedTool> = {
     name: "Sudut Melengkung",
     shortDescription: "Buat sudut gambar melengkung dengan tepi transparan.",
   },
+  "remove-watermark": {
+    name: "Hapus Watermark",
+    shortDescription: "Hapus watermark, logo, dan tanggal dengan AI, langsung di browser.",
+  },
+  "remove-object": {
+    name: "Hapus Objek Foto",
+    shortDescription: "Hapus orang, benda, dan noda dari foto dengan AI.",
+  },
   "split-image": {
     name: "Split Foto",
     shortDescription: "Potong gambar jadi beberapa bagian sama besar atau ubin.",

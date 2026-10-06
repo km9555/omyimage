@@ -125,6 +125,8 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "image-brightness",
     "glitch-effect",
     "round-corners",
+    "remove-watermark",
+    "remove-object",
     "split-image",
     "image-overlay",
     // Expansion 3A — engine variants (expansion.md §5)
@@ -252,6 +254,8 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "image-brightness",
     "glitch-effect",
     "round-corners",
+    "remove-watermark",
+    "remove-object",
     "split-image",
     "image-overlay",
     // Expansion 3A — engine variants (expansion.md §5)
@@ -381,6 +385,8 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "image-brightness",
     "glitch-effect",
     "round-corners",
+    "remove-watermark",
+    "remove-object",
     "split-image",
     "image-overlay",
     // Expansion 3A — engine variants (expansion.md §5)
@@ -511,6 +517,8 @@ const SHIPPED_TOOLS: Record<TranslatedLocale, string[]> = {
     "image-brightness",
     "glitch-effect",
     "round-corners",
+    "remove-watermark",
+    "remove-object",
     "split-image",
     "image-overlay",
     // Expansion 3A — engine variants (expansion.md §5)

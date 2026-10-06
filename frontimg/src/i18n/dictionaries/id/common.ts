@@ -359,6 +359,8 @@ export const idCommon: Record<string, string> = {
     "Server tidak memulai proses. Silakan coba lagi.",
   "Timed out waiting for the server to finish.": "Waktu habis menunggu server selesai.",
   "Your browser cannot save {format} images. Try Chrome, Edge or Firefox.": "Browser Anda tidak bisa menyimpan gambar {format}. Coba Chrome, Edge, atau Firefox.",
+  // lib/image/inpaint.ts (I18nError — invisible to i18n-keys)
+  "The AI model could not be downloaded. Check your connection and try again.": "Model AI tidak bisa diunduh. Periksa koneksi Anda lalu coba lagi.",
   "This file is not a valid SVG.": "File ini bukan SVG yang valid.",
   "This size is too large for your browser — try a smaller scale.": "Ukuran ini terlalu besar untuk browser Anda — pilih skala yang lebih kecil.",
   "This SVG could not be drawn. It may use features browsers do not render as an image.": "SVG ini tidak bisa digambar. Mungkin ada fitur yang tidak ditampilkan browser sebagai gambar.",
