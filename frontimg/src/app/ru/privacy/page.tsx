@@ -270,9 +270,11 @@ export default function PrivacyPage() {
           headers={["Сервис", "Назначение", "Политика конфиденциальности"]}
           rows={[
             ["Cloudflare", "Хостинг сайта, CDN и защита от DDoS", "cloudflare.com/privacypolicy"],
-            ["Contabo", "Серверный хостинг для инструментов, работающих на нашем сервере", "contabo.com/en/legal/privacy-policy"],
+            ["Contabo", "Серверный хостинг для инструментов, работающих на нашем сервере, и для данных аккаунтов", "contabo.com/en/legal/privacy-policy"],
+            ["Hostinger", "Почтовый хостинг: отправляет письма аккаунта, например для подтверждения адреса и сброса пароля, и принимает письма на наши адреса", "hostinger.com/legal/privacy-policy"],
             ["Google Fonts", "Отдаёт шрифт иконок, используемый в интерфейсе", "policies.google.com/privacy"],
             ["Google Analytics", "Обобщённая статистика использования; загружается только при согласии на аналитические cookie", "policies.google.com/privacy"],
+            ["Вход через Google (по желанию)", "Выполняет вход, только если вы выбрали «Продолжить с Google», — см. раздел 7", "policies.google.com/privacy"],
             ["Google Drive (по желанию)", "Загружает только выбранные вами файлы и только когда вы этим пользуетесь — см. раздел 7", "policies.google.com/privacy"],
             ["Dropbox (по желанию)", "Загружает только выбранные вами файлы и только когда вы этим пользуетесь — см. раздел 8", "dropbox.com/privacy"],
           ]}

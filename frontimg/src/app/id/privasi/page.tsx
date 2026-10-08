@@ -276,9 +276,11 @@ export default function PrivacyPage() {
           headers={["Layanan", "Tujuan", "Kebijakan Privasi"]}
           rows={[
             ["Cloudflare", "Hosting situs web, CDN, dan perlindungan DDoS", "cloudflare.com/privacypolicy"],
-            ["Contabo", "Hosting server untuk alat yang memproses di server kami", "contabo.com/en/legal/privacy-policy"],
+            ["Contabo", "Hosting server untuk alat yang memproses di server kami dan untuk data akun", "contabo.com/en/legal/privacy-policy"],
+            ["Hostinger", "Hosting email: mengirim email akun seperti verifikasi alamat dan pengaturan ulang kata sandi, serta menerima email yang dikirim ke alamat kami", "hostinger.com/legal/privacy-policy"],
             ["Google Fonts", "Menyajikan font ikon yang dipakai di seluruh antarmuka", "policies.google.com/privacy"],
             ["Google Analytics", "Pengukuran penggunaan secara agregat, dimuat hanya jika Anda menerima cookie analitik", "policies.google.com/privacy"],
+            ["Masuk dengan Google (opsional)", "Memasukkan Anda ke akun, hanya jika Anda memilih “Lanjutkan dengan Google” — lihat bagian 7", "policies.google.com/privacy"],
             ["Google Drive (opsional)", "Hanya mengimpor file yang Anda pilih, dan hanya saat Anda memakainya — lihat bagian 7", "policies.google.com/privacy"],
             ["Dropbox (opsional)", "Hanya mengimpor file yang Anda pilih, dan hanya saat Anda memakainya — lihat bagian 8", "dropbox.com/privacy"],
           ]}

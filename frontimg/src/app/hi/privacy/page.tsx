@@ -256,9 +256,11 @@ export default function PrivacyPage() {
           headers={["सेवा", "किसलिए", "प्राइवेसी पॉलिसी"]}
           rows={[
             ["Cloudflare", "साइट की होस्टिंग, CDN और DDoS से सुरक्षा", "cloudflare.com/privacypolicy"],
-            ["Contabo", "उन टूल के सर्वर की होस्टिंग जो हमारे सर्वर पर प्रोसेस करते हैं", "contabo.com/en/legal/privacy-policy"],
+            ["Contabo", "उन टूल के सर्वर की होस्टिंग जो हमारे सर्वर पर प्रोसेस करते हैं, और अकाउंट डेटा की होस्टिंग", "contabo.com/en/legal/privacy-policy"],
+            ["Hostinger", "ईमेल होस्टिंग: ईमेल वेरिफ़िकेशन और पासवर्ड रीसेट जैसे अकाउंट ईमेल भेजता है, और हमारे पतों पर भेजे गए ईमेल प्राप्त करता है", "hostinger.com/legal/privacy-policy"],
             ["Google Fonts", "इंटरफ़ेस में इस्तेमाल होने वाला आइकन फ़ॉन्ट परोसता है", "policies.google.com/privacy"],
             ["Google Analytics", "समग्र उपयोग की माप, जो सिर्फ़ एनालिटिक्स कुकीज़ स्वीकार करने पर लोड होती है", "policies.google.com/privacy"],
+            ["Google से साइन इन (वैकल्पिक)", "आपको साइन इन कराता है, सिर्फ़ तब जब आप “Google से जारी रखें” चुनें — सेक्शन 7 देखें", "policies.google.com/privacy"],
             ["Google Drive (वैकल्पिक)", "सिर्फ़ वही फ़ाइलें लाता है जो आप चुनें, और सिर्फ़ तब जब आप इस्तेमाल करें — सेक्शन 7 देखें", "policies.google.com/privacy"],
             ["Dropbox (वैकल्पिक)", "सिर्फ़ वही फ़ाइलें लाता है जो आप चुनें, और सिर्फ़ तब जब आप इस्तेमाल करें — सेक्शन 8 देखें", "dropbox.com/privacy"],
           ]}

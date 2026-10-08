@@ -231,9 +231,11 @@ export default function PrivacyPage() {
         <LegalTable
           rows={[
             ["Cloudflare", "Website hosting, CDN and DDoS protection", "cloudflare.com/privacypolicy"],
-            ["Contabo", "Server hosting for the tools that process on our server", "contabo.com/en/legal/privacy-policy"],
+            ["Contabo", "Server hosting for the tools that process on our server, and for account data", "contabo.com/en/legal/privacy-policy"],
+            ["Hostinger", "Email hosting: sends account emails such as address verification and password resets, and receives mail sent to our addresses", "hostinger.com/legal/privacy-policy"],
             ["Google Fonts", "Serves the icon font used across the interface", "policies.google.com/privacy"],
             ["Google Analytics", "Aggregate usage measurement, loaded only if you accept analytics cookies", "policies.google.com/privacy"],
+            ["Google sign-in (optional)", "Signs you in, only if you choose “Continue with Google” — see section 7", "policies.google.com/privacy"],
             ["Google Drive (optional)", "Imports only the files you pick, and only when you use it — see section 7", "policies.google.com/privacy"],
             ["Dropbox (optional)", "Imports only the files you pick, and only when you use it — see section 8", "dropbox.com/privacy"],
           ]}
