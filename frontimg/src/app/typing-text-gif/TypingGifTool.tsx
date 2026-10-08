@@ -11,6 +11,7 @@ import { encodeGif } from "@/lib/image/gif-encode";
 import { ensureFont, fontStack, graphemes, wrapLines, type FontKey } from "@/lib/gif/text";
 import { useFormatBytes, useLocale, useT } from "@/i18n/I18nScope";
 import { translateError } from "@/i18n/errors";
+import type { TFunction } from "@/i18n/t";
 
 /**
  * Typing Text GIF: text that appears letter by letter, as if typed, with an
@@ -20,6 +21,21 @@ const ACCENT = "#C56A9A";
 const WIDTHS = [320, 480, 640, 800];
 const SPEEDS = [6, 10, 15, 25];
 const HOLDS = [1, 2, 3, 5];
+/** Thickness a preset switches the outline on at, when it is off. */
+const PRESET_OUTLINE = 8;
+
+/**
+ * Text, background and outline colours that go together. A function of t so
+ * the names stay literal t() calls, which is what `i18n:keys --check` can see.
+ */
+const presets = (t: TFunction) => [
+  { name: t("Classic Dark"), color: "#ffffff", bg: "#111827", outline: "#000000" },
+  { name: t("Clean Light"), color: "#111827", bg: "#ffffff", outline: "#d1d5db" },
+  { name: t("Midnight Neon"), color: "#39ff14", bg: "#0b0f19", outline: "#14532d" },
+  { name: t("Ocean Blue"), color: "#e0f2fe", bg: "#0c2d48", outline: "#1d4ed8" },
+  { name: t("Sunset Pop"), color: "#fff7ed", bg: "#9a3412", outline: "#f97316" },
+];
+type Preset = ReturnType<typeof presets>[number];
 
 interface Settings {
   text: string;
@@ -27,6 +43,9 @@ interface Settings {
   px: number;
   color: string;
   bg: string;
+  outline: string;
+  /** Outline width as a percentage of the font size; 0 is no outline. */
+  outlinePct: number;
   transparent: boolean;
   width: number;
   center: boolean;
@@ -91,6 +110,12 @@ function paint(ctx: CanvasRenderingContext2D, L: Layout, s: Settings, f: Frame) 
   ctx.textAlign = "left";
   ctx.textBaseline = "top";
   ctx.fillStyle = s.color;
+  // The outline is stroked under the fill, so only its outer half shows.
+  const ow = s.outlinePct > 0 ? Math.max(1, (L.px * s.outlinePct) / 100) : 0;
+  ctx.lineWidth = ow;
+  ctx.lineJoin = "round";
+  ctx.miterLimit = 2;
+  ctx.strokeStyle = s.outline;
   let left = f.shown;
   let cx = L.pad;
   let cy = L.pad;
@@ -99,7 +124,10 @@ function paint(ctx: CanvasRenderingContext2D, L: Layout, s: Settings, f: Frame) 
     const x = s.center ? (L.W - L.full[i]) / 2 : L.pad;
     const y = L.pad + i * L.lh + (L.lh - L.px) / 2;
     const part = g.slice(0, Math.max(0, Math.min(g.length, left))).join("");
-    if (part) ctx.fillText(part, x, y);
+    if (part) {
+      if (ow) ctx.strokeText(part, x, y);
+      ctx.fillText(part, x, y);
+    }
     if (left >= 0 && (left <= g.length || i === L.lines.length - 1)) {
       cx = x + ctx.measureText(part).width;
       cy = y;
@@ -108,7 +136,11 @@ function paint(ctx: CanvasRenderingContext2D, L: Layout, s: Settings, f: Frame) 
     if (left < 0) break;
   }
   const showCursor = s.cursor && (f.cursor || f.shown < L.lines.reduce((a, l) => a + l.length, 0));
-  if (showCursor) ctx.fillRect(Math.round(cx + L.px * 0.06), Math.round(cy - L.px * 0.05), Math.max(2, Math.round(L.px * 0.09)), Math.round(L.px * 1.1));
+  if (showCursor) {
+    const box = [Math.round(cx + L.px * 0.06 + ow / 2), Math.round(cy - L.px * 0.05), Math.max(2, Math.round(L.px * 0.09)), Math.round(L.px * 1.1)] as const;
+    if (ow) ctx.strokeRect(...box);
+    ctx.fillRect(...box);
+  }
 }
 
 export function TypingGifTool() {
@@ -121,10 +153,13 @@ export function TypingGifTool() {
   // The default text is drawn INTO the GIF, so it follows the page language.
   const [s, setS] = useState<Settings>(() => ({
     text: t("Hello! This GIF types your text, letter by letter."),
-    font: "mono", px: 32, color: "#111827", bg: "#ffffff", transparent: false, width: 480, center: false,
+    font: "mono", px: 32, color: "#111827", bg: "#ffffff", outline: "#d1d5db", outlinePct: 0, transparent: false, width: 480, center: false,
     cps: 10, cursor: true, hold: 2, loop: true,
   }));
   const set = <K extends keyof Settings>(k: K, v: Settings[K]) => setS((p) => ({ ...p, [k]: v }));
+  // A preset sets all three colours; it turns the outline on so its third colour shows.
+  const applyPreset = (p: Preset) =>
+    setS((o) => ({ ...o, color: p.color, bg: p.bg, outline: p.outline, outlinePct: o.outlinePct || PRESET_OUTLINE }));
   const [fontTick, setFontTick] = useState(0);
   // The workspace hides the page's own content while it is open (ToolWorkspace's
   // marker), so it opens only once the user starts — as an upload tool's does.
@@ -326,6 +361,33 @@ export function TypingGifTool() {
         <span className="text-body-md text-on-surface">{t("Transparent background")}</span>
       </label>
       {s.transparent && <p className="text-label-sm font-label-sm text-on-surface-variant/70">{t("GIF transparency has no soft edges, so text looks smoothest on a solid background.")}</p>}
+      <div className="grid grid-cols-2 gap-3">
+        <label className={`flex items-center gap-2.5 ${s.outlinePct ? "" : "opacity-60"}`}>
+          <input type="color" value={s.outline} onChange={(e) => setS((p) => ({ ...p, outline: e.target.value, outlinePct: p.outlinePct || PRESET_OUTLINE }))} className="h-9 w-12 cursor-pointer rounded border border-surface-variant bg-transparent" />
+          <span className="text-body-md text-on-surface">{t("Outline colour")}</span>
+        </label>
+        <div className="flex flex-col gap-1.5">
+          {/* i18n-raw: a percentage of the font size */}
+          <label htmlFor="typing-outline" className={`${label} flex justify-between`}><span>{t("Outline thickness")}</span><span className="tabular-nums">{`${s.outlinePct}%`}</span></label>
+          <input id="typing-outline" type="range" min={0} max={24} value={s.outlinePct} onChange={(e) => set("outlinePct", Number(e.target.value))} className="w-full accent-secondary" />
+        </div>
+      </div>
+      <div className="flex flex-col gap-1.5">
+        <span className={label}>{t("Colour presets")}</span>
+        <div className="flex flex-wrap gap-1.5">
+          {presets(t).map((p) => {
+            const on = s.outlinePct > 0 && s.color === p.color && s.bg === p.bg && s.outline === p.outline;
+            return (
+              <button key={p.name} type="button" aria-pressed={on} onClick={() => applyPreset(p)} className={`${chip(on)} inline-flex items-center gap-1.5`}>
+                <span aria-hidden className="flex gap-0.5">
+                  {[p.color, p.bg, p.outline].map((c, i) => <span key={i} className="h-3 w-3 rounded-full ring-1 ring-outline-variant/60" style={{ backgroundColor: c }} />)}
+                </span>
+                {p.name}
+              </button>
+            );
+          })}
+        </div>
+      </div>
       <label className="flex items-center gap-2.5 cursor-pointer">
         <input type="checkbox" checked={s.cursor} onChange={(e) => set("cursor", e.target.checked)} className="w-4 h-4 accent-secondary" />
         <span className="text-body-md text-on-surface">{t("Blinking cursor")}</span>

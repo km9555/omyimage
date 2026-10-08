@@ -39,6 +39,7 @@ const content: ToolPageContent = {
       body: [
         "Máquina de escrever, uma fonte monoespaçada, dá o visual clássico de terminal; sem serifa e com serifa combinam com citações e avisos, e a Impact faz um título forte. O tamanho vai de 14 a 96 pixels e a largura de 320 a 800 pixels; a altura cresce com o número de linhas.",
         "Qualquer cor de texto e de fundo funciona. Um fundo transparente deixa o GIF combinar com qualquer página, mas, como a transparência do GIF não tem bordas suaves, as letras ficam mais bonitas sobre uma cor sólida igual à do lugar onde o GIF vai aparecer.",
+        "Um contorno, de uma borda fina a uma borda grossa, mantém as letras legíveis em fundos movimentados ou transparentes. Cinco combinações de cores prontas — Escuro clássico, Claro e limpo, Neon da meia-noite, Azul oceano e Pôr do sol — definem as cores do texto, do fundo e do contorno com um clique, e você pode mudar qualquer uma depois.",
       ],
     },
     {
@@ -80,7 +81,7 @@ const content: ToolPageContent = {
 
   features: [
     { icon: "terminal", title: "Ritmo de digitação real", description: "Letra por letra, com pausas em vírgulas, pontos e fins de linha." },
-    { icon: "palette", title: "Do seu jeito", description: "Velocidade, fonte, tamanho, cores, cursor e pausa no final." },
+    { icon: "palette", title: "Do seu jeito", description: "Velocidade, fonte, tamanho, cores, contorno, cursor e pausa no final." },
     { icon: "lock", title: "Sem upload", description: "Desenhado inteiramente no seu navegador." },
   ],
 
@@ -91,6 +92,7 @@ const content: ToolPageContent = {
     { q: "O GIF pode parar depois de digitar uma vez?", a: "Sim. Desmarque Repetir sempre e ele para no texto pronto." },
     { q: "Posso usar várias linhas?", a: "Sim. Aperte Enter para uma linha nova; linhas longas também quebram sozinhas." },
     { q: "O fundo pode ser transparente?", a: "Sim, mas as letras ficam mais suaves num fundo sólido, porque a transparência do GIF não tem bordas suaves." },
+    { q: "Posso colocar contorno no texto?", a: "Sim. Escolha a cor do contorno e arraste Espessura do contorno. Uma combinação de cores pronta define as cores do texto, do fundo e do contorno de uma vez." },
     { q: "Funciona com acentos e emojis?", a: "Sim. Qualquer escrita que o seu aparelho mostre pode ser digitada, emojis incluídos." },
     { q: "Posso usar num README do GitHub?", a: "Sim. Um GIF aparece em READMEs, onde scripts e animações CSS não rodam." },
     { q: "De que tamanho fica o arquivo?", a: "Normalmente pequeno: cada quadro só acrescenta uma letra. Textos longos em tamanho grande ocupam mais." },
@@ -132,6 +134,14 @@ const content: ToolPageContent = {
     "Background colour": "Cor do fundo",
     "Transparent background": "Fundo transparente",
     "GIF transparency has no soft edges, so text looks smoothest on a solid background.": "A transparência do GIF não tem bordas suaves, então o texto fica mais bonito num fundo sólido.",
+    "Outline colour": "Cor do contorno",
+    "Outline thickness": "Espessura do contorno",
+    "Colour presets": "Combinações de cores",
+    "Classic Dark": "Escuro clássico",
+    "Clean Light": "Claro e limpo",
+    "Midnight Neon": "Neon da meia-noite",
+    "Ocean Blue": "Azul oceano",
+    "Sunset Pop": "Pôr do sol",
     "Blinking cursor": "Cursor piscando",
     "Pause at the end": "Pausa no final",
     "Repeat forever": "Repetir sempre",
