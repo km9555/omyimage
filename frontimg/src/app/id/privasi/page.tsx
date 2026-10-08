@@ -60,7 +60,7 @@ const toc = [
   { id: "collect", title: "4. Apa yang kami kumpulkan" },
   { id: "storage", title: "5. Penyimpanan browser" },
   { id: "subprocessors", title: "6. Layanan pihak ketiga" },
-  { id: "google-drive", title: "7. Impor dari Google Drive" },
+  { id: "google-drive", title: "7. Masuk dengan Google dan impor Drive" },
   { id: "dropbox", title: "8. Impor dari Dropbox" },
   { id: "future", title: "9. Fitur yang direncanakan" },
   { id: "rights", title: "10. Hak Anda" },
@@ -76,7 +76,7 @@ export default function PrivacyPage() {
       locale="id"
       title="Kebijakan Privasi"
       subtitle="Apa yang terjadi pada gambar dan data Anda saat Anda memakai oMyImage."
-      updated="9 September 2026"
+      updated="8 Oktober 2026"
       toc={toc}
     >
       <LegalSection id="summary" title="Ringkasan">
@@ -165,8 +165,9 @@ export default function PrivacyPage() {
 
       <LegalSection id="collect" title="4. Apa yang kami kumpulkan">
         <LegalP>
-          Kami tidak meminta nama, alamat email, atau data pribadi lainnya untuk memakai alat-alat
-          ini. Tidak ada akun, tidak ada buletin, dan tidak ada formulir kontak di situs ini.
+          Anda tidak perlu memberi kami nama, alamat email, atau data pribadi lainnya untuk memakai
+          alat-alat ini. Tidak ada buletin dan tidak ada formulir kontak di situs ini. Membuat akun
+          bersifat opsional; apa yang kami simpan jika Anda membuatnya dijelaskan di akhir bagian ini.
         </LegalP>
         <LegalP>
           Seperti layanan web mana pun, server kami dan penyedia hosting kami secara otomatis
@@ -194,6 +195,34 @@ export default function PrivacyPage() {
           </Link>{" "}
           kami untuk detailnya.
         </LegalP>
+
+        <LegalSubsection title="Jika Anda membuat akun">
+          <LegalP>
+            Akun bersifat opsional: setiap alat berfungsi tanpanya. Anda dapat membuatnya dengan
+            alamat email dan kata sandi, atau dengan masuk menggunakan Google (bagian 7). Untuk sebuah
+            akun, kami menyimpan:
+          </LegalP>
+          <LegalUl>
+            <li>alamat email Anda, dan apakah Anda sudah memverifikasinya;</li>
+            <li>nama Anda, jika Anda mengisinya atau nama itu berasal dari masuk dengan Google;</li>
+            <li>
+              kata sandi yang di-hash secara aman, jika Anda mendaftar dengan email — kami tidak
+              pernah menyimpan kata sandinya sendiri;
+            </li>
+            <li>ID akun Google Anda, jika Anda masuk dengan Google;</li>
+            <li>
+              negara asal pendaftaran dan kunjungan terakhir Anda, yang ditentukan dari alamat IP
+              Anda, serta waktu kunjungan tersebut.
+            </li>
+          </LegalUl>
+          <LegalP>
+            Kami memakai data ini untuk memasukkan Anda ke akun, mengirim email akun seperti
+            verifikasi alamat dan pengaturan ulang kata sandi, dan melihat secara agregat dari negara
+            mana saja pengguna kami berasal. Kami tidak memakainya untuk iklan dan tidak pernah
+            menjualnya. Anda dapat mengubah nama dan kata sandi di halaman akun; untuk menghapus akun,
+            lihat bagian 10.
+          </LegalP>
+        </LegalSubsection>
       </LegalSection>
 
       <LegalSection id="storage" title="5. Penyimpanan browser">
@@ -230,6 +259,12 @@ export default function PrivacyPage() {
           </Link>{" "}
           kami.
         </LegalP>
+        <LegalP>
+          Jika Anda masuk, kami juga menyimpan token sesi Anda di local storage sebagai{" "}
+          <code>omyimage_token</code>. Berbeda dengan item di atas, token ini dikirim ke server kami
+          bersama permintaan Anda, agar kami tahu akun mana pemiliknya. Keluar dari akun akan
+          menghapusnya.
+        </LegalP>
       </LegalSection>
 
       <LegalSection id="subprocessors" title="6. Layanan pihak ketiga">
@@ -241,9 +276,11 @@ export default function PrivacyPage() {
           headers={["Layanan", "Tujuan", "Kebijakan Privasi"]}
           rows={[
             ["Cloudflare", "Hosting situs web, CDN, dan perlindungan DDoS", "cloudflare.com/privacypolicy"],
-            ["Contabo", "Hosting server untuk alat yang memproses di server kami", "contabo.com/en/legal/privacy-policy"],
+            ["Contabo", "Hosting server untuk alat yang memproses di server kami dan untuk data akun", "contabo.com/en/legal/privacy-policy"],
+            ["Hostinger", "Hosting email: mengirim email akun seperti verifikasi alamat dan pengaturan ulang kata sandi, serta menerima email yang dikirim ke alamat kami", "hostinger.com/legal/privacy-policy"],
             ["Google Fonts", "Menyajikan font ikon yang dipakai di seluruh antarmuka", "policies.google.com/privacy"],
             ["Google Analytics", "Pengukuran penggunaan secara agregat, dimuat hanya jika Anda menerima cookie analitik", "policies.google.com/privacy"],
+            ["Masuk dengan Google (opsional)", "Memasukkan Anda ke akun, hanya jika Anda memilih “Lanjutkan dengan Google” — lihat bagian 7", "policies.google.com/privacy"],
             ["Google Drive (opsional)", "Hanya mengimpor file yang Anda pilih, dan hanya saat Anda memakainya — lihat bagian 7", "policies.google.com/privacy"],
             ["Dropbox (opsional)", "Hanya mengimpor file yang Anda pilih, dan hanya saat Anda memakainya — lihat bagian 8", "dropbox.com/privacy"],
           ]}
@@ -262,14 +299,30 @@ export default function PrivacyPage() {
         Limited Use sentence, which is prescribed wording and must not be
         paraphrased. Keep the scope named here in sync with lib/google-drive.ts.
       */}
-      <LegalSection id="google-drive" title="7. Impor dari Google Drive">
+      <LegalSection id="google-drive" title="7. Masuk dengan Google dan impor Drive">
         <LegalP>
-          Menghubungkan Google bersifat opsional. Setiap alat di oMyImage berfungsi tanpanya, dan tidak
-          ada bagian situs yang meminta Anda masuk. Koneksi ini ada untuk satu fitur saja: mengimpor
-          gambar yang sudah Anda simpan di Google Drive, alih-alih mengunggahnya dari perangkat Anda.
+          Menghubungkan Google bersifat opsional, dan setiap alat di oMyImage berfungsi tanpanya.
+          Kami memakai Google untuk dua hal terpisah, masing-masing dengan izinnya sendiri:{" "}
+          <strong>masuk ke akun</strong>, jika Anda memilih membuat akun dengan Google, dan{" "}
+          <strong>mengimpor gambar</strong> yang sudah Anda simpan di Google Drive, alih-alih
+          mengunggahnya dari perangkat Anda. Memberi satu izin tidak memberi izin yang lain.
         </LegalP>
 
-        <LegalSubsection title="Apa yang kami minta, dan apa yang diizinkannya">
+        <LegalSubsection title="Masuk dengan Google">
+          <LegalP>
+            Saat Anda memilih &quot;Lanjutkan dengan Google&quot;, Google meminta Anda membagikan
+            profil dasar Anda kepada oMyImage: cakupan <code>email</code> dan <code>profile</code>.
+            Kami memakainya sekali, saat masuk, untuk membaca alamat email, nama, dan ID akun Google
+            Anda, lalu menyimpan ketiganya bersama akun Anda seperti dijelaskan di bagian 4. Token
+            akses dari pertukaran itu hanya dipakai untuk satu permintaan tersebut dan tidak disimpan.
+          </LegalP>
+          <LegalP>
+            Masuk dengan Google tidak memberi oMyImage akses ke Google Drive, Gmail, kontak, atau data
+            Google Anda yang lain.
+          </LegalP>
+        </LegalSubsection>
+
+        <LegalSubsection title="Impor Drive: apa yang kami minta, dan apa yang diizinkannya">
           <LegalP>
             Saat Anda memilih &quot;Impor dari Google Drive&quot;, kami meminta satu izin yang sempit:{" "}
             {/* break-all: the full scope URI is one 42-character unbreakable
@@ -287,7 +340,7 @@ export default function PrivacyPage() {
           </LegalP>
         </LegalSubsection>
 
-        <LegalSubsection title="Apa yang terjadi pada file dan token">
+        <LegalSubsection title="Impor Drive: apa yang terjadi pada file dan token">
           <LegalUl>
             <li>
               Token akses yang diterbitkan Google disimpan di memori browser Anda hanya selama
@@ -339,6 +392,9 @@ export default function PrivacyPage() {
           </a>{" "}
           Anda.
         </LegalP>
+        <LegalP>
+          Mencabut akses ini tidak menghapus akun oMyImage Anda; caranya dijelaskan di bagian 10.
+        </LegalP>
       </LegalSection>
 
       {/*
@@ -350,8 +406,8 @@ export default function PrivacyPage() {
         <LegalP>
           Menghubungkan Dropbox bersifat opsional, dan cara kerjanya sama seperti Google Drive: fitur
           ini ada hanya agar Anda bisa memilih gambar yang sudah Anda simpan di Dropbox alih-alih
-          mengunggahnya dari perangkat Anda. Setiap alat di oMyImage berfungsi tanpanya, dan tidak ada
-          bagian situs yang meminta Anda masuk.
+          mengunggahnya dari perangkat Anda. Setiap alat di oMyImage berfungsi tanpanya, dan fitur ini
+          tidak memerlukan akun oMyImage.
         </LegalP>
 
         <LegalP>
@@ -403,11 +459,6 @@ export default function PrivacyPage() {
         </LegalP>
         <LegalUl>
           <li>
-            <strong>Akun.</strong> Jika kami memperkenalkan fitur masuk, kami akan mengumpulkan alamat
-            email dan kata sandi yang di-hash secara aman, semata-mata untuk mengautentikasi Anda dan
-            mengaitkan paket yang Anda miliki. Anda akan dapat menghapus akun beserta datanya.
-          </li>
-          <li>
             <strong>Paket berbayar.</strong> Jika kami memperkenalkan paket berbayar, pembayaran akan
             ditangani oleh pemroses pembayaran pihak ketiga. Detail kartu akan dikirim langsung ke
             pemroses tersebut dan tidak akan pernah sampai atau tersimpan di server kami. Kami hanya
@@ -424,12 +475,13 @@ export default function PrivacyPage() {
         <LegalP>
           Tergantung tempat tinggal Anda, Anda mungkin memiliki hak untuk mengakses, memperbaiki,
           mengekspor, atau menghapus data pribadi tentang Anda, serta untuk berkeberatan atas
-          pemrosesan tertentu. Karena kami tidak mengelola akun dan tidak menyimpan gambar Anda, dalam
-          praktiknya kami biasanya tidak menyimpan apa pun tentang Anda yang bisa diambil.
+          pemrosesan tertentu. Kami tidak menyimpan gambar Anda. Jika Anda punya akun, kami menyimpan
+          data akun yang tercantum di bagian 4; tanpa akun, kami biasanya tidak menyimpan apa pun
+          tentang Anda yang bisa diambil.
         </LegalP>
         <LegalP>
-          Jika Anda yakin kami menyimpan data yang berkaitan dengan Anda, hubungi kami melalui detail
-          di{" "}
+          Untuk melihat, mengekspor, atau menghapus data Anda, termasuk akun Anda dan semua yang
+          tersimpan di dalamnya, hubungi kami melalui detail di{" "}
           <Link href={localeHref("/contact", "id")} className="text-secondary hover:underline">
             halaman kontak
           </Link>{" "}
