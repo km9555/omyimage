@@ -39,6 +39,7 @@ const content: ToolPageContent = {
       body: [
         "Mesin ketik, font monospace, memberi tampilan terminal klasik; sans-serif dan serif cocok untuk kutipan dan pengumuman, dan Impact membuat judul yang tegas. Ukuran berkisar 14 sampai 96 piksel dan lebar 320 sampai 800 piksel; tingginya bertambah sesuai jumlah baris.",
         "Warna teks dan latar apa pun bisa dipakai. Latar transparan membuat GIF bisa ditaruh di halaman mana saja, tetapi karena transparansi GIF tidak punya tepi halus, huruf terlihat paling rapi di atas warna solid yang sama dengan tempat GIF akan ditampilkan.",
+        "Garis tepi, dari tepi tipis sampai bingkai tebal, membuat huruf tetap terbaca di latar yang ramai atau transparan. Lima preset warna — Gelap Klasik, Terang Bersih, Neon Tengah Malam, Biru Samudra, dan Senja Ceria — mengatur warna teks, latar, dan garis tepi sekaligus dengan satu klik, dan Anda bisa mengubah masing-masing setelahnya.",
       ],
     },
     {
@@ -87,7 +88,7 @@ const content: ToolPageContent = {
 
   features: [
     { icon: "terminal", title: "Irama mengetik asli", description: "Huruf demi huruf, dengan jeda di koma, titik, dan akhir baris." },
-    { icon: "palette", title: "Gaya Anda", description: "Kecepatan, font, ukuran, warna, kursor, dan jeda di akhir." },
+    { icon: "palette", title: "Gaya Anda", description: "Kecepatan, font, ukuran, warna, garis tepi, kursor, dan jeda di akhir." },
     { icon: "lock", title: "Tanpa upload", description: "Dibuat sepenuhnya di browser Anda." },
   ],
 
@@ -98,6 +99,7 @@ const content: ToolPageContent = {
     { q: "Bisakah GIF berhenti setelah mengetik sekali?", a: "Bisa. Hapus centang Ulangi terus, dan GIF berhenti di teks yang sudah lengkap." },
     { q: "Bisakah memakai beberapa baris?", a: "Bisa. Tekan Enter untuk baris baru; baris panjang juga pindah sendiri." },
     { q: "Bisakah latarnya transparan?", a: "Bisa, tetapi huruf terlihat lebih halus di latar solid, karena transparansi GIF tidak punya tepi halus." },
+    { q: "Bisakah teks diberi garis tepi?", a: "Bisa. Pilih warna garis tepi lalu geser Tebal garis tepi. Preset warna mengatur warna teks, latar, dan garis tepi sekaligus." },
     { q: "Apakah emoji bisa diketik?", a: "Bisa. Bahasa apa pun yang ditampilkan perangkat Anda bisa diketik, termasuk emoji." },
     { q: "Bisakah dipakai di README GitHub?", a: "Bisa. GIF tampil di README, tempat skrip dan animasi CSS tidak bisa berjalan." },
     { q: "Seberapa besar filenya?", a: "Biasanya kecil: setiap frame hanya menambahkan satu huruf. Teks panjang dengan ukuran besar memakan lebih banyak." },
@@ -139,6 +141,14 @@ const content: ToolPageContent = {
     "Background colour": "Warna latar",
     "Transparent background": "Latar transparan",
     "GIF transparency has no soft edges, so text looks smoothest on a solid background.": "Transparansi GIF tidak punya tepi halus, jadi teks paling rapi di latar solid.",
+    "Outline colour": "Warna garis tepi",
+    "Outline thickness": "Tebal garis tepi",
+    "Colour presets": "Preset warna",
+    "Classic Dark": "Gelap Klasik",
+    "Clean Light": "Terang Bersih",
+    "Midnight Neon": "Neon Tengah Malam",
+    "Ocean Blue": "Biru Samudra",
+    "Sunset Pop": "Senja Ceria",
     "Blinking cursor": "Kursor berkedip",
     "Pause at the end": "Jeda di akhir",
     "Repeat forever": "Ulangi terus",

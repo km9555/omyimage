@@ -38,6 +38,7 @@ const content: ToolPageContent = {
       body: [
         "Typewriter, a monospaced font, gives the classic terminal look; sans-serif and serif suit quotes and announcements, and Impact makes a bold headline. Size runs from 14 to 96 pixels and the width from 320 to 800 pixels; the height grows with the number of lines.",
         "Any text and background colour works. A transparent background lets the GIF sit on any page, but because GIF transparency has no soft edges, letters look smoothest on a solid colour that matches where the GIF will be shown.",
+        "An outline, from a thin edge to a thick border, keeps letters readable on busy or transparent backgrounds. Five colour presets — Classic Dark, Clean Light, Midnight Neon, Ocean Blue and Sunset Pop — set the text, background and outline colours in one click, and you can change any of them afterwards.",
       ],
     },
     {
@@ -79,7 +80,7 @@ const content: ToolPageContent = {
 
   features: [
     { icon: "terminal", title: "Real typing rhythm", description: "Letter by letter, with pauses at commas, full stops and line ends." },
-    { icon: "palette", title: "Your style", description: "Speed, font, size, colours, cursor and the pause at the end." },
+    { icon: "palette", title: "Your style", description: "Speed, font, size, colours, outline, cursor and the pause at the end." },
     { icon: "lock", title: "Nothing uploaded", description: "Drawn entirely in your browser." },
   ],
 
@@ -90,6 +91,7 @@ const content: ToolPageContent = {
     { q: "Can the GIF stop after typing once?", a: "Yes. Untick Repeat forever and it stops on the finished text." },
     { q: "Can I use several lines?", a: "Yes. Press Enter for a new line; long lines also wrap by themselves." },
     { q: "Can the background be transparent?", a: "Yes, though letters look smoothest on a solid background, because GIF transparency has no soft edges." },
+    { q: "Can I add an outline to the text?", a: "Yes. Pick an outline colour and drag Outline thickness. A colour preset sets the text, background and outline colours together." },
     { q: "Does it work in Hindi or Russian?", a: "Yes. Any language your device can display can be typed, emoji included." },
     { q: "Can I use it in a GitHub README?", a: "Yes. A GIF shows in READMEs where scripts and CSS animations can't run." },
     { q: "How big is the file?", a: "Usually small: each frame only adds a letter. Long texts in large sizes take more." },
