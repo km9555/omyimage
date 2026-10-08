@@ -7,7 +7,7 @@ const content: ToolPageContent = {
   name: "Gabung GIF",
   tagline:
     "Gabungkan beberapa GIF animasi jadi satu: susun urutannya, dan GIF diputar satu per satu, setiap frame dengan durasinya sendiri. Gratis, di browser.",
-  category: { id: "edit", label: "Edit" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Gabung GIF Online Gratis — Satukan Beberapa GIF | oMyImage",
   metaDescription:

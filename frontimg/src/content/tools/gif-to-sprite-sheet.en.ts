@@ -10,7 +10,7 @@ const content: ToolPageContent = {
   name: "GIF to Sprite Sheet",
   tagline:
     "Lay out every frame of an animated GIF on one PNG sprite sheet — as a grid, a single row or a column — with spacing and a ready-made CSS animation. Free, in your browser.",
-  category: { id: "convert", label: "Convert" },
+  category: { id: "gif", label: "GIF" },
 
   intro:
     "A sprite sheet puts all the frames of an animation side by side on one image. Games and web pages then show one frame at a time by moving a window across the sheet, which is faster to load and easier to control than a GIF. oMyImage's GIF to Sprite Sheet turns any animated GIF into a transparent PNG sheet in a few clicks: pick a grid, a single row or a single column, choose how many frames to keep and how big they are, add spacing if your engine needs it, and copy the CSS that plays it.",

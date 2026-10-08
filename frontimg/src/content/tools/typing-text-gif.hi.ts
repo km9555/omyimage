@@ -7,7 +7,7 @@ const content: ToolPageContent = {
   name: "टाइपिंग टेक्स्ट GIF",
   tagline:
     "अपने टेक्स्ट की ऐसी GIF बनाएँ जिसमें वह अक्षर-दर-अक्षर अपने आप टाइप होता दिखे, टिमटिमाते कर्सर के साथ। स्पीड, फ़ॉन्ट और रंग चुनें। मुफ़्त, ब्राउज़र में — कुछ अपलोड नहीं करना।",
-  category: { id: "edit", label: "एडिट" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Typing Text GIF Maker — टाइपिंग एनिमेशन वाली GIF बनाएँ | oMyImage",
   metaDescription:

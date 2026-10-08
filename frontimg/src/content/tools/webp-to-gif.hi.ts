@@ -8,7 +8,7 @@ const content: ToolPageContent = {
   name: "WEBP से GIF",
   tagline:
     "एनिमेटेड WEBP इमेज को GIF में बदलें, हर फ़्रेम और उसकी टाइमिंग के साथ — ताकि एनिमेशन उन ऐप और एडिटर में भी चले जो WEBP नहीं समझते। मुफ़्त, ब्राउज़र में।",
-  category: { id: "convert", label: "कन्वर्ट" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "WEBP से GIF — एनिमेटेड WEBP बदलें, मुफ़्त ऑनलाइन | oMyImage",
   metaDescription:

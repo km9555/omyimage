@@ -7,7 +7,7 @@ const content: ToolPageContent = {
   name: "Kompres GIF",
   tagline:
     "Perkecil GIF animasi — lebih sedikit warna, frame yang lebih cerdas, dan ukuran yang bisa diperkecil — tanpa animasinya berhenti. Bandingkan sebelum dan sesudah, lalu unduh. Gratis, di browser.",
-  category: { id: "optimize", label: "Optimasi" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Kompres GIF Online Gratis — Perkecil Ukuran File GIF | oMyImage",
   metaDescription:

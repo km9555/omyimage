@@ -8,7 +8,7 @@ const content: ToolPageContent = {
   name: "WEBP para GIF",
   tagline:
     "Converta imagens WEBP animadas em GIF, mantendo cada quadro e o tempo — para a animação tocar em aplicativos e editores que não entendem WEBP. Grátis, no navegador.",
-  category: { id: "convert", label: "Converter" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "WEBP para GIF Online Grátis — WEBP Animado | oMyImage",
   metaDescription:

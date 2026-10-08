@@ -8,7 +8,7 @@ const content: ToolPageContent = {
   name: "Redimensionar GIF",
   tagline:
     "Redimensione GIFs animados por porcentagem ou em pixels exatos — cada quadro é redimensionado e a animação toca exatamente como antes. Grátis, sem marca d'água, no navegador.",
-  category: { id: "optimize", label: "Otimizar" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Redimensionar GIF Online Grátis — GIF Animado | oMyImage",
   metaDescription:

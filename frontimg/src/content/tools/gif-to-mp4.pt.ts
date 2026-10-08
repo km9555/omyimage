@@ -7,7 +7,7 @@ const content: ToolPageContent = {
   name: "GIF para MP4",
   tagline:
     "Converta GIFs em vídeo MP4 — em geral bem menor, com cores mais suaves e aceito em toda plataforma que recebe vídeo. Repita GIFs curtos, escolha um fundo e baixe. Grátis, no navegador.",
-  category: { id: "convert", label: "Converter" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "GIF para MP4 Online Grátis — Vídeos Leves | oMyImage",
   metaDescription:

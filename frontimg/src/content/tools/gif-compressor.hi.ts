@@ -7,7 +7,7 @@ const content: ToolPageContent = {
   name: "GIF कंप्रेसर",
   tagline:
     "एनिमेटेड GIF को छोटा करें — कम रंग, समझदारी से फ़्रेम और चाहें तो साइज़ घटाकर — और एनिमेशन चलता रहे। पहले और बाद की तुलना करें, फिर डाउनलोड करें। मुफ़्त, ब्राउज़र में।",
-  category: { id: "optimize", label: "ऑप्टिमाइज़" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "GIF कंप्रेसर — GIF का साइज़ ऑनलाइन कम करें, मुफ़्त | oMyImage",
   metaDescription:

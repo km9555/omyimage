@@ -21,7 +21,7 @@ const content: ToolPageContent = {
   name: "GIF से इमेज",
   tagline:
     "किसी चलते हुए GIF के सारे फ़्रेम ऑनलाइन निकालें — सब कुछ PNG, JPG या WEBP में एक ZIP में डाउनलोड करें, या सिर्फ़ एक फ़्रेम लें। मुफ़्त, तेज़ और पूरी तरह आपके ब्राउज़र में।",
-  category: { id: "convert", label: "कन्वर्ट" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "GIF से इमेज बनाएँ — GIF के फ़्रेम निकालें, मुफ़्त | oMyImage",
   metaDescription:

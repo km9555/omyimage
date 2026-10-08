@@ -10,7 +10,7 @@ const content: ToolPageContent = {
   name: "GIF Resizer",
   tagline:
     "Resize animated GIFs by percent or to exact pixels — every frame is resized and the animation plays exactly as before. Free, no watermark, in your browser.",
-  category: { id: "optimize", label: "Optimize" },
+  category: { id: "gif", label: "GIF" },
 
   intro:
     "Resizing an animated GIF in an ordinary image editor usually keeps only the first frame. oMyImage's GIF Resizer resizes every frame of the animation and keeps its timing and looping, so the result moves exactly like the original, just at the size you need. Scale by a percentage or type the width and height in pixels, compare the original with the result, and download it.",

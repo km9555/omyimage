@@ -7,7 +7,7 @@ const content: ToolPageContent = {
   name: "GIF मर्जर",
   tagline:
     "कई एनिमेटेड GIF को एक में जोड़ें: उन्हें क्रम में रखें और वे एक के बाद एक चलेंगी, हर फ़्रेम अपनी टाइमिंग के साथ। मुफ़्त, ब्राउज़र में।",
-  category: { id: "edit", label: "एडिट" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "GIF Merger — कई GIF को एक में जोड़ें, मुफ़्त ऑनलाइन | oMyImage",
   metaDescription:

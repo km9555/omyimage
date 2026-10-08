@@ -7,7 +7,7 @@ const content: ToolPageContent = {
   name: "GIF क्रॉपर",
   tagline:
     "एनिमेटेड GIF ऑनलाइन क्रॉप करें — बॉक्स खींचें या सटीक पिक्सल लिखें, कोई अनुपात लॉक करें, और हर फ़्रेम एक जैसा क्रॉप होता है। एनिमेशन चलता रहता है। मुफ़्त, ब्राउज़र में।",
-  category: { id: "optimize", label: "ऑप्टिमाइज़" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "GIF क्रॉपर — एनिमेटेड GIF ऑनलाइन क्रॉप करें, मुफ़्त | oMyImage",
   metaDescription:

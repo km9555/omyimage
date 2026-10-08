@@ -10,7 +10,7 @@ const content: ToolPageContent = {
   name: "Brightness & Contrast",
   tagline:
     "Brighten a dark photo, add punch with contrast and make colours livelier or calmer with saturation — with a live preview and a quick before-and-after. Free, in your browser.",
-  category: { id: "edit", label: "Edit" },
+  category: { id: "edit", label: "Edit & Create" },
 
   intro:
     "Most photos that look disappointing are not out of focus — they are a little too dark, too flat or too grey. Three sliders fix most of that. oMyImage's Brightness & Contrast adjusts brightness, contrast and saturation on JPG, PNG and WEBP images, shows the change live as you drag, and lets you hold a button to see the original again. Apply the same settings to a whole batch, so a set of product shots or holiday photos comes out consistent.",

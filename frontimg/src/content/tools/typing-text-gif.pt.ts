@@ -7,7 +7,7 @@ const content: ToolPageContent = {
   name: "GIF de texto digitando",
   tagline:
     "Crie um GIF do seu texto se digitando sozinho, letra por letra, com um cursor piscando. Escolha a velocidade, a fonte e as cores. Grátis, no navegador — nada para enviar.",
-  category: { id: "edit", label: "Editar" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "GIF de Texto Digitando Online Grátis — Efeito de Digitação | oMyImage",
   metaDescription:

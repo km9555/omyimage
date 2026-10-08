@@ -8,7 +8,7 @@ const content: ToolPageContent = {
   name: "Potong GIF",
   tagline:
     "Potong GIF animasi sampai tinggal bagian yang Anda mau: pilih frame pertama dan terakhir yang disimpan, atau buang satu bagian dari tengahnya. Gratis, di browser.",
-  category: { id: "edit", label: "Edit" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Potong GIF Online Gratis — Trim Durasi GIF Animasi | oMyImage",
   metaDescription:

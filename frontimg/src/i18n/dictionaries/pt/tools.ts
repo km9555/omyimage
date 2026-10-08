@@ -31,6 +31,8 @@
 export interface LocalizedTool {
   name: string;
   shortDescription: string;
+  /** Short chip label on the home page's "Sizes and presets" (variants only). */
+  presetLabel?: string;
 }
 
 export const ptTools: Record<string, LocalizedTool> = {
@@ -205,6 +207,7 @@ export const ptTools: Record<string, LocalizedTool> = {
   // ── Variantes: comprimir até um tamanho (expansion.md) ──
   "reduce-image-size-in-kb": {
     name: "Reduzir tamanho da imagem em KB",
+    presetLabel: "Reduzir em KB",
     shortDescription: "Diminua a foto para o tamanho em KB que você precisar.",
   },
   "compress-image-to-20kb": {
@@ -261,6 +264,7 @@ export const ptTools: Record<string, LocalizedTool> = {
   },
   "increase-image-size-in-kb": {
     name: "Aumentar tamanho da imagem em KB",
+    presetLabel: "Aumentar em KB",
     shortDescription: "Deixe uma foto com pelo menos 10, 20 ou 50 KB.",
   },
   "signature-resizer": {
@@ -301,22 +305,27 @@ export const ptTools: Record<string, LocalizedTool> = {
   },
   "youtube-thumbnail-resizer": {
     name: "Redimensionar Thumbnail do YouTube",
+    presetLabel: "Thumbnail do YouTube",
     shortDescription: "Qualquer imagem no tamanho de thumbnail: 1280 × 720.",
   },
   "whatsapp-dp-resizer": {
     name: "Foto de Perfil do WhatsApp",
+    presetLabel: "Perfil do WhatsApp",
     shortDescription: "A foto inteira num perfil quadrado, sem cortar.",
   },
   "linkedin-banner-resizer": {
     name: "Redimensionar Capa do LinkedIn",
+    presetLabel: "Capa do LinkedIn",
     shortDescription: "Qualquer imagem como capa do LinkedIn: 1584 × 396.",
   },
   "facebook-cover-resizer": {
     name: "Redimensionar Capa do Facebook",
+    presetLabel: "Capa do Facebook",
     shortDescription: "Qualquer imagem como capa do Facebook: 851 × 315.",
   },
   "discord-banner-resizer": {
     name: "Redimensionar Banner do Discord",
+    presetLabel: "Banner do Discord",
     shortDescription: "Banners de perfil e de servidor do Discord.",
   },
   "dpi-converter": {
@@ -329,6 +338,7 @@ export const ptTools: Record<string, LocalizedTool> = {
   },
   "resize-image-in-cm": {
     name: "Redimensionar Imagem em cm",
+    presetLabel: "Tamanho em cm",
     shortDescription: "Redimensione para um tamanho exato em cm, mm ou polegadas.",
   },
   "video-to-gif": {
@@ -479,5 +489,6 @@ export const ptCategories: Record<string, { title: string; navLabel: string }> =
   optimize: { title: "Otimizar e comprimir", navLabel: "Otimizar" },
   convert: { title: "Converter imagens", navLabel: "Converter" },
   edit: { title: "Editar e criar", navLabel: "Editar e criar" },
+  gif: { title: "Ferramentas de GIF", navLabel: "GIF" },
   ai: { title: "Ferramentas de IA", navLabel: "IA de imagem" },
 };

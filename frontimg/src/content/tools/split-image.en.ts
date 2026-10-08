@@ -11,7 +11,7 @@ const content: ToolPageContent = {
   name: "Split Image",
   tagline:
     "Cut any picture into equal parts — two halves, three strips, a 3 × 3 grid — or into tiles of an exact pixel size. Every piece arrives in one ZIP, named in order. Free, in your browser.",
-  category: { id: "edit", label: "Edit" },
+  category: { id: "edit", label: "Edit & Create" },
   variantsHeading: "Split an image or make an Instagram grid",
 
   intro:

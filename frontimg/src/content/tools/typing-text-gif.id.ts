@@ -7,7 +7,7 @@ const content: ToolPageContent = {
   name: "GIF Teks Mengetik",
   tagline:
     "Buat GIF berisi teks yang mengetik sendiri, huruf demi huruf, dengan kursor berkedip. Pilih kecepatan, font, dan warnanya. Gratis, di browser — tidak ada yang perlu di-upload.",
-  category: { id: "edit", label: "Edit" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "GIF Teks Mengetik Online Gratis — Efek Mesin Ketik | oMyImage",
   metaDescription:

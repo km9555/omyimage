@@ -7,7 +7,7 @@ const content: ToolPageContent = {
   name: "Tambah Teks ke GIF",
   tagline:
     "Beri tulisan pada GIF animasi — teks meme, subtitle, atau label — di semua frame atau sebagian saja, dan lihat langsung saat diputar sebelum disimpan. Gratis, di browser.",
-  category: { id: "edit", label: "Edit" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Tambah Teks ke GIF Online Gratis — Tulisan di GIF | oMyImage",
   metaDescription:

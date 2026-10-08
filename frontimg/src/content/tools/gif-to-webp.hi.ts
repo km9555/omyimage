@@ -7,7 +7,7 @@ const content: ToolPageContent = {
   name: "GIF से WEBP",
   tagline:
     "एनिमेटेड GIF को एनिमेटेड WEBP में बदलें — हर पिक्सल रखने के लिए लॉसलेस, या बहुत छोटी फ़ाइल के लिए लॉसी। हर फ़्रेम की टाइमिंग बनी रहती है। मुफ़्त, ब्राउज़र में।",
-  category: { id: "convert", label: "कन्वर्ट" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "GIF to WEBP — एनिमेटेड GIF को WEBP में बदलें, मुफ़्त | oMyImage",
   metaDescription:

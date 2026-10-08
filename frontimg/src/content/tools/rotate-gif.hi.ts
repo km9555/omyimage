@@ -8,7 +8,7 @@ const content: ToolPageContent = {
   name: "GIF घुमाएँ",
   tagline:
     "एनिमेटेड GIF को 90° बाएँ या दाएँ या 180° घुमाएँ, या शीशे की तरह पलटें — हर फ़्रेम एक ही तरह घूमता है और एनिमेशन चलता रहता है। मुफ़्त, ब्राउज़र में।",
-  category: { id: "optimize", label: "ऑप्टिमाइज़" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Rotate GIF — एनिमेटेड GIF घुमाएँ या पलटें, मुफ़्त | oMyImage",
   metaDescription:

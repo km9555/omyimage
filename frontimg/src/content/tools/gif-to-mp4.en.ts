@@ -10,7 +10,7 @@ const content: ToolPageContent = {
   name: "GIF to MP4",
   tagline:
     "Convert GIFs to MP4 video — usually far smaller, with smoother colours, and accepted on every platform that takes video. Repeat short GIFs, pick a background, download. Free, in your browser.",
-  category: { id: "convert", label: "Convert" },
+  category: { id: "gif", label: "GIF" },
 
   intro:
     "GIF is an old format: 256 colours per frame and compression that was never designed for motion. MP4 video does the same job in a fraction of the space and is what Instagram, TikTok and most apps actually want. oMyImage's GIF to MP4 converter turns your GIF into an H.264 MP4 using your browser's own video encoder, keeps the timing of every frame, and lets you repeat a short loop so the video lasts long enough to post.",

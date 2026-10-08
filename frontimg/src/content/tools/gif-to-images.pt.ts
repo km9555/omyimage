@@ -16,7 +16,7 @@ const content: ToolPageContent = {
   name: "GIF para imagens",
   tagline:
     "Extraia todos os frames de um GIF animado online — baixe tudo num ZIP em PNG, JPG ou WEBP, ou pegue um quadro só. Grátis, rápido e 100% privado no seu navegador.",
-  category: { id: "convert", label: "Converter" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "GIF para imagens online grátis — extrair frames de GIF | oMyImage",
   metaDescription:

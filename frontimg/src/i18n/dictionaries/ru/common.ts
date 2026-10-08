@@ -111,6 +111,11 @@ export const ruCommon: Record<string, string> = {
   "Upscale Image": "Улучшить качество фото",
   "Optimize": "Оптимизация",
   "Convert": "Конвертация",
+  // CATEGORY_PILLS (lib/tool-categories.ts) labels, read by both the home page
+  // and the dashboard, so they live here rather than in a page dictionary.
+  "All": "Все",
+  "Edit & Create": "Редактор и создание",
+  "GIF": "GIF", // i18n-same
   "Edit & AI": "Редактор и ИИ",
   "Contact": "Контакты",
   "Privacy Policy": "Политика конфиденциальности",

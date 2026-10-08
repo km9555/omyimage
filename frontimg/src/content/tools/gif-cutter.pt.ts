@@ -8,7 +8,7 @@ const content: ToolPageContent = {
   name: "Cortar GIF",
   tagline:
     "Corte um GIF animado na parte que você quer: escolha o primeiro e o último quadro a manter, ou tire um trecho do meio. Grátis, no navegador.",
-  category: { id: "edit", label: "Editar" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Cortar GIF Online Grátis — Encurtar GIF Animado | oMyImage",
   metaDescription:

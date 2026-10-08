@@ -10,7 +10,7 @@ const content: ToolPageContent = {
   name: "Rotate GIF",
   tagline:
     "Rotate animated GIFs 90° left or right or 180°, or flip them like a mirror — every frame turns the same way and the animation keeps playing. Free, in your browser.",
-  category: { id: "optimize", label: "Optimize" },
+  category: { id: "gif", label: "GIF" },
 
   intro:
     "A GIF recorded on a phone held the wrong way, or a clip that has to be mirrored to face the other direction, can't be fixed in most image editors without losing the animation. oMyImage's Rotate GIF turns the whole animation at once: pick 90° left, 90° right or 180°, add a horizontal or vertical flip if you need one, and watch the preview move as you choose. Every frame is rotated the same way, keeps its timing, and keeps its exact colours, so the result looks just like the original — only the right way up.",

@@ -100,6 +100,11 @@ export const idCommon: Record<string, string> = {
   "Upscale Image": "Jadikan Foto HD",
   "Optimize": "Optimasi",
   "Convert": "Konversi",
+  // CATEGORY_PILLS (lib/tool-categories.ts) labels, read by both the home page
+  // and the dashboard, so they live here rather than in a page dictionary.
+  "All": "Semua",
+  "Edit & Create": "Edit & Buat",
+  "GIF": "GIF", // i18n-same
   "Edit & AI": "Edit & AI",
   "Contact": "Kontak",
   "Privacy Policy": "Kebijakan Privasi",

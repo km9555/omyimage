@@ -14,8 +14,9 @@
  * where the English list has room for it — the AI line opens on hapus
  * background and jadikan foto HD, the two biggest AI queries in this market.
  *
- * "over seventy tools" is «lebih dari tujuh puluh alat» — updated from thirty
- * when the 2026-10 expansion took the count to 73 (expansion.md Phase 8).
+ * The tool count is no longer written out: since 2026-10-08 the About
+ * paragraph and the trust strip take it as {n} from liveToolCount(), so it
+ * cannot go stale the way «lebih dari tujuh puluh alat» had to be hand-edited.
  */
 export const idHome: Record<string, string> = {
   // ── HomeLauncher (hero) ─────────────────────────────────────────────────
@@ -24,8 +25,6 @@ export const idHome: Record<string, string> = {
   "Effortless Power for Image Workflows.": "Alat foto online gratis.",
   "oMyImage is a free online image toolkit — compress, resize, crop, convert, watermark and edit photos.":
     "oMyImage adalah kumpulan alat foto online gratis — kompres, ubah ukuran, crop, ubah format, beri watermark, dan edit foto.",
-  "Most tools run right in your browser, so files never leave your device. No signup.":
-    "Sebagian besar alat berjalan langsung di browser, jadi file tidak pernah meninggalkan perangkat Anda. Tanpa daftar.",
   "Step 1 · Upload your images": "Langkah 1 · Unggah foto Anda",
   "Add images": "Tambah foto",
   "Drag & drop images or click to browse": "Seret dan lepas foto ke sini, atau klik untuk memilih",
@@ -33,41 +32,43 @@ export const idHome: Record<string, string> = {
   "Remove {name}": "Hapus {name}",
   "Step 2 · Choose an action": "Langkah 2 · Pilih tindakan",
   "Upload an image first": "Unggah foto terlebih dahulu",
-  "What do you want to do? — e.g. compress, resize":
-    "Apa yang ingin Anda lakukan? — misalnya kompres, ubah ukuran",
+  "Search an action, e.g. compress or resize": "Cari tindakan, misalnya kompres atau ubah ukuran",
   "We can't process this file type yet.": "Kami belum bisa memproses jenis file ini.",
   "No matching action.": "Tidak ada tindakan yang cocok.",
   "Continue": "Lanjutkan",
 
   // ── ToolDirectory ───────────────────────────────────────────────────────
-  "is a free online image toolkit — over seventy tools to compress, resize, crop, convert, watermark and edit images, most running entirely in your browser so your files never leave your device. Importing from Google Drive is optional, reads only the files you pick, and never stores them on our servers.":
-    "adalah kumpulan alat gambar online gratis — lebih dari tujuh puluh alat untuk kompres, ubah ukuran, crop, ubah format, beri watermark, dan edit gambar. Sebagian besar berjalan sepenuhnya di browser, jadi file Anda tidak pernah meninggalkan perangkat. Impor dari Google Drive bersifat opsional, hanya membaca file yang Anda pilih, dan tidak pernah menyimpannya di server kami.",
-  "What is oMyImage?": "Apa itu oMyImage?",
+  "Private by default": "Privat sejak awal",
+  "Most tools run in your browser, so your images never leave your device.":
+    "Sebagian besar alat berjalan di browser, jadi gambar Anda tidak pernah meninggalkan perangkat.",
+  "{n} free image tools": "{n} alat gambar gratis",
+  "Compress, resize, convert, edit and make GIFs. No account needed.":
+    "Kompres, ubah ukuran, ubah format, edit, dan buat GIF. Tanpa akun.",
+  "Google Drive import is optional": "Impor dari Google Drive bersifat opsional",
+  "oMyImage reads only the files you pick and stores nothing on our servers.":
+    "oMyImage hanya membaca file yang Anda pilih dan tidak menyimpan apa pun di server kami.",
   "How we use Google data": "Cara kami menggunakan data Google",
   "Favorites": "Favorit",
   "No tools in {category} yet.": "Belum ada alat di kategori {category}.",
   "Browse all image format converters": "Lihat semua konverter format gambar",
-  // CATEGORY_PILLS (lib/tool-categories.ts — module scope, §4.2). "Optimize",
-  // "Convert" and "Image AI" are already in common.ts.
-  "All": "Semua",
-  "Edit & Create": "Edit & Buat",
+  "All tools": "Semua alat",
+  "Tool categories": "Kategori alat",
 
   // ── HomeShell ───────────────────────────────────────────────────────────
   "How it works": "Cara kerjanya",
   "Upload": "Unggah",
-  "Drag & drop your images securely into our processing engine.":
-    "Seret dan lepas foto Anda — foto masuk ke pemrosesan melalui koneksi yang aman.",
+  "Drop in your images or pick them from your device.":
+    "Seret foto Anda ke sini atau pilih dari perangkat.",
   "Transform": "Proses",
-  "Pick a tool and let your browser — or our servers — do the heavy lifting.":
-    "Pilih alat, dan biarkan browser Anda — atau server kami — mengerjakan bagian beratnya.",
+  "Pick a tool and adjust the settings. The work happens in your browser, or on our servers for the heavier jobs.":
+    "Pilih alat dan atur pengaturannya. Prosesnya berjalan di browser Anda, atau di server kami untuk tugas yang lebih berat.",
   "Download|step": "Unduh",
-  "Get your optimized images back, ready for your workflow.":
-    "Ambil kembali foto yang sudah diproses, siap dipakai.",
+  "Save the result to your device, ready to use.": "Simpan hasilnya ke perangkat, siap dipakai.",
   "About oMyImage": "Tentang oMyImage",
-  "is a free online image toolkit for everyday image work. It gives you a single place to compress, resize, crop, rotate, convert, watermark and edit images — over seventy tools, each one a dedicated page that does one job well.":
-    "adalah kumpulan alat gambar online gratis untuk urusan gambar sehari-hari. Satu tempat untuk kompres, ubah ukuran, crop, putar, ubah format, beri watermark, dan edit gambar — lebih dari tujuh puluh alat, masing-masing di halamannya sendiri yang mengerjakan satu tugas dengan baik.",
-  "Most tools run entirely inside your web browser: your image is processed on your own device and is never uploaded anywhere. Larger files, and the AI tools that need real hardware, are processed on our servers and deleted shortly after the job finishes. oMyImage is free to use and needs no account.":
-    "Sebagian besar alat berjalan sepenuhnya di dalam browser: gambar Anda diproses di perangkat Anda sendiri dan tidak pernah diunggah ke mana pun. File yang lebih besar, dan alat AI yang membutuhkan perangkat keras sungguhan, diproses di server kami lalu dihapus tak lama setelah prosesnya selesai. oMyImage gratis dipakai dan tidak memerlukan akun.",
+  "is a free online image toolkit for everyday image work. It gives you a single place to compress, resize, crop, rotate, convert, watermark, edit and animate images: {n} tools, each one a dedicated page that does one job well.":
+    "adalah kumpulan alat gambar online gratis untuk urusan gambar sehari-hari. Satu tempat untuk kompres, ubah ukuran, crop, putar, ubah format, beri watermark, edit, dan animasikan gambar: {n} alat, masing-masing di halamannya sendiri yang mengerjakan satu tugas dengan baik.",
+  "Most tools run entirely inside your web browser: your image is processed on your own device and is never uploaded anywhere. Larger files and the heavier AI tools are processed on our servers and deleted shortly after the job finishes. oMyImage is free to use and needs no account.":
+    "Sebagian besar alat berjalan sepenuhnya di dalam browser: gambar Anda diproses di perangkat Anda sendiri dan tidak pernah diunggah ke mana pun. File yang lebih besar dan alat AI yang lebih berat diproses di server kami lalu dihapus tak lama setelah prosesnya selesai. oMyImage gratis dipakai dan tidak memerlukan akun.",
   "What you can do with oMyImage": "Yang bisa Anda lakukan di oMyImage",
   "Compress JPG, PNG and WEBP images without visible quality loss":
     "Kompres gambar JPG, PNG, dan WEBP tanpa penurunan kualitas yang terlihat",
@@ -77,13 +78,15 @@ export const idHome: Record<string, string> = {
     "Ubah format antara JPG, PNG, WEBP, GIF, BMP, AVIF, HEIC, dan PDF",
   "Edit photos: watermark, grayscale, blur, memes and a full editor":
     "Edit foto: watermark, hitam putih, blur, meme, dan editor lengkap",
-  "Extract text with OCR, read or strip EXIF metadata, pick colours":
+  "Make and edit GIFs: build them from images or video, compress, resize, trim, caption and convert to MP4 or WebP":
+    "Buat dan edit GIF: dari gambar atau video, kompres, ubah ukuran, potong, beri teks, dan ubah ke MP4 atau WebP",
+  "Extract text with OCR, read or strip EXIF metadata, pick colors":
     "Ambil teks dengan OCR, baca atau hapus metadata EXIF, ambil warna",
   "AI tools: remove backgrounds, upscale images, blur faces for privacy":
     "Alat AI: hapus background, jadikan foto HD, blur wajah demi privasi",
   "How oMyImage uses your Google account": "Cara oMyImage menggunakan akun Google Anda",
-  "Connecting Google is optional — every tool on oMyImage works without it. It exists for one feature:":
-    "Menghubungkan Google bersifat opsional — semua alat di oMyImage berfungsi tanpanya. Fitur ini hanya ada untuk satu hal:",
+  "Connecting Google is optional — every tool on oMyImage works without it. Google is used for two things: signing in, if you choose to create an account, and":
+    "Menghubungkan Google bersifat opsional — semua alat di oMyImage berfungsi tanpanya. Google dipakai untuk dua hal: masuk dengan Google, jika Anda memilih membuat akun, dan fitur",
   "Import from Google Drive": "Impor dari Google Drive",
   ", which lets you pick an image already stored in your Drive instead of uploading it from your device.":
     ", yang memungkinkan Anda memilih gambar yang sudah tersimpan di Drive alih-alih mengunggahnya dari perangkat.",
@@ -91,7 +94,8 @@ export const idHome: Record<string, string> = {
   // on punctuation — ". Cakupan…" would print "drive.file . Cakupan". B is a
   // relative clause instead, which is how Indonesian would say it anyway:
   // "…meminta cakupan drive.file yang hanya memberi…".
-  "When you use it, oMyImage requests the": "Saat Anda memakainya, oMyImage meminta cakupan",
+  "When you use Drive import, oMyImage requests the":
+    "Saat Anda mengimpor dari Google Drive, oMyImage meminta cakupan",
   "scope. That scope gives the app access only to the specific files you choose in Google's own file picker — it cannot see, browse or search the rest of your Drive. The file you pick is downloaded into your browser for the tool you are using, and that is all: oMyImage does not modify or delete anything in your Drive, does not store your Google files on our servers, does not use Google user data to train AI models, and never sells or shares it with third parties.":
     "yang hanya memberi aplikasi akses ke file tertentu yang Anda pilih di jendela pemilih file milik Google sendiri — aplikasi tidak bisa melihat, menelusuri, atau mencari isi Drive Anda yang lain. File yang Anda pilih diunduh ke browser Anda untuk alat yang sedang dipakai, dan hanya itu: oMyImage tidak mengubah atau menghapus apa pun di Drive Anda, tidak menyimpan file Google Anda di server kami, tidak memakai data pengguna Google untuk melatih model AI, dan tidak pernah menjual atau membagikannya kepada pihak ketiga.",
   "You can revoke access at any time from your": "Anda bisa mencabut akses kapan saja dari",
@@ -99,12 +103,24 @@ export const idHome: Record<string, string> = {
   "Contact us": "Hubungi kami",
   // ToolDirectory — the "Sizes and presets" block under the grid (expansion.md Phase 8).
   "Sizes and presets": "Ukuran & Preset",
-  "Ready-made versions of the tools above, each set up for one job — like compressing a photo to exactly 50 KB.": "Versi siap pakai dari alat di atas, masing-masing diatur untuk satu tugas — seperti mengompres foto tepat 50 KB.",
-  "Compress to a file size": "Kompres ke ukuran file",
-  "Image to PDF under a size": "Gambar ke PDF di bawah ukuran tertentu",
-  "Print and social media sizes": "Ukuran cetak & media sosial",
+  "Shortcuts to the tools above, each set up for one job: a photo at exactly 50 KB, a YouTube thumbnail, a passport photo.":
+    "Pintasan ke alat di atas, masing-masing diatur untuk satu tugas: foto tepat 50 KB, thumbnail YouTube, pas foto.",
+  "Exact file size": "Ukuran file yang pas",
+  "Hit the exact size a form or upload asks for":
+    "Tepat seukuran yang diminta formulir atau situs",
+  "PDF under a size limit": "PDF di bawah batas ukuran",
+  "Scans and photos as a PDF that fits an upload cap":
+    "Scan dan foto jadi PDF yang muat di batas unggah",
+  "Country-standard photo sizes, ready to print":
+    "Ukuran pas foto standar berbagai negara, siap cetak",
+  "Social and print sizes": "Ukuran media sosial & cetak",
+  "Thumbnails, covers and print dimensions, ready to go":
+    "Thumbnail, sampul, dan ukuran cetak, siap pakai",
   "AI presets": "Preset AI",
-  "More presets": "Preset lainnya",
-  "{size} KB": "{size} KB", // i18n-same
-  "{size} MB": "{size} MB", // i18n-same
+  "Sharpen photos or swap the background in one click":
+    "Pertajam foto atau ganti background dalam satu klik",
+  "Quick edits": "Edit cepat",
+  "Flip, split and other one-step jobs": "Balik, bagi, dan tugas satu langkah lainnya",
+  "KB": "KB", // i18n-same
+  "MB": "MB", // i18n-same
 };

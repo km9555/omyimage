@@ -8,7 +8,7 @@ const content: ToolPageContent = {
   name: "GIF в APNG",
   tagline:
     "Конвертируйте анимированный GIF в APNG — анимированный PNG: каждый пиксель, кадр и пауза сохраняются, часто в файле меньшего размера. Бесплатно, в браузере.",
-  category: { id: "convert", label: "Конвертация" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "GIF в APNG онлайн бесплатно — анимированный PNG | oMyImage",
   metaDescription:

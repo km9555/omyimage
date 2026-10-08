@@ -10,7 +10,7 @@ const content: ToolPageContent = {
   name: "Video to GIF",
   tagline:
     "Turn a clip from an MP4, WEBM or MOV video into a looping GIF — trim it, choose the frame rate and size, and see the result before you download. Free, and the video never leaves your browser.",
-  category: { id: "convert", label: "Convert" },
+  category: { id: "gif", label: "GIF" },
 
   intro:
     "A GIF plays everywhere a picture can go: chats, forums, emails, slides and comment boxes that will never autoplay a video. oMyImage's Video to GIF converter cuts the moment you want out of a video file and turns it into a looping GIF. Add an MP4, WEBM or MOV, set the start and end while you watch, pick how smooth and how large it should be, and download the GIF. The video is decoded by your own browser, so it is never uploaded anywhere.",

@@ -8,7 +8,7 @@ const content: ToolPageContent = {
   name: "Повернуть GIF",
   tagline:
     "Поверните анимированный GIF на 90° влево или вправо или на 180° либо отразите его зеркально — все кадры поворачиваются одинаково, а анимация продолжает играть. Бесплатно, в браузере.",
-  category: { id: "optimize", label: "Оптимизация" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Повернуть GIF онлайн бесплатно — поворот и отражение | oMyImage",
   metaDescription:

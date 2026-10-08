@@ -10,7 +10,7 @@ const content: ToolPageContent = {
   name: "Invert Image",
   tagline:
     "Invert the colours of any photo — a classic negative, or a smart invert that swaps light and dark but keeps the colours. Many images at once. Free, in your browser.",
-  category: { id: "edit", label: "Edit" },
+  category: { id: "edit", label: "Edit & Create" },
 
   intro:
     "Inverting an image turns every colour into its opposite: black becomes white, blue becomes orange, and a photo looks like a film negative. oMyImage's Invert Image does that in one click for JPG, PNG and WEBP files, and adds a second mode most tools lack — Smart invert, which swaps light and dark while keeping each colour's hue, the way a phone's dark mode does. Add one image or a whole batch, watch the live preview, hold the button to compare with the original, and download.",

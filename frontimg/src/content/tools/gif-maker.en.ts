@@ -10,7 +10,7 @@ const content: ToolPageContent = {
   name: "GIF Maker",
   tagline:
     "Make an animated GIF from your images online — set the speed, order, size and looping with a live preview. Free, fast and 100% private in your browser.",
-  category: { id: "edit", label: "Edit & Create" },
+  category: { id: "gif", label: "GIF" },
 
   intro:
     "Turn a series of images into a looping animation. oMyImage's GIF Maker builds an animated GIF from your photos right in your browser, with a live preview, adjustable speed, output size, looping and frame reordering. Create slideshows, reaction GIFs or simple animations and download instantly — nothing is uploaded, so your images stay private.",

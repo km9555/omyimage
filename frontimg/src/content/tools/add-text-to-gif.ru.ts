@@ -7,7 +7,7 @@ const content: ToolPageContent = {
   name: "Текст на GIF",
   tagline:
     "Добавьте надпись на анимированный GIF — текст мема, субтитр или подпись — на все кадры или только на часть, и посмотрите, как это играет, ещё до сохранения. Бесплатно, в браузере.",
-  category: { id: "edit", label: "Редактирование" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Текст на GIF онлайн бесплатно — надпись на гифке | oMyImage",
   metaDescription:

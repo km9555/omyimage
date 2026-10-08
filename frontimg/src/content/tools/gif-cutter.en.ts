@@ -10,7 +10,7 @@ const content: ToolPageContent = {
   name: "GIF Cutter",
   tagline:
     "Trim an animated GIF to the part you want: pick the first and last frame to keep, or cut a section out of the middle. Free, in your browser.",
-  category: { id: "edit", label: "Edit" },
+  category: { id: "gif", label: "GIF" },
 
   intro:
     "GIFs saved from videos and screen recordings rarely start and end in the right place. There is a second of nothing before the action, a fade at the end, or a long middle you would rather skip. oMyImage's GIF Cutter lets you trim it frame by frame: move the start and end sliders, check the first and last frame of your selection in the thumbnails, and choose whether to keep that part or remove it. The result plays next to the original, with its new length and size, before you download it.",

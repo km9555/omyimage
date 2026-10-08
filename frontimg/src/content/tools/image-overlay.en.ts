@@ -10,7 +10,7 @@ const content: ToolPageContent = {
   name: "Image Overlay",
   tagline:
     "Put one picture on top of another — drag it into place, resize and rotate it, fade it with opacity and mix it in with blend modes like multiply and screen. Free, in your browser.",
-  category: { id: "edit", label: "Edit" },
+  category: { id: "edit", label: "Edit & Create" },
 
   intro:
     "Overlaying images layers one picture over another to make something neither could be alone: a logo on a product shot, a texture over a portrait, a light leak over a landscape, a second photo faded into the first for a double exposure. Image Overlay from oMyImage gives you the two layers and the controls that matter — position, size, rotation, opacity and eight blend modes — with a live preview you can drag the top picture around on. The result is saved at the full size of the background image.",

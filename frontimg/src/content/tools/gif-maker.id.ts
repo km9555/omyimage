@@ -27,7 +27,7 @@ const content: ToolPageContent = {
   crumbLabel: "GIF Maker",
   tagline:
     "Buat GIF animasi dari foto-foto Anda secara online — atur kecepatan, urutan, ukuran, dan pengulangan dengan pratinjau langsung. Gratis, cepat, dan 100% privat di browser Anda.",
-  category: { id: "edit", label: "Edit" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "GIF Maker Online Gratis — Buat GIF Animasi dari Foto | oMyImage",
   metaDescription:

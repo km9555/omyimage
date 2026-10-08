@@ -115,7 +115,10 @@ export function HomeLauncher() {
   const noneApplicable = files.length > 0 && applicable.length === 0;
 
   return (
-    <section className="relative bg-surface-container-low px-margin-mobile md:px-gutter py-10 md:py-16">
+    // md:py-12 (not 16): keeps the whole trust strip under the hero on the
+    // first screen of a 1366×768 laptop (~657 CSS px of viewport), which is
+    // what the OAuth review needs to see without scrolling.
+    <section className="relative bg-surface-container-low px-margin-mobile md:px-gutter py-10 md:py-12">
       <div
         className="absolute inset-0 opacity-[0.08] pointer-events-none"
         style={{ backgroundImage: "radial-gradient(circle at 50% 30%, var(--color-secondary) 0%, transparent 55%)" }}
@@ -145,17 +148,13 @@ export function HomeLauncher() {
             </span>
           </h1>
           {/*
-            The trailing sentences are a span rather than a second paragraph so
-            the phone copy is a PREFIX of the desktop copy — one string in the
-            HTML, nothing duplicated for a crawler to weigh twice. On a 375px
-            screen this is the difference between five lines and two, which is
-            what lets the upload card sit on the first screen.
+            One sentence on every screen size. The "runs in your browser / no
+            account" line that used to follow it on desktop now lives in the
+            trust strip directly under the hero (ToolDirectory), which says it
+            once instead of twice in a row.
           */}
           <p className="mt-4 text-body-lg text-on-surface-variant max-w-md mx-auto lg:mx-0">
-            {t("oMyImage is a free online image toolkit — compress, resize, crop, convert, watermark and edit photos.")}{" "}
-            <span className="hidden md:inline">
-              {t("Most tools run right in your browser, so files never leave your device. No signup.")}
-            </span>
+            {t("oMyImage is a free online image toolkit — compress, resize, crop, convert, watermark and edit photos.")}
           </p>
         </div>
 
@@ -274,7 +273,7 @@ export function HomeLauncher() {
                 value={query}
                 onChange={(e) => { setQuery(e.target.value); setChosen(null); setOpen(true); }}
                 onFocus={() => setOpen(true)}
-                placeholder={files.length === 0 ? t("Upload an image first") : t("What do you want to do? — e.g. compress, resize")}
+                placeholder={files.length === 0 ? t("Upload an image first") : t("Search an action, e.g. compress or resize")}
                 role="combobox"
                 aria-expanded={open}
                 aria-controls="launcher-actions"

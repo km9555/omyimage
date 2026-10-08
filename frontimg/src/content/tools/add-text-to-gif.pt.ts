@@ -7,7 +7,7 @@ const content: ToolPageContent = {
   name: "Colocar texto em GIF",
   tagline:
     "Coloque uma legenda num GIF animado — texto de meme, legenda ou rótulo — em todos os quadros ou só em alguns, e veja tocando ao vivo antes de salvar. Grátis, no navegador.",
-  category: { id: "edit", label: "Editar" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Colocar Texto em GIF Online Grátis — Legenda em GIF | oMyImage",
   metaDescription:

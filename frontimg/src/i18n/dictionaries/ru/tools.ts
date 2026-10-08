@@ -31,6 +31,8 @@
 export interface LocalizedTool {
   name: string;
   shortDescription: string;
+  /** Short chip label on the home page's "Sizes and presets" (variants only). */
+  presetLabel?: string;
 }
 
 export const ruTools: Record<string, LocalizedTool> = {
@@ -205,6 +207,7 @@ export const ruTools: Record<string, LocalizedTool> = {
   // ── Варианты: сжатие до заданного веса (expansion.md) ──
   "reduce-image-size-in-kb": {
     name: "Уменьшить вес фото в КБ",
+    presetLabel: "Уменьшить вес в КБ",
     shortDescription: "Уложите фото в любой лимит в КБ или МБ.",
   },
   "compress-image-to-20kb": {
@@ -261,6 +264,7 @@ export const ruTools: Record<string, LocalizedTool> = {
   },
   "increase-image-size-in-kb": {
     name: "Увеличить размер фото в КБ",
+    presetLabel: "Увеличить вес в КБ",
     shortDescription: "Сделайте фото не меньше 10, 20 или 50 КБ.",
   },
   "signature-resizer": {
@@ -479,5 +483,6 @@ export const ruCategories: Record<string, { title: string; navLabel: string }> =
   optimize: { title: "Оптимизация и сжатие", navLabel: "Оптимизация" },
   convert: { title: "Конвертация изображений", navLabel: "Конвертация" },
   edit: { title: "Редактирование и создание", navLabel: "Редактор" },
+  gif: { title: "Инструменты для GIF", navLabel: "GIF" },
   ai: { title: "Инструменты с ИИ", navLabel: "ИИ для фото" },
 };

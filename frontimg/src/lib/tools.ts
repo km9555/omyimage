@@ -53,10 +53,12 @@ export interface Tool {
   /**
    * Makes this entry a VARIANT: its own page, URL and copy, running the parent
    * tool's engine with `preset` applied ("Compress Image to 50KB" is
-   * compress-image with a 50 KB target). Variants are full tools everywhere
-   * — sitemap, slugs, status.ts, search, the home grid, the Tools menu — but
-   * only in a locale that ships them, and they stay out of `relatedTools()`;
-   * the family is linked by `<VariantLinks>` instead.
+   * compress-image with a 50 KB target). Variants are full tools in the
+   * sitemap, slugs, status.ts and search, but only in a locale that ships
+   * them. They are NOT home-grid cards or Tools-menu rows (expansion.md
+   * Phase 8C): the home page lists them as chips under "Sizes and presets",
+   * and they stay out of `relatedTools()`; the family is linked by
+   * `<VariantLinks>` instead.
    *
    * The route stub is GENERATED (`npm run gen:variants`), which copies `preset`
    * verbatim into `<ParentTool preset={…} />` — so keep it a one-line object
@@ -64,6 +66,15 @@ export interface Tool {
    */
   parentId?: string;
   preset?: ToolPreset;
+  /**
+   * Short chip label for a variant in the home page's "Sizes and presets"
+   * block ("YouTube Thumbnail" under "Social and print sizes"), where the full
+   * name would repeat the group heading. Falls back to `name`. Read through
+   * `presetLabel()` in lib/i18n/tool-labels.ts, which also checks the locale
+   * dictionaries. A top-level field on purpose: `preset` is copied verbatim
+   * into the generated route stub, so nothing display-only may live inside it.
+   */
+  presetLabel?: string;
   /**
    * Shows a "New" badge on the tool's card. Set on the 2026-10 expansion
    * (expansion.md §5); remove the flags once they stop being news (~2027-01).
@@ -78,6 +89,7 @@ export const CATEGORIES: CategoryDef[] = [
   { id: "optimize", title: "Optimize & Compress", navLabel: "Optimize" },
   { id: "convert", title: "Convert Images", navLabel: "Convert" },
   { id: "edit", title: "Edit & Create", navLabel: "Edit" },
+  { id: "gif", title: "GIF Tools", navLabel: "GIF" },
   { id: "ai", title: "AI Image Tools", navLabel: "Image AI" },
 ];
 
@@ -121,6 +133,7 @@ export const TOOLS: Tool[] = [
     slug: "resize-image-in-cm",
     parentId: "resize-image",
     preset: { mode: "print", unit: "cm", dpi: 300 },
+    presetLabel: "Resize in cm",
     categoryId: "optimize",
     shortDescription: "Resize images to an exact size in cm, mm or inches.",
     icon: "straighten",
@@ -140,6 +153,7 @@ export const TOOLS: Tool[] = [
     slug: "youtube-thumbnail-resizer",
     parentId: "resize-image",
     preset: { platform: "youtube", preset: "Thumbnail", format: "image/jpeg" },
+    presetLabel: "YouTube Thumbnail",
     categoryId: "optimize",
     shortDescription: "Resize any image to a 1280 × 720 YouTube thumbnail.",
     icon: "aspect_ratio",
@@ -159,6 +173,7 @@ export const TOOLS: Tool[] = [
     slug: "whatsapp-dp-resizer",
     parentId: "resize-image",
     preset: { platform: "whatsapp", preset: "Profile", fit: "contain" },
+    presetLabel: "WhatsApp DP",
     categoryId: "optimize",
     shortDescription: "Fit a full photo into a square WhatsApp DP, no crop.",
     icon: "aspect_ratio",
@@ -178,6 +193,7 @@ export const TOOLS: Tool[] = [
     slug: "linkedin-banner-resizer",
     parentId: "resize-image",
     preset: { platform: "linkedin", preset: "Cover" },
+    presetLabel: "LinkedIn Banner",
     categoryId: "optimize",
     shortDescription: "Resize an image to a 1584 × 396 LinkedIn banner.",
     icon: "aspect_ratio",
@@ -197,6 +213,7 @@ export const TOOLS: Tool[] = [
     slug: "facebook-cover-resizer",
     parentId: "resize-image",
     preset: { platform: "facebook", preset: "Cover", format: "image/jpeg" },
+    presetLabel: "Facebook Cover",
     categoryId: "optimize",
     shortDescription: "Resize an image to an 851 × 315 Facebook cover.",
     icon: "aspect_ratio",
@@ -216,6 +233,7 @@ export const TOOLS: Tool[] = [
     slug: "discord-banner-resizer",
     parentId: "resize-image",
     preset: { platform: "discord", preset: "Profile banner" },
+    presetLabel: "Discord Banner",
     categoryId: "optimize",
     shortDescription: "Resize images for Discord profile and server banners.",
     icon: "aspect_ratio",
@@ -1054,7 +1072,7 @@ export const TOOLS: Tool[] = [
     id: "gif-maker",
     name: "GIF Maker",
     slug: "gif-maker",
-    categoryId: "edit",
+    categoryId: "gif",
     shortDescription: "Build an animated GIF from your images.",
     icon: "gif_box",
     processing: "client",
@@ -1070,7 +1088,7 @@ export const TOOLS: Tool[] = [
     id: "gif-to-images",
     name: "GIF to Images",
     slug: "gif-to-images",
-    categoryId: "convert",
+    categoryId: "gif",
     shortDescription: "Extract every frame of a GIF as PNG/JPG.",
     icon: "burst_mode",
     processing: "client",
@@ -1086,7 +1104,7 @@ export const TOOLS: Tool[] = [
     id: "video-to-gif",
     name: "Video to GIF",
     slug: "video-to-gif",
-    categoryId: "convert",
+    categoryId: "gif",
     shortDescription: "Turn a clip from an MP4, WEBM or MOV video into a GIF.",
     icon: "gif_box",
     processing: "client",
@@ -1103,7 +1121,7 @@ export const TOOLS: Tool[] = [
     id: "gif-compressor",
     name: "GIF Compressor",
     slug: "gif-compressor",
-    categoryId: "optimize",
+    categoryId: "gif",
     shortDescription: "Make animated GIFs smaller without losing frames.",
     icon: "gif_box",
     processing: "client",
@@ -1120,7 +1138,7 @@ export const TOOLS: Tool[] = [
     id: "gif-resizer",
     name: "GIF Resizer",
     slug: "gif-resizer",
-    categoryId: "optimize",
+    categoryId: "gif",
     shortDescription: "Resize animated GIFs and keep every frame.",
     icon: "gif_box",
     processing: "client",
@@ -1137,7 +1155,7 @@ export const TOOLS: Tool[] = [
     id: "gif-to-mp4",
     name: "GIF to MP4",
     slug: "gif-to-mp4",
-    categoryId: "convert",
+    categoryId: "gif",
     shortDescription: "Turn GIFs into small MP4 videos.",
     icon: "gif_box",
     processing: "client",
@@ -1154,7 +1172,7 @@ export const TOOLS: Tool[] = [
     id: "webp-to-gif",
     name: "WEBP to GIF",
     slug: "webp-to-gif",
-    categoryId: "convert",
+    categoryId: "gif",
     shortDescription: "Convert animated WEBP images to GIF.",
     icon: "gif_box",
     processing: "client",
@@ -1171,7 +1189,7 @@ export const TOOLS: Tool[] = [
     id: "gif-cropper",
     name: "GIF Cropper",
     slug: "gif-cropper",
-    categoryId: "optimize",
+    categoryId: "gif",
     shortDescription: "Crop animated GIFs and keep every frame.",
     icon: "crop",
     processing: "client",
@@ -1188,7 +1206,7 @@ export const TOOLS: Tool[] = [
     id: "rotate-gif",
     name: "Rotate GIF",
     slug: "rotate-gif",
-    categoryId: "optimize",
+    categoryId: "gif",
     shortDescription: "Rotate or flip animated GIFs by 90° or 180°.",
     icon: "rotate_90_degrees_cw",
     processing: "client",
@@ -1205,7 +1223,7 @@ export const TOOLS: Tool[] = [
     id: "reverse-gif",
     name: "Reverse GIF",
     slug: "reverse-gif",
-    categoryId: "edit",
+    categoryId: "gif",
     shortDescription: "Play a GIF backwards or as a boomerang loop.",
     icon: "history",
     processing: "client",
@@ -1222,7 +1240,7 @@ export const TOOLS: Tool[] = [
     id: "gif-speed-changer",
     name: "GIF Speed Changer",
     slug: "gif-speed-changer",
-    categoryId: "edit",
+    categoryId: "gif",
     shortDescription: "Speed up or slow down animated GIFs.",
     icon: "speed",
     processing: "client",
@@ -1239,7 +1257,7 @@ export const TOOLS: Tool[] = [
     id: "gif-cutter",
     name: "GIF Cutter",
     slug: "gif-cutter",
-    categoryId: "edit",
+    categoryId: "gif",
     shortDescription: "Trim GIFs to the frames you want.",
     icon: "burst_mode",
     processing: "client",
@@ -1256,7 +1274,7 @@ export const TOOLS: Tool[] = [
     id: "gif-to-webp",
     name: "GIF to WEBP",
     slug: "gif-to-webp",
-    categoryId: "convert",
+    categoryId: "gif",
     shortDescription: "Convert animated GIFs to animated WEBP.",
     icon: "sync_alt",
     processing: "client",
@@ -1273,7 +1291,7 @@ export const TOOLS: Tool[] = [
     id: "gif-to-apng",
     name: "GIF to APNG",
     slug: "gif-to-apng",
-    categoryId: "convert",
+    categoryId: "gif",
     shortDescription: "Convert animated GIFs to animated PNG (APNG).",
     icon: "image",
     processing: "client",
@@ -1290,7 +1308,7 @@ export const TOOLS: Tool[] = [
     id: "gif-to-sprite-sheet",
     name: "GIF to Sprite Sheet",
     slug: "gif-to-sprite-sheet",
-    categoryId: "convert",
+    categoryId: "gif",
     shortDescription: "Lay out every GIF frame on one PNG sprite sheet.",
     icon: "grid_view",
     processing: "client",
@@ -1307,7 +1325,7 @@ export const TOOLS: Tool[] = [
     id: "gif-merger",
     name: "GIF Merger",
     slug: "gif-merger",
-    categoryId: "edit",
+    categoryId: "gif",
     shortDescription: "Join several GIFs into one, one after another.",
     icon: "layers",
     processing: "client",
@@ -1324,7 +1342,7 @@ export const TOOLS: Tool[] = [
     id: "add-text-to-gif",
     name: "Add Text to GIF",
     slug: "add-text-to-gif",
-    categoryId: "edit",
+    categoryId: "gif",
     shortDescription: "Put captions on animated GIFs, on every frame or some.",
     icon: "text_fields",
     processing: "client",
@@ -1341,7 +1359,7 @@ export const TOOLS: Tool[] = [
     id: "typing-text-gif",
     name: "Typing Text GIF",
     slug: "typing-text-gif",
-    categoryId: "edit",
+    categoryId: "gif",
     shortDescription: "Make a GIF of text typing itself, letter by letter.",
     icon: "terminal",
     processing: "client",
@@ -1484,6 +1502,7 @@ export const TOOLS: Tool[] = [
     slug: "reduce-image-size-in-kb",
     parentId: "compress-image",
     preset: { mode: "target" },
+    presetLabel: "Reduce size in KB",
     categoryId: "optimize",
     shortDescription: "Shrink a photo to any size you need in KB or MB.",
     icon: "compress",
@@ -1503,6 +1522,7 @@ export const TOOLS: Tool[] = [
     slug: "increase-image-size-in-kb",
     parentId: "compress-image",
     preset: { mode: "increase" },
+    presetLabel: "Increase size in KB",
     categoryId: "optimize",
     shortDescription: "Make a photo at least 10, 20 or 50KB for forms.",
     icon: "photo_size_select_large",
@@ -2044,9 +2064,11 @@ export function getTool(slug: string): Tool | undefined {
  * tools are preferred.
  */
 /**
- * The GIF tools, in menu order. They span three categories (Optimize, Edit,
- * Convert), so they are grouped here rather than by `categoryId`: the Tools
- * menu's GIF section lists them, and their related tools come from this list.
+ * The GIF tools, in menu order. Every one has `categoryId: "gif"` (the home
+ * page's GIF pill, since 2026-10-08); this list adds the ORDER: the Tools
+ * menu's GIF section lists them in it, and their related tools come from it.
+ * gif-to-png and gif-to-jpg are not here: they are format-pair converters
+ * (`convert`, off the home grid), listed with the other converters.
  */
 export const GIF_SUITE = [
   "gif-maker", "typing-text-gif", "video-to-gif", "gif-compressor", "gif-resizer", "gif-cropper",
@@ -2189,6 +2211,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   optimize: "#4F9D69",
   convert: "#4B8FC7",
   edit: "#8A6FC4",
+  gif: "#C56A9A",
   ai: "#7B79C9",
 };
 

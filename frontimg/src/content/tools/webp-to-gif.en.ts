@@ -10,7 +10,7 @@ const content: ToolPageContent = {
   name: "WEBP to GIF",
   tagline:
     "Convert animated WEBP images to GIF, keeping every frame and its timing — so the animation plays in apps and editors that don't understand WEBP. Free, in your browser.",
-  category: { id: "convert", label: "Convert" },
+  category: { id: "gif", label: "GIF" },
 
   intro:
     "Animated WEBP is efficient, but much software still can't open it: older image editors, some chat apps, presentation tools and many upload forms show only a still frame or refuse the file. GIF is understood everywhere. oMyImage's WEBP to GIF converter reads every frame of an animated WEBP — including its timing, blending and transparency — and writes them as a looping GIF. Add the file, preview the result next to the original, and download it.",

@@ -10,7 +10,7 @@ const content: ToolPageContent = {
   name: "Glitch Effect",
   tagline:
     "Give any photo a broken-screen glitch look — red and blue colour split, shifted slices and scan lines — with a strength slider and a shuffle button. Free, in your browser.",
-  category: { id: "edit", label: "Edit" },
+  category: { id: "edit", label: "Edit & Create" },
 
   intro:
     "The glitch look borrows from failing hardware: a video signal that slips, a screen that tears, colours that drift apart. It has become a style of its own on album covers, posters, thumbnails and profile pictures. oMyImage's Glitch Effect builds it from three ingredients you can switch on and off — colour split, shifted slices and scan lines — with one slider for strength and a button that reshuffles the slices until the composition looks right. Everything previews live before you download.",

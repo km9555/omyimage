@@ -12,7 +12,7 @@ const content: ToolPageContent = {
   name: "Instagram Grid Maker",
   tagline:
     "Turn one photo into a seamless Instagram profile grid — 3, 6, 9 or up to 15 posts — or a panorama carousel that flows as people swipe. Cropped to Instagram's shapes, sized at 1080 px and numbered in posting order.",
-  category: { id: "edit", label: "Edit" },
+  category: { id: "edit", label: "Edit & Create" },
 
   intro:
     "A grid post is one big picture spread across several Instagram posts, so that your profile shows it whole while each post stands on its own in the feed. Getting it right by hand means cropping to an odd shape, cutting the photo into exact thirds, resizing every piece and remembering to upload them backwards. Instagram Grid Maker does all of it: choose how many rows, pick the post shape, drag the photo to frame it, and download the posts already numbered in the order to share them. It also makes seamless carousels — one wide panorama cut into slides that join up as you swipe.",

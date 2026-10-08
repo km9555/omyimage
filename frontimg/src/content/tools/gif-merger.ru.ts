@@ -7,7 +7,7 @@ const content: ToolPageContent = {
   name: "Склеить GIF",
   tagline:
     "Соедините несколько анимированных GIF в один: расставьте их по порядку, и они будут проигрываться друг за другом, каждый кадр — со своей длительностью. Бесплатно, в браузере.",
-  category: { id: "edit", label: "Редактирование" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Склеить GIF онлайн бесплатно — объединить гифки в одну | oMyImage",
   metaDescription:

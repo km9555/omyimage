@@ -10,7 +10,7 @@ const content: ToolPageContent = {
   name: "Typing Text GIF",
   tagline:
     "Make a GIF of your text typing itself, letter by letter, with a blinking cursor. Choose the speed, font and colours. Free, in your browser — nothing to upload.",
-  category: { id: "edit", label: "Edit" },
+  category: { id: "gif", label: "GIF" },
 
   intro:
     "Text that types itself catches the eye in a way still text never does. oMyImage's Typing Text GIF turns any message into that effect: write it, choose how fast it types, the font, size and colours, and whether a cursor blinks at the end. The preview plays the animation as you adjust it. Because the result is an ordinary GIF, it works where code can't — in chats, slides, emails, GitHub READMEs and any website — with no JavaScript and no video player.",

@@ -7,7 +7,7 @@ const content: ToolPageContent = {
   name: "Vídeo para GIF",
   tagline:
     "Transforme um trecho de vídeo MP4, WEBM ou MOV num GIF que repete — corte, escolha a taxa de quadros e o tamanho, e veja o resultado antes de baixar. Grátis, e o vídeo nunca sai do navegador.",
-  category: { id: "convert", label: "Converter" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Vídeo para GIF Online Grátis — MP4 para GIF | oMyImage",
   metaDescription:

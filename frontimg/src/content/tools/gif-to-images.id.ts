@@ -20,7 +20,7 @@ const content: ToolPageContent = {
   name: "GIF ke Gambar",
   tagline:
     "Pecah setiap frame dari GIF animasi secara online — unduh semuanya dalam ZIP sebagai PNG, JPG, atau WEBP, atau ambil satu frame saja. Gratis, cepat, dan 100% privat di browser Anda.",
-  category: { id: "convert", label: "Konversi" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "GIF ke Gambar Online Gratis — Pecah GIF Jadi Frame PNG/JPG | oMyImage",
   metaDescription:

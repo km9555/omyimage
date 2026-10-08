@@ -8,7 +8,7 @@ const content: ToolPageContent = {
   name: "GIF उल्टा करें",
   tagline:
     "एनिमेटेड GIF को उल्टा चलाएँ, या उसे बूमरैंग बनाएँ जो पहले आगे और फिर पीछे चलता है — बिना झटके वाले एक लूप में। हर फ़्रेम की टाइमिंग बनी रहती है। मुफ़्त, ब्राउज़र में।",
-  category: { id: "edit", label: "एडिट" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Reverse GIF — GIF उल्टा चलाएँ या बूमरैंग बनाएँ, मुफ़्त | oMyImage",
   metaDescription:

@@ -30,6 +30,8 @@
 export interface LocalizedTool {
   name: string;
   shortDescription: string;
+  /** Short chip label on the home page's "Sizes and presets" (variants only). */
+  presetLabel?: string;
 }
 
 export const hiTools: Record<string, LocalizedTool> = {
@@ -204,6 +206,7 @@ export const hiTools: Record<string, LocalizedTool> = {
   // ── वैरिएंट: तय साइज़ तक कंप्रेस (expansion.md) ──
   "reduce-image-size-in-kb": {
     name: "फोटो का साइज़ KB में कम करें",
+    presetLabel: "KB में साइज़ घटाएँ",
     shortDescription: "किसी भी फोटो को अपनी ज़रूरत के KB या MB में लाएँ।",
   },
   "compress-image-to-20kb": {
@@ -260,6 +263,7 @@ export const hiTools: Record<string, LocalizedTool> = {
   },
   "increase-image-size-in-kb": {
     name: "इमेज का साइज़ KB में बढ़ाएँ",
+    presetLabel: "KB में साइज़ बढ़ाएँ",
     shortDescription: "फ़ॉर्म के लिए फोटो कम से कम 10, 20 या 50 KB करें।",
   },
   "signature-resizer": {
@@ -300,22 +304,27 @@ export const hiTools: Record<string, LocalizedTool> = {
   },
   "youtube-thumbnail-resizer": {
     name: "YouTube थंबनेल रीसाइज़र",
+    presetLabel: "YouTube थंबनेल",
     shortDescription: "किसी भी इमेज को 1280 × 720 YouTube थंबनेल बनाएँ।",
   },
   "whatsapp-dp-resizer": {
     name: "WhatsApp DP रीसाइज़र",
+    presetLabel: "WhatsApp DP",
     shortDescription: "पूरी फोटो को बिना काटे चौकोर WhatsApp DP में फ़िट करें।",
   },
   "linkedin-banner-resizer": {
     name: "LinkedIn बैनर रीसाइज़र",
+    presetLabel: "LinkedIn बैनर",
     shortDescription: "किसी भी इमेज को 1584 × 396 LinkedIn बैनर बनाएँ।",
   },
   "facebook-cover-resizer": {
     name: "Facebook कवर रीसाइज़र",
+    presetLabel: "Facebook कवर",
     shortDescription: "किसी भी इमेज को 851 × 315 Facebook कवर बनाएँ।",
   },
   "discord-banner-resizer": {
     name: "Discord बैनर रीसाइज़र",
+    presetLabel: "Discord बैनर",
     shortDescription: "Discord प्रोफ़ाइल और सर्वर बैनर के साइज़।",
   },
   "dpi-converter": {
@@ -328,6 +337,7 @@ export const hiTools: Record<string, LocalizedTool> = {
   },
   "resize-image-in-cm": {
     name: "इमेज को cm में रीसाइज़ करें",
+    presetLabel: "cm में साइज़",
     shortDescription: "इमेज को cm, mm या इंच में सटीक साइज़ में बदलें।",
   },
   "video-to-gif": {
@@ -478,5 +488,6 @@ export const hiCategories: Record<string, { title: string; navLabel: string }> =
   optimize: { title: "ऑप्टिमाइज़ और कंप्रेस करें", navLabel: "ऑप्टिमाइज़" },
   convert: { title: "इमेज कन्वर्ट करें", navLabel: "कन्वर्ट" },
   edit: { title: "एडिट और क्रिएट", navLabel: "एडिट और क्रिएट" },
+  gif: { title: "GIF टूल", navLabel: "GIF" },
   ai: { title: "AI टूल", navLabel: "इमेज AI" },
 };

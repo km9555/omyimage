@@ -14,7 +14,7 @@ const content: ToolPageContent = {
   name: "Criar GIF",
   tagline:
     "Crie um GIF animado com suas imagens online — ajuste a velocidade, a ordem, o tamanho e a repetição com prévia ao vivo. Grátis, rápido e 100% privado no seu navegador.",
-  category: { id: "edit", label: "Editar e criar" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Criar GIF online grátis — GIF animado com suas fotos | oMyImage",
   metaDescription:

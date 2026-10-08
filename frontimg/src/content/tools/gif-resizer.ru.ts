@@ -8,7 +8,7 @@ const content: ToolPageContent = {
   name: "Изменить размер GIF",
   tagline:
     "Измените размер анимированного GIF в процентах или точно в пикселях — меняется каждый кадр, а анимация играет ровно как раньше. Бесплатно, без водяных знаков, в браузере.",
-  category: { id: "optimize", label: "Оптимизация" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Изменить размер GIF онлайн бесплатно — анимация сохраняется | oMyImage",
   metaDescription:

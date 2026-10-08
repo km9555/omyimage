@@ -90,6 +90,11 @@ export const ptCommon: Record<string, string> = {
   "Upscale Image": "Melhorar qualidade da imagem",
   "Optimize": "Otimizar",
   "Convert": "Converter",
+  // CATEGORY_PILLS (lib/tool-categories.ts) labels, read by both the home page
+  // and the dashboard, so they live here rather than in a page dictionary.
+  "All": "Todas",
+  "Edit & Create": "Editar e criar",
+  "GIF": "GIF", // i18n-same
   "Edit & AI": "Editar e IA",
   "Contact": "Contato",
   "Privacy Policy": "Política de privacidade",

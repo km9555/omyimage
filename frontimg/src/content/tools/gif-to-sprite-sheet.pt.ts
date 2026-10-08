@@ -8,7 +8,7 @@ const content: ToolPageContent = {
   name: "GIF para sprite sheet",
   tagline:
     "Coloque todos os quadros de um GIF animado numa única folha de sprites PNG — em grade, numa linha ou numa coluna —, com espaçamento e uma animação CSS pronta. Grátis, no navegador.",
-  category: { id: "convert", label: "Converter" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "GIF para Sprite Sheet Online Grátis — Folha de Sprites PNG | oMyImage",
   metaDescription:
