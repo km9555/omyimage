@@ -44,7 +44,7 @@ const toc = [
   { id: "collect", title: "4. O que coletamos" },
   { id: "storage", title: "5. Armazenamento no navegador" },
   { id: "subprocessors", title: "6. Serviços de terceiros" },
-  { id: "google-drive", title: "7. Importação do Google Drive" },
+  { id: "google-drive", title: "7. Login com o Google e importação do Drive" },
   { id: "dropbox", title: "8. Importação do Dropbox" },
   { id: "future", title: "9. Recursos planejados" },
   { id: "rights", title: "10. Seus direitos" },
@@ -60,7 +60,7 @@ export default function PrivacyPage() {
       locale="pt"
       title="Política de Privacidade"
       subtitle="O que acontece com as suas imagens e os seus dados quando você usa o oMyImage."
-      updated="9 de setembro de 2026"
+      updated="8 de outubro de 2026"
       toc={toc}
     >
       <LegalSection id="summary" title="Resumo">
@@ -68,7 +68,8 @@ export default function PrivacyPage() {
           A maioria das ferramentas do oMyImage roda <strong>inteiramente dentro do seu
           navegador</strong> — suas imagens nunca são enviadas. Algumas poucas precisam do nosso
           servidor; esses arquivos são processados, devolvidos e excluídos em mais ou menos uma hora.
-          Não exigimos conta, não exibimos anúncios e não fazemos rastreamento de nenhum tipo.
+          A conta é opcional, não exibimos anúncios e não fazemos rastreamento entre sites; a análise
+          de uso só é carregada se você permitir.
         </LegalCallout>
         <LegalP>
           Esta política explica isso em detalhe. Ela descreve o que o serviço faz hoje e deixa claro
@@ -148,8 +149,9 @@ export default function PrivacyPage() {
 
       <LegalSection id="collect" title="4. O que coletamos">
         <LegalP>
-          Não pedimos seu nome, e-mail nem qualquer outro dado pessoal para usar as ferramentas. Não
-          há conta, newsletter nem formulário de contato neste site.
+          Você não precisa nos dar seu nome, e-mail nem qualquer outro dado pessoal para usar as
+          ferramentas. Não há newsletter nem formulário de contato neste site. Criar uma conta é
+          opcional; o que guardamos se você criar uma está descrito no fim desta seção.
         </LegalP>
         <LegalP>
           Como qualquer serviço na web, o nosso servidor e os nossos provedores de hospedagem
@@ -176,6 +178,32 @@ export default function PrivacyPage() {
           </Link>{" "}
           para os detalhes.
         </LegalP>
+
+        <LegalSubsection title="Se você criar uma conta">
+          <LegalP>
+            A conta é opcional: todas as ferramentas funcionam sem ela. Você pode criar uma com
+            e-mail e senha ou entrando com o Google (seção 7). Para uma conta, guardamos:
+          </LegalP>
+          <LegalUl>
+            <li>o seu endereço de e-mail e se você já o confirmou;</li>
+            <li>o seu nome, se você informar um ou se ele vier do login com o Google;</li>
+            <li>
+              uma senha guardada com hash seguro, se você se cadastrou com e-mail — nunca guardamos
+              a senha em si;
+            </li>
+            <li>o ID da sua conta do Google, se você entrar com o Google;</li>
+            <li>
+              o país de onde vieram o seu cadastro e a sua visita mais recente, deduzido do seu
+              endereço IP, e o horário dessa visita.
+            </li>
+          </LegalUl>
+          <LegalP>
+            Usamos esses dados para fazer o seu login, enviar e-mails da conta, como confirmação de
+            endereço e redefinição de senha, e ver, de forma agregada, de quais países vêm os nossos
+            usuários. Não os usamos para publicidade e nunca os vendemos. Você pode alterar o seu
+            nome e a sua senha na página da sua conta; para excluir a conta, veja a seção 10.
+          </LegalP>
+        </LegalSubsection>
       </LegalSection>
 
       <LegalSection id="storage" title="5. Armazenamento no navegador">
@@ -212,6 +240,12 @@ export default function PrivacyPage() {
           </Link>
           .
         </LegalP>
+        <LegalP>
+          Se você entrar na sua conta, também guardamos o seu token de sessão no armazenamento local
+          como <code>omyimage_token</code>. Diferente dos itens acima, ele é enviado ao nosso
+          servidor junto com as suas solicitações, para sabermos a qual conta elas pertencem. Sair da
+          conta o remove.
+        </LegalP>
       </LegalSection>
 
       <LegalSection id="subprocessors" title="6. Serviços de terceiros">
@@ -238,14 +272,31 @@ export default function PrivacyPage() {
         </LegalP>
       </LegalSection>
 
-      <LegalSection id="google-drive" title="7. Importação do Google Drive">
+      <LegalSection id="google-drive" title="7. Login com o Google e importação do Drive">
         <LegalP>
-          Conectar o Google é opcional. Todas as ferramentas do oMyImage funcionam sem isso, e nada
-          no site pede que você faça login. A conexão existe para um único recurso: importar uma
-          imagem que você já guarda no Google Drive, em vez de enviá-la do seu aparelho.
+          Conectar o Google é opcional, e todas as ferramentas do oMyImage funcionam sem isso.
+          Usamos o Google para duas coisas separadas, cada uma com a sua própria permissão:{" "}
+          <strong>entrar na sua conta</strong>, se você escolher criá-la com o Google, e{" "}
+          <strong>importar uma imagem</strong> que você já guarda no Google Drive, em vez de
+          enviá-la do seu aparelho. Conceder uma não concede a outra.
         </LegalP>
 
-        <LegalSubsection title="O que pedimos e o que isso permite">
+        <LegalSubsection title="Login com o Google">
+          <LegalP>
+            Quando você escolhe &quot;Continuar com o Google&quot;, o Google pede que você
+            compartilhe o seu perfil básico com o oMyImage: os escopos <code>email</code> e{" "}
+            <code>profile</code>. Usamos esses dados uma única vez, no login, para ler o seu
+            endereço de e-mail, o seu nome e o ID da sua conta do Google, e guardamos esses três
+            dados com a sua conta, como descrito na seção 4. O token de acesso dessa troca é usado só
+            nessa solicitação e não é guardado.
+          </LegalP>
+          <LegalP>
+            Entrar com o Google não dá ao oMyImage nenhum acesso ao seu Google Drive, Gmail,
+            contatos ou qualquer outro dado do Google.
+          </LegalP>
+        </LegalSubsection>
+
+        <LegalSubsection title="Importação do Drive: o que pedimos e o que isso permite">
           <LegalP>
             Quando você escolhe &quot;Importar do Google Drive&quot;, pedimos uma permissão bem
             restrita:{" "}
@@ -263,7 +314,7 @@ export default function PrivacyPage() {
           </LegalP>
         </LegalSubsection>
 
-        <LegalSubsection title="O que acontece com o arquivo e com o token">
+        <LegalSubsection title="Importação do Drive: o que acontece com o arquivo e com o token">
           <LegalUl>
             <li>
               O token de acesso que o Google emite fica na memória do seu navegador apenas durante
@@ -315,13 +366,16 @@ export default function PrivacyPage() {
           </a>
           .
         </LegalP>
+        <LegalP>
+          Retirar esse acesso não exclui a sua conta no oMyImage; a seção 10 explica como fazer isso.
+        </LegalP>
       </LegalSection>
 
       <LegalSection id="dropbox" title="8. Importação do Dropbox">
         <LegalP>
           Conectar o Dropbox é opcional e funciona igual ao Google Drive: existe só para você
           escolher uma imagem que já guarda no Dropbox em vez de enviá-la do seu aparelho. Todas as
-          ferramentas do oMyImage funcionam sem isso, e nada no site pede que você faça login.
+          ferramentas do oMyImage funcionam sem isso, e usá-lo não exige conta no oMyImage.
         </LegalP>
 
         <LegalP>
@@ -372,11 +426,6 @@ export default function PrivacyPage() {
         </LegalP>
         <LegalUl>
           <li>
-            <strong>Contas.</strong> Se lançarmos login, coletaríamos um endereço de e-mail e uma
-            senha guardada com hash seguro, apenas para autenticar você e associar o plano que você
-            tiver. Você poderia excluir a sua conta e os dados dela.
-          </li>
-          <li>
             <strong>Planos pagos.</strong> Se lançarmos planos pagos, o pagamento seria processado
             por um processador de pagamentos terceiro. Os dados do cartão iriam direto para esse
             processador e nunca chegariam nem ficariam guardados nos nossos servidores. Receberíamos
@@ -392,13 +441,13 @@ export default function PrivacyPage() {
       <LegalSection id="rights" title="10. Seus direitos">
         <LegalP>
           Dependendo de onde você mora, você pode ter direito de acessar, corrigir, exportar ou
-          excluir dados pessoais mantidos sobre você, e de se opor a certos tratamentos. Como não
-          operamos contas e não retemos as suas imagens, na prática normalmente não temos nada sobre
-          você que pudesse ser recuperado.
+          excluir dados pessoais mantidos sobre você, e de se opor a certos tratamentos. Não retemos
+          as suas imagens. Se você tem uma conta, mantemos os dados da conta listados na seção 4;
+          sem conta, normalmente não temos nada sobre você que pudesse ser recuperado.
         </LegalP>
         <LegalP>
-          Se você acredita que mantemos dados relativos a você, fale com a gente pelos canais da
-          nossa{" "}
+          Para ver, exportar ou excluir os seus dados, inclusive a sua conta e tudo o que está
+          guardado nela, fale com a gente pelos canais da nossa{" "}
           <Link href={localeHref("/contact", "pt")} className="text-secondary hover:underline">
             página de contato
           </Link>{" "}

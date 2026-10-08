@@ -17,7 +17,7 @@ const languages = pageAlternates("/privacy");
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
-    "How oMyImage handles your images and data. Most tools run entirely in your browser; server-processed files are deleted within an hour. No tracking, no ads, no account required.",
+    "How oMyImage handles your images and data. Most tools run entirely in your browser; server-processed files are deleted within an hour. No ads, no cross-site tracking, no account required.",
   alternates: languages ? { canonical: "/privacy", languages } : { canonical: "/privacy" },
 };
 
@@ -29,7 +29,7 @@ const toc = [
   { id: "collect", title: "4. What we collect" },
   { id: "storage", title: "5. Browser storage" },
   { id: "subprocessors", title: "6. Third-party services" },
-  { id: "google-drive", title: "7. Google Drive import" },
+  { id: "google-drive", title: "7. Google sign-in and Drive import" },
   { id: "dropbox", title: "8. Dropbox import" },
   { id: "future", title: "9. Planned features" },
   { id: "rights", title: "10. Your rights" },
@@ -44,15 +44,15 @@ export default function PrivacyPage() {
     <LegalShell
       title="Privacy Policy"
       subtitle="What happens to your images and your data when you use oMyImage."
-      updated="9 September 2026"
+      updated="8 October 2026"
       toc={toc}
     >
       <LegalSection id="summary" title="Summary">
         <LegalCallout>
           Most oMyImage tools run <strong>entirely inside your browser</strong> — your images are
           never uploaded. A few tools need our server; those files are processed, returned, and
-          deleted within about an hour. We do not require an account, we do not show ads, and we do
-          not run analytics or tracking of any kind.
+          deleted within about an hour. Accounts are optional, we do not show ads, and we run no
+          cross-site tracking; analytics loads only if you allow it.
         </LegalCallout>
         <LegalP>
           This policy explains that in detail. It describes what the service does today, and flags
@@ -129,8 +129,9 @@ export default function PrivacyPage() {
 
       <LegalSection id="collect" title="4. What we collect">
         <LegalP>
-          We do not ask for your name, email address or any other personal detail to use the tools.
-          There is no account, no newsletter and no contact form on this site.
+          You do not have to give us your name, email address or any other personal detail to use
+          the tools. There is no newsletter and no contact form on this site. Creating an account
+          is optional; what we store if you do is described at the end of this section.
         </LegalP>
         <LegalP>
           Like any web service, our server and our hosting providers automatically process basic
@@ -156,6 +157,32 @@ export default function PrivacyPage() {
           </Link>{" "}
           for the detail.
         </LegalP>
+
+        <LegalSubsection title="If you create an account">
+          <LegalP>
+            An account is optional: every tool works without one. You can create one with an email
+            address and password, or with Google sign-in (section 7). For an account we store:
+          </LegalP>
+          <LegalUl>
+            <li>your email address, and whether you have verified it;</li>
+            <li>your name, if you enter one or it comes from Google sign-in;</li>
+            <li>
+              a securely hashed password, if you signed up with email — we never store the password
+              itself;
+            </li>
+            <li>your Google account ID, if you sign in with Google;</li>
+            <li>
+              the country your sign-up and your most recent visit came from, worked out from your IP
+              address, and the time of that visit.
+            </li>
+          </LegalUl>
+          <LegalP>
+            We use these details to sign you in, to send account emails such as address verification
+            and password resets, and to see in aggregate which countries our users come from. We do
+            not use them for advertising and we never sell them. You can change your name and
+            password on your account page; to delete your account, see section 10.
+          </LegalP>
+        </LegalSubsection>
       </LegalSection>
 
       <LegalSection id="storage" title="5. Browser storage">
@@ -190,6 +217,11 @@ export default function PrivacyPage() {
           </Link>
           .
         </LegalP>
+        <LegalP>
+          If you sign in, we also keep your session token in local storage as{" "}
+          <code>omyimage_token</code>. Unlike the items above, it is sent to our server with your
+          requests, so that we know which account they belong to. Logging out removes it.
+        </LegalP>
       </LegalSection>
 
       <LegalSection id="subprocessors" title="6. Third-party services">
@@ -222,15 +254,35 @@ export default function PrivacyPage() {
         wording and should not be paraphrased. Keep the scope named here in sync
         with lib/google-drive.ts (currently drive.file only); adding a scope
         means updating this section and re-submitting for verification.
+
+        Google sign-in is the other use and asks only for `email profile`
+        (backend lib/auth-router.ts, GET /google). Keep the "Signing in with
+        Google" subsection in step with that scope list.
       */}
-      <LegalSection id="google-drive" title="7. Google Drive import">
+      <LegalSection id="google-drive" title="7. Google sign-in and Drive import">
         <LegalP>
-          Connecting Google is optional. Every tool on oMyImage works without it, and nothing on the
-          site asks you to sign in. The connection exists for a single feature: importing an image
-          you already keep in Google Drive, instead of uploading it from your device.
+          Connecting Google is optional, and every tool on oMyImage works without it. We use Google
+          for two separate things, each with its own permission: <strong>signing in</strong>, if you
+          choose to create your account with Google, and <strong>importing an image</strong> you
+          already keep in Google Drive instead of uploading it from your device. Granting one does
+          not grant the other.
         </LegalP>
 
-        <LegalSubsection title="What we ask for, and what it allows">
+        <LegalSubsection title="Signing in with Google">
+          <LegalP>
+            When you choose &quot;Continue with Google&quot;, Google asks you to share your basic
+            profile with oMyImage: the <code>email</code> and <code>profile</code> scopes. We use
+            them once, at sign-in, to read your email address, your name and your Google account ID,
+            and we keep those three with your account as described in section 4. The access token
+            from that exchange is used for that one request and is not stored.
+          </LegalP>
+          <LegalP>
+            Signing in with Google gives oMyImage no access to your Google Drive, Gmail, contacts or
+            any other Google data.
+          </LegalP>
+        </LegalSubsection>
+
+        <LegalSubsection title="Drive import: what we ask for, and what it allows">
           <LegalP>
             When you choose &quot;Import from Google Drive&quot;, we request one narrow permission:{" "}
             {/* break-all: the full scope URI is one 42-character unbreakable
@@ -246,7 +298,7 @@ export default function PrivacyPage() {
           </LegalP>
         </LegalSubsection>
 
-        <LegalSubsection title="What happens to the file and the token">
+        <LegalSubsection title="Drive import: what happens to the file and the token">
           <LegalUl>
             <li>
               The access token Google issues is held in your browser&apos;s memory for that visit
@@ -298,6 +350,9 @@ export default function PrivacyPage() {
           </a>
           .
         </LegalP>
+        <LegalP>
+          Withdrawing it does not delete your oMyImage account; section 10 explains how to do that.
+        </LegalP>
       </LegalSection>
 
       {/*
@@ -315,8 +370,8 @@ export default function PrivacyPage() {
         <LegalP>
           Connecting Dropbox is optional, and works the same way as Google Drive: it exists only so
           you can pick an image you already keep in Dropbox instead of uploading it from your
-          device. Every tool on oMyImage works without it, and nothing on the site asks you to sign
-          in.
+          device. Every tool on oMyImage works without it, and using it does not require an oMyImage
+          account.
         </LegalP>
 
         <LegalP>
@@ -365,11 +420,6 @@ export default function PrivacyPage() {
         </LegalP>
         <LegalUl>
           <li>
-            <strong>Accounts.</strong> If we introduce sign-in, we would collect an email address and
-            a securely hashed password, solely to authenticate you and to associate any plan you
-            hold. You would be able to delete your account and its data.
-          </li>
-          <li>
             <strong>Paid plans.</strong> If we introduce paid plans, payment would be handled by a
             third-party payment processor. Card details would go to that processor directly and would
             never reach or be stored on our servers. We would receive only a transaction reference
@@ -385,12 +435,13 @@ export default function PrivacyPage() {
       <LegalSection id="rights" title="10. Your rights">
         <LegalP>
           Depending on where you live, you may have rights to access, correct, export or erase
-          personal data held about you, and to object to certain processing. Because we do not
-          operate accounts and do not retain your images, in practice we usually hold nothing about
-          you that could be retrieved.
+          personal data held about you, and to object to certain processing. We do not retain your
+          images. If you have an account, we hold the account details listed in section 4; without
+          an account, we usually hold nothing about you that could be retrieved.
         </LegalP>
         <LegalP>
-          If you believe we hold data relating to you, contact us using the details on our{" "}
+          To see, export or delete your data, including your account and everything stored with
+          it, contact us using the details on our{" "}
           <Link href="/contact" className="text-secondary hover:underline">
             contact page
           </Link>{" "}
