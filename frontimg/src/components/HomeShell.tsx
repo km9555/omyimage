@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { Icon } from "@/components/Icon";
 import { ToolDirectory } from "@/components/ToolDirectory";
+import { liveToolCount } from "@/lib/tools";
 import { JsonLd } from "@/components/JsonLd";
 import { I18nScope } from "@/i18n/I18nScope";
 import { DEFAULT_LOCALE, LOCALE_TAG, type Locale } from "@/i18n/config";
@@ -22,23 +24,25 @@ import { absoluteUrl, SITE } from "@/lib/site";
  */
 
 const STEPS = [
-  { title: "Upload", description: "Drag & drop your images securely into our processing engine." },
+  { title: "Upload", description: "Drop in your images or pick them from your device." },
   {
     title: "Transform",
-    description: "Pick a tool and let your browser — or our servers — do the heavy lifting.",
+    description:
+      "Pick a tool and adjust the settings. The work happens in your browser, or on our servers for the heavier jobs.",
   },
   // "|step" context: a bare "Download" key is the common button ("Baixar"),
   // and this is the imperative step title ("Baixe") — two different strings.
-  { title: "Download|step", description: "Get your optimized images back, ready for your workflow." },
+  { title: "Download|step", description: "Save the result to your device, ready to use." },
 ];
 
-/** Plain-language capability list for the About block. */
+/** Plain-language capability list for the About block. American spelling, like the tool names. */
 const CAPABILITIES = [
   "Compress JPG, PNG and WEBP images without visible quality loss",
   "Resize, crop, rotate and add borders, in single files or in bulk",
   "Convert between JPG, PNG, WEBP, GIF, BMP, AVIF, HEIC and PDF",
   "Edit photos: watermark, grayscale, blur, memes and a full editor",
-  "Extract text with OCR, read or strip EXIF metadata, pick colours",
+  "Make and edit GIFs: build them from images or video, compress, resize, trim, caption and convert to MP4 or WebP",
+  "Extract text with OCR, read or strip EXIF metadata, pick colors",
   "AI tools: remove backgrounds, upscale images, blur faces for privacy",
 ];
 
@@ -124,13 +128,16 @@ export function HomeShell({
             <p>
               {/* i18n-raw: brand name */}
               <strong className="font-semibold text-primary">oMyImage</strong>{" "}
+              {/* The count is the registry's (liveToolCount), the same number
+                  the trust strip and the Tools menu show — never typed in. */}
               {t(
-                "is a free online image toolkit for everyday image work. It gives you a single place to compress, resize, crop, rotate, convert, watermark and edit images — over seventy tools, each one a dedicated page that does one job well.",
+                "is a free online image toolkit for everyday image work. It gives you a single place to compress, resize, crop, rotate, convert, watermark, edit and animate images: {n} tools, each one a dedicated page that does one job well.",
+                { n: liveToolCount(locale) },
               )}
             </p>
             <p>
               {t(
-                "Most tools run entirely inside your web browser: your image is processed on your own device and is never uploaded anywhere. Larger files, and the AI tools that need real hardware, are processed on our servers and deleted shortly after the job finishes. oMyImage is free to use and needs no account.",
+                "Most tools run entirely inside your web browser: your image is processed on your own device and is never uploaded anywhere. Larger files and the heavier AI tools are processed on our servers and deleted shortly after the job finishes. oMyImage is free to use and needs no account.",
               )}
             </p>
           </div>
@@ -144,37 +151,49 @@ export function HomeShell({
             ))}
           </ul>
 
-          <h3 className="mt-10 mb-4 text-body-lg font-semibold text-primary">
-            {t("How oMyImage uses your Google account")}
-          </h3>
-          <div className="max-w-3xl flex flex-col gap-4 text-body-md text-on-surface-variant">
-            <p>
-              {t("Connecting Google is optional — every tool on oMyImage works without it. It exists for one feature:")}{" "}
-              <strong className="font-semibold text-primary">{t("Import from Google Drive")}</strong>
-              {t(", which lets you pick an image already stored in your Drive instead of uploading it from your device.")}
-            </p>
-            <p>
-              {t("When you use it, oMyImage requests the")}{" "}
-              {/* i18n-raw: OAuth scope identifier */}
-              <code className="rounded bg-surface-container px-1.5 py-0.5 font-mono text-body-sm text-on-surface">
-                drive.file
-              </code>{" "}
-              {t(
-                "scope. That scope gives the app access only to the specific files you choose in Google's own file picker — it cannot see, browse or search the rest of your Drive. The file you pick is downloaded into your browser for the tool you are using, and that is all: oMyImage does not modify or delete anything in your Drive, does not store your Google files on our servers, does not use Google user data to train AI models, and never sells or shares it with third parties.",
-              )}
-            </p>
-            <p>
-              {t("You can revoke access at any time from your")}{" "}
-              <a
-                href="https://myaccount.google.com/permissions"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={link}
-              >
-                {t("Google Account permissions page")}
-              </a>
-              .
-            </p>
+          {/* Card, so the Google statement reads as its own block rather than
+              a fourth paragraph of About. The wording is what the OAuth review
+              reads: sign-in and Drive import are the only two uses, and the
+              scope sentence names Drive import explicitly because sign-in does
+              not request drive.file. */}
+          <div className="mt-10 max-w-3xl rounded-2xl border border-surface-variant bg-surface-container-lowest p-5 ambient-shadow md:p-6">
+            <div className="mb-4 flex items-center gap-3">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-secondary-fixed text-secondary">
+                <Icon name="cloud" className="text-[20px]" />
+              </span>
+              <h3 className="text-body-lg font-semibold text-primary">
+                {t("How oMyImage uses your Google account")}
+              </h3>
+            </div>
+            <div className="flex flex-col gap-4 text-body-md text-on-surface-variant">
+              <p>
+                {t("Connecting Google is optional — every tool on oMyImage works without it. Google is used for two things: signing in, if you choose to create an account, and")}{" "}
+                <strong className="font-semibold text-primary">{t("Import from Google Drive")}</strong>
+                {t(", which lets you pick an image already stored in your Drive instead of uploading it from your device.")}
+              </p>
+              <p>
+                {t("When you use Drive import, oMyImage requests the")}{" "}
+                {/* i18n-raw: OAuth scope identifier */}
+                <code className="rounded bg-surface-container px-1.5 py-0.5 font-mono text-body-sm text-on-surface">
+                  drive.file
+                </code>{" "}
+                {t(
+                  "scope. That scope gives the app access only to the specific files you choose in Google's own file picker — it cannot see, browse or search the rest of your Drive. The file you pick is downloaded into your browser for the tool you are using, and that is all: oMyImage does not modify or delete anything in your Drive, does not store your Google files on our servers, does not use Google user data to train AI models, and never sells or shares it with third parties.",
+                )}
+              </p>
+              <p>
+                {t("You can revoke access at any time from your")}{" "}
+                <a
+                  href="https://myaccount.google.com/permissions"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={link}
+                >
+                  {t("Google Account permissions page")}
+                </a>
+                .
+              </p>
+            </div>
           </div>
 
           <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-body-md">

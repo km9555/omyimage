@@ -67,6 +67,15 @@ export interface Tool {
   parentId?: string;
   preset?: ToolPreset;
   /**
+   * Short chip label for a variant in the home page's "Sizes and presets"
+   * block ("YouTube Thumbnail" under "Social and print sizes"), where the full
+   * name would repeat the group heading. Falls back to `name`. Read through
+   * `presetLabel()` in lib/i18n/tool-labels.ts, which also checks the locale
+   * dictionaries. A top-level field on purpose: `preset` is copied verbatim
+   * into the generated route stub, so nothing display-only may live inside it.
+   */
+  presetLabel?: string;
+  /**
    * Shows a "New" badge on the tool's card. Set on the 2026-10 expansion
    * (expansion.md §5); remove the flags once they stop being news (~2027-01).
    */
@@ -124,6 +133,7 @@ export const TOOLS: Tool[] = [
     slug: "resize-image-in-cm",
     parentId: "resize-image",
     preset: { mode: "print", unit: "cm", dpi: 300 },
+    presetLabel: "Resize in cm",
     categoryId: "optimize",
     shortDescription: "Resize images to an exact size in cm, mm or inches.",
     icon: "straighten",
@@ -143,6 +153,7 @@ export const TOOLS: Tool[] = [
     slug: "youtube-thumbnail-resizer",
     parentId: "resize-image",
     preset: { platform: "youtube", preset: "Thumbnail", format: "image/jpeg" },
+    presetLabel: "YouTube Thumbnail",
     categoryId: "optimize",
     shortDescription: "Resize any image to a 1280 × 720 YouTube thumbnail.",
     icon: "aspect_ratio",
@@ -162,6 +173,7 @@ export const TOOLS: Tool[] = [
     slug: "whatsapp-dp-resizer",
     parentId: "resize-image",
     preset: { platform: "whatsapp", preset: "Profile", fit: "contain" },
+    presetLabel: "WhatsApp DP",
     categoryId: "optimize",
     shortDescription: "Fit a full photo into a square WhatsApp DP, no crop.",
     icon: "aspect_ratio",
@@ -181,6 +193,7 @@ export const TOOLS: Tool[] = [
     slug: "linkedin-banner-resizer",
     parentId: "resize-image",
     preset: { platform: "linkedin", preset: "Cover" },
+    presetLabel: "LinkedIn Banner",
     categoryId: "optimize",
     shortDescription: "Resize an image to a 1584 × 396 LinkedIn banner.",
     icon: "aspect_ratio",
@@ -200,6 +213,7 @@ export const TOOLS: Tool[] = [
     slug: "facebook-cover-resizer",
     parentId: "resize-image",
     preset: { platform: "facebook", preset: "Cover", format: "image/jpeg" },
+    presetLabel: "Facebook Cover",
     categoryId: "optimize",
     shortDescription: "Resize an image to an 851 × 315 Facebook cover.",
     icon: "aspect_ratio",
@@ -219,6 +233,7 @@ export const TOOLS: Tool[] = [
     slug: "discord-banner-resizer",
     parentId: "resize-image",
     preset: { platform: "discord", preset: "Profile banner" },
+    presetLabel: "Discord Banner",
     categoryId: "optimize",
     shortDescription: "Resize images for Discord profile and server banners.",
     icon: "aspect_ratio",
@@ -1487,6 +1502,7 @@ export const TOOLS: Tool[] = [
     slug: "reduce-image-size-in-kb",
     parentId: "compress-image",
     preset: { mode: "target" },
+    presetLabel: "Reduce size in KB",
     categoryId: "optimize",
     shortDescription: "Shrink a photo to any size you need in KB or MB.",
     icon: "compress",
@@ -1506,6 +1522,7 @@ export const TOOLS: Tool[] = [
     slug: "increase-image-size-in-kb",
     parentId: "compress-image",
     preset: { mode: "increase" },
+    presetLabel: "Increase size in KB",
     categoryId: "optimize",
     shortDescription: "Make a photo at least 10, 20 or 50KB for forms.",
     icon: "photo_size_select_large",

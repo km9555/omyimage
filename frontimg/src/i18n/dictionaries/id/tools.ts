@@ -33,6 +33,8 @@
 export interface LocalizedTool {
   name: string;
   shortDescription: string;
+  /** Short chip label on the home page's "Sizes and presets" (variants only). */
+  presetLabel?: string;
 }
 
 export const idTools: Record<string, LocalizedTool> = {
@@ -207,6 +209,7 @@ export const idTools: Record<string, LocalizedTool> = {
   // ── Varian: kompres ke ukuran tertentu (expansion.md) ──
   "reduce-image-size-in-kb": {
     name: "Perkecil Ukuran Foto dalam KB",
+    presetLabel: "Perkecil dalam KB",
     shortDescription: "Kecilkan foto ke ukuran KB atau MB yang Anda butuhkan.",
   },
   "compress-image-to-20kb": {
@@ -263,6 +266,7 @@ export const idTools: Record<string, LocalizedTool> = {
   },
   "increase-image-size-in-kb": {
     name: "Perbesar Ukuran Foto (KB)",
+    presetLabel: "Perbesar dalam KB",
     shortDescription: "Buat foto minimal 10, 20, atau 50 KB.",
   },
   "signature-resizer": {
@@ -303,22 +307,27 @@ export const idTools: Record<string, LocalizedTool> = {
   },
   "youtube-thumbnail-resizer": {
     name: "Ubah Ukuran Thumbnail YouTube",
+    presetLabel: "Thumbnail YouTube",
     shortDescription: "Ubah gambar apa pun jadi thumbnail YouTube 1280 × 720.",
   },
   "whatsapp-dp-resizer": {
     name: "Foto Profil WA Full",
+    presetLabel: "Foto Profil WA",
     shortDescription: "Foto utuh di profil WA persegi, tanpa terpotong.",
   },
   "linkedin-banner-resizer": {
     name: "Ubah Ukuran Banner LinkedIn",
+    presetLabel: "Banner LinkedIn",
     shortDescription: "Ubah gambar apa pun jadi banner LinkedIn 1584 × 396.",
   },
   "facebook-cover-resizer": {
     name: "Ubah Ukuran Sampul Facebook",
+    presetLabel: "Sampul Facebook",
     shortDescription: "Ubah gambar apa pun jadi sampul Facebook 851 × 315.",
   },
   "discord-banner-resizer": {
     name: "Ubah Ukuran Banner Discord",
+    presetLabel: "Banner Discord",
     shortDescription: "Ukuran banner profil dan server Discord.",
   },
   "dpi-converter": {
@@ -331,6 +340,7 @@ export const idTools: Record<string, LocalizedTool> = {
   },
   "resize-image-in-cm": {
     name: "Ubah Ukuran Foto dalam cm",
+    presetLabel: "Ukuran dalam cm",
     shortDescription: "Ubah ukuran foto ke cm, mm, atau inci yang tepat.",
   },
   "video-to-gif": {

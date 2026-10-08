@@ -39,6 +39,17 @@ export function toolDescription(tool: Tool, locale: Locale): string {
   return DICTS[locale]?.[tool.id]?.shortDescription ?? tool.shortDescription;
 }
 
+/**
+ * Short chip label for a variant in the home page's "Sizes and presets" block:
+ * the locale's `presetLabel`, then the registry's English one, then the
+ * localized tool name.
+ */
+export function presetLabel(tool: Tool, locale: Locale): string {
+  const loc = DICTS[locale]?.[tool.id];
+  if (loc) return loc.presetLabel ?? loc.name;
+  return tool.presetLabel ?? tool.name;
+}
+
 /** Home-page section heading for a category ("Optimize & Compress"). */
 export function categoryTitle(categoryId: string, locale: Locale): string {
   return (
