@@ -8,7 +8,7 @@ const content: ToolPageContent = {
   name: "GIF से APNG",
   tagline:
     "एनिमेटेड GIF को APNG यानी एनिमेटेड PNG में बदलें — हर पिक्सल, फ़्रेम और ठहराव बना रहता है, अक्सर छोटी फ़ाइल में। मुफ़्त, ब्राउज़र में।",
-  category: { id: "convert", label: "कन्वर्ट" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "GIF to APNG — एनिमेटेड PNG कन्वर्टर, मुफ़्त ऑनलाइन | oMyImage",
   metaDescription:

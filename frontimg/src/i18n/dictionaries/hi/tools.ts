@@ -478,5 +478,6 @@ export const hiCategories: Record<string, { title: string; navLabel: string }> =
   optimize: { title: "ऑप्टिमाइज़ और कंप्रेस करें", navLabel: "ऑप्टिमाइज़" },
   convert: { title: "इमेज कन्वर्ट करें", navLabel: "कन्वर्ट" },
   edit: { title: "एडिट और क्रिएट", navLabel: "एडिट और क्रिएट" },
+  gif: { title: "GIF टूल", navLabel: "GIF" },
   ai: { title: "AI टूल", navLabel: "इमेज AI" },
 };

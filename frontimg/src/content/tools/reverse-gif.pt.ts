@@ -8,7 +8,7 @@ const content: ToolPageContent = {
   name: "Inverter GIF",
   tagline:
     "Faça um GIF animado tocar de trás para frente, ou transforme-o num bumerangue que vai e volta num loop contínuo. Cada quadro mantém a sua duração. Grátis, no navegador.",
-  category: { id: "edit", label: "Editar" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Inverter GIF Online Grátis — GIF ao Contrário e Bumerangue | oMyImage",
   metaDescription:

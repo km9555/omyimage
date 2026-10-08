@@ -7,7 +7,7 @@ const content: ToolPageContent = {
   name: "GIF ke WEBP",
   tagline:
     "Ubah GIF animasi jadi WEBP animasi — lossless untuk menyimpan setiap piksel, atau lossy untuk file yang jauh lebih kecil. Setiap frame mempertahankan durasinya. Gratis, di browser.",
-  category: { id: "convert", label: "Konversi" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "GIF ke WEBP Online Gratis — WEBP Animasi | oMyImage",
   metaDescription:

@@ -7,7 +7,7 @@ const content: ToolPageContent = {
   name: "Comprimir GIF",
   tagline:
     "Deixe GIFs animados menores — menos cores, quadros mais inteligentes e redimensionamento opcional — sem que parem de se mexer. Compare antes e depois e baixe. Grátis, no navegador.",
-  category: { id: "optimize", label: "Otimizar" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Comprimir GIF Online Grátis — Reduzir Tamanho de GIF | oMyImage",
   metaDescription:

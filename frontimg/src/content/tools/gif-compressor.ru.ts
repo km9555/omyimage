@@ -7,7 +7,7 @@ const content: ToolPageContent = {
   name: "Сжать GIF",
   tagline:
     "Уменьшите вес анимированных GIF — меньше цветов, умная работа с кадрами и, если нужно, меньший размер, — и анимация продолжит играть. Сравните до и после и скачайте. Бесплатно, в браузере.",
-  category: { id: "optimize", label: "Оптимизация" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Сжать GIF онлайн бесплатно — уменьшить вес гифки | oMyImage",
   metaDescription:

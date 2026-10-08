@@ -8,7 +8,7 @@ const content: ToolPageContent = {
   name: "GIF para APNG",
   tagline:
     "Converta GIFs animados em APNG, o PNG animado — cada pixel, quadro e pausa mantidos, muitas vezes num arquivo menor. Grátis, no navegador.",
-  category: { id: "convert", label: "Converter" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "GIF para APNG Online Grátis — PNG Animado | oMyImage",
   metaDescription:

@@ -44,10 +44,6 @@ export const ruHome: Record<string, string> = {
   "Favorites": "Избранное",
   "No tools in {category} yet.": "В разделе «{category}» пока нет инструментов.",
   "Browse all image format converters": "Все конвертеры форматов",
-  // CATEGORY_PILLS (lib/tool-categories.ts — module scope, §4.2). "Optimize",
-  // "Convert" and "Image AI" are already in common.ts.
-  "All": "Все",
-  "Edit & Create": "Редактор и создание",
 
   // ── HomeShell ───────────────────────────────────────────────────────────
   "How it works": "Как это работает",

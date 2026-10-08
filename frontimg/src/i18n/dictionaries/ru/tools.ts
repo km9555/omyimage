@@ -479,5 +479,6 @@ export const ruCategories: Record<string, { title: string; navLabel: string }> =
   optimize: { title: "Оптимизация и сжатие", navLabel: "Оптимизация" },
   convert: { title: "Конвертация изображений", navLabel: "Конвертация" },
   edit: { title: "Редактирование и создание", navLabel: "Редактор" },
+  gif: { title: "Инструменты для GIF", navLabel: "GIF" },
   ai: { title: "Инструменты с ИИ", navLabel: "ИИ для фото" },
 };

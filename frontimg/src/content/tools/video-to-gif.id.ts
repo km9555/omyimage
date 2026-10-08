@@ -7,7 +7,7 @@ const content: ToolPageContent = {
   name: "Video ke GIF",
   tagline:
     "Ubah potongan video MP4, WEBM, atau MOV menjadi GIF yang berulang — potong, pilih frame rate dan ukuran, lalu lihat hasilnya sebelum mengunduh. Gratis, dan videonya tidak keluar dari browser.",
-  category: { id: "convert", label: "Konversi" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Video ke GIF Online Gratis — MP4 ke GIF | oMyImage",
   metaDescription:

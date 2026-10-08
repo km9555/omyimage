@@ -7,7 +7,7 @@ const content: ToolPageContent = {
   name: "Recortar GIF",
   tagline:
     "Recorte GIFs animados online — arraste uma caixa ou digite os pixels exatos, trave uma proporção, e todos os quadros são recortados do mesmo jeito. A animação continua tocando. Grátis, no navegador.",
-  category: { id: "optimize", label: "Otimizar" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Recortar GIF Online Grátis — Cortar GIF Animado | oMyImage",
   metaDescription:

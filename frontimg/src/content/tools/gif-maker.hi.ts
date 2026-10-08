@@ -19,7 +19,7 @@ const content: ToolPageContent = {
   name: "GIF बनाएँ",
   tagline:
     "अपनी इमेज से ऑनलाइन चलता हुआ GIF बनाएँ — रफ़्तार, क्रम, साइज़ और दोहराव तय करें, सीधे प्रीव्यू के साथ। मुफ़्त, तेज़ और पूरी तरह आपके ब्राउज़र में।",
-  category: { id: "edit", label: "एडिट और क्रिएट" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "GIF बनाएँ — अपनी फोटो से चलता हुआ GIF, मुफ़्त ऑनलाइन | oMyImage",
   metaDescription:

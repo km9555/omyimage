@@ -8,7 +8,7 @@ const content: ToolPageContent = {
   name: "GIF ke Sprite Sheet",
   tagline:
     "Susun setiap frame GIF animasi di satu sprite sheet PNG — dalam grid, satu baris, atau satu kolom — dengan jarak antar-frame dan animasi CSS yang siap pakai. Gratis, di browser.",
-  category: { id: "convert", label: "Konversi" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "GIF ke Sprite Sheet Online Gratis — Frame GIF jadi PNG | oMyImage",
   metaDescription:

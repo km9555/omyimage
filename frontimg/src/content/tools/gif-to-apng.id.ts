@@ -8,7 +8,7 @@ const content: ToolPageContent = {
   name: "GIF ke APNG",
   tagline:
     "Ubah GIF animasi jadi APNG, PNG yang beranimasi — setiap piksel, frame, dan jeda tetap, sering dalam file yang lebih kecil. Gratis, di browser.",
-  category: { id: "convert", label: "Konversi" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "GIF ke APNG Online Gratis — PNG Animasi | oMyImage",
   metaDescription:

@@ -10,7 +10,7 @@ const content: ToolPageContent = {
   name: "GIF Compressor",
   tagline:
     "Make animated GIFs smaller — fewer colours, smarter frames and optional resizing — while they keep playing. Compare before and after, then download. Free, in your browser.",
-  category: { id: "optimize", label: "Optimize" },
+  category: { id: "gif", label: "GIF" },
 
   intro:
     "Animated GIFs get big fast, and a big GIF is one that chats, forums and email refuse or load slowly. oMyImage's GIF Compressor rebuilds your GIF to take up less space: it stores only what changes between frames, can use fewer colours and skip tiny flickers, and can drop frames or shrink the size if you need more. Choose Light, Medium or Strong, see the original and the result side by side with their sizes, and download the one you like.",

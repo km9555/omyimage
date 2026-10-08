@@ -10,7 +10,7 @@ const content: ToolPageContent = {
   name: "GIF to WEBP",
   tagline:
     "Convert animated GIFs to animated WEBP — lossless to keep every pixel, or lossy for much smaller files. Every frame keeps its timing. Free, in your browser.",
-  category: { id: "convert", label: "Convert" },
+  category: { id: "gif", label: "GIF" },
 
   intro:
     "GIF is the oldest animation format on the web and one of the least efficient. Animated WEBP plays the same animation in every current browser, usually in a fraction of the bytes. oMyImage's GIF to WEBP converter rewrites your GIF frame by frame: choose Lossless to keep every pixel exactly, or High or Small for lossy compression that shrinks the file much further. The result plays next to the original with its size and the saving, so you can pick the trade-off before you download.",

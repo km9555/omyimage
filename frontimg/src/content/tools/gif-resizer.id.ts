@@ -8,7 +8,7 @@ const content: ToolPageContent = {
   name: "Ubah Ukuran GIF",
   tagline:
     "Ubah ukuran GIF animasi dengan persen atau piksel yang tepat — setiap frame diubah dan animasinya berjalan persis seperti sebelumnya. Gratis, tanpa watermark, di browser.",
-  category: { id: "optimize", label: "Optimasi" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Ubah Ukuran GIF Online Gratis — GIF Animasi Tetap Bergerak | oMyImage",
   metaDescription:

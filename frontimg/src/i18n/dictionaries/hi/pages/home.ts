@@ -40,10 +40,6 @@ export const hiHome: Record<string, string> = {
   "Favorites": "पसंदीदा",
   "No tools in {category} yet.": "{category} में अभी कोई टूल नहीं है।",
   "Browse all image format converters": "इमेज फ़ॉर्मैट बदलने के सभी टूल देखें",
-  // CATEGORY_PILLS (lib/tool-categories.ts — module scope, §4.2). "Optimize",
-  // "Convert" and "Image AI" are already in common.ts.
-  "All": "सभी",
-  "Edit & Create": "एडिट और क्रिएट",
 
   // ── HomeShell ───────────────────────────────────────────────────────────
   "How it works": "यह कैसे काम करता है",

@@ -8,7 +8,7 @@ const content: ToolPageContent = {
   name: "Girar GIF",
   tagline:
     "Gire GIFs animados 90° para a esquerda ou para a direita ou 180°, ou espelhe como num espelho — todos os quadros giram do mesmo jeito e a animação continua tocando. Grátis, no navegador.",
-  category: { id: "optimize", label: "Otimizar" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Girar GIF Online Grátis — Rotacionar ou Espelhar GIF | oMyImage",
   metaDescription:

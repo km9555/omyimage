@@ -10,7 +10,7 @@ const content: ToolPageContent = {
   name: "Reverse GIF",
   tagline:
     "Play an animated GIF backwards, or turn it into a boomerang that plays forwards and then backwards in one seamless loop. Every frame keeps its timing. Free, in your browser.",
-  category: { id: "edit", label: "Edit" },
+  category: { id: "gif", label: "GIF" },
 
   intro:
     "Running an animation backwards is one of the oldest tricks there is: water jumps back into a glass, a dropped object flies up into a hand, a crowd walks in reverse. oMyImage's Reverse GIF flips the order of every frame in your GIF so it plays from the end to the start, and its Boomerang option plays the clip forwards and then backwards, so the loop has no visible jump. Add the GIF, pick a direction, compare the result with the original and download it.",

@@ -7,7 +7,7 @@ const content: ToolPageContent = {
   name: "GIF पर टेक्स्ट लिखें",
   tagline:
     "एनिमेटेड GIF पर कैप्शन लगाएँ — मीम टेक्स्ट, सबटाइटल या लेबल — हर फ़्रेम पर या कुछ पर, और सेव करने से पहले उसे लाइव चलते देखें। मुफ़्त, ब्राउज़र में।",
-  category: { id: "edit", label: "एडिट" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Add Text to GIF — GIF पर टेक्स्ट लिखें, मुफ़्त ऑनलाइन | oMyImage",
   metaDescription:

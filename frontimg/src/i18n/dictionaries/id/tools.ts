@@ -481,5 +481,6 @@ export const idCategories: Record<string, { title: string; navLabel: string }> =
   optimize: { title: "Optimasi & Kompres", navLabel: "Optimasi" },
   convert: { title: "Konversi Gambar", navLabel: "Konversi" },
   edit: { title: "Edit & Buat", navLabel: "Edit" },
+  gif: { title: "Alat GIF", navLabel: "GIF" },
   ai: { title: "Alat Foto AI", navLabel: "AI Foto" },
 };

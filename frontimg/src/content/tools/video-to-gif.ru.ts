@@ -7,7 +7,7 @@ const content: ToolPageContent = {
   name: "Видео в GIF",
   tagline:
     "Сделайте зацикленную гифку из фрагмента видео MP4, WEBM или MOV — обрежьте, выберите частоту кадров и размер и посмотрите результат до скачивания. Бесплатно, видео не покидает браузер.",
-  category: { id: "convert", label: "Конвертация" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Видео в GIF онлайн бесплатно — MP4 в гифку | oMyImage",
   metaDescription:

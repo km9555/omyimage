@@ -8,7 +8,7 @@ const content: ToolPageContent = {
   name: "Укоротить GIF",
   tagline:
     "Обрежьте анимированный GIF по времени: выберите первый и последний кадр, которые нужно оставить, или вырежьте кусок из середины. Бесплатно, в браузере.",
-  category: { id: "edit", label: "Редактирование" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Обрезать GIF по времени онлайн — укоротить гифку | oMyImage",
   metaDescription:

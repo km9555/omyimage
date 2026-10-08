@@ -28,6 +28,11 @@ export const CATEGORY_PILLS: CategoryPill[] = [
     match: (t) => t.categoryId === "edit",
   },
   {
+    id: "gif",
+    label: "GIF",
+    match: (t) => t.categoryId === "gif",
+  },
+  {
     id: "ai",
     label: "Image AI",
     match: (t) => t.categoryId === "ai" || t.processing === "ai",

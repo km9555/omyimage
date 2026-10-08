@@ -8,7 +8,7 @@ const content: ToolPageContent = {
   name: "GIF स्पीड बदलें",
   tagline:
     "एनिमेटेड GIF को तेज़ या धीमा करें, या हर फ़्रेम को एक जैसी अवधि दें। ज़्यादातर सिर्फ़ टाइमिंग बदलती है — हर पिक्सल वैसा ही रहता है। मुफ़्त, ब्राउज़र में।",
-  category: { id: "edit", label: "एडिट" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "GIF Speed Changer — GIF तेज़ या धीमा करें, मुफ़्त | oMyImage",
   metaDescription:

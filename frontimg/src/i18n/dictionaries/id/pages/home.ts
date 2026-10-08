@@ -47,10 +47,6 @@ export const idHome: Record<string, string> = {
   "Favorites": "Favorit",
   "No tools in {category} yet.": "Belum ada alat di kategori {category}.",
   "Browse all image format converters": "Lihat semua konverter format gambar",
-  // CATEGORY_PILLS (lib/tool-categories.ts — module scope, §4.2). "Optimize",
-  // "Convert" and "Image AI" are already in common.ts.
-  "All": "Semua",
-  "Edit & Create": "Edit & Buat",
 
   // ── HomeShell ───────────────────────────────────────────────────────────
   "How it works": "Cara kerjanya",

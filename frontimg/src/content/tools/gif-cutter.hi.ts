@@ -8,7 +8,7 @@ const content: ToolPageContent = {
   name: "GIF कटर",
   tagline:
     "एनिमेटेड GIF को अपने काम के हिस्से तक काटें: रखने के लिए पहला और आख़िरी फ़्रेम चुनें, या बीच से कोई हिस्सा निकाल दें। मुफ़्त, ब्राउज़र में।",
-  category: { id: "edit", label: "एडिट" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "GIF Cutter — एनिमेटेड GIF ऑनलाइन काटें और छोटा करें | oMyImage",
   metaDescription:

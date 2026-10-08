@@ -8,7 +8,7 @@ const content: ToolPageContent = {
   name: "Alterar velocidade do GIF",
   tagline:
     "Acelere ou desacelere um GIF animado, ou dê a mesma duração a todos os quadros. Quase sempre só o tempo muda — cada pixel continua como estava. Grátis, no navegador.",
-  category: { id: "edit", label: "Editar" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Alterar Velocidade do GIF Online — Acelerar ou Desacelerar | oMyImage",
   metaDescription:

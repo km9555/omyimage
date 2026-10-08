@@ -10,7 +10,7 @@ const content: ToolPageContent = {
   name: "GIF Speed Changer",
   tagline:
     "Speed up or slow down an animated GIF, or give every frame the same delay. Usually only the timing changes — every pixel stays as it was. Free, in your browser.",
-  category: { id: "edit", label: "Edit" },
+  category: { id: "gif", label: "GIF" },
 
   intro:
     "A GIF that crawls makes a joke land late; one that races makes a tutorial impossible to follow. oMyImage's GIF Speed Changer fixes the pace without re-making the animation. Pick a speed such as 2× or 0.5×, or type your own, and see the new length before you save. When only the timing needs to change — which is most of the time — the tool rewrites the delay of each frame and leaves the pictures untouched, so the GIF keeps its exact quality and size.",

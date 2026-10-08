@@ -10,7 +10,7 @@ const content: ToolPageContent = {
   name: "GIF Merger",
   tagline:
     "Join several animated GIFs into one: put them in order and they play one after another, each frame with its own timing. Free, in your browser.",
-  category: { id: "edit", label: "Edit" },
+  category: { id: "gif", label: "GIF" },
 
   intro:
     "Sometimes one GIF isn't enough: a reaction needs its follow-up, a tutorial comes in three short clips, or a before-and-after works better as one animation. oMyImage's GIF Merger joins them. Add two or more GIFs, put them in the order you want, choose how GIFs of different sizes should fit, and merge. The result plays every GIF in turn, keeps every frame's timing, and loops as one animation.",

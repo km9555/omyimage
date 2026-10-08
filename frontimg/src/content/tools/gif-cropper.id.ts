@@ -7,7 +7,7 @@ const content: ToolPageContent = {
   name: "Crop GIF",
   tagline:
     "Crop GIF animasi secara online — tarik kotak atau ketik ukuran piksel yang pas, kunci rasio, dan setiap frame dipotong dengan cara yang sama. Animasinya tetap bergerak. Gratis, di browser.",
-  category: { id: "optimize", label: "Optimalkan" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Crop GIF Online Gratis — Potong Tepi GIF Animasi | oMyImage",
   metaDescription:

@@ -7,7 +7,7 @@ const content: ToolPageContent = {
   name: "GIF से MP4",
   tagline:
     "GIF को MP4 वीडियो में बदलें — आमतौर पर काफ़ी छोटा, ज़्यादा मुलायम रंगों वाला और हर उस प्लेटफ़ॉर्म पर चलने वाला जो वीडियो लेता है। छोटी GIF दोहराएँ, बैकग्राउंड चुनें, डाउनलोड करें। मुफ़्त, ब्राउज़र में।",
-  category: { id: "convert", label: "कन्वर्ट" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "GIF से MP4 — मुफ़्त ऑनलाइन, छोटी वीडियो फ़ाइल | oMyImage",
   metaDescription:

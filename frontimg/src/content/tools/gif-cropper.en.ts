@@ -10,7 +10,7 @@ const content: ToolPageContent = {
   name: "GIF Cropper",
   tagline:
     "Crop animated GIFs online — drag a box or type exact pixels, lock an aspect ratio, and every frame is cropped the same way. The animation keeps playing. Free, in your browser.",
-  category: { id: "optimize", label: "Optimize" },
+  category: { id: "gif", label: "GIF" },
 
   intro:
     "Most image croppers flatten a GIF to its first frame, so the animation is lost the moment you cut it. oMyImage's GIF cropper works on the whole animation: drag the box over the part you want to keep, or type its position and size in pixels, and every frame is cut to exactly that area with its timing untouched. A frame slider lets you check the box against moving content before you commit, and the result plays next to the original so you can compare them before downloading.",

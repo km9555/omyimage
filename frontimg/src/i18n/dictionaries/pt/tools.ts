@@ -479,5 +479,6 @@ export const ptCategories: Record<string, { title: string; navLabel: string }> =
   optimize: { title: "Otimizar e comprimir", navLabel: "Otimizar" },
   convert: { title: "Converter imagens", navLabel: "Converter" },
   edit: { title: "Editar e criar", navLabel: "Editar e criar" },
+  gif: { title: "Ferramentas de GIF", navLabel: "GIF" },
   ai: { title: "Ferramentas de IA", navLabel: "IA de imagem" },
 };

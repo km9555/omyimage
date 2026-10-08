@@ -10,7 +10,7 @@ const content: ToolPageContent = {
   name: "Pixelate Image",
   tagline:
     "Turn any photo into chunky pixel blocks — from a subtle mosaic to bold retro pixel art. Choose the block size, preview it live and pixelate many images at once. Free, in your browser.",
-  category: { id: "edit", label: "Edit" },
+  category: { id: "edit", label: "Edit & Create" },
 
   intro:
     "Pixelation replaces the detail of an image with square blocks of colour, each one taking the colour of the area it covers. It is the look of old video games, of mosaic tiles and of a picture deliberately made unreadable. oMyImage's Pixelate Image lets you choose exactly how big those blocks are: drag the slider and the preview updates at once, showing roughly how many blocks fit along the image. Add one picture or a batch, then download them pixelated in the same format or another.",

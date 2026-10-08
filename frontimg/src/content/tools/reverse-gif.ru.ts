@@ -8,7 +8,7 @@ const content: ToolPageContent = {
   name: "Реверс GIF",
   tagline:
     "Проиграйте анимированный GIF задом наперёд или превратите его в бумеранг, который идёт вперёд и назад одним бесшовным циклом. Каждый кадр сохраняет длительность. Бесплатно, в браузере.",
-  category: { id: "edit", label: "Редактирование" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Реверс GIF онлайн — гифка задом наперёд и бумеранг | oMyImage",
   metaDescription:

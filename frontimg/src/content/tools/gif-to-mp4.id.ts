@@ -7,7 +7,7 @@ const content: ToolPageContent = {
   name: "GIF ke MP4",
   tagline:
     "Ubah GIF menjadi video MP4 — biasanya jauh lebih kecil, warnanya lebih halus, dan diterima di semua platform yang menerima video. Ulangi GIF pendek, pilih latar, unduh. Gratis, di browser.",
-  category: { id: "convert", label: "Konversi" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "GIF ke MP4 Online Gratis — Video Kecil dari GIF | oMyImage",
   metaDescription:

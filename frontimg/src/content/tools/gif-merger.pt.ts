@@ -7,7 +7,7 @@ const content: ToolPageContent = {
   name: "Juntar GIFs",
   tagline:
     "Junte vários GIFs animados em um só: coloque-os em ordem e eles tocam um depois do outro, cada quadro com a sua duração. Grátis, no navegador.",
-  category: { id: "edit", label: "Editar" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Juntar GIFs Online Grátis — Unir Vários GIFs em Um | oMyImage",
   metaDescription:

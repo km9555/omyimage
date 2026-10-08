@@ -7,7 +7,7 @@ const content: ToolPageContent = {
   name: "GIF в MP4",
   tagline:
     "Конвертируйте GIF в видео MP4 — обычно намного легче, с более плавными цветами и подходит везде, где принимают видео. Повторите короткую гифку, выберите фон и скачайте. Бесплатно, в браузере.",
-  category: { id: "convert", label: "Конвертация" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "GIF в MP4 онлайн бесплатно — лёгкое видео из гифки | oMyImage",
   metaDescription:

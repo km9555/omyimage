@@ -7,7 +7,7 @@ const content: ToolPageContent = {
   name: "Обрезать GIF",
   tagline:
     "Обрежьте анимированный GIF онлайн — растяните рамку или введите точные пиксели, закрепите пропорции, и каждый кадр будет обрезан одинаково. Анимация продолжит играть. Бесплатно, в браузере.",
-  category: { id: "optimize", label: "Оптимизация" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Обрезать GIF онлайн бесплатно — кадрировать гифку | oMyImage",
   metaDescription:

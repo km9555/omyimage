@@ -8,7 +8,7 @@ const content: ToolPageContent = {
   name: "GIF в спрайт-лист",
   tagline:
     "Разложите все кадры анимированного GIF на одном PNG спрайт-листе — сеткой, в одну строку или в один столбец — с отступами и готовой CSS-анимацией. Бесплатно, в браузере.",
-  category: { id: "convert", label: "Конвертация" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "GIF в спрайт-лист онлайн — кадры гифки на одном PNG | oMyImage",
   metaDescription:

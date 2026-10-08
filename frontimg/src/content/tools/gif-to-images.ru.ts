@@ -19,7 +19,7 @@ const content: ToolPageContent = {
   name: "GIF на кадры",
   tagline:
     "Достаньте каждый кадр анимированного GIF: все сразу одним ZIP в PNG, JPG или WEBP — или любой отдельно. Бесплатно и прямо в браузере.",
-  category: { id: "convert", label: "Конвертация" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Разбить GIF на кадры онлайн бесплатно — все кадры одним ZIP | oMyImage",
   metaDescription:

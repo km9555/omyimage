@@ -8,7 +8,7 @@ const content: ToolPageContent = {
   name: "GIF रीसाइज़र",
   tagline:
     "एनिमेटेड GIF को प्रतिशत से या सटीक पिक्सल में रीसाइज़ करें — हर फ़्रेम रीसाइज़ होता है और एनिमेशन बिल्कुल पहले जैसा चलता है। मुफ़्त, बिना वॉटरमार्क, ब्राउज़र में।",
-  category: { id: "optimize", label: "ऑप्टिमाइज़" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "GIF रीसाइज़र — एनिमेटेड GIF का साइज़ बदलें, मुफ़्त | oMyImage",
   metaDescription:

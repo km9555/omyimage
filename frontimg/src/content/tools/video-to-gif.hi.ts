@@ -7,7 +7,7 @@ const content: ToolPageContent = {
   name: "वीडियो से GIF",
   tagline:
     "MP4, WEBM या MOV वीडियो के किसी हिस्से को दोहराने वाली GIF बनाएँ — काटें, फ़्रेम रेट और साइज़ चुनें, और डाउनलोड से पहले नतीजा देखें। मुफ़्त, और वीडियो ब्राउज़र से बाहर नहीं जाता।",
-  category: { id: "convert", label: "कन्वर्ट" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "वीडियो से GIF — MP4 को GIF में बदलें, मुफ़्त ऑनलाइन | oMyImage",
   metaDescription:

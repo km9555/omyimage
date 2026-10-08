@@ -4,9 +4,10 @@
  *
  * These are PRESENTATION groups and are deliberately separate from
  * `CATEGORY_PILLS` in tool-categories.ts (predicates used to filter the home
- * grid). The registry's four categories are too coarse for a menu: `convert`
- * alone holds 20 tools, which would be one unreadable column, while `ai` holds
- * two. So the menu re-cuts the same tools into groups that read as a list.
+ * grid). The registry's five categories are too coarse for a menu: `edit`
+ * alone holds over twenty tools, which would be one unreadable column, while
+ * `ai` holds four. So the menu re-cuts the same tools into groups that read as
+ * a list.
  *
  * Every id here must exist in TOOLS — `navSectionTools()` drops unknown ones
  * rather than rendering a hole, but a typo would silently lose a link, so the

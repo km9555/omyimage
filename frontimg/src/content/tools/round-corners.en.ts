@@ -10,7 +10,7 @@ const content: ToolPageContent = {
   name: "Round Corners",
   tagline:
     "Give images rounded corners — any radius, any corners — with transparent edges in PNG or a background colour of your choice. Many images at once. Free, in your browser.",
-  category: { id: "edit", label: "Edit" },
+  category: { id: "edit", label: "Edit & Create" },
 
   intro:
     "Rounded corners make a picture feel finished: app icons, website cards, slides and social posts all use them. oMyImage's Round Corners trims the corners of JPG, PNG and WEBP images to the radius you choose, on all four corners or only some, and leaves the cut-away parts transparent so the image sits cleanly on any background. Watch the preview change as you drag, then download one image or a whole batch.",

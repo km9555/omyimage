@@ -8,7 +8,7 @@ const content: ToolPageContent = {
   name: "GIF से स्प्राइट शीट",
   tagline:
     "एनिमेटेड GIF के हर फ़्रेम को एक PNG स्प्राइट शीट पर रखें — ग्रिड, एक पंक्ति या एक कॉलम में — जगह छोड़कर और तैयार CSS एनिमेशन के साथ। मुफ़्त, ब्राउज़र में।",
-  category: { id: "convert", label: "कन्वर्ट" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "GIF to Sprite Sheet — GIF फ़्रेम से PNG शीट बनाएँ | oMyImage",
   metaDescription:

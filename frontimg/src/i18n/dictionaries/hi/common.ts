@@ -103,6 +103,11 @@ export const hiCommon: Record<string, string> = {
   "Upscale Image": "इमेज की क्वालिटी बढ़ाएँ",
   "Optimize": "ऑप्टिमाइज़",
   "Convert": "कन्वर्ट",
+  // CATEGORY_PILLS (lib/tool-categories.ts) labels, read by both the home page
+  // and the dashboard, so they live here rather than in a page dictionary.
+  "All": "सभी",
+  "Edit & Create": "एडिट और क्रिएट",
+  "GIF": "GIF", // i18n-same
   "Edit & AI": "एडिट और AI",
   "Contact": "संपर्क",
   "Privacy Policy": "प्राइवेसी पॉलिसी",

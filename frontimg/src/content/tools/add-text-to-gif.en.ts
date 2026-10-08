@@ -10,7 +10,7 @@ const content: ToolPageContent = {
   name: "Add Text to GIF",
   tagline:
     "Put a caption on an animated GIF — meme text, a subtitle or a label — on every frame or only some, and watch it play live before you save. Free, in your browser.",
-  category: { id: "edit", label: "Edit" },
+  category: { id: "gif", label: "GIF" },
 
   intro:
     "A GIF says more with the right words on it: the punchline under a reaction, a subtitle on a silent clip, a label on each step of a tutorial. oMyImage's Add Text to GIF writes your text onto the animation itself. Type it, pick one of nine positions, a font, size and colours, and the preview plays the GIF with your caption in real time. When it looks right, add it to the GIF; the text becomes part of every frame you chose, so it shows wherever the GIF goes.",

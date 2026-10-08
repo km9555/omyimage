@@ -17,7 +17,7 @@ const content: ToolPageContent = {
   name: "Сделать GIF",
   tagline:
     "Соберите анимированный GIF из своих картинок: скорость, порядок, размер и повторы с живым предпросмотром. Бесплатно и прямо в браузере.",
-  category: { id: "edit", label: "Редактор" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Сделать GIF из фото онлайн бесплатно — гифка из картинок | oMyImage",
   metaDescription:

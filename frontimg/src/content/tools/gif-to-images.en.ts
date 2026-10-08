@@ -10,7 +10,7 @@ const content: ToolPageContent = {
   name: "GIF to Images",
   tagline:
     "Extract every frame of an animated GIF online — download them all as a ZIP in PNG, JPG or WEBP, or grab a single frame. Free, fast and 100% private in your browser.",
-  category: { id: "convert", label: "Convert" },
+  category: { id: "gif", label: "GIF" },
 
   intro:
     "Break an animated GIF back into individual pictures. oMyImage's GIF to Images tool extracts every frame of a GIF right in your browser — fully composited so each frame is a complete image — and lets you download them all as a ZIP or one at a time, in PNG, JPG or WEBP. Nothing is uploaded, so your GIF stays private.",

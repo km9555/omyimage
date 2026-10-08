@@ -8,7 +8,7 @@ const content: ToolPageContent = {
   name: "Ubah Kecepatan GIF",
   tagline:
     "Percepat atau perlambat GIF animasi, atau beri semua frame jeda yang sama. Biasanya hanya waktunya yang berubah — setiap piksel tetap seperti semula. Gratis, di browser.",
-  category: { id: "edit", label: "Edit" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Ubah Kecepatan GIF Online — Percepat atau Perlambat GIF | oMyImage",
   metaDescription:

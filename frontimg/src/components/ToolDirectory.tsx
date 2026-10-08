@@ -20,6 +20,7 @@ const PILL_ICONS: Record<string, string> = {
   optimize: "compress",
   convert:  "swap_horiz",
   edit:     "edit",
+  gif:      "gif_box",
   ai:       "auto_awesome",
 };
 

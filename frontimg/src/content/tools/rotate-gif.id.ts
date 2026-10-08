@@ -8,7 +8,7 @@ const content: ToolPageContent = {
   name: "Putar GIF",
   tagline:
     "Putar GIF animasi 90° ke kiri atau ke kanan atau 180°, atau balik seperti cermin — setiap frame diputar dengan cara yang sama dan animasinya tetap bergerak. Gratis, di browser.",
-  category: { id: "optimize", label: "Optimalkan" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Putar GIF Online Gratis — Rotate dan Mirror GIF | oMyImage",
   metaDescription:

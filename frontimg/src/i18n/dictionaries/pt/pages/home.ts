@@ -36,10 +36,6 @@ export const ptHome: Record<string, string> = {
   "Favorites": "Favoritos",
   "No tools in {category} yet.": "Ainda não há ferramentas em {category}.",
   "Browse all image format converters": "Ver todos os conversores de formato de imagem",
-  // CATEGORY_PILLS (lib/tool-categories.ts — module scope, §4.2). "Optimize",
-  // "Convert" and "Image AI" are already in common.ts.
-  "All": "Todas",
-  "Edit & Create": "Editar e criar",
 
   // ── HomeShell ───────────────────────────────────────────────────────────
   "How it works": "Como funciona",

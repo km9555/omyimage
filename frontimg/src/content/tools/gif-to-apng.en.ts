@@ -10,7 +10,7 @@ const content: ToolPageContent = {
   name: "GIF to APNG",
   tagline:
     "Convert animated GIFs to APNG, the animated PNG — every pixel, frame and pause kept, often in a smaller file. Free, in your browser.",
-  category: { id: "convert", label: "Convert" },
+  category: { id: "gif", label: "GIF" },
 
   intro:
     "APNG is PNG with animation: the same lossless format as an ordinary PNG, with extra chunks that hold frames and timing. Every current browser plays it, and software that does not understand the animation simply shows the first frame as a normal PNG. oMyImage's GIF to APNG converter writes your GIF as an APNG without changing a single pixel, stores each frame as compactly as it can, and shows the size next to the original so you can see what you gained.",

@@ -8,7 +8,7 @@ const content: ToolPageContent = {
   name: "Putar Balik GIF",
   tagline:
     "Putar GIF animasi mundur, atau jadikan boomerang yang bergerak maju lalu mundur dalam satu loop yang mulus. Setiap frame mempertahankan durasinya. Gratis, di browser.",
-  category: { id: "edit", label: "Edit" },
+  category: { id: "gif", label: "GIF" },
 
   metaTitle: "Reverse GIF Online Gratis — Putar Balik GIF dan Boomerang | oMyImage",
   metaDescription:
