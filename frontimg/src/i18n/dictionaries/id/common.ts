@@ -264,6 +264,29 @@ export const idCommon: Record<string, string> = {
   "Reset": "Atur ulang",
   "Output": "Hasil",
   "Couldn't read this image.": "Gambar ini tidak bisa dibaca.",
+  // ── Photo editor (after "Take photo" on a phone) ────────────────────────
+  "Edit photo": "Edit foto",
+  "Edit {name}": "Edit {name}",
+  "Crop": "Crop", // i18n-same — «crop foto» is what Indonesians type
+  "Adjust": "Sesuaikan",
+  "Filters": "Filter",
+  "Auto enhance": "Perbaiki otomatis",
+  "Brightness": "Kecerahan",
+  "Contrast": "Kontras",
+  "Saturation": "Saturasi",
+  "Warmth": "Kehangatan",
+  "Flip horizontal": "Balik horizontal",
+  "Flip vertical": "Balik vertikal",
+  "Straighten": "Luruskan",
+  "Use original": "Pakai asli",
+  "Done": "Selesai",
+  "Vivid": "Cerah",
+  "B&W": "Hitam Putih",
+  "Mono": "Mono", // i18n-same
+  "Sepia": "Sepia", // i18n-same
+  "Cool": "Dingin",
+  "Warm": "Hangat",
+  "Couldn't apply that edit.": "Editan itu tidak bisa diterapkan.",
   "Compare original with result": "Bandingkan asli dengan hasil",
   "Crop area. Drag inside to move, drag a handle to resize, arrow keys to nudge.":
     "Area crop. Seret di dalam untuk memindahkan, seret pegangan untuk mengubah ukuran, tombol panah untuk menggeser sedikit.",

@@ -266,6 +266,8 @@ const content: ToolPageContent = {
     "Bottom left": "Слева внизу",
     "Bottom center": "По центру внизу",
     "Bottom right": "Справа внизу",
+    "Auto enhance": "Автоулучшение",
+    "Live preview — open the options below, then Apply.": "Предпросмотр — откройте параметры внизу, затем нажмите «Применить».",
   },
 };
 

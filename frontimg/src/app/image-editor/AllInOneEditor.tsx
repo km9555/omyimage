@@ -6,7 +6,11 @@ import { Icon } from "@/components/Icon";
 import { TopLoadingBar } from "@/components/TopLoadingBar";
 import { SettingsRail, RailAction } from "@/components/tool/SettingsRail";
 import { AdSlot } from "@/components/tool/AdSlot";
-import { useIsMobile, useOverlayScrollLock } from "@/lib/use-is-mobile";
+import { useCoarsePointer, useIsMobile, useOverlayScrollLock } from "@/lib/use-is-mobile";
+import {
+  NEUTRAL_FILTER, applyColorMatrix, colorMatrix, drawBlurred, drawFiltered, type CssFilterAdj,
+} from "@/lib/image/canvas-filter";
+import { autoEnhance } from "@/lib/image/photo-edit";
 import {
   MobileBarButton,
   MobileCta,
@@ -65,8 +69,10 @@ function centeredAspect(natW: number, natH: number, aspect: number | null): Crop
 }
 
 // ── Adjust / filter ─────────────────────────────────────────────────────────
-interface Adj { brightness: number; contrast: number; saturate: number; grayscale: number; sepia: number; hue: number }
-const NEUTRAL: Adj = { brightness: 1, contrast: 1, saturate: 1, grayscale: 0, sepia: 0, hue: 0 };
+// CSS-filter units (1 = neutral multiplier), rendered through `canvas-filter`
+// so browsers without `ctx.filter` get the same result from a pixel pass.
+type Adj = CssFilterAdj;
+const NEUTRAL: Adj = NEUTRAL_FILTER;
 const PRESETS: { name: string; adj: Adj }[] = [
   { name: "Original", adj: NEUTRAL },
   { name: "Vivid", adj: { ...NEUTRAL, brightness: 1.05, contrast: 1.1, saturate: 1.45 } },
@@ -82,7 +88,6 @@ const ADJ_SLIDERS: { key: keyof Adj; label: string; min: number; max: number; st
   { key: "hue", label: "Hue", min: -180, max: 180, step: 1, fmt: (v) => `${v}°` },
   { key: "sepia", label: "Sepia", min: 0, max: 1, step: 0.01, fmt: (v) => `${Math.round(v * 100)}%` },
 ];
-const adjFilter = (a: Adj) => `brightness(${a.brightness}) contrast(${a.contrast}) saturate(${a.saturate}) grayscale(${a.grayscale}) sepia(${a.sepia}) hue-rotate(${a.hue}deg)`;
 
 // ── Watermark ───────────────────────────────────────────────────────────────
 const FONTS = [
@@ -212,6 +217,8 @@ export function AllInOneEditor() {
     → the ribbon as a horizontally scrollable strip → Options + Export.
   */
   const isMobile = useIsMobile();
+  // Crop grips size off the pointer, not the viewport: a finger needs ~24px.
+  const coarse = useCoarsePointer();
   const [optionsOpen, setOptionsOpen] = useState(false);
   const shellUp = isMobile && !!file;
   useOverlayScrollLock(shellUp);
@@ -234,6 +241,8 @@ export function AllInOneEditor() {
   const [rot, setRot] = useState({ angle: 0, flipH: false, flipV: false });
   const [resize, setResize] = useState({ w: 0, h: 0, keep: true });
   const [adj, setAdj] = useState<Adj>(NEUTRAL);
+  /** One-tap auto-contrast, applied before the manual sliders. */
+  const [enhance, setEnhance] = useState(false);
   const [gray, setGray] = useState(1);
   const [blur, setBlur] = useState(8);
   const [border, setBorder] = useState({ pct: 4, color: "#ffffff", radius: 0 });
@@ -317,16 +326,28 @@ export function AllInOneEditor() {
 
     // Same-size operations (filters, watermark, annotate, none)
     canvas.width = W; canvas.height = H;
-    const ctx = canvas.getContext("2d")!;
-    if (t === "adjust") ctx.filter = adjFilter(adj);
-    else if (t === "grayscale") ctx.filter = `grayscale(${gray})`;
-    else if (t === "blur") ctx.filter = blur > 0 ? `blur(${blur}px)` : "none";
-    ctx.drawImage(bmp, 0, 0);
-    ctx.filter = "none";
+    const ctx = canvas.getContext("2d", { willReadFrequently: t === "adjust" && enhance })!;
+    if (t === "adjust" && enhance) {
+      // Enhance has to see the untouched pixels, so this path is all CPU:
+      // levels first, then the slider matrix on top of them.
+      ctx.drawImage(bmp, 0, 0);
+      const img = ctx.getImageData(0, 0, W, H);
+      autoEnhance(img.data);
+      applyColorMatrix(img.data, colorMatrix(adj));
+      ctx.putImageData(img, 0, 0);
+    } else if (t === "adjust") {
+      drawFiltered(ctx, bmp, W, H, adj);
+    } else if (t === "grayscale") {
+      drawFiltered(ctx, bmp, W, H, { ...NEUTRAL, grayscale: gray });
+    } else if (t === "blur") {
+      drawBlurred(ctx, bmp, W, H, blur);
+    } else {
+      ctx.drawImage(bmp, 0, 0);
+    }
     if (t === "watermark") paintWatermark(ctx, W, H, wm, logoRef.current);
     if (t === "annotate") opsRef.current.forEach((op) => drawOp(ctx, op));
     return canvas;
-  }, [rot, crop, resize, border, circle, adj, gray, blur, wm, annot]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [rot, crop, resize, border, circle, adj, enhance, gray, blur, wm, annot]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Render the live preview canvas ──
   const renderPreview = useCallback(() => {
@@ -414,7 +435,7 @@ export function AllInOneEditor() {
       case "crop": setCrop(centeredAspect(work.width, work.height, aspect)); break;
       case "transform": setRot({ angle: 0, flipH: false, flipV: false }); break;
       case "resize": setResize({ w: work.width, h: work.height, keep: true }); break;
-      case "adjust": setAdj(NEUTRAL); break;
+      case "adjust": setAdj(NEUTRAL); setEnhance(false); break;
       case "grayscale": setGray(1); break;
       case "blur": setBlur(8); break;
       case "border": setBorder({ pct: 4, color: "#ffffff", radius: 0 }); break;
@@ -443,7 +464,7 @@ export function AllInOneEditor() {
       // Reset drafts that are dimension-derived so they re-init next open.
       const w = workRef.current!;
       setResize({ w: w.width, h: w.height, keep: true });
-      if (tool === "adjust") setAdj(NEUTRAL);
+      if (tool === "adjust") { setAdj(NEUTRAL); setEnhance(false); }
       if (tool === "transform") setRot({ angle: 0, flipH: false, flipV: false });
       if (tool === "grayscale") setGray(1);
       if (tool === "blur") setBlur(8);
@@ -470,6 +491,27 @@ export function AllInOneEditor() {
     const w = next; setResize({ w: w.width, h: w.height, keep: true });
     rerender();
   };
+  /*
+    Ctrl/Cmd+Z and Ctrl/Cmd+Shift+Z (or Ctrl+Y) — the shortcuts every editor
+    has. Skipped while a field has focus, so typing in the watermark box keeps
+    the browser's own text undo. The handlers read refs, so a stale closure is
+    not a concern here.
+  */
+  useEffect(() => {
+    if (!file) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (!(e.ctrlKey || e.metaKey)) return;
+      const el = e.target as HTMLElement | null;
+      if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT" || el.isContentEditable)) return;
+      const k = e.key.toLowerCase();
+      if (k === "z" && !e.shiftKey) { e.preventDefault(); undo(); }
+      else if ((k === "z" && e.shiftKey) || k === "y") { e.preventDefault(); redo(); }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [file]);
+
   const revertOriginal = async () => {
     if (!srcRef.current || !workRef.current) return;
     const fresh = await createImageBitmap(srcRef.current);
@@ -485,7 +527,11 @@ export function AllInOneEditor() {
     if (!workRef.current) return;
     setIsWorking(true);
     try {
-      const baked = compose(tool); // bake the currently-previewed tool too
+      /* Bake the tool being previewed too — what you see is what you get.
+         Crop is the exception: its preview shows the whole image under a
+         box, so baking the box here would export a crop that was never
+         applied (opening the tool alone centres an 80% one). */
+      const baked = compose(tool === "crop" ? null : tool);
       let out = baked;
       if (format === "image/jpeg") {
         const flat = document.createElement("canvas");
@@ -518,7 +564,14 @@ export function AllInOneEditor() {
       if (d.handle.includes("s")) ch = o.h + dy;
       if (d.handle.includes("w")) { const r = o.x + o.w; x = o.x + dx; cw = r - x; }
       if (d.handle.includes("n")) { const b = o.y + o.h; y = o.y + dy; ch = b - y; }
-      if (aspect != null) { ch = cw / aspect; if (d.handle.includes("n")) y = o.y + o.h - ch; }
+      if (aspect != null) {
+        // A top/bottom edge changes height, so the width has to follow it;
+        // every other handle changes width and the height follows.
+        if (d.handle === "n" || d.handle === "s") cw = ch * aspect;
+        else ch = cw / aspect;
+        if (d.handle.includes("n")) y = o.y + o.h - ch;
+        if (d.handle.includes("w")) x = o.x + o.w - cw;
+      }
       setCrop(clampCrop({ x, y, w: cw, h: ch }, w.width, w.height));
     };
     const up = () => { drag.current = null; window.removeEventListener("pointermove", move); window.removeEventListener("pointerup", up); };
@@ -558,6 +611,7 @@ export function AllInOneEditor() {
   const canUndo = undoRef.current.length > 0, canRedo = redoRef.current.length > 0;
   const cropInteractive = tool === "crop" && dims;
   const showChecker = hasAlpha && tool !== "watermark";
+  const grip = coarse ? 24 : 12;
 
   if (!file) {
     return (
@@ -581,9 +635,19 @@ export function AllInOneEditor() {
           <>
             <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: "0 0 0 9999px rgba(0,0,0,0.45)" }} aria-hidden />
             <div onPointerDown={onCropDown("move")} className="absolute cursor-move touch-none" style={{ left: crop.x * scale, top: crop.y * scale, width: crop.w * scale, height: crop.h * scale, outline: `2px solid ${ACCENT}`, boxShadow: "0 0 0 9999px rgba(0,0,0,0.45)" }}>
+              {/* Corner grips: 12px for a mouse, 24px for a finger — the mouse
+                  size is a quarter of a fingertip, so on touch every resize
+                  used to start as a move. */}
               {(["nw", "ne", "sw", "se"] as Handle[]).map((h) => (
-                <span key={h} onPointerDown={onCropDown(h)} className="absolute w-3 h-3 bg-white border-2 rounded-sm touch-none" style={{ borderColor: ACCENT, cursor: h === "nw" || h === "se" ? "nwse-resize" : "nesw-resize", top: h[0] === "n" ? -6 : undefined, bottom: h[0] === "s" ? -6 : undefined, left: h[1] === "w" ? -6 : undefined, right: h[1] === "e" ? -6 : undefined }} />
+                <span key={h} onPointerDown={onCropDown(h)} className="absolute bg-white border-2 rounded-sm touch-none" style={{ width: grip, height: grip, borderColor: ACCENT, cursor: h === "nw" || h === "se" ? "nwse-resize" : "nesw-resize", top: h[0] === "n" ? -grip / 2 : undefined, bottom: h[0] === "s" ? -grip / 2 : undefined, left: h[1] === "w" ? -grip / 2 : undefined, right: h[1] === "e" ? -grip / 2 : undefined }} />
               ))}
+              {/* Edge grips, so one side can move without disturbing the other. */}
+              {(["n", "s", "e", "w"] as Handle[]).map((h) => {
+                const vertical = h === "e" || h === "w";
+                return (
+                  <span key={h} onPointerDown={onCropDown(h)} className="absolute bg-white border-2 rounded-sm touch-none" style={{ width: vertical ? grip / 2 : grip * 1.5, height: vertical ? grip * 1.5 : grip / 2, borderColor: ACCENT, cursor: vertical ? "ew-resize" : "ns-resize", top: h === "n" ? -grip / 4 : vertical ? "50%" : undefined, bottom: h === "s" ? -grip / 4 : undefined, left: h === "w" ? -grip / 4 : vertical ? undefined : "50%", right: h === "e" ? -grip / 4 : undefined, transform: vertical ? "translateY(-50%)" : "translateX(-50%)" }} />
+                );
+              })}
             </div>
           </>
         )}
@@ -600,7 +664,9 @@ export function AllInOneEditor() {
         ? t("Drag the box or its corners to set the crop, then Apply.")
         : tool === "annotate"
           ? t("Draw on the image, then Apply to bake it in.")
-          : t("Live preview — adjust on the right, then Apply.")}
+          : isMobile
+            ? t("Live preview — open the options below, then Apply.")
+            : t("Live preview — adjust on the right, then Apply.")}
     </p>
     </>
   );
@@ -658,6 +724,16 @@ export function AllInOneEditor() {
 
       {tool === "adjust" && (
         <>
+          <button
+            type="button"
+            onClick={() => setEnhance((v) => !v)}
+            aria-pressed={enhance}
+            className={`flex min-h-10 items-center justify-center gap-2 rounded-lg border px-3 text-label-sm font-label-sm font-semibold transition-colors ${
+              enhance ? "border-secondary bg-secondary/10 text-primary" : "border-surface-variant text-on-surface-variant hover:text-primary"
+            }`}
+          >
+            <Icon name="auto_fix_high" fill={enhance} className="text-[18px]" /> {t("Auto enhance")}
+          </button>
           <div className="grid grid-cols-3 gap-1.5">
             {PRESETS.map((p) => (<button key={p.name} type="button" onClick={() => setAdj(p.adj)} className={`rounded-md px-2 py-1.5 text-label-sm font-label-sm font-semibold border transition-colors ${activePreset === p.name ? "border-secondary text-primary bg-secondary/10" : "border-surface-variant text-on-surface-variant hover:text-primary"}`}>{t(p.name)}</button>))}
           </div>

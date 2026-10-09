@@ -71,15 +71,16 @@ const content: ToolPageContent = {
   faqs: [
     { q: "What can I do in the editor?", a: "Crop and resize, rotate and flip, adjust brightness/contrast/saturation/hue with filter presets, grayscale, blur, add a border, round into a circle, add a text or logo watermark, and draw or annotate — all on one image." },
     { q: "Can I undo a change?", a: "Yes. Every applied edit is added to a history you can undo and redo, and you can revert to the original at any time." },
-    { q: "Will I lose quality?", a: "Edits are composited on a full-resolution canvas. Export as PNG for lossless output, or JPG/WEBP with a quality slider." },
+    { q: "Does the editor work at full resolution?", a: "Yes. Edits are composited on a full-resolution canvas. Export as PNG for lossless output, or JPG/WEBP with a quality slider." },
     { q: "Do I need to install anything or sign up?", a: "No. It's a free online editor that runs entirely in your browser — no sign-up, no installation, and your image never leaves your device." },
     { q: "Is it really private?", a: "Yes. All editing happens locally in your browser; nothing is uploaded or stored." },
-    { q: "Do I need to install anything?", a: "No. It runs in the browser you already have, on Windows, macOS, Linux, Android and iOS. There is nothing to download, no account to create and no subscription — which is the point, since most edits people need take under a minute and do not justify installing a photo suite." },
+    { q: "Does it work on any computer or phone?", a: "Yes. It runs in the browser you already have, on Windows, macOS, Linux, Android and iOS. There is nothing to download, no account to create and no subscription — which is the point, since most edits people need take under a minute and do not justify installing a photo suite." },
     { q: "How does this compare to Photoshop?", a: "It does not, and it is not trying to. There are no layers, masks, curves or blend modes here. What it does cover is the set of operations that account for the overwhelming majority of everyday edits — crop, rotate, resize, adjust, annotate, export — without a launch time or a licence." },
     { q: "Does editing modify my original file?", a: "No. The image is loaded into memory and everything happens on a copy — nothing is committed until you export, and the file on your disk is never touched. Drawing can also be cleared without disturbing the rest of your work." },
     { q: "Which formats can I open and save?", a: "Open JPG, PNG, WEBP, GIF and BMP; save as JPG, PNG or WEBP. Animated GIFs open as their first frame, since the editor works on a single still image." },
     { q: "Will editing reduce the image quality?", a: "Cropping, rotating by right angles and flipping are all lossless. Resizing down is effectively lossless too. The one place quality is spent is the export step, so choose PNG or WEBP if you want to keep everything exact, or JPG at a high quality setting if you want a smaller file." },
     { q: "Does it work on a phone?", a: "Yes. The layout adapts to a small screen and the canvas responds to touch, so cropping and annotating work with a finger. Very large images are limited by the memory your phone gives the browser rather than by the tool." },
+    { q: "Are there ready-made filters like on Instagram?", a: "Yes: Original, Vivid, B&W, Sepia, Cool and Warm in the Adjust tool, plus a one-tap Auto enhance that fixes flat or dim exposure. After picking a filter the sliders stay live, so you can fine-tune brightness, contrast, saturation, hue and sepia by hand." },
   ],
 
   security:

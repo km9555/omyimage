@@ -91,7 +91,7 @@ const content: ToolPageContent = {
   faqs: [
     { q: "Apa saja yang bisa dilakukan di editor ini?", a: "Crop dan ubah ukuran, putar dan balik, atur kecerahan/kontras/saturasi/rona dengan preset filter, hitam putih, blur, tambah bingkai, bulatkan jadi lingkaran, tambah watermark teks atau logo, dan coret atau beri catatan — semuanya pada satu foto." },
     { q: "Bisakah membatalkan perubahan?", a: "Bisa. Setiap editan yang diterapkan masuk ke riwayat yang bisa di-undo dan di-redo, dan Anda bisa kembali ke foto asli kapan saja." },
-    { q: "Apakah kualitasnya akan turun?", a: "Editan disusun di kanvas beresolusi penuh. Simpan sebagai PNG untuk hasil tanpa kehilangan kualitas, atau JPG/WEBP dengan slider kualitas." },
+    { q: "Apakah editor bekerja pada resolusi penuh?", a: "Ya. Editan disusun di kanvas beresolusi penuh. Simpan sebagai PNG untuk hasil tanpa kehilangan kualitas, atau JPG/WEBP dengan slider kualitas." },
     { q: "Apakah perlu instal atau daftar?", a: "Tidak. Ini editor online gratis yang berjalan sepenuhnya di browser Anda — tanpa daftar, tanpa instalasi, dan foto Anda tidak pernah meninggalkan perangkat." },
     { q: "Apakah benar-benar privat?", a: "Ya. Semua pengeditan terjadi secara lokal di browser Anda; tidak ada yang diunggah atau disimpan." },
     { q: "Apakah perlu aplikasi tambahan di ponsel?", a: "Tidak. Editor ini berjalan di browser yang sudah Anda punya, di Windows, macOS, Linux, Android, dan iOS. Tidak ada yang perlu diunduh, tidak perlu akun, dan tidak ada langganan — itulah intinya, karena kebanyakan editan yang dibutuhkan orang selesai dalam kurang dari satu menit dan tidak sebanding dengan memasang aplikasi foto lagi." },
@@ -99,6 +99,7 @@ const content: ToolPageContent = {
     { q: "Apakah mengedit mengubah file asli saya?", a: "Tidak. Foto dimuat ke memori dan semuanya dikerjakan pada salinan — tidak ada yang tersimpan sampai Anda menyimpannya, dan file di penyimpanan Anda tidak pernah disentuh. Coretan juga bisa dihapus tanpa mengganggu editan lainnya." },
     { q: "Format apa saja yang bisa dibuka dan disimpan?", a: "Buka JPG, PNG, WEBP, GIF, dan BMP; simpan sebagai JPG, PNG, atau WEBP. GIF animasi terbuka sebagai frame pertamanya, karena editor ini bekerja pada satu gambar diam." },
     { q: "Apakah mengedit menurunkan kualitas foto?", a: "Crop, memutar dengan sudut siku-siku, dan membalik semuanya tanpa kehilangan kualitas. Memperkecil ukuran pada dasarnya juga tanpa kehilangan kualitas. Satu-satunya tempat kualitas dipertaruhkan adalah saat menyimpan, jadi pilih PNG atau WEBP kalau ingin semuanya persis, atau JPG dengan kualitas tinggi kalau ingin file yang lebih kecil." },
+    { q: "Apakah ada filter siap pakai seperti di Instagram?", a: "Ada: Original, Cerah, Hitam Putih, Sepia, Dingin, dan Hangat di alat Warna, ditambah Perbaiki otomatis sekali ketuk untuk foto yang redup atau pucat. Setelah memilih filter, slider tetap aktif sehingga kecerahan, kontras, saturasi, rona, dan sepia bisa disetel manual." },
     { q: "Apakah bisa dipakai di ponsel?", a: "Bisa. Tampilannya menyesuaikan layar kecil dan kanvasnya merespons sentuhan, jadi crop dan mencoret bisa dilakukan dengan jari. Foto yang sangat besar dibatasi oleh memori yang diberikan ponsel Anda kepada browser, bukan oleh alatnya." },
   ],
 
@@ -203,6 +204,8 @@ const content: ToolPageContent = {
     "Bottom left": "Kiri bawah",
     "Bottom center": "Tengah bawah",
     "Bottom right": "Kanan bawah",
+    "Auto enhance": "Perbaiki otomatis",
+    "Live preview — open the options below, then Apply.": "Pratinjau langsung — buka opsi di bawah, lalu Terapkan.",
   },
 };
 

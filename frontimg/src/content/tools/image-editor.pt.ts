@@ -86,7 +86,7 @@ const content: ToolPageContent = {
   faqs: [
     { q: "O que dá para fazer no editor?", a: "Recortar e redimensionar, girar e espelhar, ajustar brilho, contraste, saturação e matiz com filtros prontos, deixar em preto e branco, desfocar, adicionar borda, deixar redonda, colocar marca d'água de texto ou logo e desenhar ou anotar — tudo na mesma imagem." },
     { q: "Posso desfazer uma alteração?", a: "Sim. Cada edição aplicada entra num histórico que você pode desfazer e refazer, e dá para voltar ao original a qualquer momento." },
-    { q: "Vou perder qualidade?", a: "As edições são compostas num canvas em resolução total. Exporte em PNG para um resultado sem perdas, ou em JPG/WEBP com um controle de qualidade." },
+    { q: "O editor trabalha em resolução total?", a: "Sim. As edições são compostas num canvas em resolução total. Exporte em PNG para um resultado sem perdas, ou em JPG/WEBP com um controle de qualidade." },
     { q: "Preciso instalar algo ou criar conta?", a: "Não. É um editor online grátis que roda inteiro no seu navegador — sem cadastro, sem instalação, e sua imagem nunca sai do seu dispositivo." },
     { q: "É privado mesmo?", a: "Sim. Toda a edição acontece no seu próprio navegador; nada é enviado nem guardado." },
     { q: "Funciona em qualquer computador?", a: "Sim. Roda no navegador que você já tem, no Windows, macOS, Linux, Android e iOS. Não há nada para baixar, nenhuma conta para criar e nenhuma assinatura — que é o objetivo, já que a maioria das edições leva menos de um minuto e não justifica instalar um programa de fotos." },
@@ -196,6 +196,8 @@ const content: ToolPageContent = {
     "Bottom left": "Inferior esquerda",
     "Bottom center": "Inferior central",
     "Bottom right": "Inferior direita",
+    "Auto enhance": "Melhorar automaticamente",
+    "Live preview — open the options below, then Apply.": "Prévia ao vivo — abra as opções abaixo e depois clique em Aplicar.",
   },
 };
 

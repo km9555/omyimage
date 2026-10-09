@@ -3,8 +3,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/Icon";
+import { PhotoEditor } from "@/components/image/PhotoEditor";
+import { CloudImportBar } from "@/components/CloudImportBar";
 
 import { stashFiles } from "@/lib/tool-handoff";
+import { extensionsFromAccept } from "@/lib/dropbox";
 import { applicableTools } from "@/lib/file-actions";
 import type { Tool } from "@/lib/tools";
 import { useFormatBytes, useLocale, useT } from "@/i18n/I18nScope";
@@ -24,6 +27,9 @@ const ACCEPT = "image/*,.heic,.heif";
 // Format lists are not copy; "+ More" is translated at the render site.
 const CHIPS = ["JPG, PNG, WEBP", "GIF, HEIC, BMP", "+ More"];
 
+/** Brand ink for the photo editor's crop handles and filter ring. */
+const EDITOR_ACCENT = "#c2542c";
+
 export function HomeLauncher() {
   const t = useT();
   const router = useRouter();
@@ -34,6 +40,10 @@ export function HomeLauncher() {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [chosen, setChosen] = useState<Tool | null>(null);
+  /* A fresh camera shot waits here while the photo editor is open, and
+     `editIdx` is a staged file reopened in the same editor from its row. */
+  const [shot, setShot] = useState<File | null>(null);
+  const [editIdx, setEditIdx] = useState<number | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
   const comboRef = useRef<HTMLDivElement>(null);
@@ -102,6 +112,16 @@ export function HomeLauncher() {
       if (target) URL.revokeObjectURL(target.url);
       return prev.filter((_, idx) => idx !== i);
     });
+
+  /* Swap one staged file for its edited version. Its own update rather than
+     `addStaged`, whose name:size de-duplication would see the edited file as
+     a copy of the one it replaces. */
+  const replaceFile = (i: number, file: File) =>
+    setStaged((prev) => prev.map((s, idx) => {
+      if (idx !== i) return s;
+      URL.revokeObjectURL(s.url);
+      return { file, url: URL.createObjectURL(file) };
+    }));
 
   const openPicker = () => inputRef.current?.click();
   const pick = (tool: Tool) => { setChosen(tool); setQuery(toolName(tool, locale)); setOpen(false); };
@@ -184,7 +204,7 @@ export function HomeLauncher() {
             accept={ACCEPT}
             capture="environment"
             className="hidden"
-            onChange={(e) => { if (e.target.files) addStaged(e.target.files); e.target.value = ""; }}
+            onChange={(e) => { const f = e.target.files?.[0]; if (f) setShot(f); e.target.value = ""; }}
           />
 
           {/* Step 1 — upload */}
@@ -221,6 +241,10 @@ export function HomeLauncher() {
                   </span>
                 ))}
               </div>
+              {/* The same Drive / Dropbox chips every tool's Dropzone shows.
+                  It renders nothing when no provider is configured, and stops
+                  its clicks so a chip does not also open the native picker. */}
+              <CloudImportBar onFiles={addStaged} extensions={extensionsFromAccept(ACCEPT)} />
             </div>
 
             {staged.length > 0 && (
@@ -240,6 +264,16 @@ export function HomeLauncher() {
                     <span className="shrink-0 text-label-sm font-label-sm text-on-surface-variant">
                       {formatBytes(s.file.size)}
                     </span>
+                    {/* Phones only, like Take photo: the same editor the camera
+                        shot gets, for a picture picked from the gallery. */}
+                    <button
+                      type="button"
+                      onClick={() => setEditIdx(i)}
+                      aria-label={t("Edit {name}", { name: s.file.name })}
+                      className="md:hidden shrink-0 grid place-items-center h-6 w-6 rounded-md text-on-surface-variant hover:bg-surface-container-highest hover:text-primary transition-colors"
+                    >
+                      <Icon name="edit" className="text-[15px]" />
+                    </button>
                     <button
                       type="button"
                       onClick={() => removeFile(i)}
@@ -327,6 +361,28 @@ export function HomeLauncher() {
           </button>
         </div>
       </div>
+
+      {/* The photo editor, after a camera shot or from a row's Edit button.
+          Rendered outside the drop box so taps in it never reach its onClick. */}
+      {shot && (
+        <PhotoEditor
+          file={shot}
+          accent={EDITOR_ACCENT}
+          mode="capture"
+          onCancel={() => setShot(null)}
+          onKeepOriginal={() => { addStaged([shot]); setShot(null); }}
+          onApply={(edited) => { addStaged([edited]); setShot(null); }}
+        />
+      )}
+      {editIdx !== null && staged[editIdx] && (
+        <PhotoEditor
+          file={staged[editIdx].file}
+          accent={EDITOR_ACCENT}
+          mode="edit"
+          onCancel={() => setEditIdx(null)}
+          onApply={(edited) => { replaceFile(editIdx, edited); setEditIdx(null); }}
+        />
+      )}
     </section>
   );
 }

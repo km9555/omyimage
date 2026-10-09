@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { Icon } from "@/components/Icon";
 import { CloudImportBar } from "@/components/CloudImportBar";
+import { PhotoEditor } from "@/components/image/PhotoEditor";
 import { extensionsFromAccept } from "@/lib/dropbox";
 import { useT } from "@/i18n/I18nScope";
 
@@ -55,6 +56,10 @@ export function Dropzone({
   const inputRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
   const [isDropping, setIsDropping] = useState(false);
+  /* A fresh camera shot waits here while the photo editor is open; it only
+     reaches `onFiles` once the visitor taps Done or Use original. Until then
+     this component stays mounted, which is what keeps the dialog alive. */
+  const [shot, setShot] = useState<File | null>(null);
   const showCamera = camera ?? cameraUsable(accept);
 
   return (
@@ -81,9 +86,22 @@ export function Dropzone({
           capture="environment"
           className="hidden"
           onChange={(e) => {
-            if (e.target.files && e.target.files.length) onFiles(e.target.files);
+            const file = e.target.files?.[0];
+            if (file) setShot(file);
             e.target.value = "";
           }}
+        />
+      )}
+      {/* Outside the drop box: a tap inside the dialog must not bubble to the
+          wrapper's onClick and open the file picker on top of it. */}
+      {shot && (
+        <PhotoEditor
+          file={shot}
+          accent={accent}
+          mode="capture"
+          onCancel={() => setShot(null)}
+          onKeepOriginal={() => { onFiles([shot]); setShot(null); }}
+          onApply={(edited) => { onFiles([edited]); setShot(null); }}
         />
       )}
       <div

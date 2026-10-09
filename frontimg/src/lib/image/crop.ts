@@ -36,6 +36,22 @@ export type OutputTarget = "original" | number;
 
 export const NO_TRANSFORM: CropTransform = { rotate: 0, flipH: false, flipV: false, straighten: 0 };
 
+/**
+ * The aspect presets every crop surface offers, so /resize-image's dialog and
+ * the camera photo editor crop to the same ratios as /crop-image.
+ * "Free" is translated at the render site; the ratios are not copy.
+ */
+export const CROP_ASPECTS: { label: string; value: number | null }[] = [
+  { label: "Free", value: null },
+  { label: "1:1", value: 1 },
+  { label: "4:3", value: 4 / 3 },
+  { label: "3:2", value: 3 / 2 },
+  { label: "16:9", value: 16 / 9 },
+  { label: "3:4", value: 3 / 4 },
+  { label: "4:5", value: 4 / 5 },
+  { label: "9:16", value: 9 / 16 },
+];
+
 /** Smallest crop we allow, as a fraction of the image. */
 export const MIN_CROP = 0.02;
 

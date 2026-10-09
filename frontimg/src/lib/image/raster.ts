@@ -36,6 +36,19 @@ export class CanvasTooLargeError extends Error {
 // and the whole decode/encode pipeline — into its chunk.
 export { mimeExt, formatBytes, baseName } from "./file-naming";
 
+/**
+ * The format an in-browser edit of `file` is re-encoded in.
+ *
+ * JPG and WEBP stay what they are; everything else (PNG, GIF, BMP, HEIC…)
+ * becomes PNG so an intermediate edit never loses alpha or adds JPEG
+ * artefacts before the tool's own export step chooses the final format.
+ */
+export function workingMime(file: File): ExportMime {
+  if (file.type === "image/jpeg") return "image/jpeg";
+  if (file.type === "image/webp") return "image/webp";
+  return "image/png";
+}
+
 /** Decode a file to an ImageBitmap (EXIF-oriented by default). */
 export function decodeBitmap(file: File, autoOrient = true): Promise<ImageBitmap> {
   return createImageBitmap(file, { imageOrientation: autoOrient ? "from-image" : "none" });

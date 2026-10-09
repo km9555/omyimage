@@ -6,7 +6,7 @@ import { CropCanvas } from "@/components/image/CropCanvas";
 import { useOverlayScrollLock } from "@/lib/use-is-mobile";
 import { decodeBitmap } from "@/lib/image/raster";
 import {
-  applyAspect, centeredCrop, clampCrop, outputSize, transformedSize,
+  CROP_ASPECTS, applyAspect, centeredCrop, clampCrop, outputSize, transformedSize,
   type CropSel, type CropTransform,
 } from "@/lib/image/crop";
 import { useT } from "@/i18n/I18nScope";
@@ -15,17 +15,7 @@ import { useT } from "@/i18n/I18nScope";
 export type Quarter = 0 | 90 | 180 | 270;
 
 /** The same list /crop-image offers, so both tools crop to the same ratios. */
-// "Free" is translated at the render site; the ratios are not copy (§4.2).
-const ASPECTS: { label: string; value: number | null }[] = [
-  { label: "Free", value: null },
-  { label: "1:1", value: 1 },
-  { label: "4:3", value: 4 / 3 },
-  { label: "3:2", value: 3 / 2 },
-  { label: "16:9", value: 16 / 9 },
-  { label: "3:4", value: 3 / 4 },
-  { label: "4:5", value: 4 / 5 },
-  { label: "9:16", value: 9 / 16 },
-];
+const ASPECTS = CROP_ASPECTS;
 
 /**
  * Crop and rotate one file, over whatever tool opened it.

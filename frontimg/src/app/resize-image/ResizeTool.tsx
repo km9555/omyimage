@@ -15,7 +15,7 @@ import {
 } from "@/lib/process-router";
 import {
   rasterize, imageSize, downloadBlob, zipAndDownload, baseName, mimeExt,
-  decodeBitmap, canvasToBlob, type ExportMime,
+  decodeBitmap, canvasToBlob, workingMime, type ExportMime,
 } from "@/lib/image/raster";
 import { renderCrop, type CropSel } from "@/lib/image/crop";
 import { fitBox, FIT_NOTE, type FitMode } from "@/lib/image/fit";
@@ -112,19 +112,6 @@ function outMimeFor(file: File, fmt: Format): ExportMime {
   if (fmt !== "original") return fmt;
   const t = file.type;
   return t === "image/jpeg" || t === "image/webp" || t === "image/png" ? (t as ExportMime) : "image/png";
-}
-
-/**
- * Format an edited working file is held in between the edit and the export.
- *
- * PNG for anything that might carry alpha, so a cropped GIF or BMP does not
- * gain a white background on the way through. The single JPG re-encode only
- * happens to files that were already JPG.
- */
-function workingMime(file: File): ExportMime {
-  if (file.type === "image/jpeg") return "image/jpeg";
-  if (file.type === "image/webp") return "image/webp";
-  return "image/png";
 }
 
 /**
