@@ -84,6 +84,8 @@ AI images almost never come out ready for a Web Story:
 
 Google's [Web Stories content policy](https://developers.google.com/search/docs/appearance/web-stories-content-policy) rules out **"stretched out or pixelated"** media, and a slow story loses readers before page two. Fix all three problems with free tools on oMyImage, in this order.
 
+![A blurry, pixelated square AI image of a festival dance next to the same scene as a sharp 9:16 image filling a phone screen](https://images.omyimage.com/omyimage/blog/5fd69d46-8a0c-4abf-bb5b-3634c106ecc4.webp)
+
 > **How to convert an image to 9:16 online:** open [Crop Image](/crop-image), choose the 9:16 ratio and position the frame. Then set exactly 1080 × 1920 in [Resize Image](/resize-image). Both run free in your browser.
 
 **1. Upscale the image if it's too small.** Run any image narrower than 1080 px through the [AI Image Upscaler](/upscale-image) at 2×. It rebuilds edges and texture instead of just enlarging pixels, so faces, hair and fine textures stay sharp on a 6-inch screen. For a one-click "make it HD" pass, use [Image to HD](/image-to-hd).
@@ -158,6 +160,8 @@ The runtime then places full-screen ads **between pages** automatically, so you 
 - **Brazil:** a large, engaged Discover audience for entertainment, football and lifestyle. Stories must be in Portuguese. Affiliate links to Brazilian marketplaces convert better than links to international stores.
 
 ## Web Stories examples you can copy
+
+![Three phones showing 9:16 Web Story pages made with AI images: a curry recipe, wireless earbuds at sunset, and a floodlit football stadium](https://images.omyimage.com/omyimage/blog/7b0f69b7-ebbf-45ef-9e70-44eb3f434d26.webp)
 
 - **Recipe (India):** "5 Navratri Vrat Recipes in 15 Minutes". A cover, five dish pages with one ingredient line each, and a final page linking to the full recipe post.
 - **Tech tip (US):** "7 iPhone Settings to Change Today". One setting per page over a clean AI visual, with the last page linking to the full guide.
