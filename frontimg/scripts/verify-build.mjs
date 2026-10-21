@@ -23,8 +23,14 @@
  * Plus, across the set:
  *   - sitemap.xml and the emitted files agree in both directions
  *   - no two converter pages exceed MAX_SIMILARITY on their prose
+ *   - EVERY exported page has an absolute og:image and twitter:image whose
+ *     same-origin file exists in out/ (a page that sets its own `openGraph`
+ *     without `images` silently drops the site card — see OG_IMAGE)
+ *   - og:url names the page itself: its canonical, or its own path when it
+ *     has none — and a page with a canonical has one. A card inherited from a
+ *     layout shared the home page's og:url across 13 pages unnoticed.
  */
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -353,6 +359,49 @@ if (!existsSync(smFile)) {
     if (!urls.some((u) => u.endsWith(`/${path}`))) errors.push(`${path} is shipped but missing from sitemap.xml`);
   }
 }
+
+// ── Social cards, every page ────────────────────────────────────────────────
+// Next replaces a parent's `openGraph` wholesale when a page sets its own, so a
+// new metadata builder that forgets `images: [OG_IMAGE]` unfurls as bare text
+// with no error anywhere. Checked on every HTML file, not just tool pages.
+const SITE_ORIGIN = "https://omyimage.com";
+const htmlFiles = (dir) =>
+  readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
+    e.isDirectory() ? (e.name === "_next" ? [] : htmlFiles(join(dir, e.name))) : e.name.endsWith(".html") ? [join(dir, e.name)] : [],
+  );
+let cardPages = 0;
+for (const file of htmlFiles(out)) {
+  const label = file.slice(out.length + 1).replace(/\\/g, "/");
+  const html = readText(file);
+  // A page with no metadata at all (a bare redirect stub) has no card to carry.
+  if (!html.includes('property="og:title"')) continue;
+  cardPages++;
+  for (const [attr, name] of [["property", "og:image"], ["name", "twitter:image"]]) {
+    const m = new RegExp(`<meta ${attr}="${name}" content="([^"]+)"`).exec(html);
+    if (!m) {
+      errors.push(`${label}: no ${name}`);
+      continue;
+    }
+    const url = decode(m[1]);
+    if (!/^https:\/\//.test(url)) errors.push(`${label}: ${name} is not an absolute https URL — ${url}`);
+    else if (url.startsWith(`${SITE_ORIGIN}/`)) {
+      const rel = url.slice(SITE_ORIGIN.length + 1).split("?")[0];
+      if (!existsSync(join(out, rel))) errors.push(`${label}: ${name} ${url} but out/${rel} does not exist`);
+    }
+  }
+  // Facebook and LinkedIn key the share (and its counts) on og:url, so one
+  // pointing at another page makes that page's card the one shown.
+  const ogUrl = /<meta property="og:url" content="([^"]+)"/.exec(html)?.[1];
+  const canon = /<link rel="canonical" href="([^"]+)"/.exec(html)?.[1];
+  if (canon && !ogUrl) errors.push(`${label}: has a canonical but no og:url`);
+  if (ogUrl) {
+    const own = `${SITE_ORIGIN}/${label.replace(/\.html$/, "").replace(/(^|\/)index$/, "")}`.replace(/\/$/, "");
+    const want = decode(canon ?? own);
+    if (decode(ogUrl) !== want) errors.push(`${label}: og:url is ${decode(ogUrl)}, expected ${want}`);
+  }
+}
+if (cardPages === 0) errors.push("found no page with og:title — the social-card check checked nothing");
+console.log(`Checked social cards on ${cardPages} page(s).`);
 
 // ── Duplicate-content guard ─────────────────────────────────────────────────
 const entries = [...prose.entries()];

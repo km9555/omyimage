@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Noto_Sans_Devanagari } from "next/font/google";
 import "./globals.css";
-import { SITE } from "@/lib/site";
+import { OG_IMAGE, SITE } from "@/lib/site";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { ThemedToaster } from "@/components/ThemedToaster";
@@ -98,17 +98,19 @@ export const metadata: Metadata = {
       // "p:domain_verify": "",              // Pinterest
     },
   },
+  // Site-level card fields ONLY. A page that sets no `openGraph`/`twitter` of
+  // its own inherits these objects whole, and Next fills og:title and
+  // og:description from that page's own title and description. Home-page
+  // values here (title, url) were stamped onto /contact, /account, the 404…
+  // as if each were the home page; app/page.tsx now carries them.
   openGraph: {
     type: "website",
     siteName: SITE.name,
-    title: `${SITE.name} — ${SITE.tagline}`,
-    description: SITE.description,
-    url: SITE.url,
+    images: [OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${SITE.name} — ${SITE.tagline}`,
-    description: SITE.description,
+    images: [OG_IMAGE],
   },
 };
 

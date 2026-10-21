@@ -1,7 +1,7 @@
 /**
  * Per-page metadata for tool and static pages: title, description, canonical,
  * hreflang cluster and social cards — built once so every locale emits the
- * same shape. Ported from oMyPDF.
+ * same shape. Ported from oMyPDF. Every card carries OG_IMAGE (lib/site.ts).
  *
  * hreflang rules applied here:
  *  • A locale only appears if its page is actually BUILT (see i18n/status.ts).
@@ -19,7 +19,7 @@ import { DEFAULT_LOCALE, LOCALES, LOCALE_TAG, OG_LOCALE, type Locale } from "@/i
 import { toolPath } from "@/i18n/slugs";
 import { staticPath } from "@/i18n/static-paths";
 import { localesForTool, pageShippedIn } from "@/i18n/status";
-import { absoluteUrl } from "@/lib/site";
+import { absoluteUrl, OG_IMAGE } from "@/lib/site";
 import { TOOLS_BY_ID } from "@/lib/tools";
 import type { ToolPageContent } from "@/content/tools/types";
 
@@ -81,9 +81,10 @@ export function toolMetadata(content: ToolPageContent): Metadata {
       url: canonical,
       title,
       description,
+      images: [OG_IMAGE],
       ...ogLocale(content.locale),
     },
-    twitter: { card: "summary_large_image", title, description },
+    twitter: { card: "summary_large_image", title, description, images: [OG_IMAGE] },
   };
 }
 
@@ -109,9 +110,10 @@ export function pageMetadata(opts: {
       url: canonical,
       title: opts.title,
       description: opts.description,
+      images: [OG_IMAGE],
       ...ogLocale(opts.locale),
     },
-    twitter: { card: "summary_large_image", title: opts.title, description: opts.description },
+    twitter: { card: "summary_large_image", title: opts.title, description: opts.description, images: [OG_IMAGE] },
     ...(opts.index === false ? { robots: { index: false, follow: true } } : {}),
   };
 }

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { absoluteUrl, SITE } from "@/lib/site";
+import { absoluteUrl, OG_IMAGE, SITE } from "@/lib/site";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Icon } from "@/components/Icon";
 import { getPublishedPosts, formatPostDate, type BlogPost } from "@/lib/blog";
@@ -19,6 +19,16 @@ export const metadata: Metadata = {
     title: `${SITE.name} Blog — Image Guides, Tips & Product Updates`,
     description:
       "Practical guides, tips and product updates for working with images.",
+    images: [OG_IMAGE],
+  },
+  // Without its own block this page inherited the root layout's twitter
+  // title, so X showed the home page's headline for /blog.
+  twitter: {
+    card: "summary_large_image",
+    title: `${SITE.name} Blog — Image Guides, Tips & Product Updates`,
+    description:
+      "Practical guides, tips and product updates for working with images.",
+    images: [OG_IMAGE],
   },
   robots: { index: true, follow: true },
 };

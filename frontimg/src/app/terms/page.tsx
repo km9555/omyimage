@@ -1,5 +1,4 @@
-import type { Metadata } from "next";
-import { pageAlternates } from "@/lib/i18n/tool-meta";
+import { pageMetadata } from "@/lib/i18n/tool-meta";
 import Link from "next/link";
 import {
   LegalShell,
@@ -11,14 +10,13 @@ import {
 } from "@/components/LegalShell";
 import { SITE } from "@/lib/site";
 
-const languages = pageAlternates("/terms");
-
-export const metadata: Metadata = {
-  title: "Terms of Service",
+export const metadata = pageMetadata({
+  englishPath: "/terms",
+  locale: "en",
+  title: "Terms of Service | oMyImage",
   description:
     "The terms governing your use of oMyImage — acceptable use, file handling, disclaimers, limitation of liability and governing law.",
-  alternates: languages ? { canonical: "/terms", languages } : { canonical: "/terms" },
-};
+});
 
 const toc = [
   { id: "acceptance", title: "1. Acceptance of Terms" },
