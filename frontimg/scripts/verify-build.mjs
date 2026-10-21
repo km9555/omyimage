@@ -26,6 +26,9 @@
  *   - EVERY exported page has an absolute og:image and twitter:image whose
  *     same-origin file exists in out/ (a page that sets its own `openGraph`
  *     without `images` silently drops the site card — see OG_IMAGE)
+ *   - og:url names the page itself: its canonical, or its own path when it
+ *     has none — and a page with a canonical has one. A card inherited from a
+ *     layout shared the home page's og:url across 13 pages unnoticed.
  */
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -385,6 +388,16 @@ for (const file of htmlFiles(out)) {
       const rel = url.slice(SITE_ORIGIN.length + 1).split("?")[0];
       if (!existsSync(join(out, rel))) errors.push(`${label}: ${name} ${url} but out/${rel} does not exist`);
     }
+  }
+  // Facebook and LinkedIn key the share (and its counts) on og:url, so one
+  // pointing at another page makes that page's card the one shown.
+  const ogUrl = /<meta property="og:url" content="([^"]+)"/.exec(html)?.[1];
+  const canon = /<link rel="canonical" href="([^"]+)"/.exec(html)?.[1];
+  if (canon && !ogUrl) errors.push(`${label}: has a canonical but no og:url`);
+  if (ogUrl) {
+    const own = `${SITE_ORIGIN}/${label.replace(/\.html$/, "").replace(/(^|\/)index$/, "")}`.replace(/\/$/, "");
+    const want = decode(canon ?? own);
+    if (decode(ogUrl) !== want) errors.push(`${label}: og:url is ${decode(ogUrl)}, expected ${want}`);
   }
 }
 if (cardPages === 0) errors.push("found no page with og:title — the social-card check checked nothing");

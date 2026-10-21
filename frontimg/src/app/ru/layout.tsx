@@ -29,18 +29,16 @@ export const metadata: Metadata = {
     template: `%s | ${SITE.name}`,
   },
   description: ruSite.description,
+  // Site-level card fields only, as in the root layout: a page without its own
+  // card then shows its own title, not this locale home page's.
   openGraph: {
     type: "website",
     siteName: SITE.name,
-    title: `${SITE.name} — ${ruSite.tagline}`,
-    description: ruSite.description,
     locale: OG_LOCALE.ru,
     images: [OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${SITE.name} — ${ruSite.tagline}`,
-    description: ruSite.description,
     images: [OG_IMAGE],
   },
 };
