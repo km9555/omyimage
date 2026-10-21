@@ -215,6 +215,9 @@ export const hiAliases: Record<string, string[]> = {
   "discord-banner-resizer": [
     "discord banner size", "discord profile banner", "discord server banner", "डिस्कॉर्ड बैनर",
   ],
+  "9-16-aspect-ratio-image": [
+    "9:16 aspect ratio", "9:16 image size", "1080x1920", "convert image to 9:16", "story size", "reel size", "9:16 फोटो", "वर्टिकल फोटो",
+  ],
   "dpi-converter": [
     "change dpi", "300 dpi", "dpi बदलें", "convert image to 300 dpi",
   ],

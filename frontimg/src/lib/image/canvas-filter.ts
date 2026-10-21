@@ -150,9 +150,11 @@ export function drawFiltered(
 /**
  * Three box blurs of radius r approximate a Gaussian of σ ≈ r, which is what
  * CSS `blur(r)` is. Separable, with a sliding window, so it is O(W·H) per pass
- * however large the radius.
+ * however large the radius. Edges clamp rather than fade, so a blurred picture
+ * keeps full colour right up to its border (lib/image/blur-fill.ts relies on
+ * that).
  */
-function boxBlur(d: Uint8ClampedArray, W: number, H: number, radius: number): void {
+export function boxBlur(d: Uint8ClampedArray, W: number, H: number, radius: number): void {
   const r = Math.max(1, Math.round(radius));
   const win = 2 * r + 1;
   const tmp = new Uint8ClampedArray(d.length);

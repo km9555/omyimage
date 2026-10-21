@@ -327,6 +327,11 @@ export const hiTools: Record<string, LocalizedTool> = {
     presetLabel: "Discord बैनर",
     shortDescription: "Discord प्रोफ़ाइल और सर्वर बैनर के साइज़।",
   },
+  "9-16-aspect-ratio-image": {
+    name: "9:16 आस्पेक्ट रेशियो इमेज कन्वर्टर",
+    presetLabel: "9:16 (1080×1920)",
+    shortDescription: "कोई भी इमेज ठीक 1080 × 1920 पिक्सेल पर 9:16 में।",
+  },
   "dpi-converter": {
     name: "DPI कन्वर्टर",
     shortDescription: "इमेज का DPI 300, 200 या किसी भी वैल्यू पर बदलें, बिना क्वालिटी खोए।",

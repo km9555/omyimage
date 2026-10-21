@@ -19,6 +19,7 @@ import {
 } from "@/lib/image/raster";
 import { renderCrop, type CropSel } from "@/lib/image/crop";
 import { fitBox, FIT_NOTE, type FitMode } from "@/lib/image/fit";
+import { rasterizeBlurFill } from "@/lib/image/blur-fill";
 import { SOCIAL_PLATFORMS, CUSTOM_PRESET } from "@/lib/social-presets";
 import { setDpi } from "@/lib/image/dpi";
 import { useHandoff } from "@/lib/tool-handoff";
@@ -30,6 +31,8 @@ const ACCEPT = "image/jpeg,image/png,image/webp,image/gif,image/bmp";
 
 type Mode = "pixels" | "percent" | "social" | "print";
 type Format = "original" | ExportMime;
+/** A social preset's fit: sharp's three, plus "blur" (pad with a blurred copy, lib/image/blur-fill.ts). */
+type SocialFit = FitMode | "blur";
 type PrintUnit = "cm" | "mm" | "in";
 
 /** Units per inch, for the Print size mode. */
@@ -77,6 +80,8 @@ type Plan = {
   source?: { x: number; y: number; w: number; h: number };
   serverFit: "fill" | FitMode;
   serverSize: { width: number; height: number };
+  /** Blur fill: `content` is the contain size and the bars are a blurred copy, drawn by rasterizeBlurFill. */
+  blur?: boolean;
 };
 
 // FORMATS, MODES, FITS, the social preset names (lib/social-presets.ts) and
@@ -96,11 +101,15 @@ const MODES: { value: Mode; label: string }[] = [
   { value: "print", label: "Print size" },
 ];
 
-const FITS: { value: FitMode; label: string; hint: string }[] = [
+const FITS: { value: SocialFit; label: string; hint: string }[] = [
   { value: "cover", label: "Crop to fill", hint: "Exactly the preset size, overflow trimmed off the edges." },
   { value: "contain", label: "Pad", hint: "Exactly the preset size, the whole image kept, bars filled in." },
+  { value: "blur", label: "Blur fill", hint: "Exactly the preset size, the whole image kept, bars filled with a blurred copy of it." },
   { value: "inside", label: "Fit inside", hint: "Keeps the ratio, so the output is smaller than the preset." },
 ];
+
+/** Rail note fragment per fit — FIT_NOTE plus the browser-only blur fill. */
+const FIT_NOTES: Record<SocialFit, string> = { ...FIT_NOTE, blur: "padded with a blur" };
 
 const FULL_SEL: CropSel = { x: 0, y: 0, w: 1, h: 1 };
 
@@ -116,9 +125,9 @@ function outMimeFor(file: File, fmt: Format): ExportMime {
 
 /**
  * Opens the tool in a given mode — Social media on one platform size (the
- * youtube-thumbnail-resizer / whatsapp-dp-resizer … variants) or Print size
- * (resize-image-in-cm). Without it the tool starts in By pixels exactly as
- * before.
+ * youtube-thumbnail-resizer / whatsapp-dp-resizer / 9-16-aspect-ratio-image …
+ * variants) or Print size (resize-image-in-cm). Without it the tool starts in
+ * By pixels exactly as before.
  */
 export interface ResizePreset {
   /** Defaults to "social" when `platform` is given. */
@@ -127,7 +136,7 @@ export interface ResizePreset {
   platform?: string;
   /** The preset's English label within that platform, e.g. "Thumbnail". */
   preset?: string;
-  fit?: FitMode;
+  fit?: SocialFit;
   format?: Format;
   /** Print size mode: the starting unit and DPI. */
   unit?: PrintUnit;
@@ -167,7 +176,7 @@ export function ResizeTool({ preset }: { preset?: ResizePreset } = {}) {
   const [presetKey, setPresetKey] = useState(String(start.index));
   const [socialW, setSocialW] = useState(String(start.size.w));
   const [socialH, setSocialH] = useState(String(start.size.h));
-  const [fit, setFit] = useState<FitMode>(preset?.fit ?? "cover");
+  const [fit, setFit] = useState<SocialFit>(preset?.fit ?? "cover");
 
   // Print size mode: a physical size and the DPI it is printed at.
   const [printUnit, setPrintUnit] = useState<PrintUnit>(preset?.unit ?? "cm");
@@ -377,13 +386,16 @@ export function ResizeTool({ preset }: { preset?: ResizePreset } = {}) {
       const W = toInt(socialW);
       const H = toInt(socialH);
       if (W <= 0 || H <= 0) return null;
-      const f = fitBox(it.w, it.h, W, H, fit);
+      // Blur fill lays the picture out exactly like Pad; only the bars differ.
+      const geometry = fit === "blur" ? "contain" : fit;
+      const f = fitBox(it.w, it.h, W, H, geometry);
       return {
         content: { width: f.content.w, height: f.content.h },
         out: { width: f.canvas.w, height: f.canvas.h },
         source: f.source,
-        serverFit: fit,
+        serverFit: geometry,
         serverSize: { width: W, height: H },
+        blur: fit === "blur",
       };
     }
 
@@ -430,7 +442,8 @@ export function ResizeTool({ preset }: { preset?: ResizePreset } = {}) {
         const mime = outMimeFor(it.file, format);
         // Padding needs a fill even on a format that could stay transparent,
         // unless the user explicitly chose transparent.
-        const padding = plan.out.width !== plan.content.width || plan.out.height !== plan.content.height;
+        // A blur fill's bars are picture, not colour, so only JPG needs a fill.
+        const padding = !plan.blur && (plan.out.width !== plan.content.width || plan.out.height !== plan.content.height);
         const fill = mime === "image/jpeg" || padding ? resolveBg(bg) : null;
         let blob: Blob;
         let width = plan.out.width;
@@ -441,7 +454,19 @@ export function ResizeTool({ preset }: { preset?: ResizePreset } = {}) {
         const useServer = (await serverCanDecode(it.file)) && (it.w && it.h
           ? shouldUseServer(it.file.size, { width: it.w, height: it.h })
           : await shouldUseServerForFile(it.file));
-        if (useServer) {
+        if (plan.blur) {
+          // Sharp has no blur fill. Past the browser's limits the server only
+          // shrinks the picture until it just covers the box (sharp's
+          // `outside`), and the fill is drawn here from that smaller copy.
+          const src = useServer
+            ? (await processOnServer("/api/image/resize", it.file, {
+                width: plan.out.width, height: plan.out.height, fit: "outside",
+                format: toServerFormat(mime), quality: 0.95,
+              })).blob
+            : it.file;
+          const r = await rasterizeBlurFill(src, plan.out.width, plan.out.height, { mime, quality, background: fill });
+          blob = r.blob; width = r.width; height = r.height;
+        } else if (useServer) {
           // Past the browser's canvas ceiling or the byte cap → offload to the
           // shared oMyPDF backend (Sharp, /api/image/*). It takes the same fit
           // names, so a social preset crops or pads server-side identically.
@@ -597,7 +622,7 @@ export function ResizeTool({ preset }: { preset?: ResizePreset } = {}) {
                     ? <>
                         {t("First image → {w} × {h} px", { w: previewPlan.out.width, h: previewPlan.out.height })}
                         {mode === "social"
-                          ? ` · ${t(FIT_NOTE[fit])}`
+                          ? ` · ${t(FIT_NOTES[fit])}`
                           : mode === "print"
                             ? ` · ${t("{dpi} DPI", { dpi: printDpi })}`
                             : items.length > 1 && keepAspect
@@ -674,7 +699,7 @@ export function ResizeTool({ preset }: { preset?: ResizePreset } = {}) {
 
               <div className="flex flex-col gap-1.5">
                 <label className="text-label-sm font-label-sm text-on-surface-variant">{t("How to fit the image")}</label>
-                <div className="grid grid-cols-3 gap-1 rounded-lg bg-surface-container p-1">
+                <div className="grid grid-cols-2 gap-1 rounded-lg bg-surface-container p-1">
                   {FITS.map((f) => (
                     <button key={f.value} type="button" title={t(f.hint)} onClick={() => setFit(f.value)} className={`${segCls(fit === f.value)} text-label-md`}>
                       {t(f.label)}
@@ -751,6 +776,10 @@ export function ResizeTool({ preset }: { preset?: ResizePreset } = {}) {
           file={cropItem.original}
           initialSel={cropItem.crop}
           initialRotate={cropItem.rotate}
+          /* Crop to fill trims the picture to the preset's shape anyway, so the
+             dialog opens locked to it: the user picks WHICH 9:16 (or 16:9 …)
+             part survives instead of getting the centre. */
+          aspectLock={mode === "social" && fit === "cover" && toInt(socialW) > 0 && toInt(socialH) > 0 ? toInt(socialW) / toInt(socialH) : null}
           accent={ACCENT}
           onCancel={() => setCropId(null)}
           onApply={(sel, rotate) => { setCropId(null); void applyEdit(cropItem.id, sel, rotate); }}

@@ -47,6 +47,7 @@ const TOOL_INPUTS: Record<string, ToolInput> = {
   "linkedin-banner-resizer": { kinds: COMMON_GIF_BMP },
   "facebook-cover-resizer": { kinds: COMMON_GIF_BMP },
   "discord-banner-resizer": { kinds: COMMON_GIF_BMP },
+  "9-16-aspect-ratio-image": { kinds: COMMON_GIF_BMP },
   "crop-image": { kinds: COMMON_GIF_BMP, single: true },
   "rotate-image": { kinds: COMMON_GIF_BMP },
   "remove-exif": { kinds: COMMON },

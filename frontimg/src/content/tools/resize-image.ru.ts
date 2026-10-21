@@ -280,6 +280,12 @@ const content: ToolPageContent = {
     "Square pin": "Квадратный пин",
     "Video / Story": "Видео / сторис",
     "Status": "Статус",
+    // Blur fill (FITS / FIT_NOTES) and YouTube Shorts, added with /ru/9-16-aspect-ratio-image
+    "Blur fill": "Размытый фон",
+    "Exactly the preset size, the whole image kept, bars filled with a blurred copy of it.":
+      "Точно по размеру шаблона, картинка целиком, а поля заполнены её размытой копией.",
+    "padded with a blur": "с размытым фоном",
+    "Shorts": "Shorts", // i18n-same — YouTube's Russian UI keeps the Latin name
   },
 };
 

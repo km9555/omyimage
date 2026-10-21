@@ -23,6 +23,12 @@ export interface SeoSection {
   body: string | string[];
   /** Anchor id, so a future table of contents can link to it. */
   id?: string;
+  /**
+   * A follow-on link under the section's prose — a guide on the blog, say.
+   * `href` is used as given (the blog is English-only, so a translated page
+   * links to the English post and says so in `label`).
+   */
+  link?: { label: string; href: string };
 }
 
 export interface SeoContentProps {
@@ -133,6 +139,13 @@ export function SeoContent({
                 {p}
               </p>
             ))}
+            {s.link && (
+              <p className="text-body-md">
+                <Link href={s.link.href} className="font-semibold text-secondary hover:underline">
+                  {s.link.label}
+                </Link>
+              </p>
+            )}
           </div>
         </section>
       ))}

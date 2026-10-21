@@ -227,6 +227,9 @@ export const ruAliases: Record<string, string[]> = {
   "discord-banner-resizer": [
     "размер баннера discord", "баннер профиля discord", "баннер сервера discord", "иконка сервера discord",
   ],
+  "9-16-aspect-ratio-image": [
+    "формат 9:16", "картинка 9:16", "1080x1920", "соотношение сторон 9:16", "размер для сторис", "вертикальное фото", "размер для клипов vk", "youtube shorts размер",
+  ],
   "dpi-converter": [
     "изменить dpi", "300 dpi", "поменять разрешение dpi", "dpi фото",
   ],

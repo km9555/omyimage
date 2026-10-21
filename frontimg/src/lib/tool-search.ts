@@ -318,6 +318,9 @@ export const TOOL_ALIASES: Record<string, string[]> = {
   "discord-banner-resizer": [
     "discord banner size", "discord profile banner", "discord server banner", "600x240", "discord server icon",
   ],
+  "9-16-aspect-ratio-image": [
+    "9:16 aspect ratio", "9 16 image", "9:16 image size", "convert image to 9:16", "1080x1920", "story size", "reel size", "tiktok size", "youtube shorts size", "vertical image", "web story image",
+  ],
   "dpi-converter": [
     "change dpi", "300 dpi", "convert image to 300 dpi", "dpi changer", "increase dpi", "200 dpi", "set dpi",
   ],

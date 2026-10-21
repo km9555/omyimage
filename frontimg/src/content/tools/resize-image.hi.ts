@@ -210,6 +210,12 @@ const content: ToolPageContent = {
     "Square pin": "चौकोर पिन",
     "Video / Story": "वीडियो / स्टोरी",
     "Status": "स्टेटस",
+    // Blur fill (FITS / FIT_NOTES) and YouTube Shorts, added with /hi/9-16-aspect-ratio-image
+    "Blur fill": "धुंधले बैकग्राउंड से भरें",
+    "Exactly the preset size, the whole image kept, bars filled with a blurred copy of it.":
+      "ठीक चुना गया साइज़, पूरी इमेज बनी रहती है और ख़ाली पट्टियाँ उसी की धुंधली कॉपी से भरती हैं।",
+    "padded with a blur": "धुंधले बैकग्राउंड के साथ",
+    "Shorts": "Shorts", // i18n-same — YouTube's Hindi UI keeps the Latin name
   },
 };
 

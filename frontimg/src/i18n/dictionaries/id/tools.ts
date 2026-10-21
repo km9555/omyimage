@@ -330,6 +330,11 @@ export const idTools: Record<string, LocalizedTool> = {
     presetLabel: "Banner Discord",
     shortDescription: "Ukuran banner profil dan server Discord.",
   },
+  "9-16-aspect-ratio-image": {
+    name: "Ubah Foto ke Rasio 9:16",
+    presetLabel: "9:16 (1080×1920)",
+    shortDescription: "Foto apa pun jadi 9:16, tepat 1080 × 1920 piksel.",
+  },
   "dpi-converter": {
     name: "Ubah DPI Foto",
     shortDescription: "Ubah DPI ke 300, 200, atau nilai lain tanpa menurunkan kualitas.",
