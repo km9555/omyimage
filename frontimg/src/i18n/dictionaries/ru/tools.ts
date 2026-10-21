@@ -323,6 +323,11 @@ export const ruTools: Record<string, LocalizedTool> = {
     name: "Баннер для Discord",
     shortDescription: "Размеры баннеров профиля и сервера Discord.",
   },
+  "9-16-aspect-ratio-image": {
+    name: "Изображение 9:16 — 1080×1920",
+    presetLabel: "9:16 (1080×1920)",
+    shortDescription: "Любая картинка в формате 9:16, ровно 1080 × 1920.",
+  },
   "dpi-converter": {
     name: "Изменить DPI",
     shortDescription: "DPI 300, 200 или любой другой — без потери качества.",

@@ -33,6 +33,7 @@ export function CropDialog({
   file,
   initialSel,
   initialRotate,
+  aspectLock = null,
   accent,
   onCancel,
   onApply,
@@ -41,6 +42,12 @@ export function CropDialog({
   /** Reopening shows the crop that is already applied. */
   initialSel: CropSel | null;
   initialRotate: Quarter;
+  /**
+   * Open locked to this width/height ratio, with the largest centred frame of
+   * that shape selected — the resize tool's "Crop to fill" passes its preset's
+   * shape. The ratio chips still unlock it.
+   */
+  aspectLock?: number | null;
   accent: string;
   onCancel: () => void;
   onApply: (sel: CropSel | null, rotate: Quarter) => void;
@@ -49,7 +56,7 @@ export function CropDialog({
   const [bmp, setBmp] = useState<ImageBitmap | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [rotate, setRotate] = useState<Quarter>(initialRotate);
-  const [aspect, setAspect] = useState<number | null>(null);
+  const [aspect, setAspect] = useState<number | null>(aspectLock);
   const [sel, setSel] = useState<CropSel>(initialSel ?? { x: 0.05, y: 0.05, w: 0.9, h: 0.9 });
 
   useOverlayScrollLock(true);
@@ -71,8 +78,13 @@ export function CropDialog({
     decodeBitmap(file, true)
       .then((b) => {
         local = b;
-        if (alive) setBmp(b);
-        else b.close();
+        if (!alive) { b.close(); return; }
+        setBmp(b);
+        // The lock needs the picture's size; until now `sel` is a placeholder.
+        if (aspectLock) {
+          const ts = transformedSize(b.width, b.height, { rotate: initialRotate, flipH: false, flipV: false, straighten: 0 });
+          setSel(initialSel ? applyAspect(initialSel, aspectLock, ts.w, ts.h, "center") : centeredCrop(aspectLock, ts.w, ts.h, 1));
+        }
       })
       .catch(() => { if (alive) setError(t("Couldn't read this image.")); });
     return () => { alive = false; local?.close(); };
@@ -100,8 +112,18 @@ export function CropDialog({
     if (a !== null && tSize.w) setSel((s) => applyAspect(s, a, tSize.w, tSize.h, "center"));
   }, [tSize.w, tSize.h]);
 
-  const turn = (dir: 1 | -1) =>
-    setRotate((r) => ((((r + dir * 90) % 360) + 360) % 360) as Quarter);
+  /* A quarter turn swaps the picture's sides, so a ratio-locked frame has to be
+     redrawn — left alone, a 9:16 frame on a turned landscape photo comes out
+     some other shape (seen: 285 × 1600). Fitting it inside the old frame
+     instead would shrink it on every turn, so take the largest centred one. */
+  const turn = (dir: 1 | -1) => {
+    const next = ((((rotate + dir * 90) % 360) + 360) % 360) as Quarter;
+    setRotate(next);
+    if (aspect !== null && bmp) {
+      const ts = transformedSize(bmp.width, bmp.height, { rotate: next, flipH: false, flipV: false, straighten: 0 });
+      setSel(centeredCrop(aspect, ts.w, ts.h, 1));
+    }
+  };
 
   const selectWhole = () => {
     const whole = clampCrop({ x: 0, y: 0, w: 1, h: 1 });
@@ -110,8 +132,9 @@ export function CropDialog({
 
   const reset = () => {
     setRotate(0);
-    setAspect(null);
-    setSel(centeredCrop(null, tSize.w || 1, tSize.h || 1, 1));
+    setAspect(aspectLock);
+    // Rotation goes back to 0, so the frame is measured on the unrotated picture.
+    setSel(centeredCrop(aspectLock, bmp?.width || 1, bmp?.height || 1, 1));
   };
 
   /* A full-frame selection means "no crop" — hand back null so the caller can

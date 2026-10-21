@@ -200,6 +200,9 @@ export const idAliases: Record<string, string[]> = {
   "discord-banner-resizer": [
     "ukuran banner discord", "banner profil discord", "banner server discord", "ikon server discord",
   ],
+  "9-16-aspect-ratio-image": [
+    "rasio 9:16", "ukuran foto 9:16", "1080x1920", "ubah foto jadi 9:16", "ukuran story instagram", "ukuran reels", "foto vertikal", "ukuran tiktok",
+  ],
   "dpi-converter": [
     "ubah dpi", "300 dpi", "ganti dpi foto", "dpi converter",
   ],

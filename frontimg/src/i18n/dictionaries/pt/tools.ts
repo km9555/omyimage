@@ -328,6 +328,11 @@ export const ptTools: Record<string, LocalizedTool> = {
     presetLabel: "Banner do Discord",
     shortDescription: "Banners de perfil e de servidor do Discord.",
   },
+  "9-16-aspect-ratio-image": {
+    name: "Imagem 9:16 em 1080x1920",
+    presetLabel: "9:16 (1080×1920)",
+    shortDescription: "Qualquer imagem na proporção 9:16, em 1080 × 1920.",
+  },
   "dpi-converter": {
     name: "Alterar DPI da Imagem",
     shortDescription: "Mude o DPI para 300, 200 ou outro valor, sem perder qualidade.",

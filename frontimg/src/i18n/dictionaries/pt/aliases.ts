@@ -206,6 +206,9 @@ export const ptAliases: Record<string, string[]> = {
   "discord-banner-resizer": [
     "tamanho banner discord", "banner de perfil discord", "banner de servidor discord", "ícone servidor discord",
   ],
+  "9-16-aspect-ratio-image": [
+    "proporção 9:16", "imagem 9:16", "1080x1920", "tamanho stories instagram", "tamanho reels", "foto vertical 9:16", "converter imagem para 9:16", "web stories",
+  ],
   "dpi-converter": [
     "mudar dpi", "converter para 300 dpi", "aumentar dpi", "alterar resolução dpi",
   ],

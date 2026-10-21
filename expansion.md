@@ -844,6 +844,62 @@ blur-screenshot (90–140/mo), exif-editor (≤ 390, KD 68), svg-to-gif, blur-gi
   - **"over thirty tools" → "over seventy tools"** (home purpose band and
     About, 5 locales). It was 73 tools, and the id note that kept "thirty"
     at forty tools was updated.
+- **2026-10-21 — 9:16 aspect ratio image (resize-image variant), 5 pages.**
+  Branch `feat/9x16-resizer`, cut from main b3e1d74.
+  - **Keywords (OpenSEO, 2026-10-21):** IN `9 16 aspect ratio image` 2,900
+    (KD 0), `convert image to 9:16 online` 720 (KD 17), `9:16 image size`
+    590; US `9 16 aspect ratio image` 1,900, `9:16 aspect ratio` 1,900; BR
+    `1080x1920` 4,400 (KD 0), `proporção 9:16` 880, `imagem 9:16` 720.
+    SERPs are stock-photo sites and generic resizers.
+  - **Slugs:** `/9-16-aspect-ratio-image` (the head term, exact match),
+    `/pt/imagem-9-16-1080x1920`, `/id/ubah-foto-ke-9-16`, English under
+    /hi and /ru. All five locales ship.
+  - **Preset** `{ platform: "youtube", preset: "Shorts" }`. YouTube Shorts is
+    the one 9:16 platform reachable in all five markets: TikTok is banned in
+    India and takes no uploads in Russia, and Instagram is blocked in Russia.
+    The size is the same everywhere, and the copy says so. The /ru copy is
+    written around VK Клипы, Telegram stories, Shorts and Дзен, with no
+    Meta products in it.
+  - **ResizeTool upgrades (all social presets, /resize-image included):**
+    - New **"Blur fill"** fit (`lib/image/blur-fill.ts`). The whole picture
+      is contain-fitted over a cover-fitted copy of itself, blurred at 1/8
+      size with `boxBlur` (now exported from canvas-filter.ts) and scaled
+      back up. It looks the same with or without `ctx.filter`.
+      - Sharp has no blur fill. Past the browser's limits the server only
+        shrinks the picture with `fit: "outside"`, and the fill is drawn
+        locally from that copy.
+      - The fit buttons are now a 2 × 2 grid.
+    - **Crop dialog locked to the preset's shape** under Crop to fill
+      (`CropDialog aspectLock`). It opens on the largest centred 9:16 (or
+      16:9 …) frame, so the user picks which part survives.
+    - YouTube gains a **Shorts** 1080 × 1920 preset.
+    - **Crop dialog rotate fix.** A quarter turn kept the old normalised frame,
+      so with a ratio chosen it came out some other shape (285 × 1600 on a
+      turned 1600 × 900). With a ratio set, a turn now re-centres the largest
+      frame of that ratio. Free mode is unchanged.
+  - **Measured (dev server, Chrome):** a 1600 × 900 test picture → 1080 × 1920
+    in all three fits. Crop to fill kept the centre 506 px slice; Blur fill
+    kept red / white / blue across the middle over a blurred purple backdrop;
+    Pad gave white bars. The crop window opened on 506 × 900 with 9:16
+    active; turns gave 900 × 1600, then 506 × 900. At 375 px the fit grid is
+    2 × 166 px with no horizontal scroll, and the phone CTA turned a
+    4000 × 3000 JPG into a 51 KB 1080 × 1920. A stubbed 8200 × 8200 upload
+    sent `{"width":1080,"height":1920,"fit":"outside"}` and was blur-filled
+    locally.
+  - **claude-seo `seo-page`:** one H1, no skipped heading levels, canonical +
+    full hreflang cluster, Flesch 70.6 (grade 7.5), metadata not templated.
+    Titles were trimmed to ≤ 60 characters and descriptions to ≤ 160 in all
+    five locales. `og:image` is missing **site-wide** (home and every tool),
+    not just here; that is a separate fix.
+  - Gates: tsc, i18n keys / audit / charset / plurals, gen:variants --check,
+    build, verify:build (566 sitemap URLs, 201 family pages, worst pair
+    still 0.542), i18n:verify 4/4 (1,408–1,757 words).
+  - **`SeoSection.link`**: an optional follow-on link under a section's
+    prose. Translated pages use it to link the English-only blog post
+    `/blog/google-web-stories-ai-images` and say it is in English.
+  - Not on the home grid, in the Tools menu or in tool counts. It appears in
+    the "Social and print sizes" chips (`9:16 (1080×1920)`) and in the
+    resize family strip.
 - **Deploys need the user's go-ahead.** 2A, 3A, 4A and the visibility fix
   went live on 2026-10-04 (merge 505e680 into `main`, then `npm run
   indexnow`). Later batches are committed on `feat/tool-expansion` and

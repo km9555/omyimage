@@ -197,6 +197,12 @@ const content: ToolPageContent = {
     "Square pin": "Pin quadrado",
     "Video / Story": "Vídeo / Stories",
     "Status": "Status", // i18n-same
+    // Blur fill (FITS / FIT_NOTES) and YouTube Shorts, added with /pt/imagem-9-16-1080x1920
+    "Blur fill": "Fundo desfocado",
+    "Exactly the preset size, the whole image kept, bars filled with a blurred copy of it.":
+      "Exatamente o tamanho escolhido, com a imagem inteira e as faixas preenchidas por uma cópia desfocada dela.",
+    "padded with a blur": "com fundo desfocado",
+    "Shorts": "Shorts", // i18n-same — YouTube's Brazilian UI says Shorts
   },
 };
 

@@ -69,6 +69,7 @@ export const SOCIAL_PLATFORMS: SocialPlatform[] = [
       { label: "Channel icon", w: 800, h: 800 },
       { label: "Channel art", w: 2560, h: 1440 },
       { label: "Thumbnail", w: 1280, h: 720 },
+      { label: "Shorts", w: 1080, h: 1920 },
     ],
   },
   {

@@ -271,6 +271,12 @@ const content: ToolPageContent = {
     "Square pin": "Pin persegi",
     "Video / Story": "Video / Story", // i18n-same — both words are the ones Indonesian users use
     "Status": "Status", // i18n-same — WhatsApp's Indonesian UI says Status
+    // Blur fill (FITS / FIT_NOTES) and YouTube Shorts, added with /id/ubah-foto-ke-9-16
+    "Blur fill": "Latar blur",
+    "Exactly the preset size, the whole image kept, bars filled with a blurred copy of it.":
+      "Tepat ukuran preset, gambar tetap utuh, dan sisi kosong diisi salinan buram dari gambar itu sendiri.",
+    "padded with a blur": "dengan latar blur",
+    "Shorts": "Shorts", // i18n-same — YouTube's Indonesian UI says Shorts
   },
 };
 
