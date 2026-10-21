@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { absoluteUrl, SITE } from "@/lib/site";
+import { absoluteUrl, OG_IMAGE, SITE } from "@/lib/site";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Icon } from "@/components/Icon";
 import { JsonLd } from "@/components/JsonLd";
@@ -48,6 +48,8 @@ export async function generateMetadata(
   const canonical = absoluteUrl(`/blog/${post.slug}`);
   const title = post.seoTitle || `${post.title} | ${SITE.name} Blog`;
   const description = post.seoDescription || post.excerpt;
+  // A post without a cover still unfurls as a large card, with the site's.
+  const images = post.coverImageUrl ? [post.coverImageUrl] : [OG_IMAGE];
   return {
     title: { absolute: title },
     description,
@@ -59,12 +61,13 @@ export async function generateMetadata(
       description,
       publishedTime: post.publishedAt ?? undefined,
       modifiedTime: post.updatedAt,
-      ...(post.coverImageUrl ? { images: [post.coverImageUrl] } : {}),
+      images,
     },
     twitter: {
-      card: post.coverImageUrl ? "summary_large_image" : "summary",
+      card: "summary_large_image",
       title,
       description,
+      images,
     },
     robots: { index: true, follow: true },
   };

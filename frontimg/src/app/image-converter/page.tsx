@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { absoluteUrl, SITE } from "@/lib/site";
+import { absoluteUrl, OG_IMAGE, SITE } from "@/lib/site";
 import { pageAlternates } from "@/lib/i18n/tool-meta";
 import { ConverterHub } from "./ConverterHub";
 
@@ -17,8 +17,8 @@ export const metadata: Metadata = {
   title: { absolute: `${TITLE} | ${SITE.name}` },
   description: DESCRIPTION,
   alternates: languages ? { canonical, languages } : { canonical },
-  openGraph: { type: "website", url: canonical, title: TITLE, description: DESCRIPTION },
-  twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION },
+  openGraph: { type: "website", url: canonical, title: TITLE, description: DESCRIPTION, images: [OG_IMAGE] },
+  twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION, images: [OG_IMAGE] },
 };
 
 export default function Page() {

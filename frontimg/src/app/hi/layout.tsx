@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { OG_LOCALE } from "@/i18n/config";
 import { hiSite } from "@/i18n/dictionaries/hi/site";
-import { SITE } from "@/lib/site";
+import { OG_IMAGE, SITE } from "@/lib/site";
 
 /**
  * Hindi segment layout.
@@ -35,11 +35,13 @@ export const metadata: Metadata = {
     title: `${SITE.name} — ${hiSite.tagline}`,
     description: hiSite.description,
     locale: OG_LOCALE.hi,
+    images: [OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: `${SITE.name} — ${hiSite.tagline}`,
     description: hiSite.description,
+    images: [OG_IMAGE],
   },
 };
 
