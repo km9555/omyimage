@@ -86,13 +86,13 @@ Google's [Web Stories content policy](https://developers.google.com/search/docs/
 
 ![A blurry, pixelated square AI image of a festival dance next to the same scene as a sharp 9:16 image filling a phone screen](https://images.omyimage.com/omyimage/blog/5fd69d46-8a0c-4abf-bb5b-3634c106ecc4.webp)
 
-> **How to convert an image to 9:16 online:** open [Crop Image](/crop-image), choose the 9:16 ratio and position the frame. Then set exactly 1080 × 1920 in [Resize Image](/resize-image). Both run free in your browser.
+> **How to convert an image to 9:16 online:** open the [9:16 Aspect Ratio Image Converter](/9-16-aspect-ratio-image). It is already set to 1080 × 1920: crop to fill and drag the frame over what matters, pad with a colour, or fill the gaps with a blurred copy of the picture. It runs free in your browser.
 
 **1. Upscale the image if it's too small.** Run any image narrower than 1080 px through the [AI Image Upscaler](/upscale-image) at 2×. It rebuilds edges and texture instead of just enlarging pixels, so faces, hair and fine textures stay sharp on a 6-inch screen. For a one-click "make it HD" pass, use [Image to HD](/image-to-hd).
 
-**2. Crop to 9:16.** If the image isn't already portrait, open [Crop Image](/crop-image), pick the **9:16** ratio and drag the frame over the part of the picture that matters. Cropping yourself beats letting the story editor guess, because you decide what gets cut.
+**2. Crop to 9:16.** If the image isn't already portrait, open the [9:16 Aspect Ratio Image Converter](/9-16-aspect-ratio-image) and press the crop button on the image. The frame is locked to 9:16, so you only drag it over the part of the picture that matters. Cropping yourself beats letting the story editor guess, because you decide what gets cut. For a wide picture you'd rather not cut, choose **Blur fill** instead.
 
-**3. Resize to exactly 1080 × 1920.** In [Resize Image](/resize-image), choose the **Social media** mode and the **Story / Reel** preset (1080 × 1920), or type the pixel values in yourself. Every page of the story then has identical dimensions, so nothing jumps or letterboxes as readers tap through.
+**3. Download at exactly 1080 × 1920.** The same converter saves every image at 1080 × 1920, and several at once come as one ZIP. Every page of the story then has identical dimensions, so nothing jumps or letterboxes as readers tap through.
 
 **4. Compress or convert to WebP.** This step has the biggest effect on speed. [Convert to WebP](/convert-to-webp) usually cuts the file size by a large margin with no visible difference, or [Compress Image](/compress-image) lets you set the quality yourself.
 
@@ -174,7 +174,7 @@ Each one has a clear start, one idea per page and an ending that sends readers s
 1. Write the 10–20 lines of the story first, one line per page.
 2. Generate one AI image per line in a single consistent style, in portrait.
 3. [Upscale](/upscale-image) anything under 1080 px wide.
-4. [Crop](/crop-image) to 9:16, then [resize](/resize-image) to 1080 × 1920.
+4. [Convert](/9-16-aspect-ratio-image) each image to 9:16 at 1080 × 1920.
 5. [Convert to WebP](/convert-to-webp) or [compress](/compress-image) every page.
 6. Make the 3:4 poster and check the square logo.
 7. Assemble the story in your editor and add text in the editor, not in the images.
