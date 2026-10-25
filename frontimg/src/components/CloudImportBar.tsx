@@ -164,7 +164,7 @@ export function CloudImportBar({
      * also pop the OS picker.
      */
     <div className="flex flex-col items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
-      <p className="text-label-sm font-label-sm text-on-surface-variant/60">{t("or import from")}</p>
+      <p className="text-label-sm font-label-sm text-on-surface-variant">{t("or import from")}</p>
       <div className="flex items-center gap-2 flex-wrap justify-center">
         {driveConfigured && <GoogleDriveButton onFiles={onFiles} mimeTypes={mimeTypes} variant="chip" />}
         {dropboxConfigured && <DropboxButton onFiles={onFiles} extensions={extensions} variant="chip" />}
