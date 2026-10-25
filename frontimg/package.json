@@ -21,6 +21,7 @@
     "i18n:charset": "node scripts/i18n-charset.mjs",
     "prebuild": "node scripts/copy-mediapipe.mjs && node scripts/copy-ort.mjs && node scripts/gen-converters.mjs --check && node scripts/gen-variants.mjs --check && node scripts/build-icon-font.mjs --check && node scripts/i18n-audit.mjs && node scripts/i18n-hardcoded.mjs && node scripts/i18n-keys.mjs --check && node scripts/i18n-plurals.mjs && node scripts/i18n-charset.mjs && node scripts/generate-licenses.mjs",
     "build": "next build",
+    "postbuild": "node scripts/defer-hydration.mjs",
     "start": "next start",
     "licenses": "node scripts/generate-licenses.mjs",
     "indexnow": "node scripts/indexnow-submit.mjs",

@@ -29,8 +29,8 @@
     • It replaced an earlier Honey Gold (#F5A623). Gold looked cheerful as a
       button *fill*, but `text-secondary` is used as link/label ink in ~60
       places and gold-on-cream measured 1.9:1 — effectively unreadable. Clay is
-      dark enough to serve BOTH roles: white label on a clay fill is 4.6:1, and
-      clay ink on the cream page is 4.4:1. That dual duty is why the accent is
+      dark enough to serve BOTH roles: white label on a clay fill is 5.4:1, and
+      clay ink on the cream page is 5.2:1. That dual duty is why the accent is
       deep rather than pastel; the softness lives in the surfaces and in the
       pale apricot tints (`secondary-fixed`, `chip-*`) layered on top.
     • Consequence: `on-secondary` is WHITE in light mode. Dark mode flips it
@@ -62,9 +62,14 @@
 
   /* Secondary = the brand accent. Terracotta Clay.
      Doubles as fill (white label) and as ink on cream — see the note above. */
-  --color-secondary: #c2542c; /* Terracotta Clay */
-  --color-on-secondary: #ffffff; /* white label on clay — 4.6:1 */
-  --color-secondary-container: #a9461f; /* deeper clay — hover + gradient anchor */
+  /* #b24b26, not the logo's #c2542c: as ink the logo clay measured 4.42:1 on
+     the cream page and 4.17:1 on the footer's surface-container-low, under
+     WCAG AA's 4.5 for body text, and Lighthouse flagged both. This shade
+     clears 4.5 on every light surface (cream 5.2, container-low 4.9,
+     container 4.6, white 5.4). The hover step below keeps the old 1.28 ratio. */
+  --color-secondary: #b24b26; /* Terracotta Clay */
+  --color-on-secondary: #ffffff; /* white label on clay — 5.4:1 */
+  --color-secondary-container: #9a3f1c; /* deeper clay — hover + gradient anchor */
   --color-on-secondary-container: #ffffff;
   /* Pale apricot wash — the soft half of the palette. Used for tint fills that
      sit behind `on-secondary-fixed-variant` ink, never behind white. */
@@ -125,7 +130,7 @@
   --color-inverse-on-surface: #f6f1e9;
   --color-outline: #857c6e;
   --color-outline-variant: #d8cfc1;
-  --color-surface-tint: #c2542c;
+  --color-surface-tint: #b24b26;
 
   /* Named spacing tokens (4px base grid) */
   --spacing-base: 4px;
