@@ -12,6 +12,7 @@ Publishing a post fires the deploy hook; it is live 1–3 minutes later.
 | 3 | `03-social-media-image-sizes.md` | social-media-image-sizes | resize presets and the platform resizers, grid maker |
 | 4 | `04-gif-size-limits.md` | gif-size-limits | GIF compressor, resizer, cutter, to-WebP, to-MP4, video-to-GIF |
 | 5 | `05-google-web-stories-ai-images.md` | google-web-stories-ai-images | upscale, image-to-hd, crop (9:16), resize (Story preset), convert-to-webp, compress, compress-to-200kb |
+| 6 | `06-jpg-vs-png-vs-webp.md` | jpg-vs-png-vs-webp | convert-to-webp/jpg/png, the jpg/png/webp pair converters, avif-to-jpg/png, heic-to-jpg, gif-to-webp, compress, compress-to-50kb, resize, guide 5 |
 
 ## How to publish each one
 
