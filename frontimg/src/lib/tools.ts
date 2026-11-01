@@ -420,11 +420,8 @@ export const TOOLS: Tool[] = [
       "Convert HEIC to PNG online for free. Lossless output from iPhone photos, batch supported, no sign-up. Files are converted securely and deleted right after.",
     primaryKeyword: "convert heic to png",
   },
-  // OCR in the browser. tesseract.js + tesseract.js-core are Apache-2.0 and
-  // the WASM bundles only permissive C libraries (Leptonica BSD-2, zlib,
-  // libtiff, libjpeg, libpng) — both dists grepped clean of GPL/LGPL per
-  // LICENSE-AUDIT rule 1. That permissiveness is exactly why this one CAN ship
-  // to the browser where the HEIC decoders (F1) could not.
+  // Server-side PaddleOCR first, in-browser tesseract.js as the fallback —
+  // see ImageToTextTool.tsx's module docstring for why and for the licences.
   {
     id: "image-to-text",
     name: "Image to Text",
@@ -432,8 +429,8 @@ export const TOOLS: Tool[] = [
     categoryId: "convert",
     shortDescription: "Extract editable text from photos and scans with OCR.",
     icon: "document_scanner",
-    processing: "client",
-    library: "tesseract.js",
+    processing: "hybrid",
+    library: "PaddleOCR / tesseract.js",
     status: "live",
     // 12 is a free slot (11 is watermark-image). Note there is a pre-existing
     // tie at 10 between image-to-pdf and image-editor — left alone deliberately,
@@ -441,7 +438,7 @@ export const TOOLS: Tool[] = [
     priority: 12,
     seoTitle: "Image to Text Converter - Free Online OCR | oMyImage",
     seoDescription:
-      "Extract text from images online for free. OCR for photos, screenshots and scans in 13 languages, running entirely in your browser so nothing is uploaded.",
+      "Extract text from images online for free. OCR for photos, screenshots and scans in 13 languages. Read securely on our server and deleted right after.",
     primaryKeyword: "image to text",
   },
   {

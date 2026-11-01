@@ -36,9 +36,26 @@ const MAX_SCALE = 3;
 /** Absolute output cap, so an already-huge source (e.g. a 6000px photo) isn't
  *  driven into an OOM-risking canvas by a naive scale-up formula. */
 const MAX_LONG_EDGE = 4200;
+/** Border added around the image: 5 % of the long edge, at least 32 px. */
+const PAD_FRACTION = 0.05;
+const PAD_MIN_PX = 32;
+
+/** Per-channel median of the outermost pixel ring of an RGBA buffer. */
+function ringMedian(d: Uint8ClampedArray, w: number, h: number): [number, number, number] {
+  const idx: number[] = [];
+  for (let x = 0; x < w; x++) idx.push(x, (h - 1) * w + x);
+  for (let y = 1; y < h - 1; y++) idx.push(y * w, y * w + w - 1);
+  const out: [number, number, number] = [255, 255, 255];
+  for (let c = 0; c < 3; c++) {
+    const vals = idx.map((p) => d[p * 4 + c]).sort((a, b) => a - b);
+    out[c] = vals[vals.length >> 1] ?? 255;
+  }
+  return out;
+}
 
 /**
- * Decode → (upscale if small) → grayscale → contrast-stretch. Returns a
+ * Decode → (upscale if small) → pad with a background-coloured border →
+ * grayscale → contrast-stretch. Returns a
  * canvas, which tesseract.js accepts directly as `recognize()` input.
  *
  * Deliberately NOT sharpened: an unsharp pass helped marginally on the clean
@@ -53,8 +70,11 @@ export async function preprocessForOcr(file: File): Promise<HTMLCanvasElement> {
   let scale = longEdge < TARGET_LONG_EDGE ? TARGET_LONG_EDGE / longEdge : 1;
   scale = Math.min(scale, MAX_SCALE, MAX_LONG_EDGE / longEdge);
 
-  const w = Math.round(bmp.width * scale);
-  const h = Math.round(bmp.height * scale);
+  const iw = Math.round(bmp.width * scale);
+  const ih = Math.round(bmp.height * scale);
+  const pad = Math.max(PAD_MIN_PX, Math.round(PAD_FRACTION * Math.max(iw, ih)));
+  const w = iw + 2 * pad;
+  const h = ih + 2 * pad;
 
   const canvas = document.createElement("canvas");
   canvas.width = w;
@@ -66,8 +86,19 @@ export async function preprocessForOcr(file: File): Promise<HTMLCanvasElement> {
   }
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = "high";
-  ctx.drawImage(bmp, 0, 0, w, h);
+  ctx.drawImage(bmp, pad, pad, iw, ih);
   bmp.close();
+
+  // Border in the image's own background colour (median of its outer pixel
+  // ring), so text touching an edge isn't clipped by the recogniser and a
+  // dark-mode screenshot stays dark. Same rule as the server's ocr_layout.py.
+  const inner = ctx.getImageData(pad, pad, iw, ih).data;
+  const bg = ringMedian(inner, iw, ih);
+  ctx.fillStyle = `rgb(${bg[0]},${bg[1]},${bg[2]})`;
+  ctx.fillRect(0, 0, w, pad);
+  ctx.fillRect(0, h - pad, w, pad);
+  ctx.fillRect(0, pad, pad, ih);
+  ctx.fillRect(w - pad, pad, pad, ih);
 
   const img = ctx.getImageData(0, 0, w, h);
   const d = img.data;

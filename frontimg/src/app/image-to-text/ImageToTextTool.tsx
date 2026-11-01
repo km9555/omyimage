@@ -213,7 +213,7 @@ export function ImageToTextTool() {
           setProgress(s === "queued" ? 20 : 60);
         },
       });
-      out = { text: result.text, confidence: result.confidence };
+      out = { text: cleanOcrText(result.text), confidence: result.confidence };
       usedSource = "server";
     } catch (serverErr) {
       if (serverErr instanceof DOMException && serverErr.name === "AbortError") {
