@@ -54,4 +54,9 @@ export const ruAccount: Dict = {
   "See plans": "Посмотреть планы",
 
   "Signed out.": "Вы вышли из аккаунта.",
+  "Sign out of all devices": "Выйти на всех устройствах",
+  "Sign out of every device and browser where you're signed in, including this one?":
+    "Выйти из аккаунта на всех устройствах и во всех браузерах, где вы вошли, включая этот?",
+  "Signed out of all devices.": "Вы вышли из аккаунта на всех устройствах.",
+  "Could not sign out of all devices.": "Не удалось выйти на всех устройствах.",
 };

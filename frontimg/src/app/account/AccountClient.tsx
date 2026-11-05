@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
 import { Icon } from "@/components/Icon";
 import { useRequireAuth } from "@/lib/auth/useRequireAuth";
-import { authFetch } from "@/lib/api";
+import { authFetch, clearToken, saveToken } from "@/lib/api";
 import { planLabel, planAllowanceLabel, PLAN_MAX_UPLOAD_MB } from "@/lib/plan-limits";
 import { formatLongDate } from "@/i18n/format";
 import { localeHome, localeHref } from "@/lib/i18n/links";
@@ -27,6 +27,17 @@ export function AccountClient() {
   const { user, profile, loading, hasPassword, signOut, refreshProfile } = useRequireAuth();
   const router = useRouter();
   const [signingOut, setSigningOut] = useState(false);
+  const [signingOutAll, setSigningOutAll] = useState(false);
+
+  // "Sign out of all devices" must end on the home page. Calling signOut() while
+  // this page is still mounted makes useRequireAuth see a signed-out visitor on
+  // a guarded route and send them to /login?redirect=/account — and that replace
+  // lands after ours. So the handler only marks the page as leaving, and the
+  // session is cleared here, once the navigation has unmounted the guard.
+  const leaving = useRef(false);
+  useEffect(() => () => {
+    if (leaving.current) signOut();
+  }, [signOut]);
 
   // Display name editor
   const [name, setName] = useState("");
@@ -83,7 +94,11 @@ export function AccountClient() {
         method: "POST",
         body: JSON.stringify({ currentPassword: currentPw, newPassword: newPw }),
       });
-      if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error ?? t("Could not change password."));
+      const data = await res.json().catch(() => ({})) as { error?: string; token?: string };
+      if (!res.ok) throw new Error(data.error ?? t("Could not change password."));
+      // The backend signs out every other device on a password change and hands
+      // this one a fresh token — without saving it, this tab would be next.
+      if (data.token) saveToken(data.token);
       setCurrentPw(""); setNewPw(""); setConfirmPw("");
       await refreshProfile();
       toast.success(hasPassword ? t("Password changed.") : t("Password set."));
@@ -109,6 +124,25 @@ export function AccountClient() {
      (conversion.md §4.16). */
   const memberSince = profile?.created_at ? formatLongDate(new Date(profile.created_at), locale) : null;
   const initial = (email[0] ?? "?").toUpperCase();
+
+  const handleSignOutEverywhere = async () => {
+    if (!confirm(t("Sign out of every device and browser where you're signed in, including this one?"))) return;
+    setSigningOutAll(true);
+    try {
+      const res = await authFetch("/logout-all", { method: "POST", body: JSON.stringify({}) });
+      if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error ?? t("Could not sign out of all devices."));
+      // Every token is revoked now, this tab's included. Drop it from storage at
+      // once (other tabs follow through the storage event), but leave the React
+      // session to the unmount effect above so the redirect goes home.
+      leaving.current = true;
+      clearToken();
+      toast.success(t("Signed out of all devices."));
+      router.replace(localeHome(locale));
+    } catch (e) {
+      toast.error((e as Error).message);
+      setSigningOutAll(false);
+    }
+  };
 
   const handleSignOut = () => {
     setSigningOut(true);
@@ -260,6 +294,15 @@ export function AccountClient() {
       >
         <Icon name={signingOut ? "progress_activity" : "logout"} className={`text-[20px] ${signingOut ? "animate-spin" : ""}`} />
         {t("Sign out")}
+      </button>
+      <button
+        type="button"
+        onClick={handleSignOutEverywhere}
+        disabled={signingOutAll || signingOut}
+        className="self-start -mt-stack-md inline-flex items-center gap-2 rounded-lg px-1 py-1 text-body-sm font-medium text-on-surface-variant hover:text-error underline-offset-4 hover:underline transition-colors disabled:opacity-50"
+      >
+        <Icon name={signingOutAll ? "progress_activity" : "logout"} className={`text-[18px] ${signingOutAll ? "animate-spin" : ""}`} />
+        {t("Sign out of all devices")}
       </button>
     </div>
   );

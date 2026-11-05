@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { authFetch, saveToken, clearToken, getStoredToken } from "@/lib/api";
+import { authFetch, saveToken, clearToken, getStoredToken, AUTH_EXPIRED_EVENT, TOKEN_KEY } from "@/lib/api";
 
 export interface AuthUser {
   id: string;
@@ -73,6 +73,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     void loadSession();
+  }, [loadSession]);
+
+  // Session end, from three directions:
+  //  - the server rejected the token on some request (lib/api.ts captureSession);
+  //  - another tab signed in or out (localStorage `storage` event);
+  //  - the token's own exp passed while this tab sat idle — admins' 30-minute
+  //    window makes that common. getStoredToken() drops an expired token, so a
+  //    periodic look is enough; it is checked again when the tab regains focus.
+  useEffect(() => {
+    const dropIfGone = () => {
+      // Setting null on already-null state is a no-op render bail-out.
+      if (!getStoredToken()) {
+        setUser(null);
+        setProfile(null);
+        setHasPassword(false);
+      }
+    };
+    const onStorage = (e: StorageEvent) => {
+      // key === null is localStorage.clear() from another tab.
+      if (e.key !== TOKEN_KEY && e.key !== null) return;
+      if (!e.newValue) dropIfGone();
+      else if (e.oldValue !== e.newValue && !e.oldValue) void loadSession(); // signed in elsewhere
+    };
+    const onVisible = () => { if (document.visibilityState === "visible") dropIfGone(); };
+    window.addEventListener(AUTH_EXPIRED_EVENT, dropIfGone);
+    window.addEventListener("storage", onStorage);
+    document.addEventListener("visibilitychange", onVisible);
+    const timer = window.setInterval(dropIfGone, 30_000);
+    return () => {
+      window.removeEventListener(AUTH_EXPIRED_EVENT, dropIfGone);
+      window.removeEventListener("storage", onStorage);
+      document.removeEventListener("visibilitychange", onVisible);
+      window.clearInterval(timer);
+    };
   }, [loadSession]);
 
   const signOut = useCallback(() => {

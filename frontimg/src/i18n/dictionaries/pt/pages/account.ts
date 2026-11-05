@@ -50,4 +50,9 @@ export const ptAccount: Dict = {
   "See plans": "Ver planos",
 
   "Signed out.": "Você saiu da conta.",
+  "Sign out of all devices": "Sair de todos os dispositivos",
+  "Sign out of every device and browser where you're signed in, including this one?":
+    "Sair de todos os dispositivos e navegadores em que você está conectado, incluindo este?",
+  "Signed out of all devices.": "Você saiu de todos os dispositivos.",
+  "Could not sign out of all devices.": "Não foi possível sair de todos os dispositivos.",
 };

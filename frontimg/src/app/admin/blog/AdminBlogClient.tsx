@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Icon } from "@/components/Icon";
 import { useRequireAdmin } from "@/lib/auth/useRequireAdmin";
-import { apiFetch, backendUrl, getStoredToken } from "@/lib/api";
+import { apiFetch, backendUrl, captureSession, getStoredToken } from "@/lib/api";
 import { renderPostBody } from "@/lib/blog-render";
 import type { BlogPost } from "@/lib/blog";
 
@@ -175,6 +175,8 @@ export function AdminBlogClient() {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
         body: fd,
       });
+      // A raw fetch, so apiFetch's session handling has to be applied by hand.
+      captureSession(res, token);
       if (!res.ok) {
         const { error } = (await res.json().catch(() => ({}))) as { error?: string };
         toast.error(error ?? "Image upload failed.");
