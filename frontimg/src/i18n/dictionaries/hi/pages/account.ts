@@ -52,4 +52,11 @@ export const hiAccount: Dict = {
   "See plans": "प्लान देखें",
 
   "Signed out.": "आप लॉगआउट हो गए।",
+  // "साइन आउट", not this file's older "लॉगआउट": the button sits directly under
+  // "Sign out", which this page takes from common.ts as "साइन आउट".
+  "Sign out of all devices": "सभी डिवाइस से साइन आउट करें",
+  "Sign out of every device and browser where you're signed in, including this one?":
+    "जिन भी डिवाइस और ब्राउज़र में आप साइन इन हैं, उन सबसे साइन आउट करें — इस डिवाइस समेत?",
+  "Signed out of all devices.": "आप सभी डिवाइस से साइन आउट हो गए।",
+  "Could not sign out of all devices.": "सभी डिवाइस से साइन आउट नहीं हो सका।",
 };

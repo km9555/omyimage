@@ -54,4 +54,9 @@ export const idAccount: Dict = {
   "See plans": "Lihat paket",
 
   "Signed out.": "Anda sudah keluar.",
+  "Sign out of all devices": "Keluar dari semua perangkat",
+  "Sign out of every device and browser where you're signed in, including this one?":
+    "Keluar dari semua perangkat dan browser tempat Anda masuk, termasuk yang ini?",
+  "Signed out of all devices.": "Anda sudah keluar dari semua perangkat.",
+  "Could not sign out of all devices.": "Tidak bisa keluar dari semua perangkat.",
 };
