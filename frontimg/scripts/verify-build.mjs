@@ -329,12 +329,15 @@ if (!existsSync(smFile)) {
         errors.push(`sitemap index lists ${child} but out/${rel} does not exist`);
         continue;
       }
-      const loc = /\/sitemaps\/([a-z]{2})\.xml$/.exec(child)?.[1];
+      // Children are one per locale (`en.xml`, `pt.xml`, …) plus `blog.xml`,
+      // which holds /blog and /blog/<slug> and nothing else.
+      const loc = /\/sitemaps\/([a-z]{2}|blog)\.xml$/.exec(child)?.[1];
+      if (!loc) errors.push(`sitemap index lists ${child}, which is not a known child sitemap`);
       const childUrls = locsOf(readText(file));
       if (childUrls.length === 0) errors.push(`${rel} lists no URLs`);
       for (const u of childUrls) {
         const seg = u.replace(/^https?:\/\/[^/]+\/?/, "").split("/")[0];
-        const urlLoc = localeList.includes(seg) ? seg : "en";
+        const urlLoc = seg === "blog" ? "blog" : localeList.includes(seg) ? seg : "en";
         if (urlLoc !== loc) errors.push(`${rel} lists ${u}, which belongs in sitemaps/${urlLoc}.xml`);
       }
       urls.push(...childUrls);

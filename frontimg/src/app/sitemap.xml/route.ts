@@ -2,7 +2,8 @@ import { indexXml, sitemapEntries } from "@/lib/sitemap/entries";
 
 /**
  * `/sitemap.xml` — a sitemap INDEX since the tool expansion (2026-10): it
- * points at one `/sitemaps/<locale>.xml` per language. The address is the one
+ * points at one `/sitemaps/<locale>.xml` per language, plus
+ * `/sitemaps/blog.xml` for the blog (2026-11). The address is the one
  * robots.txt, Search Console, Bing and Yandex already know, so nothing has to
  * be resubmitted. See lib/sitemap/entries.ts for why the split.
  */

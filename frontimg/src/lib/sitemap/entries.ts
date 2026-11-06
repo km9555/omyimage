@@ -59,9 +59,21 @@ function staticSources(englishPath: string, locale: Locale): string[] {
   return exists(route) ? [route] : [];
 }
 
-/** All entries, keyed by locale. */
-export async function sitemapEntries(): Promise<Record<Locale, SitemapEntry[]>> {
-  const byLocale = Object.fromEntries(LOCALES.map((l) => [l, [] as SitemapEntry[]])) as Record<Locale, SitemapEntry[]>;
+/**
+ * One child sitemap per locale, plus `blog` for the blog hub and posts. The
+ * blog gets its own file for the same reason the locales do: Search Console
+ * reports "submitted vs indexed" per sitemap, so a separate file shows at a
+ * glance whether new posts are being picked up, apart from the tool pages.
+ */
+export const SITEMAP_GROUPS = [...LOCALES, "blog"] as const;
+export type SitemapGroup = (typeof SITEMAP_GROUPS)[number];
+
+/** All entries, keyed by child sitemap (each locale, then `blog`). */
+export async function sitemapEntries(): Promise<Record<SitemapGroup, SitemapEntry[]>> {
+  const byLocale = Object.fromEntries(SITEMAP_GROUPS.map((g) => [g, [] as SitemapEntry[]])) as Record<
+    SitemapGroup,
+    SitemapEntry[]
+  >;
 
   for (const englishPath of STATIC_PATHS) {
     const alternates = pageAlternates(englishPath);
@@ -89,18 +101,19 @@ export async function sitemapEntries(): Promise<Record<Locale, SitemapEntry[]>> 
     }
   }
 
-  // Blog hub + posts (English only), and only once a post exists: with an
-  // empty backend the hub is a little chrome and nothing else, which reads to
-  // a crawler as a soft 404. Fetched at build time (lib/blog.ts).
+  // Blog hub + posts (English only) go in their own `blog.xml`, and only once a
+  // post exists: with an empty backend the hub is a little chrome and nothing
+  // else, which reads to a crawler as a soft 404. Fetched at build time
+  // (lib/blog.ts).
   const posts = await getPublishedPosts();
   if (posts.length > 0) {
     const newest = posts
       .map((p) => p.updatedAt)
       .filter(Boolean)
       .sort((a, b) => Date.parse(b) - Date.parse(a))[0];
-    byLocale[DEFAULT_LOCALE].push({ url: `${SITE.url}/blog`, lastmod: newest ? new Date(newest).toISOString() : undefined });
+    byLocale.blog.push({ url: `${SITE.url}/blog`, lastmod: newest ? new Date(newest).toISOString() : undefined });
     for (const p of posts) {
-      byLocale[DEFAULT_LOCALE].push({
+      byLocale.blog.push({
         url: `${SITE.url}/blog/${p.slug}`,
         lastmod: p.updatedAt ? new Date(p.updatedAt).toISOString() : undefined,
       });
@@ -132,12 +145,12 @@ ${body}
 `;
 }
 
-/** Child sitemap filename for a locale: `en.xml`, `pt.xml`, … */
-export const sitemapFile = (locale: Locale) => `${locale}.xml`;
+/** Child sitemap filename: `en.xml`, `pt.xml`, …, `blog.xml`. */
+export const sitemapFile = (group: SitemapGroup) => `${group}.xml`;
 
-/** The `<sitemapindex>` pointing at every non-empty locale file. */
-export function indexXml(byLocale: Record<Locale, SitemapEntry[]>): string {
-  const body = LOCALES.filter((l) => byLocale[l].length > 0)
+/** The `<sitemapindex>` pointing at every non-empty child file. */
+export function indexXml(byLocale: Record<SitemapGroup, SitemapEntry[]>): string {
+  const body = SITEMAP_GROUPS.filter((l) => byLocale[l].length > 0)
     .map((l) => {
       const newest = byLocale[l]
         .map((e) => e.lastmod)
