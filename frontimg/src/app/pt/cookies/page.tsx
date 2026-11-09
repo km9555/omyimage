@@ -54,7 +54,7 @@ export default function CookiesPage() {
       locale="pt"
       title="Política de Cookies"
       subtitle="O que o oMyImage guarda no seu navegador, por que guarda e como mudar de ideia."
-      updated="19 de agosto de 2026"
+      updated="9 de novembro de 2026"
       toc={toc}
     >
       <LegalSection id="what" title="1. O que são cookies">
@@ -86,12 +86,14 @@ export default function CookiesPage() {
         <LegalUl>
           <li>
             <strong>Aceitar todos</strong> — o armazenamento necessário mais a análise de uso. O
-            Google Analytics carrega e conseguimos ver, de forma agregada, quais ferramentas as
-            pessoas usam.
+            Google Analytics carrega, o nosso servidor conta as visualizações de página e os usos
+            das ferramentas, e conseguimos ver, de forma agregada, quais ferramentas as pessoas
+            usam.
           </li>
           <li>
             <strong>Recusar todos</strong> — só o armazenamento necessário. O Google Analytics nunca
-            é carregado e nenhum dado de análise é coletado da sua visita.
+            é carregado, a nossa contagem própria fica desligada e nenhum dado de análise é
+            coletado da sua visita.
           </li>
           <li>
             <strong>Personalizar</strong> — escolha categoria por categoria. O armazenamento
@@ -169,6 +171,20 @@ export default function CookiesPage() {
             Se você recusar a análise de uso, ou simplesmente nunca responder ao aviso, o script do
             Google Analytics nem chega a ser solicitado — esses cookies nunca são criados, em vez de
             serem criados e depois ignorados.
+          </LegalP>
+          <LegalP>
+            Só se você aceitar a análise de uso, o nosso próprio servidor também conta as
+            visualizações de página e os usos das ferramentas: caminho da página, nome da
+            ferramenta, momento, país, tipo de aparelho, site de origem e um hash de visitante que
+            muda todo dia e é apagado depois de 48 horas. Os usos das ferramentas levam também um
+            hash separado do seu endereço IP, que muda todo dia e continua guardado junto com o
+            registro. Nomes, conteúdo e tamanho dos arquivos não são coletados, e essa contagem não
+            define nenhum cookie. Se você estiver na sua conta, associamos os usos das ferramentas a
+            ela. Os detalhes estão na seção 4 da nossa{" "}
+            <Link href={`${localeHref("/privacy", "pt")}#collect`} className="text-secondary hover:underline">
+              Política de Privacidade
+            </Link>
+            .
           </LegalP>
         </LegalSubsection>
 

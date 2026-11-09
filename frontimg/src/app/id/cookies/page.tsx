@@ -59,7 +59,7 @@ export default function CookiesPage() {
       locale="id"
       title="Kebijakan Cookie"
       subtitle="Apa yang disimpan oMyImage di browser Anda, mengapa disimpan, dan cara mengubah pilihan Anda."
-      updated="19 Agustus 2026"
+      updated="9 November 2026"
       toc={toc}
     >
       <LegalSection id="what" title="1. Apa itu cookie">
@@ -93,11 +93,13 @@ export default function CookiesPage() {
         <LegalUl>
           <li>
             <strong>Terima Semua</strong> — penyimpanan yang diperlukan ditambah analitik. Google
-            Analytics dimuat dan kami bisa melihat, secara agregat, alat mana yang dipakai orang.
+            Analytics dimuat, server kami menghitung tayangan halaman dan pemakaian alat, dan kami
+            bisa melihat, secara agregat, alat mana yang dipakai orang.
           </li>
           <li>
             <strong>Tolak Semua</strong> — hanya penyimpanan yang diperlukan. Google Analytics tidak
-            pernah dimuat dan tidak ada data analitik yang dikumpulkan dari kunjungan Anda.
+            pernah dimuat, penghitungan kami sendiri tetap mati, dan tidak ada data analitik yang
+            dikumpulkan dari kunjungan Anda.
           </li>
           <li>
             <strong>Sesuaikan</strong> — pilih per kategori. Penyimpanan yang diperlukan tidak bisa
@@ -175,6 +177,19 @@ export default function CookiesPage() {
             Jika Anda menolak analitik, atau tidak pernah menjawab banner sama sekali, skrip Google
             Analytics tidak pernah diminta — cookie ini memang tidak pernah dibuat, bukan dibuat lalu
             diabaikan.
+          </LegalP>
+          <LegalP>
+            Hanya jika Anda menerima analitik, server kami sendiri juga menghitung tayangan halaman
+            dan pemakaian alat: jalur halaman, nama alat, waktu, negara, jenis perangkat, situs
+            perujuk, dan hash pengunjung yang berganti setiap hari dan dihapus setelah 48 jam.
+            Pemakaian alat juga membawa hash terpisah dari alamat IP Anda, yang berganti setiap hari
+            dan tetap tersimpan bersama catatannya. Nama, isi, dan ukuran file tidak dikumpulkan,
+            dan penghitungan ini tidak memasang cookie. Jika Anda sedang masuk ke akun, pemakaian
+            alat dikaitkan dengan akun Anda. Detailnya ada di bagian 4{" "}
+            <Link href={localeHref("/privacy#collect", "id")} className="text-secondary hover:underline">
+              Kebijakan Privasi
+            </Link>{" "}
+            kami.
           </LegalP>
         </LegalSubsection>
 

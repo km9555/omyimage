@@ -42,7 +42,7 @@ export default function PrivacyPage() {
     <LegalShell
       title="Privacy Policy"
       subtitle="What happens to your images and your data when you use oMyImage."
-      updated="8 October 2026"
+      updated="9 November 2026"
       toc={toc}
     >
       <LegalSection id="summary" title="Summary">
@@ -135,7 +135,8 @@ export default function PrivacyPage() {
           Like any web service, our server and our hosting providers automatically process basic
           technical data as part of delivering the site — IP address, browser user-agent, requested
           URL and timestamp. This is used to serve the request, apply rate limits, and detect abuse.
-          We do not build profiles from it and we do not combine it with anything else.
+          We do not build profiles from it and, apart from the consent-based counting described
+          below, we do not combine it with anything else.
         </LegalP>
         <LegalP>
           We use <strong>Google Analytics 4</strong>, and only with your consent. Until you accept
@@ -144,6 +145,35 @@ export default function PrivacyPage() {
           never answered the banner. What it collects is aggregate: which tools are used, which pages
           error, roughly where visitors come from. We do not use it to identify you and we do not
           connect it to anything you process.
+        </LegalP>
+        <LegalP>
+          If you accept analytics cookies, we also count page views and tool runs on our own server,
+          for our internal usage reports. With each one we record:
+        </LegalP>
+        <LegalUl>
+          <li>
+            the page path, or the tool’s name and whether it ran in your browser or on our server;
+          </li>
+          <li>
+            when it happened;
+          </li>
+          <li>
+            your country and device type, which our server works out from your IP address and
+            browser user-agent;
+          </li>
+          <li>
+            the site that referred you, by name only, on the first page you open;
+          </li>
+          <li>
+            for page views, a visitor hash made from your IP address and user-agent, so that one
+            person is not counted many times. It changes every day and is cleared after 48 hours.
+          </li>
+        </LegalUl>
+        <LegalP>
+          Each tool run also carries a separate hash of your IP address. It changes every day too,
+          but it stays with that run’s record. We never collect file names, contents or sizes for
+          this, and it sets no cookie. If you decline analytics or never answer the banner, none of
+          this is sent. If you are signed in, we link your tool runs to your account.
         </LegalP>
         <LegalP>
           <strong>We run no advertising and no cross-site tracking.</strong> There is no session
@@ -229,7 +259,7 @@ export default function PrivacyPage() {
         <LegalTable
           rows={[
             ["Cloudflare", "Website hosting, CDN and DDoS protection", "cloudflare.com/privacypolicy"],
-            ["Contabo", "Server hosting for the tools that process on our server, and for account data", "contabo.com/en/legal/privacy-policy"],
+            ["Contabo", "Server hosting for the tools that process on our server, for account data, and for our own usage counts", "contabo.com/en/legal/privacy-policy"],
             ["Hostinger", "Email hosting: sends account emails such as address verification and password resets, and receives mail sent to our addresses", "hostinger.com/legal/privacy-policy"],
             ["Google Fonts", "Serves the icon font used across the interface", "policies.google.com/privacy"],
             ["Google Analytics", "Aggregate usage measurement, loaded only if you accept analytics cookies", "policies.google.com/privacy"],

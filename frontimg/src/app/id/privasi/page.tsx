@@ -76,7 +76,7 @@ export default function PrivacyPage() {
       locale="id"
       title="Kebijakan Privasi"
       subtitle="Apa yang terjadi pada gambar dan data Anda saat Anda memakai oMyImage."
-      updated="8 Oktober 2026"
+      updated="9 November 2026"
       toc={toc}
     >
       <LegalSection id="summary" title="Ringkasan">
@@ -174,7 +174,8 @@ export default function PrivacyPage() {
           memproses data teknis dasar sebagai bagian dari penyajian situs — alamat IP, user-agent
           browser, URL yang diminta, dan waktu permintaan. Data ini dipakai untuk melayani permintaan,
           menerapkan pembatasan laju, dan mendeteksi penyalahgunaan. Kami tidak membuat profil dari
-          data ini dan tidak menggabungkannya dengan data lain.
+          data ini dan, selain penghitungan dengan persetujuan yang dijelaskan di bawah, tidak
+          menggabungkannya dengan data lain.
         </LegalP>
         <LegalP>
           Kami memakai <strong>Google Analytics 4</strong>, dan hanya dengan persetujuan Anda. Sampai
@@ -184,6 +185,41 @@ export default function PrivacyPage() {
           agregat: alat mana yang dipakai, halaman mana yang mengalami error, dan kira-kira dari mana
           pengunjung datang. Kami tidak memakainya untuk mengidentifikasi Anda dan tidak
           mengaitkannya dengan apa pun yang Anda proses.
+        </LegalP>
+        <LegalP>
+          Jika Anda menerima cookie analitik, kami juga menghitung tayangan halaman dan pemakaian
+          alat di server kami sendiri, untuk laporan penggunaan internal. Untuk setiap hitungan kami
+          mencatat:
+        </LegalP>
+        <LegalUl>
+          <li>
+            jalur halaman, atau nama alat dan apakah alat itu berjalan di browser Anda atau di
+            server kami;
+          </li>
+          <li>
+            waktu kejadiannya;
+          </li>
+          <li>
+            negara dan jenis perangkat Anda, yang ditentukan server kami dari alamat IP dan
+            user-agent browser Anda;
+          </li>
+          <li>
+            situs yang mengarahkan Anda ke sini, hanya namanya, dan hanya untuk halaman pertama yang
+            Anda buka;
+          </li>
+          <li>
+            untuk tayangan halaman, hash pengunjung yang dibuat dari alamat IP dan user-agent
+            browser Anda, agar satu orang tidak terhitung berkali-kali. Hash ini berganti setiap
+            hari dan dihapus setelah 48 jam.
+          </li>
+        </LegalUl>
+        <LegalP>
+          Setiap pemakaian alat juga membawa hash terpisah dari alamat IP Anda. Hash ini juga
+          berganti setiap hari, tetapi tetap tersimpan bersama catatan pemakaian tersebut. Nama,
+          isi, dan ukuran file Anda tidak pernah dikumpulkan, dan penghitungan ini tidak memasang
+          cookie. Jika Anda menolak analitik atau tidak pernah menjawab banner, tidak ada satu pun
+          dari data ini yang dikirim. Jika Anda sedang masuk ke akun, pemakaian alat dikaitkan
+          dengan akun Anda.
         </LegalP>
         <LegalP>
           <strong>Kami tidak menampilkan iklan dan tidak melakukan pelacakan lintas situs.</strong>{" "}
@@ -276,7 +312,7 @@ export default function PrivacyPage() {
           headers={["Layanan", "Tujuan", "Kebijakan Privasi"]}
           rows={[
             ["Cloudflare", "Hosting situs web, CDN, dan perlindungan DDoS", "cloudflare.com/privacypolicy"],
-            ["Contabo", "Hosting server untuk alat yang memproses di server kami dan untuk data akun", "contabo.com/en/legal/privacy-policy"],
+            ["Contabo", "Hosting server untuk alat yang memproses di server kami, untuk data akun, dan untuk hitungan penggunaan kami sendiri", "contabo.com/en/legal/privacy-policy"],
             ["Hostinger", "Hosting email: mengirim email akun seperti verifikasi alamat dan pengaturan ulang kata sandi, serta menerima email yang dikirim ke alamat kami", "hostinger.com/legal/privacy-policy"],
             ["Google Fonts", "Menyajikan font ikon yang dipakai di seluruh antarmuka", "policies.google.com/privacy"],
             ["Google Analytics", "Pengukuran penggunaan secara agregat, dimuat hanya jika Anda menerima cookie analitik", "policies.google.com/privacy"],

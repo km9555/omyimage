@@ -60,7 +60,7 @@ export default function PrivacyPage() {
       locale="pt"
       title="Política de Privacidade"
       subtitle="O que acontece com as suas imagens e os seus dados quando você usa o oMyImage."
-      updated="8 de outubro de 2026"
+      updated="9 de novembro de 2026"
       toc={toc}
     >
       <LegalSection id="summary" title="Resumo">
@@ -158,7 +158,8 @@ export default function PrivacyPage() {
           processam automaticamente dados técnicos básicos para entregar o site — endereço IP,
           identificação do navegador, URL solicitada e data e hora. Isso é usado para atender à
           solicitação, aplicar limites de requisição e detectar abuso. Não montamos perfis a partir
-          disso e não combinamos esses dados com mais nada.
+          disso e, fora a contagem com consentimento descrita abaixo, não combinamos esses dados
+          com mais nada.
         </LegalP>
         <LegalP>
           Usamos o <strong>Google Analytics 4</strong>, e somente com o seu consentimento. Enquanto
@@ -167,6 +168,39 @@ export default function PrivacyPage() {
           quem recusou ou nunca respondeu ao aviso. O que ele coleta é agregado: quais ferramentas são
           usadas, quais páginas dão erro, de onde as visitas vêm mais ou menos. Não usamos isso para
           identificar você e não ligamos esses dados a nada do que você processa.
+        </LegalP>
+        <LegalP>
+          Se você aceitar os cookies de análise, também contamos as visualizações de página e os
+          usos das ferramentas no nosso próprio servidor, para os nossos relatórios internos de uso.
+          Em cada registro guardamos:
+        </LegalP>
+        <LegalUl>
+          <li>
+            o caminho da página, ou o nome da ferramenta e se ela rodou no seu navegador ou no nosso
+            servidor;
+          </li>
+          <li>
+            o momento em que aconteceu;
+          </li>
+          <li>
+            o seu país e o tipo de aparelho, que o nosso servidor deduz do seu endereço IP e da
+            identificação do navegador;
+          </li>
+          <li>
+            o site que trouxe você até aqui, só o nome dele, na primeira página que você abrir;
+          </li>
+          <li>
+            nas visualizações de página, um hash de visitante feito a partir do seu endereço IP e da
+            identificação do navegador, para não contarmos a mesma pessoa várias vezes. Ele muda
+            todo dia e é apagado depois de 48 horas.
+          </li>
+        </LegalUl>
+        <LegalP>
+          Cada uso de ferramenta leva também um hash separado do seu endereço IP. Ele também muda
+          todo dia, mas continua guardado junto com o registro desse uso. Nada disso inclui nomes,
+          conteúdo ou tamanho dos seus arquivos, e essa contagem não define nenhum cookie. Se você
+          recusar a análise de uso ou nunca responder ao aviso, nada disso é enviado. Se você
+          estiver na sua conta, associamos os usos das ferramentas a ela.
         </LegalP>
         <LegalP>
           <strong>Não exibimos publicidade e não fazemos rastreamento entre sites.</strong> Não há
@@ -257,7 +291,7 @@ export default function PrivacyPage() {
           headers={["Serviço", "Finalidade", "Política de Privacidade"]}
           rows={[
             ["Cloudflare", "Hospedagem do site, CDN e proteção contra DDoS", "cloudflare.com/privacypolicy"],
-            ["Contabo", "Hospedagem do servidor das ferramentas que processam no nosso servidor e dos dados das contas", "contabo.com/en/legal/privacy-policy"],
+            ["Contabo", "Hospedagem do servidor das ferramentas que processam no nosso servidor, dos dados das contas e das nossas contagens de uso", "contabo.com/en/legal/privacy-policy"],
             ["Hostinger", "Hospedagem de e-mail: envia os e-mails da conta, como confirmação de endereço e redefinição de senha, e recebe as mensagens enviadas aos nossos endereços", "hostinger.com/legal/privacy-policy"],
             ["Google Fonts", "Serve a fonte de ícones usada na interface", "policies.google.com/privacy"],
             ["Google Analytics", "Medição agregada de uso, carregada só se você aceitar os cookies de análise", "policies.google.com/privacy"],

@@ -33,7 +33,7 @@ export default function CookiesPage() {
     <LegalShell
       title="Cookie Policy"
       subtitle="What oMyImage stores in your browser, why it is stored, and how to change your mind."
-      updated="19 August 2026"
+      updated="9 November 2026"
       toc={toc}
     >
       <LegalSection id="what" title="1. What are cookies">
@@ -64,12 +64,13 @@ export default function CookiesPage() {
         </LegalP>
         <LegalUl>
           <li>
-            <strong>Accept All</strong> — necessary storage plus analytics. Google Analytics loads
-            and we can see, in aggregate, which tools people use.
+            <strong>Accept All</strong> — necessary storage plus analytics. Google Analytics loads,
+            our own server counts page views and tool runs, and we can see, in aggregate, which
+            tools people use.
           </li>
           <li>
-            <strong>Reject All</strong> — necessary storage only. Google Analytics is never loaded
-            and no analytics data is collected from your visit.
+            <strong>Reject All</strong> — necessary storage only. Google Analytics is never loaded,
+            our own counting stays off, and no analytics data is collected from your visit.
           </li>
           <li>
             <strong>Customize</strong> — choose category by category. Necessary storage cannot be
@@ -143,6 +144,18 @@ export default function CookiesPage() {
             If you reject analytics, or simply never answer the banner, the Google Analytics script
             is not requested at all — these cookies are never created in the first place, rather than
             being created and then ignored.
+          </LegalP>
+          <LegalP>
+            Only if you accept analytics, our own server also counts page views and tool runs: page
+            path, tool name, time, country, device type, referring site, and a visitor hash that
+            changes daily and is cleared after 48 hours. Tool runs also carry a separate hash of
+            your IP address, which changes daily and stays with the run’s record. No file names,
+            contents or sizes are collected, and this counting sets no cookie. If you are signed in,
+            tool runs are linked to your account. Section 4 of our{" "}
+            <Link href="/privacy#collect" className="text-secondary hover:underline">
+              Privacy Policy
+            </Link>{" "}
+            has the detail.
           </LegalP>
         </LegalSubsection>
 
