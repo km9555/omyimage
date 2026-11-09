@@ -48,6 +48,8 @@ export const ptAccount: Dict = {
   "Paid plans aren't available to buy yet, so there is nothing to cancel and no payment method stored.":
     "Os planos pagos ainda não estão à venda, então não há nada para cancelar e nenhuma forma de pagamento guardada.",
   "See plans": "Ver planos",
+  "Owner": "Proprietário",
+  "Unlimited use": "Uso ilimitado",
 
   "Signed out.": "Você saiu da conta.",
   "Sign out of all devices": "Sair de todos os dispositivos",

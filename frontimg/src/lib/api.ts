@@ -114,6 +114,22 @@ export function getAccessToken(): string | null {
   return getStoredToken();
 }
 
+let adminSession = false;
+
+/** AuthProvider reports whether the signed-in account is an admin. */
+export function setAdminSession(isAdmin: boolean): void {
+  adminSession = isAdmin;
+}
+
+/**
+ * The token to put on an image tool request, or null. Only an admin's requests
+ * identify themselves: everyone else's stay anonymous, so they cost no database
+ * lookup and no CORS preflight.
+ */
+export function adminToolToken(): string | null {
+  return adminSession ? getStoredToken() : null;
+}
+
 export function backendUrl(): string {
   return SITE.backendUrl;
 }

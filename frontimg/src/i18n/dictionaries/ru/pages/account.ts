@@ -52,6 +52,8 @@ export const ruAccount: Dict = {
   "Paid plans aren't available to buy yet, so there is nothing to cancel and no payment method stored.":
     "Платные планы пока нельзя купить, поэтому отменять нечего и способ оплаты нигде не хранится.",
   "See plans": "Посмотреть планы",
+  "Owner": "Владелец",
+  "Unlimited use": "Безлимитное использование",
 
   "Signed out.": "Вы вышли из аккаунта.",
   "Sign out of all devices": "Выйти на всех устройствах",

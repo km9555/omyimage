@@ -21,7 +21,7 @@ export function useRequireAdmin() {
   useEffect(() => {
     if (auth.loading) return;
     if (!auth.user) {
-      const redirect = encodeURIComponent(pathname || "/admin/blog");
+      const redirect = encodeURIComponent(pathname || "/admin");
       router.replace(`/login?redirect=${redirect}`);
     }
   }, [auth.loading, auth.user, pathname, router]);

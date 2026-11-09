@@ -21,6 +21,8 @@
  * always run in the browser regardless of size.
  */
 import { SITE } from "@/lib/site";
+import { adminToolToken, captureSession } from "@/lib/api";
+import { noteServerJob, reportToolRun } from "@/lib/analytics-run";
 import { kindOf } from "@/lib/file-actions";
 import { I18nError } from "@/i18n/errors";
 
@@ -195,7 +197,7 @@ export async function processOnServer(
 
   let res: Response;
   try {
-    res = await fetch(`${SITE.backendUrl}${path}`, { method: "POST", body: form });
+    res = await toolFetch(path, { method: "POST", body: form });
   } catch {
     throw new Error("Couldn't reach the processing server for this large file.");
   }
@@ -211,10 +213,26 @@ export async function processOnServer(
     // it is in common.ts. The generic fallback carries its status as a var.
     throw serverMsg ? new Error(serverMsg) : new I18nError("Server error ({status}).", { status: res.status });
   }
+  noteServerJob();
   const blob = await res.blob();
   const cd = res.headers.get("Content-Disposition") || "";
   const m = /filename="([^"]+)"/.exec(cd);
   return { blob, filename: m?.[1] || file.name };
+}
+
+/**
+ * A request to an image tool route. Anonymous for everyone except an admin,
+ * whose token lets the server recognise the owner (backend image-owner.ts).
+ */
+async function toolFetch(path: string, init: RequestInit): Promise<Response> {
+  const token = adminToolToken();
+  if (!token) return fetch(`${SITE.backendUrl}${path}`, init);
+  const res = await fetch(`${SITE.backendUrl}${path}`, {
+    ...init,
+    headers: { ...init.headers, Authorization: `Bearer ${token}` },
+  });
+  captureSession(res, token, path);
+  return res;
 }
 
 /**
@@ -226,8 +244,7 @@ export async function processOnServer(
  * `/api/image/ocr/status/:jobId` to completion.
  *
  * Ported down from oMyPDF's `pollJobResult`/`submitJob`, minus what oMyImage
- * doesn't have: no auth headers (every oMyImage route is anonymous) and no
- * `recordPremiumUse` (no billing layer yet).
+ * doesn't have: no `recordPremiumUse` (no billing layer yet).
  */
 export interface OcrJobResult {
   text: string;
@@ -273,7 +290,7 @@ export async function runOcrImage(
 
   let res: Response;
   try {
-    res = await fetch(`${SITE.backendUrl}/api/image/ocr`, { method: "POST", body: form, signal: opts.signal });
+    res = await toolFetch("/api/image/ocr", { method: "POST", body: form, signal: opts.signal });
   } catch {
     throw new Error("Couldn't reach the processing server.");
   }
@@ -290,7 +307,7 @@ export async function runOcrImage(
     if (opts.signal?.aborted) throw new DOMException("Aborted", "AbortError");
     if (Date.now() - start > TIMEOUT_MS) throw new Error("Timed out waiting for the server to finish.");
 
-    const statusRes = await fetch(`${SITE.backendUrl}/api/image/ocr/status/${jobId}`, { signal: opts.signal });
+    const statusRes = await toolFetch(`/api/image/ocr/status/${jobId}`, { signal: opts.signal });
     if (!statusRes.ok) throw await readJsonError(statusRes, `Server error (${statusRes.status}).`);
     const data = (await statusRes.json()) as {
       status: "queued" | "processing" | "done" | "error";
@@ -302,6 +319,7 @@ export async function runOcrImage(
 
     if (data.status === "error") throw new Error(data.error || "OCR failed on the server.");
     if (data.status === "done") {
+      reportToolRun("server"); // OCR's result is text, so no download marks the run
       return {
         text: data.meta?.text ?? "",
         confidence: data.meta?.confidence ?? 0,
@@ -321,7 +339,7 @@ export async function runOcrImage(
 export async function postJsonForImage(path: string, body: Record<string, unknown>): Promise<ServerResult> {
   let res: Response;
   try {
-    res = await fetch(`${SITE.backendUrl}${path}`, {
+    res = await toolFetch(path, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
@@ -339,6 +357,7 @@ export async function postJsonForImage(path: string, body: Record<string, unknow
     }
     throw serverMsg ? new Error(serverMsg) : new I18nError("Server error ({status}).", { status: res.status });
   }
+  noteServerJob();
   const blob = await res.blob();
   const cd = res.headers.get("Content-Disposition") || "";
   const m = /filename="([^"]+)"/.exec(cd);

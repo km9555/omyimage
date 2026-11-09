@@ -127,6 +127,7 @@ export const hiCommon: Record<string, string> = {
   "Account menu": "अकाउंट मेन्यू",
   "Signed in as": "इस रूप में साइन इन",
   "Dashboard": "डैशबोर्ड",
+  "Admin": "एडमिन",
   "My Account": "मेरा अकाउंट",
   "Sign out": "साइन आउट",
   "Show password": "पासवर्ड दिखाएँ",

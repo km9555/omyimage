@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Icon } from "@/components/Icon";
 import { usePremiumUsage } from "@/lib/premium-usage";
+import { useAuth } from "@/lib/auth/useAuth";
 import { useLocale, useT } from "@/i18n/I18nScope";
 import { localeHref } from "@/lib/i18n/links";
 
@@ -18,7 +19,8 @@ import { localeHref } from "@/lib/i18n/links";
  */
 
 export function CreditsBadge({ compact = false, className = "" }: { compact?: boolean; className?: string }) {
-  const { used, limit, unlimited, ready } = usePremiumUsage();
+  const { profile } = useAuth();
+  const { used, limit, unlimited, ready } = usePremiumUsage(profile?.is_owner ? "pro" : profile?.plan);
   const t = useT();
   const locale = useLocale();
 

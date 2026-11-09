@@ -135,6 +135,7 @@ export const ruCommon: Record<string, string> = {
   "Account menu": "Меню аккаунта",
   "Signed in as": "Вы вошли как",
   "Dashboard": "Панель",
+  "Admin": "Админ",
   "My Account": "Мой аккаунт",
   "Sign out": "Выйти",
   "Show password": "Показать пароль",

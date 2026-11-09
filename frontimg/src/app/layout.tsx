@@ -7,6 +7,7 @@ import { Footer } from "@/components/Footer";
 import { ThemedToaster } from "@/components/ThemedToaster";
 import { CookieBanner } from "@/components/CookieBanner";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
+import { AnalyticsBeacon } from "@/components/AnalyticsBeacon";
 import { ThemeProvider } from "@/lib/theme/ThemeProvider";
 import { AuthProvider } from "@/lib/auth/AuthProvider";
 import { HtmlLang } from "@/components/HtmlLang";
@@ -180,6 +181,7 @@ export default function RootLayout({
           </AuthProvider>
         </ThemeProvider>
         <GoogleAnalytics />
+        <AnalyticsBeacon />
         <HtmlLang />
       </body>
     </html>

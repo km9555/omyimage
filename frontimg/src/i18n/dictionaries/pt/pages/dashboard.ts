@@ -23,6 +23,8 @@ export const ptDashboard: Dict = {
   "Everything that runs in your browser stays unlimited and uncounted.":
     "Tudo o que roda no seu navegador continua ilimitado e não é contado.",
   "See plans": "Ver planos",
+  "Owner": "Proprietário",
+  "Unlimited use": "Uso ilimitado",
   "You're on {plan}": "Você está no {plan}",
 
   // Lists and search

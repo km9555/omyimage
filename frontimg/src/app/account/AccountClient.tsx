@@ -119,7 +119,8 @@ export function AccountClient() {
 
   const email = user.email ?? "—";
   const plan = profile?.plan ?? "free";
-  const label = planLabel(plan);
+  const isOwner = profile?.is_owner === true;
+  const label = isOwner ? t("Owner") : planLabel(plan);
   /* The page's locale, not the browser's — the same rule as everywhere else
      (conversion.md §4.16). */
   const memberSince = profile?.created_at ? formatLongDate(new Date(profile.created_at), locale) : null;
@@ -171,7 +172,7 @@ export function AccountClient() {
           value={
             <span className="inline-flex items-center gap-2">
               {label}
-              {plan === "free" && (
+              {plan === "free" && !isOwner && (
                 <span className="rounded-full bg-surface-container px-2 py-0.5 text-label-sm font-label-sm text-on-surface-variant">
                   {t("Free plan")}
                 </span>
@@ -179,7 +180,7 @@ export function AccountClient() {
             </span>
           }
         />
-        <Row icon="bolt" label={t("Allowance")} value={planAllowanceLabel(plan, t)} />
+        <Row icon="bolt" label={t("Allowance")} value={isOwner ? t("Unlimited use") : planAllowanceLabel(plan, t)} />
         {memberSince && <Row icon="calendar_today" label={t("Member since")} value={memberSince} />}
       </section>
 
@@ -265,6 +266,10 @@ export function AccountClient() {
           <Icon name="receipt_long" className="text-[20px] text-secondary" />
           {t("Plan")}
         </h2>
+        {isOwner ? (
+          <p className="text-body-md text-on-surface-variant">{t("Unlimited use")}</p>
+        ) : (
+        <>
         {/* Two keys around the plan name, which is bold: a placeholder cannot
             carry an element (conversion.md §4.9). */}
         <p className="text-body-md text-on-surface-variant">
@@ -284,6 +289,8 @@ export function AccountClient() {
           <Icon name="workspace_premium" className="text-[20px]" />
           {t("See plans")}
         </Link>
+        </>
+        )}
       </section>
 
       <button

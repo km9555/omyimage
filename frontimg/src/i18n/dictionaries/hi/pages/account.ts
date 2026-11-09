@@ -50,6 +50,8 @@ export const hiAccount: Dict = {
   "Paid plans aren't available to buy yet, so there is nothing to cancel and no payment method stored.":
     "पेड प्लान अभी ख़रीदे नहीं जा सकते, इसलिए रद्द करने को कुछ है ही नहीं और भुगतान का कोई तरीक़ा सहेजा नहीं गया है।",
   "See plans": "प्लान देखें",
+  "Owner": "मालिक",
+  "Unlimited use": "असीमित उपयोग",
 
   "Signed out.": "आप लॉगआउट हो गए।",
   // "साइन आउट", not this file's older "लॉगआउट": the button sits directly under

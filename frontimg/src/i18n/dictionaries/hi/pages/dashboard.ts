@@ -29,6 +29,8 @@ export const hiDashboard: Dict = {
   "Everything that runs in your browser stays unlimited and uncounted.":
     "जो कुछ आपके ब्राउज़र में चलता है वह असीमित रहता है और गिना नहीं जाता।",
   "See plans": "प्लान देखें",
+  "Owner": "मालिक",
+  "Unlimited use": "असीमित उपयोग",
   "You're on {plan}": "आप {plan} पर हैं",
 
   // Lists and search

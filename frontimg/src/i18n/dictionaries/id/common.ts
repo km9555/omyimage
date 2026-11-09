@@ -124,6 +124,7 @@ export const idCommon: Record<string, string> = {
   "Account menu": "Menu akun",
   "Signed in as": "Masuk sebagai",
   "Dashboard": "Dasbor",
+  "Admin": "Admin",
   "My Account": "Akun Saya",
   "Sign out": "Keluar",
   "Show password": "Tampilkan kata sandi",

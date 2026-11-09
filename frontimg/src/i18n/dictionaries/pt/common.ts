@@ -114,6 +114,7 @@ export const ptCommon: Record<string, string> = {
   "Account menu": "Menu da conta",
   "Signed in as": "Conectado como",
   "Dashboard": "Painel",
+  "Admin": "Admin",
   "My Account": "Minha conta",
   "Sign out": "Sair",
   "Show password": "Mostrar senha",

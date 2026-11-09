@@ -42,7 +42,8 @@ export function DashboardClient() {
 
   const recent = useRecentTools();
   const { favorites, favoriteSlugs, toggle } = useFavoriteTools();
-  const usage = usePremiumUsage(profile?.plan);
+  const isOwner = profile?.is_owner === true;
+  const usage = usePremiumUsage(isOwner ? "pro" : profile?.plan);
 
   const pill = PILLS.find((p) => p.id === activePill) ?? PILLS[0];
   // Ranked, alias-aware search within the active pill; an empty query falls
@@ -75,7 +76,7 @@ export function DashboardClient() {
 
   const plan = profile?.plan ?? "free";
   const label = planLabel(plan);
-  const isFree = plan === "free";
+  const isFree = plan === "free" && !isOwner;
   const maxUpload = PLAN_MAX_UPLOAD_MB[plan] ?? PLAN_MAX_UPLOAD_MB.free;
 
   const handleSignOut = () => {
@@ -127,7 +128,7 @@ export function DashboardClient() {
         </span>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <span className="text-body-lg font-bold text-primary">{t("{plan} plan", { plan: label })}</span>
+            <span className="text-body-lg font-bold text-primary">{isOwner ? t("Owner") : t("{plan} plan", { plan: label })}</span>
             {isFree && (
               <span className="rounded-full bg-surface-container px-2 py-0.5 text-label-sm font-label-sm text-on-surface-variant">
                 {t("Free")}
@@ -135,7 +136,7 @@ export function DashboardClient() {
             )}
           </div>
           <p className="text-body-md text-on-surface-variant">
-            {t("{allowance} · files up to {mb} MB on our server", { allowance: planAllowanceLabel(plan, t), mb: maxUpload })}
+            {isOwner ? t("Unlimited use") : t("{allowance} · files up to {mb} MB on our server", { allowance: planAllowanceLabel(plan, t), mb: maxUpload })}
             {usage.ready && !usage.unlimited && usage.limit !== null && (
               <> · <strong className="text-on-surface">{usage.used}</strong> {t("used today")}</>
             )}
@@ -155,7 +156,7 @@ export function DashboardClient() {
         ) : (
           <span className="inline-flex items-center gap-2 text-body-md font-semibold text-secondary">
             <Icon name="check_circle" fill className="text-[20px]" />
-            {t("You're on {plan}", { plan: label })}
+            {isOwner ? t("Unlimited use") : t("You're on {plan}", { plan: label })}
           </span>
         )}
       </section>

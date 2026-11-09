@@ -33,6 +33,8 @@ export const ruDashboard: Dict = {
   "Everything that runs in your browser stays unlimited and uncounted.":
     "Всё, что работает в вашем браузере, остаётся безлимитным и не считается.",
   "See plans": "Посмотреть планы",
+  "Owner": "Владелец",
+  "Unlimited use": "Безлимитное использование",
   "You're on {plan}": "У вас {plan}",
 
   // Lists and search

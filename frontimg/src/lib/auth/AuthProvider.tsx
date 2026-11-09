@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { authFetch, saveToken, clearToken, getStoredToken, AUTH_EXPIRED_EVENT, TOKEN_KEY } from "@/lib/api";
+import { authFetch, saveToken, clearToken, getStoredToken, setAdminSession, AUTH_EXPIRED_EVENT, TOKEN_KEY } from "@/lib/api";
 
 export interface AuthUser {
   id: string;
@@ -14,6 +14,8 @@ export interface Profile {
   plan: string;
   /** "user" | "admin" — from profiles.role. */
   role: string;
+  /** In the server's ADMIN_EMAILS: the owner, with unlimited use. */
+  is_owner?: boolean;
   subscription_status: string;
   created_at: string;
 }
@@ -74,6 +76,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     void loadSession();
   }, [loadSession]);
+
+  // Tells the tool requests whether to identify this account (lib/api.ts).
+  useEffect(() => {
+    setAdminSession(profile?.role === "admin");
+  }, [profile]);
 
   // Session end, from three directions:
   //  - the server rejected the token on some request (lib/api.ts captureSession);

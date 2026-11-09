@@ -52,6 +52,8 @@ export const idAccount: Dict = {
   "Paid plans aren't available to buy yet, so there is nothing to cancel and no payment method stored.":
     "Paket berbayar belum bisa dibeli, jadi tidak ada yang perlu dibatalkan dan tidak ada metode pembayaran yang disimpan.",
   "See plans": "Lihat paket",
+  "Owner": "Pemilik",
+  "Unlimited use": "Penggunaan tanpa batas",
 
   "Signed out.": "Anda sudah keluar.",
   "Sign out of all devices": "Keluar dari semua perangkat",

@@ -13,10 +13,8 @@ import { useAuth } from "@/lib/auth/useAuth";
  * menu when signed in.
  *
  * Menu items are gated on the route actually existing — on a static export a
- * link to a missing path is a hard 404, not a soft one. /dashboard and
- * /account exist; /admin deliberately does not yet (there are no
- * /api/image/admin/* endpoints behind it), so it is not linked even for an
- * admin. Add it here the day that console ships.
+ * link to a missing path is a hard 404, not a soft one. /admin is English-only
+ * and has no locale variants, so it is linked without localeHref.
  *
  * Takes no className on purpose. Callers control visibility with a wrapper
  * element instead: appending "hidden md:inline-flex" to a base string that
@@ -26,7 +24,7 @@ import { useAuth } from "@/lib/auth/useAuth";
  * to the drawer's copy of it.
  */
 export function NavbarAuth() {
-  const { user, loading, signOut } = useAuth();
+  const { user, profile, loading, signOut } = useAuth();
   const router = useRouter();
   const t = useT();
   const locale = useLocale();
@@ -115,6 +113,17 @@ export function NavbarAuth() {
             <Icon name="account_circle" className="text-[20px] text-on-surface-variant" />
             {t("My Account")}
           </Link>
+          {profile?.role === "admin" && (
+            <Link
+              href="/admin"
+              role="menuitem"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 px-4 py-3 text-body-md text-on-surface hover:bg-surface-container transition-colors"
+            >
+              <Icon name="admin_panel_settings" className="text-[20px] text-on-surface-variant" />
+              {t("Admin")}
+            </Link>
+          )}
           <button
             type="button"
             role="menuitem"

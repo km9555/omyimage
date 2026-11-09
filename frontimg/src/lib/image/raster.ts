@@ -1,3 +1,4 @@
+import { reportToolRun } from "@/lib/analytics-run";
 /**
  * Shared client-side image raster engine for oMyImage.
  *
@@ -205,6 +206,7 @@ export async function imageSize(file: File): Promise<{ w: number; h: number }> {
 
 /** Trigger a browser download for a single blob. */
 export function downloadBlob(blob: Blob, filename: string): void {
+  reportToolRun();
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;

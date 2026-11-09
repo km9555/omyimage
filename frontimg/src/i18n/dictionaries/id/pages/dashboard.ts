@@ -33,6 +33,8 @@ export const idDashboard: Dict = {
   "Everything that runs in your browser stays unlimited and uncounted.":
     "Semua yang berjalan di browser Anda tetap tanpa batas dan tidak dihitung.",
   "See plans": "Lihat paket",
+  "Owner": "Pemilik",
+  "Unlimited use": "Penggunaan tanpa batas",
   "You're on {plan}": "Anda memakai {plan}",
 
   // Lists and search

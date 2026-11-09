@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Icon } from "@/components/Icon";
 import { useRequireAdmin } from "@/lib/auth/useRequireAdmin";
+import Link from "next/link";
 import { apiFetch, backendUrl, captureSession, getStoredToken } from "@/lib/api";
 import { renderPostBody } from "@/lib/blog-render";
 import type { BlogPost } from "@/lib/blog";
@@ -227,7 +228,15 @@ export function AdminBlogClient() {
   return (
     <div className="max-w-content mx-auto px-margin-mobile md:px-gutter pt-stack-md pb-16 flex flex-col gap-stack-md">
       <div className="flex items-center justify-between gap-4">
-        <h1 className="text-display-lg-mobile font-black text-primary">Blog Admin</h1>
+        <div className="flex flex-col gap-1">
+          <Link
+            href="/admin"
+            className="inline-flex items-center gap-1 text-label-sm font-label-sm text-secondary hover:underline"
+          >
+            <Icon name="arrow_back" className="text-[18px]" /> Admin
+          </Link>
+          <h1 className="text-display-lg-mobile font-black text-primary">Blog Admin</h1>
+        </div>
         {view === "list" ? (
           <button
             type="button"
