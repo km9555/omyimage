@@ -147,7 +147,7 @@ It still has two trade-offs. Encoding is slow, especially for large images. Outs
 
 **Our advice for 2026:** serve WebP as your everyday web format, and add AVIF only if your website platform or CDN creates it automatically with a WebP or JPG fallback. If someone sends you an AVIF you can't open, convert it with [AVIF to JPG](/avif-to-jpg) or [AVIF to PNG](/avif-to-png).
 
-HEIC is the format your iPhone camera saves in. It's small and high quality, but plenty of Windows PCs won't open it, and a lot of websites and upload forms reject it. Convert it with [HEIC to JPG](/heic-to-jpg) before you share or upload.
+HEIC is the format your iPhone camera saves in. It's small and high quality, but plenty of Windows PCs won't open it, and a lot of websites and upload forms reject it. Convert it with [HEIC to JPG](/heic-to-jpg) before you share or upload. Our [HEIC to JPG guide](/blog/heic-to-jpg-iphone-photos) explains why iPhone photos fail in so many places and how to stop your iPhone saving HEIC.
 
 ## Best image format for the web and every other job
 
