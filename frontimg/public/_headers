@@ -17,3 +17,12 @@
   Cache-Control: public, max-age=31536000, immutable
 /models/*
   Cache-Control: public, max-age=31536000, immutable
+
+# The *.pages.dev aliases (production and per-deploy/branch previews) serve a
+# full copy of the site. Keep them out of search indexes; the custom domain
+# omyimage.com does not match these host rules and is unaffected.
+https://:project.pages.dev/*
+  X-Robots-Tag: noindex, nofollow
+
+https://:version.:project.pages.dev/*
+  X-Robots-Tag: noindex, nofollow
