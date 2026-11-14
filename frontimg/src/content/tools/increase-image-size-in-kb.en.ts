@@ -11,7 +11,7 @@ const content: ToolPageContent = {
   locale: "en",
   name: "Increase Image Size in KB",
   tagline:
-    "Make a photo or signature at least 10, 20, 50 KB or any size a form demands — by raising its quality and, only if needed, its pixel size. Set a maximum too for ranges like 20–50 KB. Free, in your browser, nothing uploaded.",
+    "Make a photo or signature at least 10, 20, 50 KB or any size a form demands — by raising its quality and, only if needed, its pixel size. Set a maximum too for ranges like 20–50 KB. Free, and it runs in your browser.",
   category: { id: "optimize", label: "Optimize" },
 
   intro:
@@ -62,7 +62,7 @@ const content: ToolPageContent = {
   features: [
     { icon: "high_quality", title: "Quality goes up, not down", description: "The file grows by storing the picture at higher quality first — nothing is degraded to add bytes." },
     { icon: "photo_size_select_large", title: "Ranges handled", description: "Set a minimum and a maximum, like 20–50 KB, and every file lands inside it." },
-    { icon: "lock", title: "Nothing uploaded", description: "Your photos are processed in your browser and never leave your device." },
+    { icon: "lock", title: "Private", description: "Your photos are processed in your browser, on your own device." },
   ],
 
   faqs: [
@@ -76,7 +76,7 @@ const content: ToolPageContent = {
   ],
 
   security:
-    "Photos and signatures are processed on your device, in your browser. Nothing is uploaded or stored anywhere.",
+    "Photos and signatures are processed on your device, in your browser. Nothing is uploaded or stored. Only an image above about 16 megapixels, too large for a browser tab, goes to our server and is deleted within about an hour.",
 };
 
 export default content;

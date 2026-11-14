@@ -63,7 +63,7 @@ const content: ToolPageContent = {
   features: [
     { icon: "description", title: "Photos and documents", description: "Works as well on a scanned certificate or ID card as on a portrait — both fit cleanly in 100KB." },
     { icon: "burst_mode", title: "A whole set at once", description: "Compress every photo and scan for an application in one go and download them as a ZIP." },
-    { icon: "lock", title: "Documents stay on your device", description: "ID cards and certificates are compressed in your browser and never uploaded anywhere." },
+    { icon: "lock", title: "Documents stay on your device", description: "ID cards and certificates are compressed in your browser, on your own device." },
   ],
 
   faqs: [
@@ -77,7 +77,7 @@ const content: ToolPageContent = {
   ],
 
   security:
-    "Your photos and documents stay on your device. Everything is compressed in your browser — no upload, no server copy, nothing kept.",
+    "Your photos and documents stay on your device. Almost every file is compressed in your browser — no upload, no server copy, nothing kept. Only an image above about 16 megapixels, too large for a browser tab, goes to our server and is deleted within about an hour.",
 };
 
 export default content;

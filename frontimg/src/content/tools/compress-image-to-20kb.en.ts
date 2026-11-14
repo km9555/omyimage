@@ -11,7 +11,7 @@ const content: ToolPageContent = {
   locale: "en",
   name: "Compress Image to 20KB",
   tagline:
-    "Compress a photo or a signature to under 20KB — the limit exam, recruitment and banking forms set for signatures and small photos. Sharp JPGs, many files at once, nothing uploaded.",
+    "Compress a photo or a signature to under 20KB — the limit exam, recruitment and banking forms set for signatures and small photos. Sharp JPGs, many files at once, in your browser.",
   category: { id: "optimize", label: "Optimize" },
 
   intro:
@@ -76,7 +76,7 @@ const content: ToolPageContent = {
   ],
 
   security:
-    "Signatures and identity photos never leave your device. The compression runs entirely in your browser — there is no upload, no copy on a server and nothing to delete afterwards.",
+    "Signatures and identity photos stay on your device. The compression runs in your browser — no upload, no copy on a server and nothing to delete afterwards. Only an image above about 16 megapixels, too large for a browser tab, goes to our server and is deleted within about an hour.",
 };
 
 export default content;

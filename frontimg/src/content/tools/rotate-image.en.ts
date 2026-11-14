@@ -80,7 +80,7 @@ const content: ToolPageContent = {
   ],
 
   security:
-    "Your images stay private. Rotation happens entirely in your browser with HTML canvas — nothing is uploaded to a server. No storage, no tracking of your files.",
+    "Your images stay private. Rotation happens in your browser with HTML canvas — no storage, no tracking of your files. Only an image above about 16 megapixels, too large for a browser tab, goes to our server and is deleted within about an hour.",
 };
 
 export default content;

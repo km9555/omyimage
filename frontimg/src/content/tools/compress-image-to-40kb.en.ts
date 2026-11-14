@@ -11,7 +11,7 @@ const content: ToolPageContent = {
   locale: "en",
   name: "Compress Image to 40KB",
   tagline:
-    "Compress a photo to under 40KB for application forms — a sharp, natural-looking face at an exact limit, and a safe choice for \"20–50 KB\" photo fields. Free, in your browser, nothing uploaded.",
+    "Compress a photo to under 40KB for application forms — a sharp, natural-looking face at an exact limit, and a safe choice for \"20–50 KB\" photo fields. Free, and it runs in your browser.",
   category: { id: "optimize", label: "Optimize" },
 
   intro:
@@ -69,7 +69,7 @@ const content: ToolPageContent = {
   features: [
     { icon: "face", title: "Natural, sharp faces", description: "About 400 × 500 pixels at good quality — skin tones and fine detail kept." },
     { icon: "verified_user", title: "Safe inside ranges", description: "40KB passes 20–50KB photo fields with margin on both sides." },
-    { icon: "lock", title: "Nothing uploaded", description: "Your photo is compressed in your browser and stays on your device." },
+    { icon: "lock", title: "Private", description: "Your photo is compressed in your browser and stays on your device." },
   ],
 
   faqs: [
@@ -84,7 +84,7 @@ const content: ToolPageContent = {
   ],
 
   security:
-    "Photos are compressed on your device, in your browser. Nothing is uploaded or stored anywhere.",
+    "Photos are compressed on your device, in your browser. For normal photo sizes nothing is uploaded or stored. Only an image above about 16 megapixels, too large for a browser tab, goes to our server and is deleted within about an hour.",
 };
 
 export default content;

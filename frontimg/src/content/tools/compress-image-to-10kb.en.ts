@@ -63,7 +63,7 @@ const content: ToolPageContent = {
   features: [
     { icon: "draw", title: "Made for signatures", description: "Small black-and-white images like signatures and thumb impressions stay readable under 10KB." },
     { icon: "crop", title: "Shrinks only when needed", description: "Quality is tried first; the dimensions come down only if the file still does not fit." },
-    { icon: "lock", title: "Stays on your device", description: "Your signature is compressed in your browser and never uploaded anywhere." },
+    { icon: "lock", title: "Stays on your device", description: "Your signature is compressed in your browser, on your own device." },
   ],
 
   faqs: [
@@ -77,7 +77,7 @@ const content: ToolPageContent = {
   ],
 
   security:
-    "Signatures, thumb impressions and photos are compressed on your device, in your browser. Nothing is uploaded or stored anywhere.",
+    "Signatures, thumb impressions and photos are compressed on your device, in your browser. Nothing is uploaded or stored. Only an image above about 16 megapixels, too large for a browser tab, goes to our server and is deleted within about an hour.",
 };
 
 export default content;

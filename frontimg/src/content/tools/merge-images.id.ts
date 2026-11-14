@@ -81,6 +81,9 @@ const content: ToolPageContent = {
   ],
 
   faqs: [
+    { q: "Bagaimana cara menaruh dua foto berdampingan?", a: "Tambahkan kedua gambar, biarkan tata letak pada berdampingan, lalu klik Gabungkan. Gambar disambung di tepi yang sama dengan resolusi asli, dengan jarak opsional di antaranya, dan hasilnya diunduh sebagai satu file PNG, JPG, atau WEBP. Samakan ukuran gambar jika Anda ingin keduanya setinggi." },
+    { q: "Apakah ini sama dengan aplikasi penggabung foto?", a: "Ya — menggabungkan foto, menyatukan gambar, atau membuat satu gambar dari beberapa foto adalah pekerjaan yang sama. Bedanya, tidak ada yang perlu dipasang: alat ini berjalan di browser apa pun di ponsel, tablet, atau komputer, tanpa daftar dan tanpa watermark." },
+    { q: "Bisakah saya menggabungkan gambar di ponsel?", a: "Bisa. Buka halaman ini di Safari atau Chrome di iPhone atau Android, ketuk untuk memilih foto dari galeri, pilih tata letak, lalu gabungkan. Menumpuk secara vertikal biasanya paling pas di ponsel karena gambar yang tinggi memenuhi layar tegak." },
     { q: "Berapa banyak foto yang bisa digabungkan?", a: "Sebanyak yang Anda mau — tambahkan dua foto atau lebih dan susun berdampingan, bertumpuk, atau dalam grid." },
     { q: "Bisakah mengubah urutan foto?", a: "Bisa. Seret thumbnail ke posisi baru di daftar, atau pakai tombol panah naik dan turun kalau lebih nyaman — keduanya menentukan urutan foto digabungkan. Di mode Kustom, urutan juga menentukan foto mana yang berada di atas saat bertumpukan, dan tombol Ke depan dan Ke belakang mengubahnya." },
     { q: "Bisakah latarnya dibuat transparan?", a: "Bisa. Pilih latar transparan dan simpan sebagai PNG atau WEBP agar jaraknya tetap tembus pandang." },

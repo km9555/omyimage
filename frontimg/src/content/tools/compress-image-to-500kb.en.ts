@@ -70,7 +70,7 @@ const content: ToolPageContent = {
   features: [
     { icon: "high_quality", title: "No visible loss", description: "With half a megabyte to spend, photos keep their full look and most of their resolution." },
     { icon: "screenshot_monitor", title: "Sharp screenshots", description: "Large PNG screenshots become small JPG or WEBP files with readable text." },
-    { icon: "lock", title: "Private", description: "Everything happens in your browser; your images are never uploaded." },
+    { icon: "lock", title: "Private", description: "Compression happens in your browser, on your own device." },
   ],
 
   faqs: [
@@ -85,7 +85,7 @@ const content: ToolPageContent = {
   ],
 
   security:
-    "Photos, screenshots and scans are compressed on your device, in your browser. Nothing is uploaded or stored anywhere.",
+    "Photos, screenshots and scans are compressed on your device, in your browser. For normal photo sizes nothing is uploaded or stored. Only an image above about 16 megapixels, too large for a browser tab, goes to our server and is deleted within about an hour.",
 };
 
 export default content;

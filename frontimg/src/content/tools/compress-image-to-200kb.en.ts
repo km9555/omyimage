@@ -63,7 +63,7 @@ const content: ToolPageContent = {
   features: [
     { icon: "high_quality", title: "Near-original quality", description: "With 200KB to spend, photos keep most of their resolution and detail — the tool uses the whole budget." },
     { icon: "folder_zip", title: "Whole application at once", description: "Photo, ID scan and certificates in one batch, each under 200KB, downloaded together as a ZIP." },
-    { icon: "lock", title: "No uploads", description: "Identity documents are compressed in your browser, not sent to a server." },
+    { icon: "lock", title: "No uploads", description: "Identity documents are compressed in your browser, on your own device." },
   ],
 
   faqs: [
@@ -77,7 +77,7 @@ const content: ToolPageContent = {
   ],
 
   security:
-    "Photos, ID cards and certificates are compressed on your device, in your browser. Nothing is uploaded or stored anywhere.",
+    "Photos, ID cards and certificates are compressed on your device, in your browser. For normal photo sizes nothing is uploaded or stored. Only an image above about 16 megapixels, too large for a browser tab, goes to our server and is deleted within about an hour.",
 };
 
 export default content;

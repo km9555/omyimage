@@ -77,6 +77,9 @@ const content: ToolPageContent = {
   ],
 
   faqs: [
+    { q: "Como coloco duas fotos lado a lado?", a: "Adicione as duas imagens, deixe o layout em lado a lado e clique em Juntar. Elas são unidas pela borda em comum, na resolução original, com um espaço opcional entre elas, e o resultado é baixado como um único arquivo PNG, JPG ou WEBP. Use Igualar nos tamanhos se quiser as duas com a mesma altura." },
+    { q: "Isso é o mesmo que um app para juntar fotos?", a: "Sim — juntar fotos, combinar imagens ou montar uma foto com várias são o mesmo trabalho. A diferença é que nada precisa ser instalado: funciona em qualquer navegador, no celular, tablet ou computador, sem cadastro e sem marca d'água no resultado." },
+    { q: "Posso juntar imagens no celular?", a: "Sim. Abra esta página no Safari ou no Chrome do iPhone ou Android, toque para escolher fotos da galeria, escolha um layout e junte. Empilhar na vertical costuma ficar melhor no celular, porque uma imagem alta preenche a tela em pé." },
     { q: "Quantas imagens posso juntar?", a: "Quantas quiser — adicione duas ou mais e organize lado a lado, uma embaixo da outra ou em grade." },
     { q: "Posso mudar a ordem das imagens?", a: "Sim. Arraste uma miniatura para outra posição na lista, ou use as setas para cima e para baixo se preferir — os dois definem a ordem em que as imagens são combinadas. No modo Personalizada a ordem também decide qual imagem fica por cima onde elas se sobrepõem, e os botões Trazer para frente e Enviar para trás mudam isso." },
     { q: "Dá para manter o fundo transparente?", a: "Sim. Escolha um fundo transparente e exporte em PNG ou WEBP para os espaços continuarem transparentes." },

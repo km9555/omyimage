@@ -11,7 +11,7 @@ const content: ToolPageContent = {
   locale: "en",
   name: "Compress Image to 50KB",
   tagline:
-    "Compress any photo to under 50KB — the photograph limit most exam, recruitment and government forms set. The sharpest JPG that fits, batch support, nothing uploaded.",
+    "Compress any photo to under 50KB — the photograph limit most exam, recruitment and government forms set. The sharpest JPG that fits, batch support, in your browser.",
   category: { id: "optimize", label: "Optimize" },
 
   intro:
@@ -62,7 +62,7 @@ const content: ToolPageContent = {
   features: [
     { icon: "badge", title: "Ready for application forms", description: "A JPG under 50KB at the highest quality that fits — what exam and government portals expect." },
     { icon: "photo_size_select_large", title: "Shrinks pixels only if needed", description: "Quality is lowered first; the dimensions are reduced only when quality alone cannot reach 50KB." },
-    { icon: "lock", title: "Private by design", description: "Your photo is processed in your browser and never uploaded — sensible for an ID photograph." },
+    { icon: "lock", title: "Private by design", description: "Your photo is processed in your browser, on your own device — sensible for an ID photograph." },
   ],
 
   faqs: [
@@ -76,7 +76,7 @@ const content: ToolPageContent = {
   ],
 
   security:
-    "The photo never leaves your device. Compression to 50KB runs entirely in your browser, so there is nothing uploaded, nothing stored and nothing for anyone else to see.",
+    "The photo stays on your device. Compression to 50KB runs in your browser, so there is nothing uploaded, nothing stored and nothing for anyone else to see. Only an image above about 16 megapixels, too large for a browser tab, goes to our server and is deleted within about an hour.",
 };
 
 export default content;

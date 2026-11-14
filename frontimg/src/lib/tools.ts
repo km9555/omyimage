@@ -106,7 +106,7 @@ export const TOOLS: Tool[] = [
     library: "Sharp",
     status: "live",
     priority: 1,
-    seoTitle: "Compress Image Online — Free JPG, PNG & WEBP Compressor | oMyImage",
+    seoTitle: "Compress Image Online — Free JPG, PNG & WEBP | oMyImage",
     seoDescription:
       "Compress JPG, PNG and WEBP images online for free — by quality, or to an exact size like 50KB or 100KB. Batch support, before/after sizes, no sign-up.",
     primaryKeyword: "compress image online free",
@@ -242,7 +242,7 @@ export const TOOLS: Tool[] = [
     status: "live",
     isNew: true,
     priority: 165,
-    seoTitle: "Discord Banner Resizer — Profile & Server Banner Sizes | oMyImage",
+    seoTitle: "Discord Banner Resizer — Profile & Server Sizes | oMyImage",
     seoDescription:
       "Resize any image for Discord: a 600 × 240 profile banner, a 960 × 540 server banner or a 512 × 512 server icon. Crop or pad to fit, free, in your browser.",
     primaryKeyword: "discord banner size",
@@ -762,7 +762,7 @@ export const TOOLS: Tool[] = [
     priority: 10,
     seoTitle: "All-in-One Image Editor Online - Free | oMyImage",
     seoDescription:
-      "Edit images online for free in one place — crop, resize, rotate, adjust, filter, blur, add borders, round, watermark and draw, with undo/redo. No sign-up, 100% private in your browser.",
+      "Edit images online for free — crop, resize, rotate, adjust, filter, blur, add borders, watermark and draw, with undo/redo. No sign-up, private in your browser.",
     primaryKeyword: "image editor online free",
   },
   {
@@ -855,7 +855,7 @@ export const TOOLS: Tool[] = [
     premium: true,
     seoTitle: "Upscale & Enhance Image Online - Free | oMyImage",
     seoDescription:
-      "Upscale and enhance images online with AI. 2×, 3× and 4× enlargement that reconstructs edges and texture instead of blurring, sharpening soft or low-quality photos. No sign-up required.",
+      "Upscale and enhance images online with AI: 2×, 3× and 4× enlargement that rebuilds edges and texture instead of blurring soft or low-quality photos. No sign-up.",
     primaryKeyword: "upscale image online free",
   },
   // In-browser inpainting (expansion.md Phase 7): MI-GAN on ONNX Runtime Web,
@@ -872,7 +872,7 @@ export const TOOLS: Tool[] = [
     status: "live",
     isNew: true,
     priority: 208,
-    seoTitle: "Remove Watermark from Photo — Free AI Watermark Remover | oMyImage",
+    seoTitle: "Remove Watermark from Photo — Free AI Remover | oMyImage",
     seoDescription:
       "Remove watermarks, logos, text and date stamps from photos for free: mark them and AI fills the area in. Runs in your browser — no upload, no sign-up.",
     primaryKeyword: "watermark remover",
@@ -907,7 +907,7 @@ export const TOOLS: Tool[] = [
     priority: 17,
     seoTitle: "Blur Face in Photo Online - Free Automatic Face Blur | oMyImage",
     seoDescription:
-      "Automatically detect and blur faces, license plates and private details in photos online for free. Blur, pixelate or black out, in batches. 100% in-browser, no sign-up.",
+      "Detect and blur faces, license plates and private details in photos online for free. Blur, pixelate or black out, in batches. In your browser, no sign-up.",
     primaryKeyword: "blur face online",
   },
   // NOTE: "image-enhancer" was retired — it was the same tool as "upscale-image".
@@ -995,7 +995,7 @@ export const TOOLS: Tool[] = [
     library: "Canvas",
     status: "live",
     priority: 23,
-    seoTitle: "Merge Images Online - Free Photo Combiner | oMyImage",
+    seoTitle: "Merge Images Online Free — Join & Combine Photos | oMyImage",
     seoDescription:
       "Merge multiple images into one online for free. Combine photos side by side, stacked or in a grid, set spacing and background, then download. 100% in your browser.",
     primaryKeyword: "merge images online",
@@ -1148,7 +1148,7 @@ export const TOOLS: Tool[] = [
     priority: 182,
     seoTitle: "GIF Compressor — Reduce GIF File Size Online, Free | oMyImage",
     seoDescription:
-      "Compress animated GIFs online for free: fewer colours, smarter frames and optional resizing make GIFs much smaller while they keep playing. In your browser, no upload.",
+      "Compress animated GIFs online for free: fewer colours, smarter frames and optional resizing make GIFs much smaller and keep them playing. In your browser.",
     primaryKeyword: "gif compressor",
   },
   {
@@ -1180,7 +1180,7 @@ export const TOOLS: Tool[] = [
     status: "live",
     isNew: true,
     priority: 184,
-    seoTitle: "GIF to MP4 Converter Online — Free, Small Video Files | oMyImage",
+    seoTitle: "GIF to MP4 Converter Online — Free, Small Files | oMyImage",
     seoDescription:
       "Convert GIF to MP4 online for free. The MP4 is usually far smaller and plays everywhere; repeat short GIFs and pick a background. In your browser, no upload.",
     primaryKeyword: "gif to mp4",
@@ -1267,7 +1267,7 @@ export const TOOLS: Tool[] = [
     priority: 189,
     seoTitle: "GIF Speed Changer — Speed Up or Slow Down GIFs | oMyImage",
     seoDescription:
-      "Change GIF speed online for free: make an animated GIF faster or slower, or give every frame the same delay. Usually without touching a pixel. In your browser, no upload.",
+      "Change GIF speed online for free: make an animated GIF faster or slower, or give every frame the same delay, usually without touching a pixel. In your browser.",
     primaryKeyword: "gif speed changer",
   },
   {
@@ -1333,7 +1333,7 @@ export const TOOLS: Tool[] = [
     status: "live",
     isNew: true,
     priority: 193,
-    seoTitle: "GIF to Sprite Sheet — Turn GIF Frames into a PNG Sheet | oMyImage",
+    seoTitle: "GIF to Sprite Sheet — GIF Frames to a PNG Sheet | oMyImage",
     seoDescription:
       "Turn an animated GIF into a PNG sprite sheet online for free: grid, row or column, with spacing and a ready CSS animation. In your browser, no upload.",
     primaryKeyword: "gif to sprite sheet",
@@ -1369,7 +1369,7 @@ export const TOOLS: Tool[] = [
     priority: 195,
     seoTitle: "Add Text to GIF — Caption Animated GIFs Online, Free | oMyImage",
     seoDescription:
-      "Add text to animated GIFs online for free: captions, meme text or subtitles on every frame or only some, with outline, box and a live preview. In your browser, no upload.",
+      "Add text to animated GIFs online for free: captions, meme text or subtitles on every frame or only some, with outline, box and live preview. In your browser.",
     primaryKeyword: "add text to gif",
   },
   {
@@ -1386,7 +1386,7 @@ export const TOOLS: Tool[] = [
     priority: 196,
     seoTitle: "Typing Text GIF Maker — Animated Typing Effect, Free | oMyImage",
     seoDescription:
-      "Make a typing text GIF online for free: your words appear letter by letter with a blinking cursor. Choose the speed, font and colours. In your browser, nothing to upload.",
+      "Make a typing text GIF online for free: your words appear letter by letter with a blinking cursor. Choose the speed, font and colours. Runs in your browser.",
     primaryKeyword: "typing text gif",
   },
   {
@@ -1403,7 +1403,7 @@ export const TOOLS: Tool[] = [
     priority: 201,
     seoTitle: "Invert Image Colors Online — Negative & Smart Invert | oMyImage",
     seoDescription:
-      "Invert image colors online for free: turn a photo into a negative, or swap light and dark while keeping the hues. JPG, PNG and WEBP, many at once. In your browser, no upload.",
+      "Invert image colors online for free: turn a photo into a negative, or swap light and dark but keep the hues. JPG, PNG and WEBP, many at once, in your browser.",
     primaryKeyword: "invert image",
   },
   {
@@ -1420,7 +1420,7 @@ export const TOOLS: Tool[] = [
     priority: 202,
     seoTitle: "Pixelate Image Online — Pixel Art Effect, Free | oMyImage",
     seoDescription:
-      "Pixelate images online for free: choose the block size and turn any photo into chunky pixels or a retro pixel-art look. Many images at once. In your browser, no upload.",
+      "Pixelate images online for free: choose the block size and turn any photo into chunky pixels or a retro pixel-art look. Many images at once, in your browser.",
     primaryKeyword: "pixelate image",
   },
   {
@@ -1471,7 +1471,7 @@ export const TOOLS: Tool[] = [
     priority: 205,
     seoTitle: "Round Image Corners Online — Rounded Corners PNG | oMyImage",
     seoDescription:
-      "Round the corners of images online for free: pick the radius and which corners, keep the edges transparent as PNG or fill them with a colour. In your browser, no upload.",
+      "Round image corners online for free: pick the radius and which corners, keep the edges transparent as PNG or fill them with a colour. In your browser.",
     primaryKeyword: "round corners image",
   },
   {
@@ -1486,7 +1486,7 @@ export const TOOLS: Tool[] = [
     status: "live",
     isNew: true,
     priority: 206,
-    seoTitle: "Split Image Online — Cut a Picture into Equal Parts, Free | oMyImage",
+    seoTitle: "Split Image Online — Cut a Picture into Equal Parts | oMyImage",
     seoDescription:
       "Split an image into equal parts online for free: two halves, a 3×3 grid, or tiles of any pixel size. Every piece in one ZIP. In your browser, no upload.",
     primaryKeyword: "split image",
@@ -1503,7 +1503,7 @@ export const TOOLS: Tool[] = [
     status: "live",
     isNew: true,
     priority: 207,
-    seoTitle: "Overlay Images Online — Put One Picture on Another, Free | oMyImage",
+    seoTitle: "Overlay Images Online — Put One Picture on Another | oMyImage",
     seoDescription:
       "Overlay one image on another online for free: drag, resize and rotate it, set the opacity and pick a blend mode like multiply or screen. In your browser, no upload.",
     primaryKeyword: "image overlay",
@@ -1567,7 +1567,7 @@ export const TOOLS: Tool[] = [
     status: "live",
     isNew: true,
     priority: 103,
-    seoTitle: "Compress Image to 10KB Online — Signature & Small Photo | oMyImage",
+    seoTitle: "Compress Image to 10KB — Signature & Small Photo | oMyImage",
     seoDescription:
       "Compress a signature, thumb impression or small photo to under 10KB online for free — for exam and job forms with the tightest limits. In your browser, no upload.",
     primaryKeyword: "compress image to 10kb",
@@ -1586,7 +1586,7 @@ export const TOOLS: Tool[] = [
     status: "live",
     isNew: true,
     priority: 104,
-    seoTitle: "Compress Image to 15KB Online — Signature & Photo, Free | oMyImage",
+    seoTitle: "Compress Image to 15KB — Signature & Photo, Free | oMyImage",
     seoDescription:
       "Compress a signature or a small photo to under 15KB online for free — for exam and job forms with a 15KB limit. Clearest result that fits, no upload.",
     primaryKeyword: "compress image to 15kb",
@@ -1624,7 +1624,7 @@ export const TOOLS: Tool[] = [
     status: "live",
     isNew: true,
     priority: 106,
-    seoTitle: "Compress Image to 30KB Online — Photo for Forms, Free | oMyImage",
+    seoTitle: "Compress Image to 30KB — Photo for Forms, Free | oMyImage",
     seoDescription:
       "Compress a photo to under 30KB online for free — for exam, admission and job forms that cap the photo at 30KB. Clear faces, exact limit, no upload.",
     primaryKeyword: "compress image to 30kb",
@@ -1681,7 +1681,7 @@ export const TOOLS: Tool[] = [
     status: "live",
     isNew: true,
     priority: 109,
-    seoTitle: "Compress Image to 100KB Online — Free, Batch, Private | oMyImage",
+    seoTitle: "Compress Image to 100KB Online — Free & Batch | oMyImage",
     seoDescription:
       "Compress JPG, PNG or WEBP photos to under 100KB online for free. The highest quality that fits the limit, many images at once, processed in your browser.",
     primaryKeyword: "compress image to 100kb",
@@ -1738,7 +1738,7 @@ export const TOOLS: Tool[] = [
     status: "live",
     isNew: true,
     priority: 112,
-    seoTitle: "Compress Image to 300KB Online — Photos & Scans, Free | oMyImage",
+    seoTitle: "Compress Image to 300KB — Photos & Scans, Free | oMyImage",
     seoDescription:
       "Compress photos and document scans to under 300KB online for free — for registration, scholarship and job portals. Sharp text, whole batches, no upload.",
     primaryKeyword: "compress image to 300kb",
@@ -1757,7 +1757,7 @@ export const TOOLS: Tool[] = [
     status: "live",
     isNew: true,
     priority: 113,
-    seoTitle: "Compress Image to 500KB Online — Keep Full Detail, Free | oMyImage",
+    seoTitle: "Compress Image to 500KB — Keep Full Detail, Free | oMyImage",
     seoDescription:
       "Compress photos, A4 scans and screenshots to under 500KB online for free — near-original quality for portals, email and websites. Private, no upload.",
     primaryKeyword: "compress image to 500kb",
@@ -1795,7 +1795,7 @@ export const TOOLS: Tool[] = [
     status: "live",
     isNew: true,
     priority: 115,
-    seoTitle: "Compress Image to 2MB Online — Full-Resolution Photos | oMyImage",
+    seoTitle: "Compress Image to 2MB — Full-Resolution Photos | oMyImage",
     seoDescription:
       "Compress large phone and camera photos to under 2MB online for free, usually at full resolution — for upload limits on websites, forms and email. Private.",
     primaryKeyword: "compress image to 2mb",
@@ -1854,7 +1854,7 @@ export const TOOLS: Tool[] = [
     status: "live",
     isNew: true,
     priority: 123,
-    seoTitle: "Flip Image Online — Mirror a Photo Horizontally, Free | oMyImage",
+    seoTitle: "Flip Image Online — Mirror a Photo, Free | oMyImage",
     seoDescription:
       "Flip an image horizontally or vertically online — mirror selfies, reversed text and product shots in one click. Batch, JPG/PNG/WEBP, 100% in your browser.",
     primaryKeyword: "flip image",
@@ -1874,7 +1874,7 @@ export const TOOLS: Tool[] = [
     status: "live",
     isNew: true,
     priority: 124,
-    seoTitle: "Change Photo Background Color Online — White, Blue, Red | oMyImage",
+    seoTitle: "Change Photo Background Color — White, Blue, Red | oMyImage",
     seoDescription:
       "Change a photo's background to white, blue, red or any colour online with AI — made for passport and ID photos. One upload, then try every colour free.",
     primaryKeyword: "change background color of photo",
@@ -1929,7 +1929,7 @@ export const TOOLS: Tool[] = [
     status: "live",
     isNew: true,
     priority: 33,
-    seoTitle: "Signature Resize Online — 10 to 20 KB, Clean and Free | oMyImage",
+    seoTitle: "Signature Resize Online — 10 to 20 KB, Free | oMyImage",
     seoDescription:
       "Resize your signature online free: white background, trimmed edges, 140×60 px or cm sizes and 10–20 KB for exam and job forms. In your browser, no upload.",
     primaryKeyword: "signature resize",
@@ -1946,7 +1946,7 @@ export const TOOLS: Tool[] = [
     status: "live",
     isNew: true,
     priority: 171,
-    seoTitle: "Change DPI of Image to 300 Online — Free DPI Converter | oMyImage",
+    seoTitle: "Change DPI of Image to 300 — Free DPI Converter | oMyImage",
     seoDescription:
       "Change the DPI of JPG and PNG images to 300, 200, 72 or any value online for free. Only the DPI label changes, so quality stays identical. Batch, no upload.",
     primaryKeyword: "change dpi of image",
@@ -1983,7 +1983,7 @@ export const TOOLS: Tool[] = [
     status: "live",
     isNew: true,
     priority: 131,
-    seoTitle: "3x4 Photo Maker Online — 3 × 4 cm Document Photo, Free | oMyImage",
+    seoTitle: "3x4 Photo Maker — 3 × 4 cm Document Photo, Free | oMyImage",
     seoDescription:
       "Make a 3x4 photo online free: the face is framed automatically at 3 × 4 cm, on a white or coloured background, with a print sheet of copies. In your browser.",
     primaryKeyword: "3x4 photo",
@@ -2002,7 +2002,7 @@ export const TOOLS: Tool[] = [
     status: "live",
     isNew: true,
     priority: 132,
-    seoTitle: "2x2 Photo Maker Online — US Passport & Visa Size, Free | oMyImage",
+    seoTitle: "2x2 Photo Maker — US Passport & Visa Size, Free | oMyImage",
     seoDescription:
       "Make a 2x2 inch photo online free for a US passport or visa: automatic face framing, white background, 300 DPI, and a 4×6 print sheet. Private, in your browser.",
     primaryKeyword: "2x2 photo",
@@ -2022,9 +2022,9 @@ export const TOOLS: Tool[] = [
     status: "live",
     isNew: true,
     priority: 133,
-    seoTitle: "Instagram Grid Maker — Split a Photo into Grid Posts, Free | oMyImage",
+    seoTitle: "Instagram Grid Maker — Split a Photo into Grid Posts | oMyImage",
     seoDescription:
-      "Split one photo into Instagram profile-grid posts (3:4, 4:5 or square) or a seamless panorama carousel, sized for Instagram and numbered in posting order. Free, in your browser.",
+      "Split one photo into Instagram grid posts (3:4, 4:5 or square) or a seamless panorama carousel, numbered in posting order. Free, in your browser.",
     primaryKeyword: "instagram grid maker",
   },
 ];

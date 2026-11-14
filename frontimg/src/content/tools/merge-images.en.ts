@@ -68,6 +68,9 @@ const content: ToolPageContent = {
   ],
 
   faqs: [
+    { q: "How do I put two pictures side by side?", a: "Add both images, leave the layout on Side by side, and click Merge. They are joined along their shared edge at full resolution, with an optional gap between them, and the result downloads as one PNG, JPG or WEBP file. Set Image sizes to Match if you want both at the same height." },
+    { q: "Is this the same as a pic merger or photo joiner app?", a: "Yes — \"pic merger\", \"photo joiner\" and \"image combiner\" all describe the same job. The difference is that nothing needs installing: it runs in any browser on a phone, tablet or computer, with no sign-up and no watermark on the result." },
+    { q: "Can I join images on my phone?", a: "Yes. Open this page in Safari or Chrome on iPhone or Android, tap to pick photos from your gallery, choose a layout and merge. Vertical stacking usually works best on a phone because a tall image fills a portrait screen." },
     { q: "How many images can I merge?", a: "As many as you like — add two or more and arrange them side by side, stacked, or in a grid." },
     { q: "Can I reorder the images?", a: "Yes. Drag a thumbnail to a new position in the list, or use the up and down arrows if you prefer \u2014 both set the order the images are combined in. In Custom mode the order also decides which image sits on top where they overlap, and the Bring forward and Send back buttons change it." },
     { q: "Can I keep a transparent background?", a: "Yes. Choose a transparent background and export as PNG or WEBP to keep the spacing see-through." },

@@ -43,7 +43,7 @@ const STATIC_PATHS = ["/", "/image-converter", "/pricing", "/about", "/contact",
 const exists = (rel: string) => existsSync(join(process.cwd(), rel));
 
 /** Where a page's words live, for its lastmod. First existing file wins. */
-function toolSources(toolId: string, locale: Locale): string[] {
+export function toolSources(toolId: string, locale: Locale): string[] {
   const candidates = [
     `src/content/tools/${toolId}.${locale}.ts`,
     `src/content/converters/${toolId}.${locale}.ts`,
@@ -51,6 +51,11 @@ function toolSources(toolId: string, locale: Locale): string[] {
   ];
   const found = candidates.find(exists);
   return found ? [found] : [];
+}
+
+/** ISO date a tool page's copy last changed, or undefined (shallow clone). */
+export function toolLastModified(toolId: string, locale: Locale): string | undefined {
+  return lastCommitDate(toolSources(toolId, locale));
 }
 
 function staticSources(englishPath: string, locale: Locale): string[] {

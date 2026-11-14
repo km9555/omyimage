@@ -16,7 +16,7 @@ export const metadata = pageMetadata({
   locale: "en",
   title: "Privacy Policy | oMyImage",
   description:
-    "How oMyImage handles your images and data. Most tools run entirely in your browser; server-processed files are deleted within an hour. No ads, no cross-site tracking, no account required.",
+    "How oMyImage handles your images and data: most tools run in your browser, server files are deleted within an hour, and there are no ads or tracking.",
 });
 
 const toc = [

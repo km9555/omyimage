@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { Breadcrumbs, type Crumb } from "@/components/Breadcrumbs";
 import { JsonLd } from "@/components/JsonLd";
+import { toolLastModified } from "@/lib/sitemap/entries";
 import { RelatedTools } from "@/components/RelatedTools";
 import { VariantLinks } from "@/components/VariantLinks";
 import { SeoContent } from "@/components/SeoContent";
@@ -79,6 +80,9 @@ export function ToolSchemas({ content }: { content: ToolPageContent }) {
   const lang =
     content.locale === DEFAULT_LOCALE ? {} : { inLanguage: LOCALE_TAG[content.locale] };
   const description = content.metaDescription ?? tool?.seoDescription;
+  // Last commit to this page's copy file, as in the sitemap; omitted when
+  // git history is unavailable rather than guessed.
+  const modified = toolLastModified(content.toolId, content.locale);
 
   const software = {
     "@context": "https://schema.org",
@@ -90,6 +94,7 @@ export function ToolSchemas({ content }: { content: ToolPageContent }) {
     applicationCategory: "MultimediaApplication",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     description,
+    ...(modified ? { dateModified: modified } : {}),
   };
 
   // No HowTo: Google retired HowTo rich results (2023), so the block only

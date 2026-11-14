@@ -14,6 +14,7 @@ import { getTool, toolColor } from "@/lib/tools";
 import { absoluteUrl, SITE } from "@/lib/site";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { JsonLd } from "@/components/JsonLd";
+import { toolLastModified } from "@/lib/sitemap/entries";
 import { RelatedTools } from "@/components/RelatedTools";
 import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
 import { toolPath } from "@/i18n/slugs";
@@ -82,6 +83,7 @@ export function ConverterPage({ slug, locale = DEFAULT_LOCALE }: { slug: string;
     },
   ];
 
+  const modified = toolLastModified(pair.slug, locale);
   const software = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
@@ -93,6 +95,7 @@ export function ConverterPage({ slug, locale = DEFAULT_LOCALE }: { slug: string;
     // No aggregateRating: the old per-pair figures were not collected from
     // users, and Google treats invented ratings as spammy structured data.
     description: copy.seoDescription,
+    ...(modified ? { dateModified: modified } : {}),
     // Same rule as ToolPageShell: only on translated
     // pages, so English markup is unchanged.
     ...(locale === DEFAULT_LOCALE ? {} : { inLanguage: locale }),

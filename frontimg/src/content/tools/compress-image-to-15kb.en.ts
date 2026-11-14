@@ -11,7 +11,7 @@ const content: ToolPageContent = {
   locale: "en",
   name: "Compress Image to 15KB",
   tagline:
-    "Compress a signature or a small photo to under 15KB for exam, recruitment and registration forms. The clearest version that fits, worked out in your browser — nothing is uploaded.",
+    "Compress a signature or a small photo to under 15KB for exam, recruitment and registration forms. The clearest version that fits, worked out in your browser.",
   category: { id: "optimize", label: "Optimize" },
 
   intro:
@@ -69,7 +69,7 @@ const content: ToolPageContent = {
   features: [
     { icon: "draw", title: "Signatures stay sharp", description: "Clean signatures fit far under 15KB with crisp edges." },
     { icon: "face", title: "Recognisable photos", description: "A head-and-shoulders photo keeps the face clear at admit-card size." },
-    { icon: "lock", title: "Private", description: "Signatures and photos are compressed in your browser, never uploaded." },
+    { icon: "lock", title: "Private", description: "Signatures and photos are compressed in your browser, on your device." },
   ],
 
   faqs: [
@@ -84,7 +84,7 @@ const content: ToolPageContent = {
   ],
 
   security:
-    "Signatures and photos are compressed on your device, in your browser. Nothing is uploaded or stored anywhere.",
+    "Signatures and photos are compressed on your device, in your browser. Nothing is uploaded or stored. Only an image above about 16 megapixels, too large for a browser tab, goes to our server and is deleted within about an hour.",
 };
 
 export default content;

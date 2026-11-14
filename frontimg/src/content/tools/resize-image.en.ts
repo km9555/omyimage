@@ -63,7 +63,7 @@ const content: ToolPageContent = {
   features: [
     { icon: "straighten", title: "Pixels or percentage", description: "Set an exact width and height, or scale every image by a percentage of its original size." },
     { icon: "link", title: "Lock aspect ratio", description: "Keep proportions so images never look stretched — each file in a batch keeps its own ratio." },
-    { icon: "lock", title: "Private & instant", description: "Resizing runs entirely in your browser with HTML canvas — your images are never uploaded." },
+    { icon: "lock", title: "Private & instant", description: "Resizing runs in your browser with HTML canvas, on your own device." },
   ],
 
   faqs: [
@@ -80,7 +80,7 @@ const content: ToolPageContent = {
   ],
 
   security:
-    "Your images stay private. Resizing happens entirely in your browser with HTML canvas — nothing is uploaded to a server. No storage, no tracking of your files.",
+    "Your images stay private. Resizing happens in your browser with HTML canvas — no storage, no tracking of your files. Only an image above about 16 megapixels, too large for a browser tab, goes to our server and is deleted within about an hour.",
 };
 
 export default content;

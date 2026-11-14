@@ -84,7 +84,7 @@ const content: ToolPageContent = {
   ],
 
   security:
-    "Pages and photos are compressed on your device, in your browser. Nothing is uploaded or stored anywhere.",
+    "Pages and photos are compressed on your device, in your browser. For normal photo sizes nothing is uploaded or stored. Only an image above about 16 megapixels, too large for a browser tab, goes to our server and is deleted within about an hour.",
 };
 
 export default content;

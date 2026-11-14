@@ -62,7 +62,7 @@ const content: ToolPageContent = {
   features: [
     { icon: "photo_camera", title: "Keeps full resolution", description: "Most phone photos fit under 1MB without losing a pixel — only the wasted quality is removed." },
     { icon: "speed", title: "Fast batches", description: "Compress a whole album at once; each photo is handled separately and the set downloads as a ZIP." },
-    { icon: "lock", title: "Private photos stay private", description: "Your pictures are processed in your browser and never uploaded to a server." },
+    { icon: "lock", title: "Private photos stay private", description: "Your pictures are processed in your browser, on your own device." },
   ],
 
   faqs: [
@@ -76,7 +76,7 @@ const content: ToolPageContent = {
   ],
 
   security:
-    "Your photos never leave your device. Compression to 1MB runs entirely in your browser — nothing is uploaded, stored or shared.",
+    "Your photos stay on your device. Compression to 1MB runs in your browser — nothing is uploaded, stored or shared. Only an image above about 16 megapixels, too large for a browser tab, goes to our server and is deleted within about an hour.",
 };
 
 export default content;

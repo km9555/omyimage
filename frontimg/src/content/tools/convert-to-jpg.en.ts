@@ -13,7 +13,7 @@ const content: ToolPageContent = {
   category: { id: "convert", label: "Convert" },
 
   intro:
-    "Need universally-compatible, lightweight images? oMyImage's Convert to JPG tool turns PNG, WEBP, GIF and BMP files into high-quality JPGs right in your browser. Convert a single image or a whole batch, choose the quality, and pick the background color that replaces any transparency. Nothing is uploaded — it's instant and completely private.",
+    "Need universally-compatible, lightweight images? oMyImage's Convert to JPG tool turns PNG, WEBP, GIF and BMP files into high-quality JPGs right in your browser. Convert a single image or a whole batch, choose the quality, and pick the background color that replaces any transparency. It runs on your device, so it's instant and private.",
 
   sections: [
     {
@@ -61,7 +61,7 @@ const content: ToolPageContent = {
   features: [
     { icon: "burst_mode", title: "Batch conversion", description: "Convert dozens of PNG, WEBP, GIF or BMP images to JPG at once and download them all as a single ZIP." },
     { icon: "tune", title: "Quality control", description: "Choose the JPG quality from 50% to 100% to balance file size against visual fidelity." },
-    { icon: "lock", title: "100% private", description: "Conversion runs entirely in your browser with HTML canvas — your images are never uploaded." },
+    { icon: "lock", title: "100% private", description: "Conversion runs in your browser with HTML canvas, on your own device." },
   ],
 
   faqs: [
@@ -79,7 +79,7 @@ const content: ToolPageContent = {
   ],
 
   security:
-    "Your images stay private. Conversion to JPG happens entirely in your browser with HTML canvas — nothing is uploaded to a server. No storage, no tracking of your files.",
+    "Your images stay private. Conversion to JPG happens in your browser with HTML canvas — no storage, no tracking of your files. Only an image above about 16 megapixels, too large for a browser tab, goes to our server and is deleted within about an hour.",
 };
 
 export default content;

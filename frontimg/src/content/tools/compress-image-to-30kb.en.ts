@@ -12,7 +12,7 @@ const content: ToolPageContent = {
   locale: "en",
   name: "Compress Image to 30KB",
   tagline:
-    "Compress a photo to under 30KB for exam, admission and job forms — with the face still sharp enough for an admit card or ID. Exact limit, no upload, free.",
+    "Compress a photo to under 30KB for exam, admission and job forms — with the face still sharp enough for an admit card or ID. Exact limit, in your browser, free.",
   category: { id: "optimize", label: "Optimize" },
 
   intro:
@@ -71,7 +71,7 @@ const content: ToolPageContent = {
   features: [
     { icon: "face", title: "Faces stay clear", description: "The highest quality that fits under 30KB, so eyes and features stay sharp." },
     { icon: "aspect_ratio", title: "Pairs with resizing", description: "Resize to the form's pixel dimensions first, then compress — the right order for the best quality." },
-    { icon: "lock", title: "No upload", description: "Your photo is compressed in your browser and never leaves your device." },
+    { icon: "lock", title: "No upload", description: "Your photo is compressed in your browser, on your own device." },
   ],
 
   faqs: [
@@ -86,7 +86,7 @@ const content: ToolPageContent = {
   ],
 
   security:
-    "Photos are compressed on your device, in your browser. Nothing is uploaded or stored anywhere.",
+    "Photos are compressed on your device, in your browser. For normal photo sizes nothing is uploaded or stored. Only an image above about 16 megapixels, too large for a browser tab, goes to our server and is deleted within about an hour.",
 };
 
 export default content;

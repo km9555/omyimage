@@ -64,7 +64,7 @@ const content: ToolPageContent = {
   features: [
     { icon: "straighten", title: "Any size you need", description: "Type any limit in KB or MB — not just a list of presets — and every image is brought under it." },
     { icon: "high_quality", title: "Best quality that fits", description: "The tool searches for the highest quality under your limit and only reduces pixels when it must." },
-    { icon: "lock", title: "Nothing is uploaded", description: "Compression runs on your device, so ID photos, signatures and documents never leave it." },
+    { icon: "lock", title: "Stays on your device", description: "Compression runs on your device, so ID photos, signatures and documents stay there." },
   ],
 
   faqs: [
@@ -79,7 +79,7 @@ const content: ToolPageContent = {
   ],
 
   security:
-    "Your images stay on your device. Reducing the size in KB happens entirely in your browser — nothing is uploaded, stored or seen by anyone else, which matters when the photo is an ID picture or a signature.",
+    "Your images stay on your device. Reducing the size in KB happens in your browser — nothing is uploaded, stored or seen by anyone else, which matters when the photo is an ID picture or a signature. Only an image above about 16 megapixels, too large for a browser tab, goes to our server and is deleted within about an hour.",
 };
 
 export default content;

@@ -12,7 +12,7 @@ const content: ToolPageContent = {
   locale: "en",
   name: "Compress Image to 300KB",
   tagline:
-    "Compress photos and document scans to under 300KB with the text still easy to read — ID cards, certificates, mark sheets and letters for registration and job portals. Batch at once, no upload.",
+    "Compress photos and document scans to under 300KB with the text still easy to read — ID cards, certificates, mark sheets and letters for registration and job portals. Batch at once, in your browser.",
   category: { id: "optimize", label: "Optimize" },
 
   intro:
@@ -84,7 +84,7 @@ const content: ToolPageContent = {
   ],
 
   security:
-    "ID cards, certificates and photos are compressed on your device, in your browser. Nothing is uploaded or stored anywhere.",
+    "ID cards, certificates and photos are compressed on your device, in your browser. For normal photo sizes nothing is uploaded or stored. Only an image above about 16 megapixels, too large for a browser tab, goes to our server and is deleted within about an hour.",
 };
 
 export default content;

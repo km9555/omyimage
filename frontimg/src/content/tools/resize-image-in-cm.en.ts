@@ -65,7 +65,7 @@ const content: ToolPageContent = {
   features: [
     { icon: "straighten", title: "cm, mm or inches", description: "Enter the size in the unit your form or printer uses; pixels are worked out for you." },
     { icon: "high_quality", title: "DPI saved in the file", description: "JPG and PNG output carries the DPI, so it prints at the size you entered." },
-    { icon: "lock", title: "In your browser", description: "Your images are resized on your device and never uploaded." },
+    { icon: "lock", title: "In your browser", description: "Your images are resized on your own device." },
   ],
 
   faqs: [
