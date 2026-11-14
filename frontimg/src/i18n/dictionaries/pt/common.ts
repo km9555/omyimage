@@ -97,6 +97,7 @@ export const ptCommon: Record<string, string> = {
   "GIF": "GIF", // i18n-same
   "Edit & AI": "Editar e IA",
   "Contact": "Contato",
+  "About": "Sobre",
   "Privacy Policy": "Política de privacidade",
   "Terms of Service": "Termos de serviço",
   "Refund Policy": "Política de reembolso",

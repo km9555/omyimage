@@ -2119,10 +2119,19 @@ export function relatedTools(tool: Tool, n = 3): Tool[] {
       .filter((t) => t?.status === "live");
     if (ring.length >= n) return ring.slice(0, n);
   }
-  const live = TOOLS.filter((t) => t.status === "live" && t.id !== base.id && !t.parentId);
-  const sameCat = live.filter((t) => t.categoryId === base.categoryId);
+  // Outside a suite, the category is a ring too: start AFTER this tool in
+  // registry order and wrap round. A plain `sameCat.slice(0, n)` sent every
+  // page's links to the first n tools of its category, so tools further down
+  // had no contextual inbound link at all (only the home grid). Search Console
+  // showed exactly those pages as "Discovered - currently not indexed"
+  // (SEO audit 2026-11-14). With the ring, each tool gets n inbound links from
+  // the n tools before it.
+  const live = TOOLS.filter((t) => t.status === "live" && !t.parentId);
+  const catRing = live.filter((t) => t.categoryId === base.categoryId);
+  const at = catRing.findIndex((t) => t.id === base.id);
+  const sameCat = at < 0 ? catRing : [...catRing.slice(at + 1), ...catRing.slice(0, at)];
   const others = live.filter((t) => t.categoryId !== base.categoryId);
-  return [...sameCat, ...others].slice(0, n);
+  return [...sameCat, ...others].filter((t) => t.id !== base.id).slice(0, n);
 }
 
 /** Live variants of a tool, in registry order. */

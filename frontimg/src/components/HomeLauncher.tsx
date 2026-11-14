@@ -162,7 +162,7 @@ export function HomeLauncher() {
             tag-stripping extractor. Keep it spelled out, and keep it in the h1.
           */}
           <h1 className="mt-5 text-display-lg font-black tracking-tight text-primary">
-            oMyImage
+            {"oMyImage "}
             <span className="mt-2 block text-headline-md font-bold text-on-surface-variant">
               {t("Effortless Power for Image Workflows.")}
             </span>

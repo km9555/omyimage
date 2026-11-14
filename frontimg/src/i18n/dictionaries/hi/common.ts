@@ -110,6 +110,7 @@ export const hiCommon: Record<string, string> = {
   "GIF": "GIF", // i18n-same
   "Edit & AI": "एडिट और AI",
   "Contact": "संपर्क",
+  "About": "परिचय",
   "Privacy Policy": "प्राइवेसी पॉलिसी",
   "Terms of Service": "सेवा की शर्तें",
   "Refund Policy": "रिफ़ंड पॉलिसी",

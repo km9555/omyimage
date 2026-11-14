@@ -38,7 +38,7 @@ export interface SitemapEntry {
  * the format-pair converters (hidden from the home grid), so it stays listed
  * near the top. Auth and dashboard pages are noindex and never appear.
  */
-const STATIC_PATHS = ["/", "/image-converter", "/pricing", "/contact", "/privacy", "/terms", "/refunds", "/cookies"];
+const STATIC_PATHS = ["/", "/image-converter", "/pricing", "/about", "/contact", "/privacy", "/terms", "/refunds", "/cookies"];
 
 const exists = (rel: string) => existsSync(join(process.cwd(), rel));
 

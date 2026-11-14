@@ -17,7 +17,7 @@
  *   • canonical not pointing at the page itself
  *   • hreflang cluster missing the page's own tag, `en` or `x-default`
  *   • og:locale not the locale's territory form (pt_BR)
- *   • a tool page without SoftwareApplication, HowTo and FAQPage JSON-LD, or
+ *   • a tool page without SoftwareApplication and FAQPage JSON-LD (HowTo dropped 2026-11), or
  *     with a JSON-LD block whose inLanguage is not the locale
  *   • <title> or H1 identical to the English page's
  *   • English that survived in the visible text (sentences with ≥3 English
@@ -117,8 +117,8 @@ for (const t of targets) {
   if (og !== OG[loc]) problems.push(`og:locale is "${og}", expected ${OG[loc]}`);
   if (toolId) {
     const types = new Set(lds.map((d) => d["@type"]));
-    for (const ty of ["SoftwareApplication", "HowTo", "FAQPage"]) if (!types.has(ty)) problems.push(`JSON-LD ${ty} missing`);
-    for (const d of lds) if (["SoftwareApplication", "HowTo"].includes(d["@type"]) && d.inLanguage !== loc) problems.push(`${d["@type"]} inLanguage=${d.inLanguage}`);
+    for (const ty of ["SoftwareApplication", "FAQPage"]) if (!types.has(ty)) problems.push(`JSON-LD ${ty} missing`);
+    for (const d of lds) if (d["@type"] === "SoftwareApplication" && d.inLanguage !== loc) problems.push(`${d["@type"]} inLanguage=${d.inLanguage}`);
   }
   if (enPath) {
     const en = await get(enPath === "/" ? "" : enPath);

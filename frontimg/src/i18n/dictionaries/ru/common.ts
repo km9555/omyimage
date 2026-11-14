@@ -118,6 +118,7 @@ export const ruCommon: Record<string, string> = {
   "GIF": "GIF", // i18n-same
   "Edit & AI": "Редактор и ИИ",
   "Contact": "Контакты",
+  "About": "О нас",
   "Privacy Policy": "Политика конфиденциальности",
   "Terms of Service": "Условия использования",
   "Refund Policy": "Политика возврата",

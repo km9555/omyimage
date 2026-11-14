@@ -14,7 +14,7 @@
  *   - exactly one <h1>
  *   - <title> matches the registry's seoTitle
  *   - canonical is correct AND unique across the whole export
- *   - SoftwareApplication / HowTo / FAQPage JSON-LD present
+ *   - SoftwareApplication / FAQPage JSON-LD present (HowTo dropped 2026-11)
  *   - visible word count >= MIN_WORDS
  * The same checks run for every LOCALIZED tool page that i18n/status.ts ships
  * (out/pt/<slug>.html), against the content module's metaTitle and the
@@ -172,7 +172,7 @@ for (const { slug, seoTitle } of tools) {
     canonicals.set(c[1], slug);
   }
 
-  for (const type of ["SoftwareApplication", "HowTo", "FAQPage"]) {
+  for (const type of ["SoftwareApplication", "FAQPage"]) {
     if (!html.includes(`"${type}"`)) errors.push(`${slug}: missing ${type} JSON-LD`);
   }
 
@@ -275,7 +275,7 @@ for (const loc of localeList) {
     }
     if (!html.includes(`hrefLang="${loc}" href="${wantCanon}"`)) errors.push(`${label}: no self-referencing hreflang`);
     if (!html.includes(`hrefLang="en"`) || !html.includes(`hrefLang="x-default"`)) errors.push(`${label}: hreflang cluster lacks en / x-default`);
-    for (const type of ["SoftwareApplication", "HowTo", "FAQPage"]) {
+    for (const type of ["SoftwareApplication", "FAQPage"]) {
       if (!html.includes(`"${type}"`)) errors.push(`${label}: missing ${type} JSON-LD`);
     }
     const questions = [...html.matchAll(/<summary[^>]*>([\s\S]*?)<\/summary>/g)].map((m) => decode(m[1].replace(/<[^>]+>/g, "").trim()));

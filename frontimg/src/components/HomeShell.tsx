@@ -7,7 +7,7 @@ import { I18nScope } from "@/i18n/I18nScope";
 import { DEFAULT_LOCALE, LOCALE_TAG, type Locale } from "@/i18n/config";
 import { getT, type Dict } from "@/i18n/t";
 import { localeHref, localeHome } from "@/lib/i18n/links";
-import { absoluteUrl, SITE } from "@/lib/site";
+import { absoluteUrl, ORGANIZATION_SCHEMA, ORG_ID, SITE, WEBSITE_SCHEMA } from "@/lib/site";
 
 /**
  * The home page body, for every locale. `/` renders it in English and `/pt`
@@ -58,8 +58,9 @@ export function HomeShell({
   description?: string;
 }) {
   const t = getT(locale, dict);
-  const schema = {
-    "@context": "https://schema.org",
+  // One @graph: the publisher Organization and the WebSite (declared once,
+  // on the home pages) plus this page's WebApplication, linked by @id.
+  const app = {
     "@type": "WebApplication",
     name: SITE.name,
     url: locale === DEFAULT_LOCALE ? SITE.url : absoluteUrl(localeHome(locale)),
@@ -68,6 +69,11 @@ export function HomeShell({
     operatingSystem: "All",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     description: description ?? SITE.description,
+    publisher: { "@id": ORG_ID },
+  };
+  const schema = {
+    "@context": "https://schema.org",
+    "@graph": [ORGANIZATION_SCHEMA, WEBSITE_SCHEMA, app],
   };
   const link = "font-semibold text-secondary underline underline-offset-2";
 

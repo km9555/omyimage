@@ -93,23 +93,9 @@ export function ConverterPage({ slug, locale = DEFAULT_LOCALE }: { slug: string;
     // No aggregateRating: the old per-pair figures were not collected from
     // users, and Google treats invented ratings as spammy structured data.
     description: copy.seoDescription,
-    // Same rule as the HowTo below and as ToolPageShell: only on translated
+    // Same rule as ToolPageShell: only on translated
     // pages, so English markup is unchanged.
     ...(locale === DEFAULT_LOCALE ? {} : { inLanguage: locale }),
-  };
-  const howTo = {
-    "@context": "https://schema.org",
-    "@type": "HowTo",
-    name: t("How to convert {from} to {to}", { from: fromLabel, to: toLabel }),
-    /* Tells a crawler which language this HowTo is written in. English pages
-       omit it, so their markup is byte-identical to the pre-i18n build. */
-    ...(locale === DEFAULT_LOCALE ? {} : { inLanguage: locale }),
-    step: steps.map((s, i) => ({
-      "@type": "HowToStep",
-      position: i + 1,
-      name: s.title,
-      text: s.description,
-    })),
   };
 
   return (
@@ -180,7 +166,6 @@ export function ConverterPage({ slug, locale = DEFAULT_LOCALE }: { slug: string;
       />
 
       <JsonLd data={software} />
-      <JsonLd data={howTo} />
     </>
   );
 }

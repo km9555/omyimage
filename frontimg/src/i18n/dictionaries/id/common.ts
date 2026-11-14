@@ -107,6 +107,7 @@ export const idCommon: Record<string, string> = {
   "GIF": "GIF", // i18n-same
   "Edit & AI": "Edit & AI",
   "Contact": "Kontak",
+  "About": "Tentang",
   "Privacy Policy": "Kebijakan Privasi",
   "Terms of Service": "Syarat & Ketentuan",
   "Refund Policy": "Kebijakan Pengembalian Dana",

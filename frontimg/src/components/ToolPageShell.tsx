@@ -72,7 +72,7 @@ export function ToolSeoBlock({ content }: { content: ToolPageContent }) {
   );
 }
 
-/** SoftwareApplication + HowTo JSON-LD. */
+/** SoftwareApplication JSON-LD. */
 export function ToolSchemas({ content }: { content: ToolPageContent }) {
   const tool = TOOLS_BY_ID[content.toolId];
   const canonical = absoluteUrl(toolPath(content.toolId, content.locale));
@@ -91,25 +91,10 @@ export function ToolSchemas({ content }: { content: ToolPageContent }) {
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     description,
   };
-  const howTo = {
-    "@context": "https://schema.org",
-    "@type": "HowTo",
-    name: content.howToSchemaName ?? content.howToTitle,
-    ...lang,
-    step: content.steps.map((s, i) => ({
-      "@type": "HowToStep",
-      position: i + 1,
-      name: s.title,
-      text: s.description,
-    })),
-  };
 
-  return (
-    <>
-      <JsonLd data={software} />
-      <JsonLd data={howTo} />
-    </>
-  );
+  // No HowTo: Google retired HowTo rich results (2023), so the block only
+  // added bytes to every tool page. The steps stay visible in the SEO block.
+  return <JsonLd data={software} />;
 }
 
 export function ToolPageShell({

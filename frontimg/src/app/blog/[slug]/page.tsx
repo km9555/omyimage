@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { absoluteUrl, OG_IMAGE, SITE } from "@/lib/site";
+import { absoluteUrl, OG_IMAGE, ORGANIZATION_SCHEMA, SITE } from "@/lib/site";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Icon } from "@/components/Icon";
 import { JsonLd } from "@/components/JsonLd";
@@ -110,12 +110,12 @@ export default async function BlogPostPage(
     ...(post.coverImageUrl ? { image: post.coverImageUrl } : {}),
     datePublished: post.publishedAt ?? post.createdAt,
     dateModified: post.updatedAt,
-    author: { "@type": "Organization", name: post.author },
-    publisher: {
-      "@type": "Organization",
-      name: SITE.name,
-      url: SITE.url,
-    },
+    // The byline is the team, so the author IS the publisher entity; point
+    // both at the site-wide Organization (with its logo) by @id.
+    author: post.author && post.author !== `${SITE.name} Team`
+      ? { "@type": "Person", name: post.author }
+      : { "@type": "Organization", name: post.author || SITE.name, url: absoluteUrl("/about") },
+    publisher: ORGANIZATION_SCHEMA,
     mainEntityOfPage: { "@type": "WebPage", "@id": absoluteUrl(`/blog/${post.slug}`) },
     keywords: post.tags.join(", "),
   };
