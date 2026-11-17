@@ -1883,3 +1883,57 @@ competitors in both and iLoveIMG `/es` ranked keywords (Mexico).
   for the buttons other pages quote). German needed three relay messages
   between authors to align quoted labels with the UI; Spanish fixes them up
   front.
+
+### 13.3 Verification and release (2026-11-17)
+
+- Red → green: `[es] 2183 key(s) missing` → 0; audit `[es] 105 tool(s) and
+  14 page(s) shipped`, 0 Spanish warnings.
+- `ES_PENINSULAR` + a manual sweep removed the regionalisms the authors let
+  through (móviles ×2, and the softer portátil → laptop, Mayús → Shift
+  (Mayús)); "bote de basura" kept (Latin American).
+- Build + `verify:build` pass (105 es tool pages, sitemap 793 URLs);
+  `i18n-verify es --all` **119/119 clean on the first run** — the UI
+  glossary and the German lessons (H1 ≠ English, ≥ 900 words) in the brief
+  removed the faults German had to fix after the fact.
+- Existing pages unchanged: diff against the German-release `out/` — 727
+  pages, 703 differ only by the reciprocal `hreflang="es"`, 22 identical; the
+  only other change was `dateModified` on the two German pages fixed after
+  that baseline was built.
+- Staging checked at desktop and 375 px (real upload → «¡Compresión
+  completada!»); fast-forwarded `main` to f6deabc.
+
+Open (from the legal twins, same as German): no named operator/controller,
+no RGPD legal bases or AEPD, no Mexican "aviso de privacidad" / ARCO
+procedure, no governing-law clause.
+
+---
+
+## 14. French (`/fr`) — PAUSED, resume after 2026-11-21
+
+Paused at the user's request after Spanish shipped (usage limit). Nothing is
+half-done: no `fr` row exists in `LOCALE_META`, so the build is unaffected.
+
+**Done:** research (OpenSEO section `fr-head-terms`, France 2250, ~350
+credits): head noun _image_ (compresser image 33.1K), "X en Y" pairs (png en
+pdf 60.5K, image en pdf 49.5K, png en jpg 22.2K), units Ko/Mo; "filigrane"
+(49.5K) is the ADD-watermark intent, removal is "supprimer filigrane";
+"photo d'identité" 33.1K; iLoveIMG weak on supprimer arrière-plan, flouter,
+détourer, and absent on photo d'identité / png en pdf. Gates already handle
+fr: og row, "on"/"or" stop words, œ/æ search fold, indexnow/hardcoded lists,
+OCR `fra`.
+
+**To resume** (same cycle as §12/§13, ~1 session):
+1. Branch `i18n/fr` from `main`. Register: copy `register-es` steps —
+   `LOCALE_META` fr row (`og: "fr_FR"`, label Français, 🇫🇷), `FR_TOOL_SLUGS`
+   ("x-en-y", ASCII), `FR_PATHS` (oMyPDF's: /tarifs, /confidentialite,
+   /conditions-generales, /remboursements, /connexion, /inscription…),
+   empty status gates, `SHORT_DATE_OVERRIDE` not needed (ICU fr already
+   writes 17/11/2026), **`BYTE_UNITS` fr: o / Ko / Mo**, `FR_BATCHES`.
+2. `i18n-fr-brief.md` from `i18n-es-brief.md`: "vous", French typography
+   (espace insécable before : ; ? ! and inside « »), glossary of button
+   labels, the query table from `fr-head-terms`.
+3. Twelve authors (same split), `clone-locale-routes.mjs es fr`, static
+   routes + home + layout, register dictionaries and converters, ship in
+   status.ts, gen-converters / gen-variants.
+4. Gates → build → verify:build → i18n-verify fr --all → snapshot diff →
+   staging → main → `npm run indexnow`.
