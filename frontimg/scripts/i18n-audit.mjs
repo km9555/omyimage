@@ -69,6 +69,56 @@ const pairs = (text) =>
   Object.fromEntries([...(text ?? "").matchAll(/^\s*"([^"]+)":\s*"([^"]*)"/gm)].map((m) => [m[1], m[2]]));
 const strings = (text) => [...(text ?? "").matchAll(/"([^"]+)"/g)].map((m) => m[1]);
 
+/** Every .ts file under a directory, recursively (dictionaries/<loc>/pages/…). */
+function listTs(dir) {
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir).flatMap((e) => {
+    const p = join(dir, e);
+    return statSync(p).isDirectory() ? listTs(p) : p.endsWith(".ts") ? [p] : [];
+  });
+}
+
+/**
+ * Spain-only vocabulary that has no place in the neutral Spanish /es ships
+ * (it serves Mexico, the US and South America as much as Spain). Checked like
+ * the European-Portuguese rule above. `vosotros` forms are the giveaway.
+ */
+export const ES_PENINSULAR = /\b(ordenador(?:es)?|vosotros|vuestr[oa]s?|móvil(?:es)?|coger|pinchar?|pinchad)\b/i;
+
+/**
+ * Format names that normally survive translation. Only a WARNING: Russian
+ * legitimately writes «гифка», and a short button label may drop the format
+ * its page already names. The brand is the hard rule.
+ */
+const FORMAT_TOKENS = ["JPG", "PNG", "WebP", "HEIC", "GIF", "PDF", "AVIF", "SVG", "BMP", "ICO", "EXIF"];
+
+/**
+ * Check one file's `"key": "value"` pairs. ERRORS: a {placeholder} in the key
+ * that the value dropped or renamed (the count silently vanishes on screen),
+ * or "oMyImage" translated away. WARNINGS: a format name dropped.
+ * Exported for its unit test.
+ */
+export function parityProblems(text) {
+  const errors = [];
+  const warnings = [];
+  const re = /^\s*"((?:[^"\\]|\\.)*)":\s*"((?:[^"\\]|\\.)*)"/gm;
+  const has = (tok, s) => new RegExp(`\\b${tok}\\b`, "i").test(s);
+  for (const [, key, value] of text.matchAll(re)) {
+    const ph = (s) => [...s.matchAll(/\{(\w+)\}/g)].map((m) => m[1]).sort().join(",");
+    if (ph(key) !== ph(value)) errors.push(`placeholders differ — "${key}" has {${ph(key)}}, translation has {${ph(value)}}`);
+    if (/oMyImage/.test(key) && !/oMyImage/.test(value)) errors.push(`"oMyImage" is missing in the translation of "${key}"`);
+    for (const tok of FORMAT_TOKENS)
+      if (has(tok, key) && !has(tok, value) && !(tok === "JPG" && has("JPEG", value)))
+        warnings.push(`"${tok}" from the key is missing in the translation of "${key}"`);
+  }
+  return { errors, warnings };
+}
+
+// The unit test imports the helpers above with I18N_AUDIT_LIB=1 and must not
+// run the audit itself (it exits the process).
+if (!process.env.I18N_AUDIT_LIB) runAudit();
+
+function runAudit() {
 // ── Registry ────────────────────────────────────────────────────────────
 const toolsSrc = read("lib/tools.ts");
 const TOOLS = [...toolsSrc.matchAll(/^    id: "([^"]+)",\n    name: "[^"]+",\n    slug: "([^"]+)",[\s\S]*?status: "(live|planned)"/gm)].map(
@@ -169,9 +219,28 @@ for (const loc of LOCALES) {
       if (m && m[1] === m[2] && !/i18n-same/.test(m[3] ?? "") && /[a-z]{3}/.test(m[1]))
         warn(`[${loc}] ${id}: ui value still equals its English key: "${m[1]}" (mark // i18n-same if intended)`);
     }
-    if (/„/.test(mod)) err(`[${loc}] ${id}: German quotation mark „ found (oMyPDF §4.23)`);
+    // „ is the correct opening quote in German (and only there). Anywhere
+    // else it is a stray paste from a German source (oMyPDF §4.23).
+    if (loc !== "de" && /„/.test(mod)) err(`[${loc}] ${id}: German quotation mark „ found (oMyPDF §4.23)`);
     if (loc === "pt" && /\bficheiro|\bdescarregar\b|\becrã\b|\butilizador\b/i.test(mod.replace(/aliases/g, "")))
       err(`[${loc}] ${id}: European Portuguese vocabulary in a Brazilian module (conversion.md §5)`);
+    const esHit = loc === "es" && ES_PENINSULAR.exec(mod);
+    if (esHit) err(`[${loc}] ${id}: Spain-only word "${esHit[0]}" in neutral Spanish (conversion.md §13)`);
+  }
+
+  // 4. Key ↔ translation parity, in every pair file of the locale: the tool
+  //    ui blocks and the dictionaries. A dropped {n} renders the literal
+  //    count-less sentence; a translated brand or format name breaks search
+  //    and trust. Neither is caught anywhere else.
+  const pairFiles = [
+    ...shippedTools.map((id) => join(SRC, "content", "tools", `${id}.${loc}.ts`)),
+    ...listTs(join(SRC, "i18n", "dictionaries", loc)),
+  ].filter((f) => existsSync(f));
+  for (const f of pairFiles) {
+    const rel = f.slice(SRC.length + 1).replace(/\\/g, "/");
+    const { errors: pe, warnings: pw } = parityProblems(readText(f));
+    for (const p of pe) err(`[${loc}] ${rel}: ${p}`);
+    for (const p of pw) warn(`[${loc}] ${rel}: ${p}`);
   }
 
   console.log(`[${loc}] ${shippedTools.length} tool(s) and ${shippedPages.length} page(s) shipped; ${Object.keys(slugMap).length} slugs.`);
@@ -184,3 +253,4 @@ if (errors.length) {
   process.exit(1);
 }
 console.log("i18n audit passed.");
+}

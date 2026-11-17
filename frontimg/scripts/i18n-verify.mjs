@@ -38,7 +38,7 @@ if (!loc) {
 const BASE = (process.env.BASE ?? "http://localhost:3002").replace(/\/$/, "");
 const OUT = process.env.OUT ? join(root, process.env.OUT) : null;
 const SITE = "https://omyimage.com";
-const OG = { pt: "pt_BR", hi: "hi_IN", ru: "ru_RU", id: "id_ID" };
+const OG = { pt: "pt_BR", hi: "hi_IN", ru: "ru_RU", id: "id_ID", de: "de_DE", es: "es_ES", fr: "fr_FR" };
 
 const read = (p) => readFileSync(join(SRC, p), "utf8");
 function block(src, name) {
@@ -68,6 +68,12 @@ if (list === "--all") {
 
 // English function words. A sentence carrying three of them is English.
 const EN = new Set("the and your you with for from this that are is was be to of in on by it its or not can will into more than when which what how all any our we".split(" "));
+/* Words that are ALSO everyday function words in the page language, so
+   counting them would flag correct German/French as English: German "in",
+   "was" (what), "will" (wants), "all" (space); French "on" (one), "or" (but).
+   Without this a German page fails on sentences like "Was ist in der Datei?". */
+const NATIVE_TOO = { de: ["in", "was", "will", "all", "an"], fr: ["on", "or"], es: [] };
+for (const w of NATIVE_TOO[loc] ?? []) EN.delete(w);
 const decode = (s) => s.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#x27;|&#39;/g, "'").replace(/&nbsp;/g, " ");
 
 async function get(path) {
