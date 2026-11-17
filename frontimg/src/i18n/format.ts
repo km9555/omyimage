@@ -44,6 +44,8 @@ const SHORT_DATE_OVERRIDE: Partial<Record<Locale, Intl.DateTimeFormatOptions>> =
   id: { day: "2-digit", month: "2-digit", year: "numeric" },
   // ICU gives German "17.11.26"; forms, invoices and letters write 17.11.2026.
   de: { day: "2-digit", month: "2-digit", year: "numeric" },
+  // ICU gives "17/11/26"; Spanish and Latin American documents write 17/11/2026.
+  es: { day: "2-digit", month: "2-digit", year: "numeric" },
 };
 
 /** Short numeric date in the page's locale — "9/4/26" in English, "04/09/2026" in Portuguese. */

@@ -18,6 +18,7 @@ import { hiCommon } from "@/i18n/dictionaries/hi/common";
 import { ruCommon } from "@/i18n/dictionaries/ru/common";
 import { idCommon } from "@/i18n/dictionaries/id/common";
 import { deCommon } from "@/i18n/dictionaries/de/common";
+import { esCommon } from "@/i18n/dictionaries/es/common";
 
 export type Dict = Record<string, string>;
 
@@ -34,6 +35,7 @@ const COMMON: Partial<Record<Locale, Dict>> = {
   ru: ruCommon,
   id: idCommon,
   de: deCommon,
+  es: esCommon,
 };
 
 /**

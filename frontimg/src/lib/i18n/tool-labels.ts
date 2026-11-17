@@ -16,6 +16,7 @@ import { hiCategories, hiTools } from "@/i18n/dictionaries/hi/tools";
 import { ruCategories, ruTools } from "@/i18n/dictionaries/ru/tools";
 import { idCategories, idTools } from "@/i18n/dictionaries/id/tools";
 import { deCategories, deTools } from "@/i18n/dictionaries/de/tools";
+import { esCategories, esTools } from "@/i18n/dictionaries/es/tools";
 import { CATEGORIES, type Tool } from "@/lib/tools";
 
 const DICTS: Partial<Record<Locale, Record<string, LocalizedTool>>> = {
@@ -24,6 +25,7 @@ const DICTS: Partial<Record<Locale, Record<string, LocalizedTool>>> = {
   ru: ruTools,
   id: idTools,
   de: deTools,
+  es: esTools,
 };
 
 const CATEGORY_DICTS: Partial<Record<Locale, Record<string, { title: string; navLabel: string }>>> = {
@@ -32,6 +34,7 @@ const CATEGORY_DICTS: Partial<Record<Locale, Record<string, { title: string; nav
   ru: ruCategories,
   id: idCategories,
   de: deCategories,
+  es: esCategories,
 };
 
 export function toolName(tool: Tool, locale: Locale): string {

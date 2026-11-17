@@ -95,6 +95,14 @@ export const LOCALE_META = {
    * normaliser folds ß to ss (search-normalize.ts).
    */
   de: { prefix: "/de", tag: "de", og: "de_DE", label: "Deutsch", flag: "🇩🇪", script: "latin" },
+  /**
+   * Spanish is language-only and NEUTRAL: one /es for Spain and Latin
+   * America (Mexico searches about twice Spain on most heads). Vocabulary that
+   * splits the two (ordenador / computadora, vosotros) is avoided, and the
+   * audit rejects Spain-only words (ES_PENINSULAR). og needs a territory;
+   * es_ES matches the flag and oMyPDF.
+   */
+  es: { prefix: "/es", tag: "es", og: "es_ES", label: "Español", flag: "🇪🇸", script: "latin" },
 } as const satisfies Record<string, LocaleMeta>;
 
 export const LOCALES = Object.keys(LOCALE_META) as readonly (keyof typeof LOCALE_META)[];

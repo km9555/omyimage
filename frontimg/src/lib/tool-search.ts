@@ -26,6 +26,7 @@ import { hiAliases } from "@/i18n/dictionaries/hi/aliases";
 import { ruAliases } from "@/i18n/dictionaries/ru/aliases";
 import { idAliases } from "@/i18n/dictionaries/id/aliases";
 import { deAliases } from "@/i18n/dictionaries/de/aliases";
+import { esAliases } from "@/i18n/dictionaries/es/aliases";
 import { toolDescription, toolName } from "@/lib/i18n/tool-labels";
 import { collapsed, spaced } from "@/lib/search-normalize";
 
@@ -440,6 +441,7 @@ const LOCALE_ALIASES: Partial<Record<Locale, Record<string, string[]>>> = {
   ru: ruAliases,
   id: idAliases,
   de: deAliases,
+  es: esAliases,
 };
 
 /**

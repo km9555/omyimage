@@ -1835,3 +1835,51 @@ Open, needs a decision rather than translation (from the legal-twin pass):
 German readers expect an Impressum (§ 5 DDG), a named controller and GDPR
 legal bases in the privacy policy, and a court/governing-law clause; the
 English pages have none of these either.
+
+---
+
+## 13. Spanish (`/es`) — neutral
+
+Started 2026-11-17 on `i18n/es`, cut from `main` after German shipped
+(adca0f2). Same shape as §12: one release, 105 tools + 14 pages, written by
+twelve parallel authors from `i18n-es-brief.md`.
+
+### 13.1 Research (OpenSEO, ~500 credits; project section `es-head-terms`)
+
+One `/es` has to serve Spain (2724) AND Latin America, so every phrasing was
+measured in Spain and Mexico (2484) with the same ~230-term list, plus SERP
+competitors in both and iLoveIMG `/es` ranked keywords (Mexico).
+
+- **Head noun is _imagen_**: comprimir imagen 14.8K ES / 27.1K MX vs
+  comprimir foto 6.6K / 5.4K. _foto_ only where the query carries it (foto
+  carnet, foto de perfil, editor de fotos).
+- **Converter pairs are "X a Y"**: jpg a pdf 90.5K / 201K, png a jpg 14.8K /
+  14.8K, jpg a png 9.9K / 22.2K, webp a jpg 12.1K / 18.1K.
+- **Biggest page by far: quitar fondo** 201K ES / 450K MX (KD 19 / 0), ahead
+  of eliminar fondo (40.5K / 90.5K) — which is iLoveIMG's slug.
+- Mexico searches about twice Spain on most heads, and **Mexico is the more
+  open market**: iLoveIMG is #1 on 10 of the Spanish heads measured but on
+  only 5 of the Mexican ones; canva, adobe, online-convert, convertio,
+  freeconvert and imagy fill the rest.
+- **Where the two markets split** (the reason the brief bans words):
+  ordenador 40.5K ES / 5.4K MX vs computadora 8.1K / 135K; passport photo is
+  "foto carnet" (33.1K) / "foto DNI" (14.8K) in Spain but "foto infantil"
+  (6.6K) / "foto pasaporte" (3.6K) in Mexico.
+
+### 13.2 Decisions
+
+- Translated ASCII slugs ("x-a-y", tamaño → tamano), table in `slugs.ts`;
+  static paths shared with oMyPDF `/es`; `/image-converter` →
+  `/convertidor-de-imagenes`.
+- **"tú"**, neutral grammar; the audit's `ES_PENINSULAR` rejects ordenador,
+  vosotros/vuestro, móvil, coger, pinchar in tool modules. Search aliases
+  may still list both ordenador and computadora.
+- `tag: "es"`, `og: "es_ES"`; date override 17/11/2026; OCR `spa`.
+- Not shipped: 3x4-photo, 2x2-photo (as German).
+- The passport tool has no Spanish DNI (26 × 32 mm) or Mexican infantil
+  (2.5 × 3 cm) preset; the `foto-carnet` page must not promise one. Adding
+  those presets is a follow-up, not part of the translation.
+- **Learned from German:** the brief now carries a fixed UI glossary (Spanish
+  for the buttons other pages quote). German needed three relay messages
+  between authors to align quoted labels with the UI; Spanish fixes them up
+  front.
