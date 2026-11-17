@@ -1808,3 +1808,30 @@ iLoveIMG `/de` ranked keywords, 5 SERPs.
 **Passport photos:** since 1 May 2025 German ID-card and passport photos are
 taken digitally at the authority or by certified providers. The German page
 must not claim its output is accepted for a Personalausweis or Reisepass.
+
+### 12.4 Verification and release (2026-11-17)
+
+- Red → green: `i18n-keys` `[de] 2183 key(s) missing` → 0; audit `[de] 105
+  tool(s) and 14 page(s) shipped`, 0 German warnings after marking the ten
+  words German shares with English (Format, Zoom, Layout…) `// i18n-same`.
+- The new `oMyImage` parity rule caught one real drop on its first run (the
+  German home intro had translated the brand away).
+- `npm run build` + `verify:build` pass (105 de tool pages, sitemap 680 URLs,
+  most similar variant pair 0.542 < 0.6). `i18n-verify de --all` found three
+  faults — an H1 identical to English (Meme Generator → German spelling
+  "Meme-Generator"), one page at 891 words, a dashboard title identical to
+  English — fixed, then **119/119 clean**.
+- English unchanged: text-level diff of `out/` against a `main` build in an
+  LF worktree with `.env.local` — 608 pages, 22 identical, 586 differ ONLY by
+  the reciprocal `hreflang="de"`, nothing else.
+- Staging (`staging.omyimage.pages.dev`) checked in the browser at desktop
+  and 375 px: real upload → compress → German result screen; no overflow;
+  `lang="de"`; reciprocal hreflang en/pt/hi/ru/id/de + x-default; JSON-LD.
+- Fast-forwarded `main` to ae85f59; production verified live (200s,
+  `<html lang="de">`, sitemaps/de.xml 113 URLs, llms.txt). `npm run
+  indexnow` → 684 URLs, HTTP 200.
+
+Open, needs a decision rather than translation (from the legal-twin pass):
+German readers expect an Impressum (§ 5 DDG), a named controller and GDPR
+legal bases in the privacy policy, and a court/governing-law clause; the
+English pages have none of these either.
