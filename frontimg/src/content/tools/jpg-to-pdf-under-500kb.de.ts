@@ -89,6 +89,7 @@ const content: ToolPageContent = {
     { q: "Bleibt Handschrift lesbar?", a: "Ja, bei bis zu etwa zehn Seiten normaler Handschrift. Fotografieren Sie jede Seite bei Tageslicht, dann wird das Ergebnis am deutlichsten." },
     { q: "Sind 500 KB dasselbe wie 0,5 MB?", a: "Ja, 500 KB sind 500.000 Byte. Das PDF besteht auch Portale, die 1 KB als 1.024 Byte rechnen." },
     { q: "Werden meine Seiten hochgeladen?", a: "Nein. Das PDF entsteht vollständig in Ihrem Browser." },
+    { q: "Warum ist mein PDF kleiner als 500 KB, obwohl die Grenze 500 KB beträgt?", a: "Das Tool komprimiert nur so weit wie nötig und lässt einen kleinen Sicherheitsabstand, damit das PDF auch Portale besteht, die anders rechnen. Bei wenigen Seiten bleibt die Datei oft deutlich darunter, weil die Bilder gar nicht stärker komprimiert werden müssen — die Qualität ist dann so hoch wie möglich." },
     { q: "Kann ich Fotos von verschiedenen Smartphones kombinieren?", a: "Ja. Jedes Foto wird unabhängig von seiner Auflösung an dieselbe Seitengröße angepasst, und das Limit wird fair zwischen ihnen aufgeteilt." },
   ],
 

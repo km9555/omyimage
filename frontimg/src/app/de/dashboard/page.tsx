@@ -7,7 +7,7 @@ import { pageMetadata } from "@/lib/i18n/tool-meta";
 export const metadata = pageMetadata({
   englishPath: "/dashboard",
   locale: "de",
-  title: "Dashboard",
+  title: "Ihr Dashboard",
   description:
     "Ihr oMyImage-Dashboard.",
   index: false,

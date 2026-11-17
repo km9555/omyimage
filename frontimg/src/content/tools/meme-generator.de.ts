@@ -11,7 +11,9 @@ import type { ToolPageContent } from "@/content/tools/types";
 const content: ToolPageContent = {
   toolId: "meme-generator",
   locale: "de",
-  name: "Meme Generator",
+  // Hyphenated, as German writes the compound ("Meme-Generator"); the search
+  // query "meme generator" still matches (search folds the hyphen).
+  name: "Meme-Generator",
   tagline:
     "Memes online erstellen — setzen Sie die klassischen Texte oben und unten auf jedes Bild, mit Live-Vorschau, und exportieren Sie als PNG, JPG oder WEBP. Kostenlos, schnell und zu 100 % privat in Ihrem Browser.",
   category: { id: "edit", label: "Bearbeiten & Erstellen" },
