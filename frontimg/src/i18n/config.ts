@@ -88,6 +88,13 @@ export const LOCALE_META = {
    * covers it and nothing about fonts or search normalisation changes.
    */
   id: { prefix: "/id", tag: "id", og: "id_ID", label: "Bahasa Indonesia", flag: "🇮🇩", script: "latin" },
+  /**
+   * German is language-only: one variant serves Germany, Austria and
+   * Switzerland. The copy follows German-German usage (ß, not the Swiss ss).
+   * Latin script; ä/ö/ü/ß are in Inter's `latin` subset, and the search
+   * normaliser folds ß to ss (search-normalize.ts).
+   */
+  de: { prefix: "/de", tag: "de", og: "de_DE", label: "Deutsch", flag: "🇩🇪", script: "latin" },
 } as const satisfies Record<string, LocaleMeta>;
 
 export const LOCALES = Object.keys(LOCALE_META) as readonly (keyof typeof LOCALE_META)[];

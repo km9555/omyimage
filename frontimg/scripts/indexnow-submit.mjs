@@ -68,7 +68,7 @@ if (urls.length !== all.length) {
 const byLocale = {};
 for (const u of urls) {
   const seg = new URL(u).pathname.split("/")[1] ?? "";
-  const loc = /^(pt|hi|ru|id)$/.test(seg) ? seg : "en";
+  const loc = /^(pt|hi|ru|id|de|es|fr)$/.test(seg) ? seg : "en";
   byLocale[loc] = (byLocale[loc] ?? 0) + 1;
 }
 console.log(

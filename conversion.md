@@ -1731,3 +1731,80 @@ Indonesian needs, because it also reaches Bing.
 Done in the same release step as §10.9. All 48 `/id` URLs were in the
 IndexNow submission that returned 200 and appear in Bing Webmaster's IndexNow
 list. The details are in §10.9.
+
+---
+
+## 12. German (`/de`)
+
+Started 2026-11-17 on branch `i18n/de`, cut from `main` (cc51443). The first
+of three European locales shipped one at a time (de → es → fr), each pushed
+and deployed before the next starts. Scope is the whole current site — 105
+tools (95 content modules + the 10 converter pairs) and 14 static pages — not
+the original 54, so it is done as one branch rather than batches merged to
+`main` one by one: `i18n:keys --check` gates prebuild for every `LOCALE_META`
+locale, so a half-written locale cannot build.
+
+### 12.1 Research (OpenSEO, Germany 2276 / de, ~400 credits)
+
+Saved to the OpenSEO project as `de-head-terms`. One `get_keyword_metrics`
+call over ~260 candidate phrasings, `find_serp_competitors` over 30 heads,
+iLoveIMG `/de` ranked keywords, 5 SERPs.
+
+- **Head noun is _Bild_**, not _Foto_: bild verkleinern 12.1K vs foto
+  verkleinern 3.6K; bild bearbeiten 12.1K vs foto bearbeiten 8.1K. The plural
+  is searched as much as the singular (bilder komprimieren 9.9K).
+- **Converter pairs are "X in Y"**: png in jpg 18.1K vs png zu jpg 1.9K;
+  webp in jpg 22.2K; heic in jpg umwandeln 14.8K. iLoveIMG `/de` uses the
+  same form.
+- **Loanwords win where they have taken over**: meme generator 74K vs meme
+  erstellen 5.4K; color picker 40.5K beside farbwähler 9.9K.
+- Biggest German pages by demand: remove-background (hintergrund entfernen
+  60.5K, KD 13), meme-generator, color picker, passport photo (biometrisches
+  passbild 33.1K — but the SERP is cities and photographers; see 12.3),
+  image-to-pdf (bild in pdf umwandeln 27.1K, jpg in pdf umwandeln 27.1K).
+- Competitors by visibility: adobe.com, canva.com, iloveimg.com (#1 on bild
+  verkleinern / bilder komprimieren / bild zuschneiden / gif komprimieren),
+  chip.de, smallpdf.com (#1 jpg in pdf umwandeln), freeconvert, resizepixel
+  (#1 bild spiegeln), img2go, imagy.app (#1 bilder zusammenfügen),
+  watermarkly.
+- Openings (KD 0, weak SERPs of microsites and AI start-ups): webp in jpg /
+  png, wasserzeichen entfernen 12.1K, gesichter verpixeln, png in ico 8.1K,
+  whatsapp profilbild 9.9K, pixel bild 9.9K.
+
+### 12.2 Decisions
+
+- **Translated ASCII slugs** (ä→ae, ö→oe, ü→ue, ß→ss), as pt/id and as
+  iLoveIMG and oMyPDF do for German. Table and rationale in `slugs.ts`.
+- **Static paths are oMyPDF's** (`/preise`, `/datenschutz`, `/agb`,
+  `/widerruf`…) so the sister sites agree; `/image-converter` →
+  `/bildkonverter`.
+- **"Sie"**, like iLoveIMG `/de` and oMyPDF `/de`.
+- `tag: "de"`, `og: "de_DE"`; one variant serves DE/AT/CH.
+- **Not shipped:** `3x4-photo` (Brazil) and `2x2-photo` (US). Their
+  names still exist in `dictionaries/de/tools.ts` so lists never fall back.
+- Dates: ICU's short German form is "17.11.26"; `SHORT_DATE_OVERRIDE` gives
+  "17.11.2026". OCR defaults to `deu`.
+- The authoring brief every writer used is `i18n-de-brief.md` (repo root).
+
+### 12.3 Gates added for de/es/fr (commit 3759b31)
+
+- `search-normalize.ts` + `tests/search-normalize.test.ts`: ß/ẞ→ss, œ→oe,
+  æ→ae. NFD cannot decompose those letters, so the word class ERASED them
+  and "Bildgröße" searched as "bildgro e". Written test-first.
+- `i18n-audit.mjs` §4: placeholder parity and `oMyImage` parity are errors
+  in every pair file of every locale (tool `ui` blocks and dictionaries);
+  dropped format names warn (Russian «гифка» is legitimate). The „ ban no
+  longer applies to `de`. `ES_PENINSULAR` guards neutral Spanish.
+- `i18n-verify.mjs`: og rows for de/es/fr; stop words that are also German
+  ("in", "was", "will", "all", "an") or French ("on", "or") function words
+  no longer count as English.
+- `npm test` = `node --test "tests/*.test.*"`, also in prebuild; `tests/` is
+  excluded from the app tsconfig (TS5097 on the `.ts` import otherwise).
+- `scripts/clone-locale-routes.mjs <from> <to> --skip …` clones the 63
+  hand-built tool routes; generated routes come from gen-variants /
+  gen-converters, static pages are written by hand (their metadata is
+  language-specific).
+
+**Passport photos:** since 1 May 2025 German ID-card and passport photos are
+taken digitally at the authority or by certified providers. The German page
+must not claim its output is accepted for a Personalausweis or Reisepass.

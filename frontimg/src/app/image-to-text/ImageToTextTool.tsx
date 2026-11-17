@@ -82,7 +82,7 @@ const LANGUAGES: { code: string; label: string }[] = [
  * sees a full page of plausible-looking garbage and no error, which is worse
  * than a failure. Same reason Hindi defaults to `hin`.
  */
-const OCR_DEFAULT: Record<string, string> = { pt: "por", hi: "hin", ru: "rus" };
+const OCR_DEFAULT: Record<string, string> = { pt: "por", hi: "hin", ru: "rus", de: "deu", es: "spa", fr: "fra" };
 
 /**
  * Map tesseract's status strings onto something a human can read. Returns the

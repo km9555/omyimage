@@ -114,11 +114,30 @@ const ID_PATHS: PathMap = {
   "/account": "/akun",
 };
 
+// German: same words as oMyPDF /de, so the two sister sites share paths.
+const DE_PATHS: PathMap = {
+  "/": "",
+  "/image-converter": "/bildkonverter",
+  "/pricing": "/preise",
+  "/contact": "/kontakt",
+  "/privacy": "/datenschutz",
+  "/terms": "/agb",
+  "/cookies": "/cookie-richtlinie",
+  "/refunds": "/widerruf",
+  "/login": "/anmelden",
+  "/signup": "/registrieren",
+  "/forgot-password": "/passwort-vergessen",
+  "/reset-password": "/passwort-zuruecksetzen",
+  "/dashboard": "/dashboard",
+  "/account": "/konto",
+};
+
 const STATIC_PATHS: Record<TranslatedLocale, PathMap> = {
   pt: PT_PATHS,
   hi: HI_PATHS,
   ru: RU_PATHS,
   id: ID_PATHS,
+  de: DE_PATHS,
 };
 
 /** Does `locale` define a counterpart for this English path? */

@@ -586,11 +586,145 @@ const ID_TOOL_SLUGS: Record<string, string> = {
   "instagram-grid-maker": "grid-instagram",
 };
 
+/*
+ * ── Slug conventions (German) ──────────────────────────────────────────────
+ * Translated, ASCII: ä→ae, ö→oe, ü→ue, ß→ss (the transliteration Germans use
+ * themselves when an umlaut is unavailable, e.g. in domains and e-mail).
+ * Measured 2026-11-17, Germany / de (conversion.md §12, OpenSEO de-head-terms):
+ *   • Head noun is "Bild", not "Foto": bild verkleinern 12.1K vs foto
+ *     verkleinern 3.6K; bild bearbeiten 12.1K vs foto bearbeiten 8.1K.
+ *   • Converter pairs are "x in y": png in jpg 18.1K vs png zu jpg 1.9K;
+ *     webp in jpg 22.2K. iLoveIMG /de uses the same form.
+ *   • English loanwords win where they have taken over: meme generator 74K
+ *     (meme erstellen 5.4K), glitch effekt, sprite sheet.
+ *   • passport-photo-maker carries the term on the form, "biometrisches
+ *     Passbild" (33.1K) — not the vaguer Passfoto (14.8K).
+ */
+const DE_TOOL_SLUGS: Record<string, string> = {
+  // ── Optimieren ───────────────────────────────────────────────────────
+  "compress-image": "bild-komprimieren",
+  "resize-image": "bildgroesse-aendern",
+  "crop-image": "bild-zuschneiden",
+  "rotate-image": "bild-drehen",
+
+  // ── Konvertieren ─────────────────────────────────────────────────────
+  "convert-to-jpg": "bild-in-jpg-umwandeln",
+  "png-to-jpg": "png-in-jpg",
+  "jpg-to-png": "jpg-in-png",
+  "webp-to-png": "webp-in-png",
+  "heic-to-png": "heic-in-png",
+  "image-to-text": "bild-in-text-umwandeln",
+  "webp-to-jpg": "webp-in-jpg",
+  "jpg-to-webp": "jpg-in-webp",
+  "png-to-webp": "png-in-webp",
+  "jfif-to-jpg": "jfif-in-jpg",
+  "gif-to-png": "gif-in-png",
+  "gif-to-jpg": "gif-in-jpg",
+  "bmp-to-jpg": "bmp-in-jpg",
+  "avif-to-jpg": "avif-in-jpg",
+  "avif-to-png": "avif-in-png",
+  "heic-to-jpg": "heic-in-jpg",
+  "image-to-pdf": "bild-in-pdf-umwandeln",
+  "image-to-base64": "bild-in-base64",
+  "base64-to-image": "base64-in-bild",
+  "gif-to-images": "gif-in-bilder",
+
+  // ── Bearbeiten und erstellen ─────────────────────────────────────────
+  "image-editor": "bild-bearbeiten",
+  "watermark-image": "wasserzeichen-einfuegen",
+  "meme-generator": "meme-generator",
+  "html-to-image": "html-in-bild",
+  "blur-face": "gesichter-verpixeln",
+  "grayscale-image": "bild-schwarz-weiss",
+  "blur-image": "bild-unscharf-machen",
+  "add-border": "rahmen-um-bild",
+  "circle-crop": "bild-rund-zuschneiden",
+  "merge-images": "bilder-zusammenfuegen",
+  "image-color-picker": "farbwaehler",
+  "image-metadata": "exif-daten-anzeigen",
+  "remove-exif": "metadaten-entfernen",
+  "gif-maker": "gif-erstellen",
+
+  // ── KI ───────────────────────────────────────────────────────────────
+  "remove-background": "hintergrund-entfernen",
+  "upscale-image": "bildqualitaet-verbessern",
+
+  // ── Variants (expansion.md §5) ────────────────────────────────────────
+  "reduce-image-size-in-kb": "bildgroesse-in-kb-reduzieren",
+  "compress-image-to-20kb": "bild-auf-20kb-verkleinern",
+  "compress-image-to-50kb": "bild-auf-50kb-verkleinern",
+  "compress-image-to-100kb": "bild-auf-100kb-verkleinern",
+  "compress-image-to-200kb": "bild-auf-200kb-verkleinern",
+  "compress-image-to-1mb": "bild-auf-1mb-verkleinern",
+  "compress-image-to-10kb": "bild-auf-10kb-verkleinern",
+  "compress-image-to-30kb": "bild-auf-30kb-verkleinern",
+  "compress-image-to-300kb": "bild-auf-300kb-verkleinern",
+  "compress-image-to-500kb": "bild-auf-500kb-verkleinern",
+  "compress-image-to-2mb": "bild-auf-2mb-verkleinern",
+  "compress-image-to-15kb": "bild-auf-15kb-verkleinern",
+  "compress-image-to-40kb": "bild-auf-40kb-verkleinern",
+  "compress-image-to-150kb": "bild-auf-150kb-verkleinern",
+  "increase-image-size-in-kb": "bildgroesse-in-kb-erhoehen",
+  "signature-resizer": "unterschrift-skalieren",
+  "jpg-to-pdf-under-100kb": "jpg-in-pdf-unter-100kb",
+  "jpg-to-pdf-under-200kb": "jpg-in-pdf-unter-200kb",
+  "jpg-to-pdf-under-300kb": "jpg-in-pdf-unter-300kb",
+  "jpg-to-pdf-under-500kb": "jpg-in-pdf-unter-500kb",
+  "convert-to-png": "in-png-umwandeln",
+  "convert-to-webp": "in-webp-umwandeln",
+  "svg-to-png": "svg-in-png",
+  "png-to-ico": "png-in-ico",
+  "youtube-thumbnail-resizer": "youtube-thumbnail-groesse",
+  "whatsapp-dp-resizer": "whatsapp-profilbild",
+  "linkedin-banner-resizer": "linkedin-banner-groesse",
+  "facebook-cover-resizer": "facebook-titelbild-groesse",
+  "discord-banner-resizer": "discord-banner-groesse",
+  "9-16-aspect-ratio-image": "bild-9-16-1080x1920",
+  "dpi-converter": "dpi-aendern",
+  "dpi-checker": "dpi-pruefen",
+  "resize-image-in-cm": "bildgroesse-in-cm-aendern",
+  "video-to-gif": "video-in-gif",
+  "gif-compressor": "gif-komprimieren",
+  "gif-resizer": "gif-groesse-aendern",
+  "gif-to-mp4": "gif-in-mp4",
+  "webp-to-gif": "webp-in-gif",
+  "gif-cropper": "gif-zuschneiden",
+  "rotate-gif": "gif-drehen",
+  "reverse-gif": "gif-rueckwaerts",
+  "gif-speed-changer": "gif-geschwindigkeit-aendern",
+  "gif-cutter": "gif-schneiden",
+  "gif-to-webp": "gif-in-webp",
+  "gif-to-apng": "gif-in-apng",
+  "gif-to-sprite-sheet": "gif-in-sprite-sheet",
+  "gif-merger": "gifs-zusammenfuegen",
+  "add-text-to-gif": "text-in-gif-einfuegen",
+  "typing-text-gif": "schreibmaschinen-gif",
+  "invert-image": "bild-invertieren",
+  "pixelate-image": "bild-verpixeln",
+  "image-brightness": "bild-aufhellen",
+  "glitch-effect": "glitch-effekt",
+  "round-corners": "ecken-abrunden",
+  "remove-watermark": "wasserzeichen-entfernen",
+  "remove-object": "objekt-entfernen",
+  "split-image": "bild-teilen",
+  "image-overlay": "bilder-ueberlagern",
+  "image-to-hd": "bild-in-hd",
+  "unblur-image": "bild-schaerfen",
+  "flip-image": "bild-spiegeln",
+  "change-background-color": "hintergrundfarbe-aendern",
+  "blur-background": "hintergrund-unscharf-machen",
+  "passport-photo-maker": "biometrisches-passbild",
+  "3x4-photo": "foto-3x4",
+  "2x2-photo": "passfoto-2x2",
+  "instagram-grid-maker": "instagram-grid-erstellen",
+};
+
 const TOOL_SLUGS: Record<TranslatedLocale, Record<string, string>> = {
   pt: PT_TOOL_SLUGS,
   hi: HI_TOOL_SLUGS,
   ru: RU_TOOL_SLUGS,
   id: ID_TOOL_SLUGS,
+  de: DE_TOOL_SLUGS,
 };
 
 /** The slug a tool uses in `locale` (no prefix). English → the registry slug. */
