@@ -103,6 +103,13 @@ export const LOCALE_META = {
    * es_ES matches the flag and oMyPDF.
    */
   es: { prefix: "/es", tag: "es", og: "es_ES", label: "Español", flag: "🇪🇸", script: "latin" },
+  /**
+   * French is language-only: one variant for France, Belgium, Switzerland
+   * and Canada, written in French-French usage. Latin script; œ/æ fold to
+   * oe/ae in search (search-normalize.ts) and sizes use o / Ko / Mo
+   * (format.ts BYTE_UNITS).
+   */
+  fr: { prefix: "/fr", tag: "fr", og: "fr_FR", label: "Français", flag: "🇫🇷", script: "latin" },
 } as const satisfies Record<string, LocaleMeta>;
 
 export const LOCALES = Object.keys(LOCALE_META) as readonly (keyof typeof LOCALE_META)[];

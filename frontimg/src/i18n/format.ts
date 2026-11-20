@@ -119,6 +119,9 @@ function fixed(value: number, digits: number, locale: Locale): string {
  */
 const BYTE_UNITS: Partial<Record<Locale, { b: string; kb: string; mb: string }>> = {
   ru: { b: "Б", kb: "КБ", mb: "МБ" },
+  // French counts in octets: o / Ko / Mo, the form Windows, macOS and every
+  // French upload form use; "6 KB" beside «6 images» reads as untranslated.
+  fr: { b: "o", kb: "Ko", mb: "Mo" },
 };
 
 const DEFAULT_BYTE_UNITS = { b: "B", kb: "KB", mb: "MB" };

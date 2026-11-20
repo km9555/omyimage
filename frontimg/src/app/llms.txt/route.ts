@@ -20,7 +20,7 @@ export async function GET() {
     "",
     `> ${SITE.name} is a free online image toolkit: compress, resize, crop, convert, edit and make GIFs. Most tools run entirely in the browser, so the image never leaves the device; very large files, the AI tools and HEIC conversion use a secure server and are deleted within about an hour. No account is needed.`,
     "",
-    "Available in English, Portuguese (/pt), Hindi (/hi), Russian (/ru), Indonesian (/id), German (/de) and Spanish (/es). Every tool page explains how the tool works, its limits, and an FAQ.",
+    "Available in English, Portuguese (/pt), Hindi (/hi), Russian (/ru), Indonesian (/id), German (/de), Spanish (/es) and French (/fr). Every tool page explains how the tool works, its limits, and an FAQ.",
     "",
   ];
 

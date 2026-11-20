@@ -231,6 +231,34 @@ const ES_BATCHES = [
   ["/forgot-password", "/reset-password", "/account", "/dashboard"],
 ];
 
+/* French: demand order from conversion.md §14 (France, 2026-11-17). */
+const FR_BATCHES = [
+  ["/", "image-to-pdf", "compress-image", "remove-background", "passport-photo-maker"],
+  ["png-to-jpg", "watermark-image", "meme-generator", "image-color-picker", "upscale-image"],
+  ["resize-image", "heic-to-jpg", "jpg-to-png", "svg-to-png", "png-to-ico"],
+  ["image-editor", "merge-images", "grayscale-image", "remove-watermark", "crop-image"],
+  ["blur-image", "blur-face", "webp-to-jpg", "gif-maker", "gif-compressor"],
+  ["change-background-color", "linkedin-banner-resizer", "whatsapp-dp-resizer", "image-to-text", "webp-to-png"],
+  ["video-to-gif", "/privacy", "/terms", "/refunds", "/cookies"],
+  ["pixelate-image", "convert-to-jpg", "gif-to-mp4", "unblur-image", "rotate-image"],
+  ["flip-image", "discord-banner-resizer", "facebook-cover-resizer", "9-16-aspect-ratio-image", "youtube-thumbnail-resizer"],
+  ["avif-to-jpg", "blur-background", "remove-exif", "invert-image", "split-image"],
+  ["gif-to-png", "heic-to-png", "jpg-to-webp", "png-to-webp", "jfif-to-jpg"],
+  ["gif-to-jpg", "bmp-to-jpg", "avif-to-png", "image-to-base64", "base64-to-image"],
+  ["gif-to-images", "html-to-image", "add-border", "circle-crop", "image-metadata"],
+  ["reduce-image-size-in-kb", "compress-image-to-20kb", "compress-image-to-50kb", "compress-image-to-100kb", "compress-image-to-200kb"],
+  ["compress-image-to-1mb", "compress-image-to-10kb", "compress-image-to-30kb", "compress-image-to-300kb", "compress-image-to-500kb"],
+  ["compress-image-to-2mb", "compress-image-to-15kb", "compress-image-to-40kb", "compress-image-to-150kb", "increase-image-size-in-kb"],
+  ["signature-resizer", "jpg-to-pdf-under-100kb", "jpg-to-pdf-under-200kb", "jpg-to-pdf-under-300kb", "jpg-to-pdf-under-500kb"],
+  ["convert-to-png", "convert-to-webp", "dpi-converter", "dpi-checker", "resize-image-in-cm"],
+  ["gif-resizer", "webp-to-gif", "gif-cropper", "rotate-gif", "reverse-gif"],
+  ["gif-speed-changer", "gif-cutter", "gif-to-webp", "gif-to-apng", "gif-to-sprite-sheet"],
+  ["gif-merger", "add-text-to-gif", "typing-text-gif", "image-brightness", "glitch-effect"],
+  ["round-corners", "remove-object", "image-overlay", "image-to-hd", "instagram-grid-maker"],
+  ["/contact", "/image-converter", "/pricing", "/login", "/signup"],
+  ["/forgot-password", "/reset-password", "/account", "/dashboard"],
+];
+
 /**
  * Rollout order per locale. A map rather than a ternary: the ternary read
  * `LOC === "hi" ? HI_BATCHES : PT_BATCHES`, so any locale that was not "hi"
@@ -238,7 +266,7 @@ const ES_BATCHES = [
  * pt's batches and its translated slugs, and the tracker would have looked
  * plausible while describing the wrong rollout.
  */
-const BATCHES_BY_LOCALE = { pt: PT_BATCHES, hi: HI_BATCHES, ru: RU_BATCHES, id: ID_BATCHES, de: DE_BATCHES, es: ES_BATCHES };
+const BATCHES_BY_LOCALE = { pt: PT_BATCHES, hi: HI_BATCHES, ru: RU_BATCHES, id: ID_BATCHES, de: DE_BATCHES, es: ES_BATCHES, fr: FR_BATCHES };
 
 const BATCHES = BATCHES_BY_LOCALE[LOC];
 if (!BATCHES) {

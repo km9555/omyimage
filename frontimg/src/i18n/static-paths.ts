@@ -150,6 +150,24 @@ const ES_PATHS: PathMap = {
   "/account": "/cuenta",
 };
 
+// French: same words as oMyPDF /fr.
+const FR_PATHS: PathMap = {
+  "/": "",
+  "/image-converter": "/convertisseur-image",
+  "/pricing": "/tarifs",
+  "/contact": "/contact",
+  "/privacy": "/confidentialite",
+  "/terms": "/conditions-generales",
+  "/cookies": "/cookies",
+  "/refunds": "/remboursements",
+  "/login": "/connexion",
+  "/signup": "/inscription",
+  "/forgot-password": "/mot-de-passe-oublie",
+  "/reset-password": "/reinitialiser-le-mot-de-passe",
+  "/dashboard": "/tableau-de-bord",
+  "/account": "/compte",
+};
+
 const STATIC_PATHS: Record<TranslatedLocale, PathMap> = {
   pt: PT_PATHS,
   hi: HI_PATHS,
@@ -157,6 +175,7 @@ const STATIC_PATHS: Record<TranslatedLocale, PathMap> = {
   id: ID_PATHS,
   de: DE_PATHS,
   es: ES_PATHS,
+  fr: FR_PATHS,
 };
 
 /** Does `locale` define a counterpart for this English path? */

@@ -36,6 +36,9 @@ import { DE_PAIR_COPY } from "@/content/converters/index.de";
 import { esConverters } from "@/i18n/dictionaries/es/converters";
 import { ES_ESSAYS } from "@/content/converters/essays.es";
 import { ES_PAIR_COPY } from "@/content/converters/index.es";
+import { frConverters } from "@/i18n/dictionaries/fr/converters";
+import { FR_ESSAYS } from "@/content/converters/essays.fr";
+import { FR_PAIR_COPY } from "@/content/converters/index.fr";
 import { fmt } from "./formats";
 import type { ConverterPair, FormatId, LocalizedPairCopy } from "./types";
 
@@ -63,6 +66,7 @@ const LOCALE_CONVERTERS: Partial<Record<Locale, LocaleConverters>> = {
   id: { dict: idConverters, essays: ID_ESSAYS, pairs: ID_PAIR_COPY },
   de: { dict: deConverters, essays: DE_ESSAYS, pairs: DE_PAIR_COPY },
   es: { dict: esConverters, essays: ES_ESSAYS, pairs: ES_PAIR_COPY },
+  fr: { dict: frConverters, essays: FR_ESSAYS, pairs: FR_PAIR_COPY },
 };
 
 /**
