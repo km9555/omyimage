@@ -1908,7 +1908,12 @@ procedure, no governing-law clause.
 
 ---
 
-## 14. French (`/fr`) — PAUSED, resume after 2026-11-21
+## 14. French (`/fr`)
+
+**Shipped 2026-11-20** (7217829) — see 14.1 at the end. The note below is
+the paused-state hand-off it was resumed from, kept for the record.
+
+### 14.0 Paused state (2026-11-17)
 
 Paused at the user's request after Spanish shipped (usage limit). Nothing is
 half-done: no `fr` row exists in `LOCALE_META`, so the build is unaffected.
@@ -1937,3 +1942,36 @@ OCR `fra`.
    status.ts, gen-converters / gen-variants.
 4. Gates → build → verify:build → i18n-verify fr --all → snapshot diff →
    staging → main → `npm run indexnow`.
+
+### 14.1 Release (2026-11-20)
+
+- Resumed on `i18n/fr` from `main` (2d1d1f7). Registration as planned,
+  plus `BYTE_UNITS fr = o / Ko / Mo` — the UI now shows « 542 Ko », verified
+  on staging. No date override (ICU fr already writes 17/11/2026).
+- `i18n-fr-brief.md` added French typography to the glossary approach:
+  U+00A0 before « : » and inside « », U+202F before ; ! ?. Authors applied it
+  with small scripts to string VALUES only; the key gate (0 missing)
+  proves no English key was touched.
+- Red → green: `[fr] 2183 key(s) missing` → 0; 0 French audit warnings.
+- Found and fixed while assembling: three spellings of the "edit"
+  category and two of "ai" across modules (authors wrote before the
+  dictionary existed) — normalised to the nav labels. German and Spanish
+  were already consistent. The WhatsApp "Status" preset is « Statut »
+  (it sits under the WhatsApp group, so the name is not repeated).
+- Build + `verify:build` pass (sitemap 906 URLs, 8 languages);
+  `i18n-verify fr --all` **119/119 clean on the first run**.
+- Existing pages unchanged: diff against the Spanish-release `out/` — 846
+  pages, 824 differ only by the reciprocal `hreflang="fr"`, 22 identical,
+  nothing else.
+- Staging checked at desktop and 375 px (real upload → « Compression
+  terminée ! », 542 Ko → 242 Ko; photo-identite carries the ANTS ePhoto
+  note); fast-forwarded `main` to 7217829.
+
+Open (from the legal twins, same family as German/Spanish): no mentions
+légales (LCEN art. 6), no named controller, no RGPD legal bases or CNIL,
+no transfer safeguards, no governing law or consumer mediator.
+
+**Lesson for the next locale:** authors running ad-hoc text scripts in a
+SHARED scratchpad overwrote one another's helpers (frtypo.mjs) and one
+script ran over a sibling group's files. Give each author its own
+scratchpad subfolder in the brief.
